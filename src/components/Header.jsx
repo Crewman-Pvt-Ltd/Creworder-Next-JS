@@ -1,10 +1,30 @@
-import React from "react";
-import { Grid, Box, IconButton, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Grid, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const Header = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleProfileClick = () => {
+   
+    handleMenuClose();
+  };
+
+  const handleLogoutClick = () => {
+   
+    handleMenuClose();
+  };
+
   return (
     <Box
       sx={{
@@ -14,13 +34,12 @@ const Header = () => {
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
       }}
     >
-   
       <Grid container spacing={2} columns={16}>
-  <Grid item xs={2.8} sx={{backgroundColor : "#405189", minHeight: "80px"}}>
-  
-  </Grid>
-  <Grid item xs={13}>
-  <Grid container alignItems="center">
+        <Grid item xs={2.8} sx={{ backgroundColor: "#405189", minHeight: "80px" }}>
+ 
+        </Grid>
+        <Grid item xs={13}>
+          <Grid container alignItems="center" justifyContent="flex-end">
             <Grid item>
               <IconButton color="black">
                 <SearchIcon />
@@ -32,13 +51,21 @@ const Header = () => {
               </IconButton>
             </Grid>
             <Grid item>
-              <IconButton color="black">
+              <IconButton color="black" onClick={handleMenuOpen}>
                 <AccountCircleIcon />
               </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+                <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+              </Menu>
             </Grid>
           </Grid>
-  </Grid>
-</Grid>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
