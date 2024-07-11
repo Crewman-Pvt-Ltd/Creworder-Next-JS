@@ -37,6 +37,7 @@ const Header = () => {
         position: "sticky",
         top: 0,
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+        zIndex: "100",
       }}
     >
 

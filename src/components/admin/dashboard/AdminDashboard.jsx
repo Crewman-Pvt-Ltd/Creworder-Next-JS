@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Box,
   Grid,
@@ -18,18 +18,6 @@ import Charttwo from "./Charttwo";
 import BestSellingProducts from "./BestSellingProducts";
 import TopSellers from "./TopSellers";
 const AdminDashboard = () => {
-
-  const router = useRouter();
-
-
-  useEffect(() => {
-    const token = localStorage.getItem("crew_token");
-    if (!token) {
-      router.push("/login");
-    }
-  }, []);
-
-
   return (
     <Grid
       container
@@ -82,7 +70,6 @@ const AdminDashboard = () => {
       </Box>
     </Grid>
   );
-
 };
 
 export default AdminDashboard;

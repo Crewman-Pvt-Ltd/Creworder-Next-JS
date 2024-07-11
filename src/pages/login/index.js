@@ -23,8 +23,9 @@ export default function Login() {
       const response = await MainApi.post(`${login}`, { username, password });
       const { key } = response.data;
 
+
       console.log("key", key);
-      // debugger;
+
 
       localStorage.setItem('crew_token', key);
       document.cookie = `token=${key};path=/`;
