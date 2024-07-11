@@ -1,6 +1,6 @@
 // src/components/LoginPage.js
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const LoginPage = ({ children }) => {
     return (
