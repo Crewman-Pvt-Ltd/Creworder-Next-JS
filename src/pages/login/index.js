@@ -3,60 +3,43 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import LoginPage from '@/components/LoginPage';
 import { Box, Typography, Button } from '@mui/material';
+import { ClockLoader, PacmanLoader, PulseLoader } from "react-spinners";
+import MainApi from '@/api-manage/MainApi';
+import { login } from '../../../api-manage/ApiRoutes';
+import { usePermissions } from '@/contexts/PermissionsContext';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem('crew_token');
-    if (token) {
-      validateToken(token);
-    }
-  }, []);
-
-  const validateToken = async (token) => {
-    try {
-      const permissionsResponse = await axios.get('http://127.0.0.1:8000/api/user-permissions', {
-        headers: { Authorization: `Token ${token}` },
-      });
-
-      const { role, modules } = permissionsResponse.data;
-
-      localStorage.setItem('role', role);
-      // localStorage.setItem('modules', JSON.stringify(modules));
-
-      if (role === 'superadmin') {
-        router.push('/dashboard/superadmin');
-      } else if (role === 'admin') {
-        router.push('/dashboard/admin');
-      } else if (role === 'agent') {
-        router.push('/dashboard/agent');
-      }
-    } catch (error) {
-      console.error('Token validation failed', error);
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      localStorage.removeItem('modules');
-    }
-  };
+  const { fetchPermissions, permissionsData } = usePermissions();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/dj-rest-auth/login/', { username, password });
+      const response = await MainApi.post(`${login}`, { username, password });
       const { key } = response.data;
 
       console.log("key", key);
-      debugger;
+      // debugger;
 
       localStorage.setItem('crew_token', key);
       document.cookie = `token=${key};path=/`;
+      await fetchPermissions(key);
 
-      validateToken(key);
+      console.log("Permission Data", permissionsData);
+      
+      router.push("/dashboard");
+
     } catch (error) {
       console.error('Login failed', error);
+      setLoading(false);
+      setError(error.response?.data?.non_field_errors);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,9 +102,16 @@ export default function Login() {
           variant="contained"
           color="primary"
           sx={{ marginTop: 2 }}
+          disabled={loading}
         >
-          Login
+          {loading ? <ClockLoader size={18} color="white" /> : "Login"}
         </Button>
+        <Typography
+          variant='body1'
+          color="red"
+          mt={2}>
+          {error}
+        </Typography>
       </form>
     </LoginPage>
   );

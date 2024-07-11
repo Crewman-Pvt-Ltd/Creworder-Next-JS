@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Grid,
@@ -26,6 +26,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useRouter } from "next/router";
 
 ChartJS.register(
   CategoryScale,
@@ -127,6 +128,18 @@ const data = [
 ];
 
 const AdminDashboard = () => {
+
+  const router = useRouter();
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("crew_token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, []);
+
+
   return (
     <Grid
       container
@@ -134,7 +147,7 @@ const AdminDashboard = () => {
         flexDirection: "column",
         flexGrow: 1,
         padding: 3,
-        
+
       }}
     >
       <Grid item>
@@ -235,58 +248,59 @@ const AdminDashboard = () => {
       </Grid>
 
       <Grid container spacing={2} sx={{ marginTop: 4 }}>
-  <Grid item xs={8}>
-    <Card>
-      <Box sx={{ padding: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
-            Orders
-          </Typography>
-          <ButtonGroup size="small" sx={{ backgroundColor: "#e1ebfd" }}>
-            <Button>ALL</Button>
-            <Button>1M</Button>
-            <Button>6M</Button>
-            <Button>1Y</Button>
-          </ButtonGroup>
-        </Box>
-        <Box sx={{ display: "flex", gap: 2, marginTop: 2, backgroundColor: "#f9fbfc", padding: 2 }}>
-          <Box sx={{ flex: 1 }}>
-            <Typography>7,585</Typography>
-            <Typography>Orders</Typography>
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Typography>$22.89k</Typography>
-            <Typography>Earnings</Typography>
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Typography>367</Typography>
-            <Typography>Refunds</Typography>
-          </Box>
-          <Box sx={{ flex: 1 }}>
-            <Typography color="primary">18.92%</Typography>
-            <Typography>Conversion Ratio</Typography>
-          </Box>
-        </Box>
-        <Box sx={{ marginTop: 3 }}>
-          <Line data={chartData} options={chartOptions} />
-        </Box>
-      </Box>
-    </Card>
-  </Grid>
+        <Grid item xs={8}>
+          <Card>
+            <Box sx={{ padding: 3 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                  Orders
+                </Typography>
+                <ButtonGroup size="small" sx={{ backgroundColor: "#e1ebfd" }}>
+                  <Button>ALL</Button>
+                  <Button>1M</Button>
+                  <Button>6M</Button>
+                  <Button>1Y</Button>
+                </ButtonGroup>
+              </Box>
+              <Box sx={{ display: "flex", gap: 2, marginTop: 2, backgroundColor: "#f9fbfc", padding: 2 }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography>7,585</Typography>
+                  <Typography>Orders</Typography>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography>$22.89k</Typography>
+                  <Typography>Earnings</Typography>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography>367</Typography>
+                  <Typography>Refunds</Typography>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography color="primary">18.92%</Typography>
+                  <Typography>Conversion Ratio</Typography>
+                </Box>
+              </Box>
+              <Box sx={{ marginTop: 3 }}>
+                <Line data={chartData} options={chartOptions} />
+              </Box>
+            </Box>
+          </Card>
+        </Grid>
 
-  <Grid item xs={4}>
-    <Card>
-      <Box sx={{ padding: 3 }}>
-        <Typography variant="h6">Hello</Typography>
-      </Box>
-    </Card>
-  </Grid>
-</Grid>
+        <Grid item xs={4}>
+          <Card>
+            <Box sx={{ padding: 3 }}>
+              <Typography variant="h6">Hello</Typography>
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
 
 
 
     </Grid>
   );
+
 };
 
 export default AdminDashboard;
