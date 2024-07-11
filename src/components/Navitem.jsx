@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Box, Typography, Collapse } from '@mui/material';
 
-const Navitem = ({ name, children }) => {
+const Navitem = ({ name, children, onClick }) => {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
+    if (onClick) {
+      onClick();
+    }
   };
-
   return (
     <Box>
       <Box

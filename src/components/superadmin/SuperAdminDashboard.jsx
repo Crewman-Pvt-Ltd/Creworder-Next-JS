@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Box,
   Grid,
@@ -12,24 +12,12 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PeopleIcon from "@mui/icons-material/People";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import Tile from "./Tile";
-import Chartone from "./Chartone";
-import Charttwo from "./Charttwo";
-import BestSellingProducts from "./BestSellingProducts";
-import TopSellers from "./TopSellers";
-const AdminDashboard = () => {
-
-  const router = useRouter();
-
-
-  useEffect(() => {
-    const token = localStorage.getItem("crew_token");
-    if (!token) {
-      router.push("/login");
-    }
-  }, []);
-
-
+import Tiles from "../admin/dashboard/Tile";
+import Chartone from "../admin/dashboard/Chartone";
+import Charttwo from "../admin/dashboard/Charttwo";
+import BestSellingProducts from "../admin/dashboard/BestSellingProducts";
+import TopSellers from "../admin/dashboard/TopSellers";
+const SuperAdminDashboard = () => {
   return (
     <Grid
       container
@@ -47,7 +35,7 @@ const AdminDashboard = () => {
             margin: 0,
           }}
         >
-          Good Morning, Admin!
+          Good Morning, Superadmin!
         </Typography>
         <Typography
           sx={{
@@ -60,7 +48,7 @@ const AdminDashboard = () => {
           Here's what's happening with your store today.
         </Typography>
       </Grid>
-   <Tile />
+   <Tiles />
    <Box sx={{ display: "flex", gap: 2, marginTop: 4 }}>
   <Box sx={{ flex: 8 }}>
     <Chartone />
@@ -82,7 +70,6 @@ const AdminDashboard = () => {
       </Box>
     </Grid>
   );
-
 };
 
-export default AdminDashboard;
+export default SuperAdminDashboard;
