@@ -12,11 +12,14 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PeopleIcon from "@mui/icons-material/People";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import Tile from "./Tile";
-import Chartone from "./Chartone";
-import Charttwo from "./Charttwo";
-import BestSellingProducts from "./BestSellingProducts";
-import TopSellers from "./TopSellers";
+import Tile from "../Tile";
+import Chartone from "../Chartone";
+import Charttwo from "../Charttwo";
+import BestSellingProducts from "../BestSellingProducts";
+import TopSellers from "../TopSellers";
+import { useRouter } from "next/router";
+
+
 const AdminDashboard = () => {
 
   const router = useRouter();
