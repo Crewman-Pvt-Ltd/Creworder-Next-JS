@@ -1,10 +1,19 @@
-import React from "react";
-
+import React, { useState } from "react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-
 import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "@/components/superadmin/customLabel";
+import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
+import {
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Divider,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
+
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   const reader = new FileReader();
@@ -15,28 +24,30 @@ const handleFileChange = (event) => {
     reader.readAsDataURL(file);
   }
 };
-import {
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Divider,
-} from "@mui/material";
 
 const CreateCompanyLayout = ({ onCompanyList }) => {
+  const [showDetails, setShowDetails] = useState(false);
+  const [branches, setBranches] = useState([{ id: 1 }]);
+
+  const handleCheckboxChange = (event) => {
+    setShowDetails(event.target.checked);
+  };
+
+  const handleAddBranch = () => {
+    setBranches([...branches, { id: branches.length + 1 }]);
+  };
+
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <Card>
           <CardContent>
-            <Grid item>
+          <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
                 Add Company
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
-
             <Grid
               item
               sx={{
@@ -86,6 +97,7 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                 />
               </Grid>
             </Grid>
+
             <Grid
               item
               xs={12}
@@ -258,7 +270,7 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
             </Grid>
 
             <Divider sx={{ my: 2 }} />
-            <Grid
+          <Grid
               item
               sx={{
                 marginTop: 3,
@@ -312,6 +324,68 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                 </Grid>
               </Grid>
             </Grid>
+            <Grid item sx={{ marginTop: 3 }}>
+              <FormControlLabel
+                control={<Checkbox onChange={handleCheckboxChange} />}
+                label={
+                  <Typography variant="body1" sx={{ fontFamily: "serif" }}>
+                    Branches
+                  </Typography>
+                }
+              />
+            </Grid>
+            {showDetails && (
+              <>
+                {branches.map((branch, index) => (
+                  <Grid item key={branch.id} sx={{ marginTop: 3 }}>
+                    <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
+                      Branch Details {index + 1}
+                    </Typography>
+                    <Grid item sx={{ marginTop: 3 }}>
+                      <Grid item sx={{ display: "flex", gap: 2 }}>
+                        <Grid item xs={12} sm={6}>
+                          <CustomLabel htmlFor={`branchname-${branch.id}`}>
+                            Branch Name <span style={{ color: "red" }}>*</span>
+                          </CustomLabel>
+                          <CustomTextField
+                            id={`branchname-${branch.id}`}
+                            name={`branchname-${branch.id}`}
+                            placeholder="e.g. creworder"
+                            type="text"
+                            required
+                            fullWidth
+                            sx={{ marginTop: 1 }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <CustomLabel htmlFor={`branchid-${branch.id}`}>
+                            Branch Id <span style={{ color: "red" }}>*</span>
+                          </CustomLabel>
+                          <CustomTextField
+                            id={`branchid-${branch.id}`}
+                            name={`branchid-${branch.id}`}
+                            type="text"
+                            placeholder="e.g. BR001"
+                            required
+                            fullWidth
+                            sx={{ marginTop: 1 }}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                ))}
+                <Grid item sx={{ marginTop: 3 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddBranch}
+                  >
+                    Add Branch
+                  </Button>
+                </Grid>
+              </>
+            )}
             <Grid
               item
               sx={{
@@ -337,6 +411,7 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
               </Button>
             </Grid>
           </CardContent>
+         
         </Card>
       </Grid>
     </Grid>

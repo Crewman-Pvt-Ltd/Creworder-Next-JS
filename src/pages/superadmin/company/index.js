@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
-import CreateCompanyLayout from "@/components/superadmin/company/CreateCompanyLayout";
-import CompanyList from "@/components/superadmin/company/CompanyList";
+import CreateCompanyLayout from "@/components/company/CreateCompanyLayout";
+import CompanyList from "@/components/company/CompanyList";
 import { useState } from "react";
 import {
  
