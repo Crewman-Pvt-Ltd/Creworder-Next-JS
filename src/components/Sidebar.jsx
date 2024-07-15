@@ -75,25 +75,8 @@ const Sidebar = ({ type }) => {
       }}
     >
 
-<Navitem name="Dashboard" onClick={() => handleItemClick('/dashboard/superadmin')} />
-      <Navitem name="Package">
-        {dropdownItems.map((item, index) => (
-          <Box
-            key={index}
-            sx={{
-              padding: 1,
-              marginLeft: 2,
-              borderRadius: 1,
-              '&:hover': {
-                backgroundColor: '#e0e0e0',
-              },
-            }}
-            
-          >
-            <Typography>{item.name}</Typography>
-          </Box>
-        ))}
-      </Navitem>
+<Navitem name="Dashboard" onClick={() => handleItemClick('/dashboard')} />
+<Navitem name="Package" onClick={() => handleItemClick('/superadmin/package')} />
       <Navitem name="Company" onClick={() => handleItemClick('/superadmin/company')} />
       <Navitem name="Super Admin">
         {workItems.map((item, index) => (
