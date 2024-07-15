@@ -29,25 +29,55 @@ const handleFileChange = (event) => {
   }
 };
 const modules = [
-  "Clients", "Invoices", "Leaves", "Reports", "Zoom", "Webhooks",
-  "Employees", "Payments", "Leads", "Orders", "SMS", "QR Code",
-  "Projects", "Time Logs", "Holidays", "Knowledge Base", "Recruit", "Biolinks",
-  "Attendance", "Tickets", "Products", "Bank Account", "Payroll",
-  "Tasks", "Events", "Expenses", "Messages", "Purchase",
-  "Estimates", "Notices", "Contracts", "Assets", "Letter"
+  "Clients",
+  "Invoices",
+  "Leaves",
+  "Reports",
+  "Zoom",
+  "Webhooks",
+  "Employees",
+  "Payments",
+  "Leads",
+  "Orders",
+  "SMS",
+  "QR Code",
+  "Projects",
+  "Time Logs",
+  "Holidays",
+  "Knowledge Base",
+  "Recruit",
+  "Biolinks",
+  "Attendance",
+  "Tickets",
+  "Products",
+  "Bank Account",
+  "Payroll",
+  "Tasks",
+  "Events",
+  "Expenses",
+  "Messages",
+  "Purchase",
+  "Estimates",
+  "Notices",
+  "Contracts",
+  "Assets",
+  "Letter",
 ];
-const Createpackage = ({}) => {
+const Createpackage = ({onPackageList}) => {
   const [checked, setChecked] = React.useState([]);
 
   const handleCheck = (event) => {
     const name = event.target.name;
-    setChecked(prev => prev.includes(name) ? prev.filter(item => item !== name) : [...prev, name]);
+    setChecked((prev) =>
+      prev.includes(name)
+        ? prev.filter((item) => item !== name)
+        : [...prev, name]
+    );
   };
 
   const handleSelectAll = (event) => {
     setChecked(event.target.checked ? modules : []);
   };
-
 
   const [plan, setPlan] = useState("");
   return (
@@ -148,7 +178,7 @@ const Createpackage = ({}) => {
                 marginTop: 2,
               }}
             >
-              {/* First Row with 3 fields */}
+            
               <Grid
                 item
                 sx={{
@@ -157,7 +187,7 @@ const Createpackage = ({}) => {
                   gap: 2,
                 }}
               >
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <CustomLabel htmlFor="packageName" required>
                     Package Name
                   </CustomLabel>
@@ -170,7 +200,7 @@ const Createpackage = ({}) => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <CustomLabel htmlFor="maxEmployees" required>
                     Max Employees
                   </CustomLabel>
@@ -183,86 +213,9 @@ const Createpackage = ({}) => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="maxStorageSize" required>
-                    Max Storage Size
-                  </CustomLabel>
-                  <CustomTextField
-                    id="maxStorageSize"
-                    name="maxStorageSize"
-                    type="text"
-                    placeholder="e.g. 10GB"
-                    required
-                    fullWidth
-                  />
-                </Grid>
+               
               </Grid>
 
-              {/* Second Row with 4 fields */}
-              <Grid
-                item
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
-                }}
-              >
-                <Grid item xs={12} sm={3}>
-                  <CustomLabel htmlFor="field1" required>
-                    Storage Unit
-                  </CustomLabel>
-                  <CustomTextField
-                    id="field1"
-                    name="field1"
-                    placeholder="Field 1"
-                    type="text"
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                  <CustomLabel htmlFor="field2" required>
-                    Position No.
-                  </CustomLabel>
-                  <CustomTextField
-                    id="field2"
-                    name="field2"
-                    placeholder="Field 2"
-                    type="text"
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={3}
-                  sx={{
-                    marginTop: 3,
-
-                    textAlign: "center",
-                  }}
-                >
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="Make Private"
-                  />
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={3}
-                  sx={{
-                    marginTop: 3,
-                    textAlign: "center",
-                  }}
-                >
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="Mark as recommended"
-                  />
-                </Grid>
-              </Grid>
             </Grid>
 
             <Divider sx={{ my: 2 }} />
@@ -282,23 +235,55 @@ const Createpackage = ({}) => {
                 Payment Gateway Plans
               </Typography>
 
-              <Grid item xs={12} sm={4} sx={{ marginTop: 2 }}>
-                <CustomLabel htmlFor="packagename">
-                  Package Currency <span style={{ color: "red" }}>*</span>
-                </CustomLabel>
-                <CustomTextField
-                  id="packagename"
-                  name="packagename"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  required
-                  fullWidth
-                  sx={{ marginTop: 1 }}
-                />
+              <Grid
+              item
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                marginTop: 2,
+              }}
+            >
+            
+              <Grid
+                item
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 2,
+                }}
+              >
+                <Grid item xs={12} sm={6}>
+                  <CustomLabel htmlFor="monthlyplanprice" required>
+                  Monthly Plan Price
+                  </CustomLabel>
+                  <CustomTextField
+                    id="monthlyplanprice"
+                    name="monthlyplanprice"
+                    placeholder=""
+                    type="number"
+                    required
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <CustomLabel htmlFor="anualplanprice" required>
+                  Annual Plan Price
+                  </CustomLabel>
+                  <CustomTextField
+                    id="anualplanprice"
+                    name="anualplanprice"
+                    type="number"
+                    placeholder=""
+                    required
+                    fullWidth
+                  />
+                </Grid>
+               
               </Grid>
 
-              {/* Flex container for Monthly and Annual Plans */}
-              <Grid
+            </Grid>
+              {/* <Grid
                 item
                 xs={12}
                 sm={12}
@@ -373,41 +358,86 @@ const Createpackage = ({}) => {
                     </>
                   )}
                 </Grid>
-              </Grid>
+              </Grid> */}
             </Grid>
 
             <Divider sx={{ my: 2 }} />
 
             <Grid item>
-      <Grid item xs={12}>
-        <Typography variant="h6" gutterBottom>
-          Select Modules for this package
-        </Typography>
-      </Grid>
-      <Grid container xs={12}>
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox onChange={handleSelectAll} checked={checked.length === modules.length} />}
-            label="Select All"
-          />
-        </FormGroup>
-      </Grid>
-      <Grid item xs={12} sm={4} md={2}>
-      {modules.map((module, index) => (
-        <Grid key={index}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                name={module}
-                checked={checked.includes(module)}
-                onChange={handleCheck}
-              />
-            }
-            label={module}
-          />
-        </Grid>
-      ))}</Grid>
-    </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom>
+                  Select Modules for this package
+                </Typography>
+              </Grid>
+              <Grid container xs={12}>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleSelectAll}
+                        checked={checked.length === modules.length}
+                      />
+                    }
+                    label="Select All"
+                  />
+                </FormGroup>
+              </Grid>
+              <Grid item xs={12} sm={4} md={2}>
+                {modules.map((module, index) => (
+                  <Grid key={index}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name={module}
+                          checked={checked.includes(module)}
+                          onChange={handleCheck}
+                        />
+                      }
+                      label={module}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+            <Divider sx={{ my: 2 }} />
+            <Grid item xs={12} sm={12} md={12}>
+                  <CustomLabel htmlFor="description">
+                    Description
+                  </CustomLabel>
+                  <CustomTextField
+                    id="description"
+                    name="description"
+                    placeholder="e.g. description"
+                    type="text"
+                    required
+                    fullWidth
+                  />
+                </Grid>
+                <Divider sx={{ my: 2 }} />
+                <Grid
+              item
+              sx={{
+                marginTop: 3,
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                sx={{
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  backgroundColor: "#405189",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#334a6c",
+                  },
+                }}
+                onClick={onPackageList}
+              >
+                Submit
+              </Button>
+            </Grid>
           </CardContent>
         </Card>
       </Grid>
