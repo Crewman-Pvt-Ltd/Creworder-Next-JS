@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import {
   Grid,
   Card,
@@ -15,9 +15,8 @@ import {
   TableCell,
   TableBody,
   IconButton,
-
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import {
   Visibility,
   Edit,
@@ -49,9 +48,7 @@ const data = [
     status: "suspended",
   },
 ];
-const CompanyList = ({onCreateCompany}) => {
-   
-
+const CompanyList = ({ onCreateCompany }) => {
   const handleView = (id) => {
     console.log("View", id);
   };
@@ -88,15 +85,43 @@ const CompanyList = ({onCreateCompany}) => {
   );
 
   const DataCell = (props) => (
-    <TableCell sx={{ color: "#999999", fontSize: "14px", whiteSpace: "nowrap",
+    <TableCell
+      sx={{
+        color: "#999999",
+        fontSize: "14px",
+        whiteSpace: "nowrap",
         fontWeight: "500",
-        textTransform: "capitalize", }} {...props} />
+        textTransform: "capitalize",
+      }}
+      {...props}
+    />
   );
 
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
-        <Card>
+      <Button
+            onClick={onCreateCompany}
+            sx={{
+              padding: "8px 16px",
+              fontSize: "14px",
+              backgroundColor: "#405189",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#334a6c",
+              },
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <AddIcon sx={{ fontSize: 15 }} />
+            Add Company
+          </Button>
+
+        <Card   sx={{
+            marginTop: 3,
+          }}>
           <CardContent>
             <Grid item xs={12}>
               <Grid
@@ -106,7 +131,7 @@ const CompanyList = ({onCreateCompany}) => {
               >
                 <Typography
                   sx={{
-                    fontWeight: '600',
+                    fontWeight: "600",
                     fontSize: "1rem",
                     whiteSpace: "nowrap",
                     textTransform: "capitalize",
@@ -115,24 +140,7 @@ const CompanyList = ({onCreateCompany}) => {
                 >
                   Company List
                 </Typography>
-                <Button
-      onClick={onCreateCompany}
-      sx={{
-        padding: "8px 16px",
-        fontSize: "14px",
-        backgroundColor: "#405189",
-        color: "white",
-        "&:hover": {
-          backgroundColor: "#334a6c",
-        },
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1,
-      }}
-    >
-      <AddIcon sx={{ fontSize: 20 }} />  
-      Add Company
-    </Button>
+               
               </Grid>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -157,9 +165,14 @@ const CompanyList = ({onCreateCompany}) => {
                         <DataCell>{row.companyName}</DataCell>
                         <DataCell>{row.package}</DataCell>
                         <DataCell>
-                          <Typography sx={{
-                            fontSize: "0.875em",color: "black",  whiteSpace: "nowrap", fontWeight: "500",
-                          }}>
+                          <Typography
+                            sx={{
+                              fontSize: "0.875em",
+                              color: "black",
+                              whiteSpace: "nowrap",
+                              fontWeight: "500",
+                            }}
+                          >
                             Register Date: {row.registerDate}
                             <br />
                             Employees: {row.employees}

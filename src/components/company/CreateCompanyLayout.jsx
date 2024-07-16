@@ -27,14 +27,26 @@ const handleFileChange = (event) => {
 
 const CreateCompanyLayout = ({ onCompanyList }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [branches, setBranches] = useState([{ id: 1 }]);
+  const [branches, setBranches] = useState([{ id: 1, branchname: "", branchid: "" }]);
 
   const handleCheckboxChange = (event) => {
     setShowDetails(event.target.checked);
   };
 
   const handleAddBranch = () => {
-    setBranches([...branches, { id: branches.length + 1 }]);
+    const lastBranch = branches[branches.length - 1];
+    if (lastBranch.branchname && lastBranch.branchid) {
+      setBranches([...branches, { id: branches.length + 1, branchname: "", branchid: "" }]);
+    } else {
+      alert("Please fill in the details for the current branch before adding a new one.");
+    }
+  };
+
+  const handleInputChange = (index, field, value) => {
+    const newBranches = branches.map((branch, i) =>
+      i === index ? { ...branch, [field]: value } : branch
+    );
+    setBranches(newBranches);
   };
 
   return (
@@ -335,57 +347,66 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
               />
             </Grid>
             {showDetails && (
-              <>
-                {branches.map((branch, index) => (
-                  <Grid item key={branch.id} sx={{ marginTop: 3 }}>
-                    <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
-                      Branch Details {index + 1}
-                    </Typography>
-                    <Grid item sx={{ marginTop: 3 }}>
-                      <Grid item sx={{ display: "flex", gap: 2 }}>
-                        <Grid item xs={12} sm={6}>
-                          <CustomLabel htmlFor={`branchname-${branch.id}`}>
-                            Branch Name <span style={{ color: "red" }}>*</span>
-                          </CustomLabel>
-                          <CustomTextField
-                            id={`branchname-${branch.id}`}
-                            name={`branchname-${branch.id}`}
-                            placeholder="e.g. creworder"
-                            type="text"
-                            required
-                            fullWidth
-                            sx={{ marginTop: 1 }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <CustomLabel htmlFor={`branchid-${branch.id}`}>
-                            Branch Id <span style={{ color: "red" }}>*</span>
-                          </CustomLabel>
-                          <CustomTextField
-                            id={`branchid-${branch.id}`}
-                            name={`branchid-${branch.id}`}
-                            type="text"
-                            placeholder="e.g. BR001"
-                            required
-                            fullWidth
-                            sx={{ marginTop: 1 }}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Grid>
+        <>
+          {branches.map((branch, index) => (
+            <Grid item key={branch.id} sx={{ marginTop: 3 }}>
+              <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
+                Branch Details
+              </Typography>
+              <Grid item sx={{ marginTop: 3 }}>
+                <Grid item sx={{ display: "flex", gap: 2 }}>
+                  <Grid item xs={12} sm={6}>
+                    <CustomLabel htmlFor={`branchname-${branch.id}`}>
+                      Branch Name <span style={{ color: "red" }}>*</span>
+                    </CustomLabel>
+                    <CustomTextField
+                      id={`branchname-${branch.id}`}
+                      name={`branchname-${branch.id}`}
+                      placeholder="e.g. creworder"
+                      type="text"
+                      required
+                      fullWidth
+                      sx={{ marginTop: 1 }}
+                      value={branch.branchname}
+                      onChange={(e) =>
+                        handleInputChange(index, "branchname", e.target.value)
+                      }
+                    />
                   </Grid>
-                ))}
-                <Grid item sx={{ marginTop: 3 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleAddBranch}
-                  >
-                    Add Branch
-                  </Button>
+                  <Grid item xs={12} sm={6}>
+                    <CustomLabel htmlFor={`branchid-${branch.id}`}>
+                      Branch Id <span style={{ color: "red" }}>*</span>
+                    </CustomLabel>
+                    <CustomTextField
+                      id={`branchid-${branch.id}`}
+                      name={`branchid-${branch.id}`}
+                      type="text"
+                      placeholder="e.g. BR001"
+                      required
+                      fullWidth
+                      sx={{ marginTop: 1 }}
+                      value={branch.branchid}
+                      onChange={(e) =>
+                        handleInputChange(index, "branchid", e.target.value)
+                      }
+                    />
+                  </Grid>
                 </Grid>
-              </>
-            )}
+              </Grid>
+            </Grid>
+          ))}
+          <Grid item sx={{ marginTop: 3 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddBranch}
+              disabled={!branches[branches.length - 1].branchname || !branches[branches.length - 1].branchid}
+            >
+              Add Branch
+            </Button>
+          </Grid>
+        </>
+      )}
             <Grid
               item
               sx={{
