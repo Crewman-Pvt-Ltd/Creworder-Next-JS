@@ -5,7 +5,7 @@ import LoginPage from '@/components/LoginPage';
 import { Box, Typography, Button } from '@mui/material';
 import { ClockLoader, PacmanLoader, PulseLoader } from "react-spinners";
 import MainApi from '@/api-manage/MainApi';
-import { login } from '../../../api-manage/ApiRoutes';
+import { login } from '@/api-manage/ApiRoutes';
 import { usePermissions } from '@/contexts/PermissionsContext';
 
 export default function Login() {
