@@ -24,30 +24,15 @@ import {
   CheckCircle,
   Cancel,
 } from "@mui/icons-material";
-const data = [
-  {
-    id: 1,
-    name: "Larger",
-    monthlyPrice: "$1000",
-    annualPrice: "$2000",
-    package: "Gold Plan (Monthly)",
-   fileStorage: "500(MB)",
-   maxEmployees: "20",
-   moduleinpackage: ["User", "Notepad Follow Up", "Export", "Orders"],
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Medium",
-    monthlyPrice: "$1000",
-    annualPrice: "$3000",
-    package: "Gold Plan (yearly)",
-    fileStorage: "200(MB)",
-    maxEmployees: "30",
-    status: "suspended",
-  },
-];
+import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
+
+
 const PackageList = ({ onCreatePackage }) => {
+
+
+  const { data } = useGetAllPackages();
+
+
   const handleView = (id) => {
     console.log("View", id);
   };
@@ -162,15 +147,19 @@ const PackageList = ({ onCreatePackage }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.map((row) => (
+                    {data?.map((row) => (
                       <TableRow key={row.id}>
                         <DataCell>{row.id}</DataCell>
                         <DataCell>{row.name}</DataCell>
-                        <DataCell>{row.monthlyPrice}</DataCell>
-                        <DataCell>{row.annualPrice}</DataCell>
+                        <DataCell>{row.monthly_price}</DataCell>
+                        <DataCell>{row.annual_price}</DataCell>
                         <DataCell>{row.fileStorage}</DataCell>
-                        <DataCell>{row.maxEmployees}</DataCell>
-                        <DataCell>{row.moduleinpackage}</DataCell>
+                        <DataCell>{row.max_employees}</DataCell>
+                        <DataCell>{
+                        row?.modules?.map((data) => {
+                          <div>{data}</div>
+                        })
+                        }</DataCell>
                         <TableCell>
                          
                           <IconButton

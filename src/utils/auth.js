@@ -1,5 +1,5 @@
 import MainApi from "@/api-manage/MainApi";
-import { log_out } from "../../api-manage/ApiRoutes";
+import { log_out } from "@/api-manage/ApiRoutes";
 
 export const logout = async () => {
     try {

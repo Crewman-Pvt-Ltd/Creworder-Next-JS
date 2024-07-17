@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import MainApi from '@/api-manage/MainApi';
-import { permissions } from '../../api-manage/ApiRoutes';
+import { permissions } from '@/api-manage/ApiRoutes';
 
 const PermissionsContext = createContext();
 
