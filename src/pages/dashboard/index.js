@@ -6,9 +6,12 @@ import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import SuperAdminDashboard from "@/components/dashboard/SuperAdminDashboard";
 import AgentDashboard from "@/components/dashboard/AgentDashboard";
 import Loader from "@/components/Loader";
+import { useRouter } from "next/router";
 
 
 export const Admin = () => {
+
+    const router = useRouter();
 
     const { permissionsData, loading } = usePermissions();
 
@@ -37,9 +40,7 @@ export const Admin = () => {
         )
     }
 
-    return (
-        <h1>No Role Defined</h1>
-    );
+    router.push("/login");
 }
 
 
