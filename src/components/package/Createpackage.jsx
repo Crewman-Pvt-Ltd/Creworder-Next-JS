@@ -3,6 +3,7 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
+import useGetPackage from "@/api-manage/useGetpackage";
 import {
   Typography,
   Button,
@@ -18,16 +19,7 @@ import {
   Radio,
   FormControlLabel,
 } from "@mui/material";
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById("preview").src = e.target.result;
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
+
 const modules = [
   "Clients",
   "Invoices",
@@ -63,7 +55,7 @@ const modules = [
   "Assets",
   "Letter",
 ];
-const Createpackage = ({onPackageList}) => {
+const Createpackage = ({ onPackageList }) => {
   const [checked, setChecked] = React.useState([]);
 
   const handleCheck = (event) => {
@@ -78,8 +70,12 @@ const Createpackage = ({onPackageList}) => {
   const handleSelectAll = (event) => {
     setChecked(event.target.checked ? modules : []);
   };
+  const [selectedPlan, setSelectedPlan] = useState("");
 
-  const [plan, setPlan] = useState("");
+  const handlePlanChange = (event) => {
+    setSelectedPlan(event.target.value);
+  };
+
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
@@ -90,31 +86,21 @@ const Createpackage = ({onPackageList}) => {
                 Add Package
               </Typography>
             </Grid>
+
             <Divider sx={{ my: 2 }} />
-            <Grid
-              item
-              sx={{
-                marginTop: 3,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                }}
-              >
+
+            <Grid item sx={{ marginTop: 3 }}>
+              <Typography sx={{ fontSize: "15px" }}>
                 Choose Package Type
               </Typography>
-              <Grid
-                item
-                sx={{
-                  marginTop: 3,
-                }}
-              >
+              <Grid item sx={{ marginTop: 3 }}>
                 <FormControl component="fieldset">
                   <RadioGroup
                     row
                     aria-label="package-type"
                     name="row-radio-buttons-group"
+                    value={selectedPlan}
+                    onChange={handlePlanChange}
                   >
                     <Box
                       sx={{
@@ -167,6 +153,7 @@ const Createpackage = ({onPackageList}) => {
                 </FormControl>
               </Grid>
             </Grid>
+
             <Divider sx={{ my: 2 }} />
 
             <Grid
@@ -178,7 +165,6 @@ const Createpackage = ({onPackageList}) => {
                 marginTop: 2,
               }}
             >
-            
               <Grid
                 item
                 sx={{
@@ -213,154 +199,64 @@ const Createpackage = ({onPackageList}) => {
                     fullWidth
                   />
                 </Grid>
-               
               </Grid>
-
             </Grid>
 
-            <Divider sx={{ my: 2 }} />
-
-            <Grid
-              item
-              sx={{
-                marginTop: 3,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  fontWeight: "bold",
-                }}
-              >
-                Payment Gateway Plans
-              </Typography>
-
-              <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
-            
-              <Grid
-                item
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
-                }}
-              >
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="monthlyplanprice" required>
-                  Monthly Plan Price
-                  </CustomLabel>
-                  <CustomTextField
-                    id="monthlyplanprice"
-                    name="monthlyplanprice"
-                    placeholder=""
-                    type="number"
-                    required
-                    fullWidth
-                  />
+            {selectedPlan === "paid" && (
+              <>
+                <Divider sx={{ my: 2 }} />
+                <Grid item sx={{ marginTop: 3 }}>
+                  <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
+                    Payment Gateway Plans
+                  </Typography>
+                  <Grid
+                    item
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                      marginTop: 2,
+                    }}
+                  >
+                    <Grid
+                      item
+                      sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
+                        gap: 2,
+                      }}
+                    >
+                      <Grid item xs={12} sm={6}>
+                        <CustomLabel htmlFor="monthlyplanprice" required>
+                          Monthly Plan Price
+                        </CustomLabel>
+                        <CustomTextField
+                          id="monthlyplanprice"
+                          name="monthlyplanprice"
+                          placeholder=""
+                          type="number"
+                          required
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <CustomLabel htmlFor="annualplanprice" required>
+                          Annual Plan Price
+                        </CustomLabel>
+                        <CustomTextField
+                          id="annualplanprice"
+                          name="annualplanprice"
+                          type="number"
+                          placeholder=""
+                          required
+                          fullWidth
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="anualplanprice" required>
-                  Annual Plan Price
-                  </CustomLabel>
-                  <CustomTextField
-                    id="anualplanprice"
-                    name="anualplanprice"
-                    type="number"
-                    placeholder=""
-                    required
-                    fullWidth
-                  />
-                </Grid>
-               
-              </Grid>
-
-            </Grid>
-              {/* <Grid
-                item
-                xs={12}
-                sm={12}
-                sx={{ display: "flex", gap: 2, marginTop: 2 }}
-              >
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  sx={{ display: "flex", flexDirection: "column" }}
-                >
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={() =>
-                          setPlan(plan === "monthly" ? "" : "monthly")
-                        }
-                      />
-                    }
-                    label="Monthly Plan"
-                  />
-                  {plan === "monthly" && (
-                    <>
-                      <CustomLabel htmlFor="monthlyplan">
-                        Monthly Plan Price ($){" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </CustomLabel>
-                      <CustomTextField
-                        id="monthlyplan"
-                        name="monthlyplan"
-                        placeholder="e.g. 100"
-                        type="text"
-                        required
-                        fullWidth
-                        sx={{ marginTop: 1 }}
-                      />
-                    </>
-                  )}
-                </Grid>
-
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  sx={{ display: "flex", flexDirection: "column" }}
-                >
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={() =>
-                          setPlan(plan === "annual" ? "" : "annual")
-                        }
-                      />
-                    }
-                    label="Annual Plan"
-                  />
-                  {plan === "annual" && (
-                    <>
-                      <CustomLabel htmlFor="annualplan">
-                        Annual Plan Price ($){" "}
-                        <span style={{ color: "red" }}>*</span>
-                      </CustomLabel>
-                      <CustomTextField
-                        id="annualplan"
-                        name="annualplan"
-                        placeholder="e.g. 1000"
-                        type="text"
-                        required
-                        fullWidth
-                        sx={{ marginTop: 1 }}
-                      />
-                    </>
-                  )}
-                </Grid>
-              </Grid> */}
-            </Grid>
-
+              </>
+            )}
             <Divider sx={{ my: 2 }} />
 
             <Grid item>
@@ -399,22 +295,22 @@ const Createpackage = ({onPackageList}) => {
                 ))}
               </Grid>
             </Grid>
+
             <Divider sx={{ my: 2 }} />
+
             <Grid item xs={12} sm={12} md={12}>
-                  <CustomLabel htmlFor="description">
-                    Description
-                  </CustomLabel>
-                  <CustomTextField
-                    id="description"
-                    name="description"
-                    placeholder="e.g. description"
-                    type="text"
-                    required
-                    fullWidth
-                  />
-                </Grid>
-                <Divider sx={{ my: 2 }} />
-                <Grid
+              <CustomLabel htmlFor="description">Description</CustomLabel>
+              <CustomTextField
+                id="description"
+                name="description"
+                placeholder="e.g. description"
+                type="text"
+                required
+                fullWidth
+              />
+            </Grid>
+            
+            <Grid
               item
               sx={{
                 marginTop: 3,

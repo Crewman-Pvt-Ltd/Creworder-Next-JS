@@ -5,6 +5,7 @@ import Layout from "@/components/Layout";
 import AdminDashboard from "@/components/dashboard/AdminDashboard";
 import SuperAdminDashboard from "@/components/dashboard/SuperAdminDashboard";
 import AgentDashboard from "@/components/dashboard/AgentDashboard";
+import Loader from "@/components/Loader";
 import { useRouter } from "next/router";
 
 
@@ -14,7 +15,7 @@ export const Admin = () => {
 
     const { permissionsData, loading } = usePermissions();
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Loader />;
 
     if (permissionsData?.role == "admin") {
         return (

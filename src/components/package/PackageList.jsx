@@ -41,19 +41,7 @@ const PackageList = ({ onCreatePackage }) => {
     console.log("Edit", id);
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete", id);
-  };
-
-  const handleStatusToggle = (id) => {
-    setData(
-      data.map((row) =>
-        row.id === id
-          ? { ...row, status: row.status === "active" ? "suspended" : "active" }
-          : row
-      )
-    );
-  };
+ 
 
   const HeaderCell = (props) => (
     <TableCell
@@ -101,7 +89,7 @@ const PackageList = ({ onCreatePackage }) => {
             }}
           >
             <AddIcon sx={{ fontSize: 15 }} />
-            Add Company
+            Add Package
           </Button>
      
 
@@ -126,7 +114,7 @@ const PackageList = ({ onCreatePackage }) => {
                     color: "black",
                   }}
                 >
-                  Company List
+                  Package List
                 </Typography>
               </Grid>
             </Grid>
