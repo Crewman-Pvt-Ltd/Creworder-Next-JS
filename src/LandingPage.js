@@ -16,6 +16,7 @@ import Pricing from './components/Pricing';
 import Features from './components/Features';
 import Testimonials from './components/Testimonials';
 import FAQ from './components/FAQ';
+import Form from './components/Form';
 import Footer from './components/Footer';
 import getLPTheme from './getLPTheme';
 
@@ -91,6 +92,7 @@ export default function LandingPage() {
         <Pricing />
         <Divider />
         <FAQ />
+        <Form />
         <Divider />
         <Footer />
       </Box>

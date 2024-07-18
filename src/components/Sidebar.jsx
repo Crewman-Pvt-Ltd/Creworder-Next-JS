@@ -74,6 +74,12 @@ const Sidebar = ({ isOpen }) => {
       router.push(path);
     }
   };
+  const logoStyle = {
+    margin: '10px',
+    width: '200px',
+    height: 'auto',
+    cursor: 'pointer',
+  };
 
   return (
     <Box

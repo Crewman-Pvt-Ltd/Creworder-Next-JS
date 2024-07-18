@@ -266,6 +266,7 @@ const Createpackage = ({ onPackageList }) => {
                   Select Modules for this package
                 </Typography>
               </Grid>
+              
               <Grid container xs={12}>
                 <FormGroup>
                   <FormControlLabel
@@ -279,6 +280,7 @@ const Createpackage = ({ onPackageList }) => {
                   />
                 </FormGroup>
               </Grid>
+
               <Grid item xs={12} sm={4} md={2}>
                 {modules.map((module, index) => (
                   <Grid key={index}>

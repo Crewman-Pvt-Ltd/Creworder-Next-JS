@@ -36,7 +36,7 @@ const SuperAdminDashboard = () => {
             margin: 0,
           }}
         >
-          Good Morning, Superadmin!
+          Welcome..., Superadmin!
         </Typography>
         <Typography
           sx={{
