@@ -16,6 +16,7 @@ import {
   TableBody,
   IconButton,
 } from "@mui/material";
+import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Visibility,
@@ -99,138 +100,126 @@ const CompanyList = ({ onCreateCompany }) => {
 
   return (
     <Grid container sx={{ padding: 3 }}>
-      <Grid item xs={12}>
+    <Grid item xs={12}>
       <Button
-            onClick={onCreateCompany}
+        onClick={onCreateCompany}
+        sx={{
+          padding: "8px 16px",
+          fontSize: "14px",
+          backgroundColor: "#405189",
+          color: "white",
+          "&:hover": {
+            backgroundColor: "#334a6c",
+          },
+          marginLeft: '20px',
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+        }}
+      >
+        <AddIcon sx={{ fontSize: 15 }} />
+        Add Company
+      </Button>
+  
+      <CustomCard sx={{ marginTop: 3 }}>
+        <CardContent>
+          <Typography
             sx={{
-              padding: "8px 16px",
-              fontSize: "14px",
-              backgroundColor: "#405189",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#334a6c",
-              },
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
+              fontWeight: "600",
+              fontSize: "1rem",
+              whiteSpace: "nowrap",
+              textTransform: "capitalize",
+              color: "black",
             }}
           >
-            <AddIcon sx={{ fontSize: 15 }} />
-            Add Company
-          </Button>
-
-        <Card   sx={{
-            marginTop: 3,
-          }}>
-          <CardContent>
-            <Grid item xs={12}>
-              <Grid
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography
-                  sx={{
-                    fontWeight: "600",
-                    fontSize: "1rem",
-                    whiteSpace: "nowrap",
-                    textTransform: "capitalize",
-                    color: "black",
-                  }}
-                >
-                  Company List
-                </Typography>
-               
-              </Grid>
-            </Grid>
-            <Divider sx={{ my: 2 }} />
-            <Grid item xs={12}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <HeaderCell>ID</HeaderCell>
-                      <HeaderCell>Company Name</HeaderCell>
-                      <HeaderCell>Package</HeaderCell>
-                      <HeaderCell>Details</HeaderCell>
-                      <HeaderCell>Last Activity</HeaderCell>
-                      <HeaderCell>Date</HeaderCell>
-                      <HeaderCell>Action</HeaderCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.map((row) => (
-                      <TableRow key={row.id}>
-                        <DataCell>{row.id}</DataCell>
-                        <DataCell>{row.companyName}</DataCell>
-                        <DataCell>{row.package}</DataCell>
-                        <DataCell>
-                          <Typography
-                            sx={{
-                              fontSize: "0.875em",
-                              color: "black",
-                              whiteSpace: "nowrap",
-                              fontWeight: "500",
-                            }}
-                          >
-                            Register Date: {row.registerDate}
-                            <br />
-                            Employees: {row.employees}
-                            <br />
-                            Total Users: {row.totalUsers}
-                          </Typography>
-                        </DataCell>
-                        <DataCell>{row.lastActivity}</DataCell>
-                        <DataCell>{row.date}</DataCell>
-                        <TableCell>
-                          <IconButton
-                            onClick={() => handleView(row.id)}
-                            aria-label="view"
-                            sx={{ color: "blue" }}
-                          >
-                            <Visibility />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleEdit(row.id)}
-                            aria-label="edit"
-                            sx={{ color: "green" }}
-                          >
-                            <Edit />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleDelete(row.id)}
-                            aria-label="delete"
-                            sx={{ color: "red" }}
-                          >
-                            <Delete />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleStatusToggle(row.id)}
-                            aria-label={
-                              row.status === "active" ? "suspend" : "activate"
-                            }
-                            sx={{
-                              color:
-                                row.status === "active" ? "orange" : "green",
-                            }}
-                          >
-                            {row.status === "active" ? (
-                              <Cancel />
-                            ) : (
-                              <CheckCircle />
-                            )}
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-          </CardContent>
-        </Card>
-      </Grid>
+            Company List
+          </Typography>
+          <Divider sx={{ my: 2 }} />
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <HeaderCell>ID</HeaderCell>
+                  <HeaderCell>Company Name</HeaderCell>
+                  <HeaderCell>Package</HeaderCell>
+                  <HeaderCell>Details</HeaderCell>
+                  <HeaderCell>Last Activity</HeaderCell>
+                  <HeaderCell>Date</HeaderCell>
+                  <HeaderCell>Action</HeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((row) => (
+                  <TableRow key={row.id}>
+                    <DataCell>{row.id}</DataCell>
+                    <DataCell>{row.companyName}</DataCell>
+                    <DataCell>{row.package}</DataCell>
+                    <DataCell>
+                      <Typography
+                        sx={{
+                          fontSize: "0.875em",
+                          color: "black",
+                          whiteSpace: "nowrap",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Register Date: {row.registerDate}
+                        <br />
+                        Employees: {row.employees}
+                        <br />
+                        Total Users: {row.totalUsers}
+                      </Typography>
+                    </DataCell>
+                    <DataCell>{row.lastActivity}</DataCell>
+                    <DataCell>{row.date}</DataCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => handleView(row.id)}
+                        aria-label="view"
+                        sx={{ color: "blue" }}
+                      >
+                        <Visibility />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleEdit(row.id)}
+                        aria-label="edit"
+                        sx={{ color: "green" }}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(row.id)}
+                        aria-label="delete"
+                        sx={{ color: "red" }}
+                      >
+                        <Delete />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleStatusToggle(row.id)}
+                        aria-label={
+                          row.status === "active" ? "suspend" : "activate"
+                        }
+                        sx={{
+                          color:
+                            row.status === "active" ? "orange" : "green",
+                        }}
+                      >
+                        {row.status === "active" ? (
+                          <Cancel />
+                        ) : (
+                          <CheckCircle />
+                        )}
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </CustomCard>
     </Grid>
+  </Grid>
   );
 };
 

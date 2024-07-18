@@ -1,41 +1,43 @@
-import React from "react";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+import React, { useState } from 'react';
+import Header from './Header';
+import Sidebar from './Sidebar';
 import { Box } from '@mui/material';
+
 const Layout = ({ children }) => {
-    return (
-        <Box
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const handleMenuClick = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        height: '100vh',
+        overflow: 'hidden',
+      }}
+    >
+      <Sidebar isOpen={isSidebarOpen} />
+      <Box
         sx={{
+          flexGrow: 1,
           display: 'flex',
-       
-          flexDirection: 'column', 
-          
+          flexDirection: 'column',
         }}
       >
-        <Header />
-     
+        <Header onMenuClick={handleMenuClick} />
         <Box
           sx={{
-            display: 'flex',
-            flexGrow: 1, 
-            backgroundColor:'#f3f3f9',
-          }}
-        >
-          <Sidebar />
-          <Box
-          sx={{
             flexGrow: 1,
-            height: '100vh',
-            overflowY: 'scroll', 
+            padding: 2,
+            overflowY: 'auto',
           }}
         >
           {children}
         </Box>
       </Box>
-
     </Box>
-
-
   );
 };
 

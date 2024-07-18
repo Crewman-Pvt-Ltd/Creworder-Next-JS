@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
+import CustomCard from "../CustomCard";
 import {
   Grid,
   Card,
@@ -71,104 +72,86 @@ const PackageList = ({ onCreatePackage }) => {
 
   return (
     <Grid container sx={{ padding: 3 }}>
-      <Grid item xs={12}>
-      
-          <Button
-            onClick={onCreatePackage}
+    <Grid item xs={12}>
+      <Button
+        onClick={onCreatePackage}
+        sx={{
+          padding: "8px 16px",
+          fontSize: "14px",
+          backgroundColor: "#405189",
+          color: "white",
+          "&:hover": {
+            backgroundColor: "#334a6c",
+          },
+          marginLeft: '20px',
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+        }}
+      >
+        <AddIcon sx={{ fontSize: 15 }} />
+        Add Package
+      </Button>
+  
+      <CustomCard sx={{ marginTop: 3 }}>
+        <CardContent>
+          <Typography
             sx={{
-              padding: "8px 16px",
-              fontSize: "14px",
-              backgroundColor: "#405189",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#334a6c",
-              },
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
+              fontWeight: "600",
+              fontSize: "1rem",
+              whiteSpace: "nowrap",
+              textTransform: "capitalize",
+              color: "black",
             }}
           >
-            <AddIcon sx={{ fontSize: 15 }} />
-            Add Package
-          </Button>
-     
-
-        <Card
-          sx={{
-            marginTop: 3,
-          }}
-        >
-          <CardContent>
-            <Grid item xs={12}>
-              <Grid
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography
-                  sx={{
-                    fontWeight: "600",
-                    fontSize: "1rem",
-                    whiteSpace: "nowrap",
-                    textTransform: "capitalize",
-                    color: "black",
-                  }}
-                >
-                  Package List
-                </Typography>
-              </Grid>
-            </Grid>
-            <Divider sx={{ my: 2 }} />
-            <Grid item xs={12}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <HeaderCell>ID</HeaderCell>
-                      <HeaderCell>Name</HeaderCell>
-                      <HeaderCell>Monthly Price</HeaderCell>
-                      <HeaderCell>Annual Price</HeaderCell>
-                      <HeaderCell>File Storage</HeaderCell>
-                      <HeaderCell>Max Exployees</HeaderCell>
-                      <HeaderCell>Module in Package</HeaderCell>
-                      <HeaderCell>Action</HeaderCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data?.map((row) => (
-                      <TableRow key={row.id}>
-                        <DataCell>{row.id}</DataCell>
-                        <DataCell>{row.name}</DataCell>
-                        <DataCell>{row.monthly_price}</DataCell>
-                        <DataCell>{row.annual_price}</DataCell>
-                        <DataCell>{row.fileStorage}</DataCell>
-                        <DataCell>{row.max_employees}</DataCell>
-                        <DataCell>{
-                        row?.modules?.map((data) => {
-                          <div>{data}</div>
-                        })
-                        }</DataCell>
-                        <TableCell>
-                         
-                          <IconButton
-                            onClick={() => handleEdit(row.id)}
-                            aria-label="edit"
-                            sx={{ color: "green" }}
-                          >
-                            <Edit />
-                          </IconButton>
-                          
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Grid>
-          </CardContent>
-        </Card>
-      </Grid>
+            Package List
+          </Typography>
+          <Divider sx={{ my: 2 }} />
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <HeaderCell>ID</HeaderCell>
+                  <HeaderCell>Name</HeaderCell>
+                  <HeaderCell>Monthly Price</HeaderCell>
+                  <HeaderCell>Annual Price</HeaderCell>
+                  <HeaderCell>Max Employees</HeaderCell>
+                  <HeaderCell>Module in Package</HeaderCell>
+                  <HeaderCell>Action</HeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data?.map((row, index) => (
+                  <TableRow key={row.id}>
+                    <DataCell>{index+1}</DataCell>
+                    <DataCell>{row.name}</DataCell>
+                    <DataCell>{row.monthly_price}</DataCell>
+                    <DataCell>{row.annual_price}</DataCell>
+                    <DataCell>{row.max_employees}</DataCell>
+                    <DataCell>
+                      {row?.modules?.map((module, index) => (
+                        <div key={index}>{module}</div>
+                      ))}
+                    </DataCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => handleEdit(row.id)}
+                        aria-label="edit"
+                        sx={{ color: "green" }}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </CustomCard>
     </Grid>
+  </Grid>
+  
   );
 };
 

@@ -19,6 +19,7 @@ import {
   Radio,
   FormControlLabel,
 } from "@mui/material";
+import CustomCard from "../CustomCard";
 
 const modules = [
   "Clients",
@@ -79,7 +80,7 @@ const Createpackage = ({ onPackageList }) => {
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
-        <Card>
+        <CustomCard>
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
@@ -335,7 +336,7 @@ const Createpackage = ({ onPackageList }) => {
               </Button>
             </Grid>
           </CardContent>
-        </Card>
+        </CustomCard>
       </Grid>
     </Grid>
   );

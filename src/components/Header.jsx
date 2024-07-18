@@ -1,15 +1,24 @@
 import React from "react";
-import { Grid, Box, IconButton, Typography, Menu, MenuItem } from "@mui/material";
-import { useState } from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Grid,
+  useMediaQuery,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import Image from "next/image";
+import creworderIcon from "../images/crewordericon.png"; 
+import ProfileHeader from "./profileHeader";
+import SearchBar from "./SearchBar";
 import { logout } from "@/utils/auth";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
-const Header = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
+const Header = ({ onMenuClick }) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
+  const isMobile = useMediaQuery("(max-width:600px)"); 
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,13 +29,12 @@ const Header = () => {
   };
 
   const handleProfileClick = () => {
-
     handleMenuClose();
   };
 
   const handleLogoutClick = async () => {
     await logout();
-    router.push('/login');
+    router.push("/login");
     handleMenuClose();
   };
 
@@ -36,41 +44,63 @@ const Header = () => {
         backgroundColor: "white",
         position: "sticky",
         top: 0,
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+        boxShadow: "0 1.6rem 3rem #0000000f",
         zIndex: "100",
+        display: "flex",
+        marginTop:"10px",
+        borderRadius: '15px',
+        flexDirection: "column",
       }}
     >
-
-      <Grid container spacing={2} columns={16}>
-        <Grid item xs={2.8} sx={{ backgroundColor: "#405189", minHeight: "80px" }}>
-
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          padding: 1,
+          // borderBottom: "1px solid #ddd",
+        }}
+      >
+     
+        <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
+          {isMobile && (
+            <Image
+              src={creworderIcon}
+              alt="Creworder Icon"
+              width={30}
+              height={30}
+              sx={{ marginRight: 2 }}
+            />
+          )}
+      
+          <IconButton color="black" onClick={onMenuClick} sx={{ marginRight: 2 }}>
+            <MenuIcon />
+          </IconButton>
+          <SearchBar />
         </Grid>
-        <Grid item xs={13}>
-          <Grid container alignItems="center" justifyContent="flex-end">
-            <Grid item>
-              <IconButton color="black">
-                <SearchIcon />
-              </IconButton>
-            </Grid>
-            <Grid item>
-              <IconButton color="black">
-                <AddIcon />
-              </IconButton>
-            </Grid>
-            <Grid item>
-              <IconButton color="black" onClick={handleMenuOpen}>
-                <AccountCircleIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-                <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
-              </Menu>
-            </Grid>
-          </Grid>
+
+       
+        <Grid item xs={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: "black",
+              cursor: "pointer",
+              marginRight : '30px',
+            }}
+            onClick={handleMenuOpen}
+          >
+            <ProfileHeader />
+          </Box>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+            <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+          </Menu>
         </Grid>
       </Grid>
     </Box>

@@ -23,7 +23,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
+import CustomCard from './CustomCard';
 const chartData = {
   labels: [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -74,7 +74,7 @@ const typodata = [
 
 const Chartone = () => {
   return (
-    <Card>
+    <CustomCard>
       <Box sx={{ padding: 3 }}>
         <Box
           sx={{
@@ -119,7 +119,7 @@ const Chartone = () => {
           <Line data={chartData} options={chartOptions} />
         </Box>
       </Box>
-    </Card>
+    </CustomCard>
   );
 };
 
