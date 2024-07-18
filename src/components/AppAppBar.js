@@ -127,6 +127,16 @@ function AppAppBar({ mode, toggleColorMode }) {
                   <Typography variant="body2" color="text.primary">
                     FAQ
                   </Typography>
+                  
+                </MenuItem>
+                <MenuItem
+                  onClick={() => scrollToSection('form')}
+                  sx={{ py: '6px', px: '12px' }}
+                >
+                  <Typography variant="body2" color="text.primary">
+                    Contact Us
+                  </Typography>
+                  
                 </MenuItem>
               </Box>
             </Box>
@@ -143,8 +153,8 @@ function AppAppBar({ mode, toggleColorMode }) {
                 variant="contained"
                 size="small"
                 component="a"
-                href=""
-                target="_blank"
+                href="/login"
+               
               >
                 Sign in
               </Button>
@@ -201,14 +211,14 @@ function AppAppBar({ mode, toggleColorMode }) {
                     Pricing
                   </MenuItem>
                   <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
+                  <MenuItem onClick={() => scrollToSection('form')}>Contact Us</MenuItem>
                   <Divider />
                   <MenuItem>
                     <Button
                       color="primary"
                       variant="contained"
                       component="a"
-                      href="#"
-                      target="_blank"
+                      href="/login"
                       sx={{ width: '100%' }}
                     >
                       Sign up

@@ -50,7 +50,7 @@ const AdminDashboard = () => {
             margin: 0,
           }}
         >
-          Good Morning, Admin!
+          welcome.., Admin!
         </Typography>
         <Typography
           sx={{
