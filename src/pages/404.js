@@ -13,19 +13,19 @@ const Custom404 = () => {
     router.push('/dashboard'); 
   };
   return (
-    // <Grid
-    //   container
-    //   direction="column"
-    //   alignItems="center"
-    //   justifyContent="center"
-    //   sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', textAlign: 'center' }}
-    // >
-    //       <Button onClick={handleRedirect} sx={{ padding: 0 }}>
-    //     <Image src={errorImage} alt="404 Error" width={900} height={500} />
-    //   </Button>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', textAlign: 'center' }}
+    >
+          <Button onClick={handleRedirect} sx={{ padding: 0 }}>
+        <Image src={errorImage} alt="404 Error" width={900} height={500} />
+      </Button>
      
-    // </Grid>
-  <Grid> <Loader/> </Grid>
+    </Grid>
+  // <Grid> <Loader/> </Grid>
 
 
   );

@@ -3,6 +3,7 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
+import CustomCard from "../CustomCard";
 import {
   Typography,
   Button,
@@ -13,6 +14,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
@@ -27,7 +29,9 @@ const handleFileChange = (event) => {
 
 const CreateCompanyLayout = ({ onCompanyList }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [branches, setBranches] = useState([{ id: 1, branchname: "", branchid: "" }]);
+  const [branches, setBranches] = useState([
+    { id: 1, branchname: "", branchid: "" },
+  ]);
 
   const handleCheckboxChange = (event) => {
     setShowDetails(event.target.checked);
@@ -36,9 +40,14 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
   const handleAddBranch = () => {
     const lastBranch = branches[branches.length - 1];
     if (lastBranch.branchname && lastBranch.branchid) {
-      setBranches([...branches, { id: branches.length + 1, branchname: "", branchid: "" }]);
+      setBranches([
+        ...branches,
+        { id: branches.length + 1, branchname: "", branchid: "" },
+      ]);
     } else {
-      alert("Please fill in the details for the current branch before adding a new one.");
+      alert(
+        "Please fill in the details for the current branch before adding a new one."
+      );
     }
   };
 
@@ -52,24 +61,22 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
-        <Card>
+        <CustomCard>
           <CardContent>
-          <Grid item>
-              <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Add Company
-              </Typography>
-            </Grid>
+            <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
+              Add Company
+            </Typography>
             <Divider sx={{ my: 2 }} />
+
             <Grid
-              item
+              container
+              spacing={2}
               sx={{
                 display: "flex",
                 flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
               }}
             >
-              <Grid item sx={{ flex: 1 }}>
+              <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="companyname" required>
                   Company Name
                 </CustomLabel>
@@ -82,7 +89,7 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                   fullWidth
                 />
               </Grid>
-              <Grid item sx={{ flex: 1 }}>
+              <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="email" required>
                   Email
                 </CustomLabel>
@@ -95,7 +102,7 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                   fullWidth
                 />
               </Grid>
-              <Grid item sx={{ flex: 1 }}>
+              <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="phone" required>
                   Phone Number
                 </CustomLabel>
@@ -109,50 +116,37 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                 />
               </Grid>
             </Grid>
-
-            <Grid
-              item
-              xs={12}
-              sx={{
-                display: "flex",
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
-              <Grid item xs={6}>
-                <Grid item>
-                  <CustomLabel htmlFor="website">
-                    Website <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="website"
-                    name="website"
-                    placeholder="e.g. creworder"
-                    type="text"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
-                <Grid item>
-                  <CustomLabel htmlFor="address">
-                    Address <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="address"
-                    name="address"
-                    type="text"
-                    placeholder="e.g. test@creworder.com"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
+            <Grid container spacing={2} sx={{ marginTop: 2 }}>
+           
+              <Grid item xs={12} sm={6}>
+                <CustomLabel htmlFor="website" required>
+                  Website
+                </CustomLabel>
+                <CustomTextField
+                  id="website"
+                  name="website"
+                  placeholder="e.g. creworder"
+                  type="text"
+                  required
+                  fullWidth
+                />
+                <CustomLabel htmlFor="address" required sx={{ marginTop: 2 }}>
+                  Address
+                </CustomLabel>
+                <CustomTextField
+                  id="address"
+                  name="address"
+                  type="text"
+                  placeholder="e.g. test@creworder.com"
+                  required
+                  fullWidth
+                />
               </Grid>
 
-              <Grid item xs={6}>
-                <CustomLabel htmlFor="companyLogo">
-                  Upload Company Logo <span style={{ color: "red" }}>*</span>
+             
+              <Grid item xs={12} sm={6}>
+                <CustomLabel htmlFor="companyLogo" required>
+                  Upload Company Logo
                 </CustomLabel>
                 <input
                   type="file"
@@ -160,10 +154,7 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                   onChange={handleFileChange}
                   style={{ marginTop: "8px", display: "block", width: "100%" }}
                 />
-                <Grid
-                  item
-                  sx={{ display: "flex", justifyContent: "center", mt: 2 }}
-                >
+                <Grid sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                   <img
                     id="preview"
                     src="https://placehold.co/600x400/EEE/31343C"
@@ -174,168 +165,135 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                 </Grid>
               </Grid>
             </Grid>
+
             <Divider sx={{ my: 2 }} />
+
+            <Typography
+              sx={{ fontSize: "15px", fontWeight: "bold", marginTop: 3 }}
+            >
+              Package Details
+            </Typography>
             <Grid
-              item
+              container
+              spacing={2}
               sx={{
                 marginTop: 3,
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  fontWeight: "bold",
-                }}
-              >
-                Package Details
-              </Typography>
-              <Grid
-                item
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
-                  marginTop: 3,
-                }}
-              >
-                <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="packagename">
-                    Package Name <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="packagename"
-                    name="packagename"
-                    placeholder="e.g. creworder"
-                    type="text"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="occurrence">
-                    Occurrence <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="occurrence"
-                    name="occurrence"
-                    type="text"
-                    placeholder="e.g. test@creworder.com"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="Amount">
-                    Amount <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="Amount"
-                    name="Amount"
-                    type="tel"
-                    placeholder="e.g. 1234567890"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="packagename" required>
+                  Package Name
+                </CustomLabel>
+                <CustomTextField
+                  id="packagename"
+                  name="packagename"
+                  placeholder="e.g. creworder"
+                  type="text"
+                  required
+                  fullWidth
+                />
               </Grid>
-              <Grid
-                item
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
-                  marginTop: 1,
-                }}
-              >
-                <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="occurrence">
-                  Payment Date <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="occurrence"
-                    name="occurrence"
-                    type="text"
-                    placeholder=""
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="Amount">
-                  Next Payment Date <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="Amount"
-                    name="Amount"
-                    type="tel"
-                    placeholder=""
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
-              </Grid>{" "}
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="occurrence" required>
+                  Occurrence
+                </CustomLabel>
+                <CustomTextField
+                  id="occurrence"
+                  name="occurrence"
+                  type="text"
+                  placeholder="e.g. monthly"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="amount" required>
+                  Amount
+                </CustomLabel>
+                <CustomTextField
+                  id="amount"
+                  name="amount"
+                  type="number"
+                  placeholder="e.g. 123456"
+                  required
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2} sx={{ marginTop: 1 }}>
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="paymentDate" required>
+                  Payment Date
+                </CustomLabel>
+                <CustomTextField
+                  id="paymentDate"
+                  name="paymentDate"
+                  type="date"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="nextPaymentDate" required>
+                  Next Payment Date
+                </CustomLabel>
+                <CustomTextField
+                  id="nextPaymentDate"
+                  name="nextPaymentDate"
+                  type="date"
+                  required
+                  fullWidth
+                />
+              </Grid>
             </Grid>
 
             <Divider sx={{ my: 2 }} />
-          <Grid
-              item
+
+            <Typography
+              sx={{ fontSize: "15px", fontWeight: "bold", marginTop: 3 }}
+            >
+              Account Details (First Company Admin)
+            </Typography>
+            <Grid
+              container
+              spacing={2}
               sx={{
                 marginTop: 3,
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: "15px",
-                  fontWeight: "bold",
-                }}
-              >
-                Account Details ( First Company Admin )
-              </Typography>
-              <Grid
-                item
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
-                  marginTop: 3,
-                }}
-              >
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="packagename">
-                    Name <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="packagename"
-                    name="packagename"
-                    placeholder="e.g. creworder"
-                    type="text"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="occurrence">
-                    Email ( Login details will be emailed to this email){" "}
-                    <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="occurrence"
-                    name="occurrence"
-                    type="text"
-                    placeholder="e.g. test@creworder.com"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-                </Grid>
+              <Grid item xs={12} sm={6}>
+                <CustomLabel htmlFor="adminName" required>
+                  Name
+                </CustomLabel>
+                <CustomTextField
+                  id="adminName"
+                  name="adminName"
+                  placeholder="e.g. John Doe"
+                  type="text"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <CustomLabel htmlFor="adminEmail" required>
+                  Email (Login details will be emailed to this email)
+                </CustomLabel>
+                <CustomTextField
+                  id="adminEmail"
+                  name="adminEmail"
+                  type="email"
+                  placeholder="e.g. test@creworder.com"
+                  required
+                  fullWidth
+                />
               </Grid>
             </Grid>
+
             <Grid item sx={{ marginTop: 3 }}>
               <FormControlLabel
                 control={<Checkbox onChange={handleCheckboxChange} />}
@@ -346,67 +304,75 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
                 }
               />
             </Grid>
+
             {showDetails && (
-        <>
-          {branches.map((branch, index) => (
-            <Grid item key={branch.id} sx={{ marginTop: 3 }}>
-              <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
-                Branch Details
-              </Typography>
-              <Grid item sx={{ marginTop: 3 }}>
-                <Grid item sx={{ display: "flex", gap: 2 }}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomLabel htmlFor={`branchname-${branch.id}`}>
-                      Branch Name <span style={{ color: "red" }}>*</span>
-                    </CustomLabel>
-                    <CustomTextField
-                      id={`branchname-${branch.id}`}
-                      name={`branchname-${branch.id}`}
-                      placeholder="e.g. creworder"
-                      type="text"
-                      required
-                      fullWidth
-                      sx={{ marginTop: 1 }}
-                      value={branch.branchname}
-                      onChange={(e) =>
-                        handleInputChange(index, "branchname", e.target.value)
-                      }
-                    />
+              <>
+                {branches.map((branch, index) => (
+                  <Grid item key={branch.id} xs={12} sx={{ marginTop: 3 }}>
+                    <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
+                      Branch Details
+                    </Typography>
+                    <Grid container spacing={2} sx={{ marginTop: 3 }}>
+                      <Grid item xs={12} sm={6}>
+                        <CustomLabel
+                          htmlFor={`branchname-${branch.id}`}
+                          required
+                        >
+                          Branch Name
+                        </CustomLabel>
+                        <CustomTextField
+                          id={`branchname-${branch.id}`}
+                          name={`branchname-${branch.id}`}
+                          placeholder="e.g. Branch A"
+                          type="text"
+                          required
+                          fullWidth
+                          value={branch.branchname}
+                          onChange={(e) =>
+                            handleInputChange(
+                              index,
+                              "branchname",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <CustomLabel htmlFor={`branchid-${branch.id}`} required>
+                          Branch ID
+                        </CustomLabel>
+                        <CustomTextField
+                          id={`branchid-${branch.id}`}
+                          name={`branchid-${branch.id}`}
+                          type="text"
+                          placeholder="e.g. BR001"
+                          required
+                          fullWidth
+                          value={branch.branchid}
+                          onChange={(e) =>
+                            handleInputChange(index, "branchid", e.target.value)
+                          }
+                        />
+                      </Grid>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomLabel htmlFor={`branchid-${branch.id}`}>
-                      Branch Id <span style={{ color: "red" }}>*</span>
-                    </CustomLabel>
-                    <CustomTextField
-                      id={`branchid-${branch.id}`}
-                      name={`branchid-${branch.id}`}
-                      type="text"
-                      placeholder="e.g. BR001"
-                      required
-                      fullWidth
-                      sx={{ marginTop: 1 }}
-                      value={branch.branchid}
-                      onChange={(e) =>
-                        handleInputChange(index, "branchid", e.target.value)
-                      }
-                    />
-                  </Grid>
+                ))}
+                <Grid item xs={12} sx={{ marginTop: 3 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAddBranch}
+                    disabled={
+                      !branches[branches.length - 1].branchname ||
+                      !branches[branches.length - 1].branchid
+                    }
+                  >
+                    Add Branch
+                  </Button>
                 </Grid>
-              </Grid>
-            </Grid>
-          ))}
-          <Grid item sx={{ marginTop: 3 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddBranch}
-              disabled={!branches[branches.length - 1].branchname || !branches[branches.length - 1].branchid}
-            >
-              Add Branch
-            </Button>
-          </Grid>
-        </>
-      )}
+              </>
+            )}
+
             <Grid
               item
               sx={{
@@ -432,8 +398,7 @@ const CreateCompanyLayout = ({ onCompanyList }) => {
               </Button>
             </Grid>
           </CardContent>
-         
-        </Card>
+        </CustomCard>
       </Grid>
     </Grid>
   );

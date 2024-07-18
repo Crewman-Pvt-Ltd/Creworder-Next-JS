@@ -4,6 +4,7 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PeopleIcon from "@mui/icons-material/People";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import CustomCard from "./CustomCard";
 
 const data = [
   {
@@ -17,7 +18,7 @@ const data = [
 const Tile = (props) => {
   return (
   
-        <Card
+        <CustomCard
           sx={{
             boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.05)",
             borderRadius: 1,
@@ -72,7 +73,7 @@ const Tile = (props) => {
               </Box>
             </Box>
           </CardContent>
-        </Card>
+        </CustomCard>
   
   );
 };
