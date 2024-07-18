@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navitem from './Navitem';
 import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -7,10 +7,6 @@ import PackageIcon from '@mui/icons-material/LocalOffer';
 import CompanyIcon from '@mui/icons-material/Business';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import SettingsIcon from '@mui/icons-material/Settings';
-import TicketIcon from '@mui/icons-material/ConfirmationNumber';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
@@ -24,10 +20,54 @@ const financeItems = [
   { name: 'Invoices', icon: <SupportAgentIcon /> }
 ];
 
+const HoverableNavItem = ({ isOpen, name, icon, children, onClick }) => {
+  const [hovered, setHovered] = useState(false);
+  const [hoveredItemPosition, setHoveredItemPosition] = useState({ top: 0 });
+
+  const handleMouseEnter = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setHovered(true);
+    setHoveredItemPosition({ top: rect.top });
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+  };
+
+  return (
+    <Box
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+    >
+      <Navitem name={isOpen ? name : ''} icon={icon}>
+        {children}
+      </Navitem>
+      {!isOpen && hovered && (
+        <Box
+          sx={{
+            position: 'fixed',
+            left: '70px',
+            top: hoveredItemPosition.top + 'px',
+            backgroundColor: '#fff',
+            color: '#405189',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
+            zIndex: 1,
+          }}
+        >
+          <Typography variant="body2">{name}</Typography>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
 const Sidebar = ({ isOpen }) => {
   const router = useRouter();
-  const theme = useTheme();  // Get the theme object
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));  // Check if screen size is mobile or smaller
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleItemClick = (path) => {
     if (path) {
@@ -38,14 +78,15 @@ const Sidebar = ({ isOpen }) => {
   return (
     <Box
       sx={{
-        width: isOpen ? 253 : 60,
+        width: isOpen ? 220 : 70,
         backgroundColor: '#405189',
         padding: 2,
         boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
-        height: '100vh',
+        // height: '100vh',
         display: 'flex',
         borderRadius :'20px',
         margin:'10px 10px',
+        marginBottom:"20px",
         flexDirection: 'column',
         overflowY: 'auto',
         color: 'white',
@@ -81,7 +122,7 @@ const Sidebar = ({ isOpen }) => {
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              marginTop: 1,  // Added margin-top to separate the icon from the logo
+              marginTop: 1, 
             }}
           >
             <Image
@@ -95,259 +136,49 @@ const Sidebar = ({ isOpen }) => {
       </Box>
       
       <Box
-      sx={{
-        overflowY: 'auto',  
-        scrollbarWidth: 'none',  
-        '&::-webkit-scrollbar': {
-          display: 'none',  
-        },
-      }}
-      
+        sx={{
+          overflowY: 'auto',  
+          scrollbarWidth: 'none',  
+          '&::-webkit-scrollbar': {
+            display: 'none',  
+          },
+        }}
       >
-        <Navitem
-          name={isOpen ? 'Dashboard' : ''}
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Dashboard"
           icon={<DashboardIcon />}
           onClick={() => handleItemClick('/dashboard')}
         />
-        <Navitem
-          name={isOpen ? 'Package' : ''}
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Package"
           icon={<PackageIcon />}
           onClick={() => handleItemClick('/superadmin/package')}
         />
-        <Navitem
-          name={isOpen ? 'Company' : ''}
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Company"
           icon={<CompanyIcon />}
           onClick={() => handleItemClick('/superadmin/company')}
         />
-        <Navitem
-          name={isOpen ? 'Super Admin' : ''}
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Super Admin"
           icon={<SupervisedUserCircleIcon />}
-        >
-          {workItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
-        <Navitem
-          name={isOpen ? 'Support Ticket' : ''}
+          onClick={() => handleItemClick('/superadmin/employees')}
+        />
+        
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Support Ticket"
           icon={<SupportAgentIcon />}
+          onClick={() => handleItemClick('/superadmin/supportticket')}
         >
-          {financeItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
-        <Navitem
-          name={isOpen ? 'Dashboard' : ''}
-          icon={<DashboardIcon />}
-          onClick={() => handleItemClick('/dashboard')}
-        />
-        <Navitem
-          name={isOpen ? 'Package' : ''}
-          icon={<PackageIcon />}
-          onClick={() => handleItemClick('/superadmin/package')}
-        />
-        <Navitem
-          name={isOpen ? 'Company' : ''}
-          icon={<CompanyIcon />}
-          onClick={() => handleItemClick('/superadmin/company')}
-        />
-        <Navitem
-          name={isOpen ? 'Super Admin' : ''}
-          icon={<SupervisedUserCircleIcon />}
-        >
-          {workItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
-        <Navitem
-          name={isOpen ? 'Support Ticket' : ''}
-          icon={<SupportAgentIcon />}
-        >
-          {financeItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
-        <Navitem
-          name={isOpen ? 'Dashboard' : ''}
-          icon={<DashboardIcon />}
-          onClick={() => handleItemClick('/dashboard')}
-        />
-        <Navitem
-          name={isOpen ? 'Package' : ''}
-          icon={<PackageIcon />}
-          onClick={() => handleItemClick('/superadmin/package')}
-        />
-        <Navitem
-          name={isOpen ? 'Company' : ''}
-          icon={<CompanyIcon />}
-          onClick={() => handleItemClick('/superadmin/company')}
-        />
-        <Navitem
-          name={isOpen ? 'Super Admin' : ''}
-          icon={<SupervisedUserCircleIcon />}
-        >
-          {workItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
-        <Navitem
-          name={isOpen ? 'Support Ticket' : ''}
-          icon={<SupportAgentIcon />}
-        >
-          {financeItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
-        <Navitem
-          name={isOpen ? 'Dashboard' : ''}
-          icon={<DashboardIcon />}
-          onClick={() => handleItemClick('/dashboard')}
-        />
-        <Navitem
-          name={isOpen ? 'Package' : ''}
-          icon={<PackageIcon />}
-          onClick={() => handleItemClick('/superadmin/package')}
-        />
-        <Navitem
-          name={isOpen ? 'Company' : ''}
-          icon={<CompanyIcon />}
-          onClick={() => handleItemClick('/superadmin/company')}
-        />
-        <Navitem
-          name={isOpen ? 'Super Admin' : ''}
-          icon={<SupervisedUserCircleIcon />}
-        >
-          {workItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
-        <Navitem
-          name={isOpen ? 'Support Ticket' : ''}
-          icon={<SupportAgentIcon />}
-        >
-          {financeItems.map((item, index) => (
-            <Box
-              key={index}
-              sx={{
-                padding: 1,
-                marginLeft: 2,
-                borderRadius: 1,
-                display: 'flex',
-                alignItems: 'center',
-                "&:hover": {
-                  backgroundColor: '#e0e0e0',
-                },
-              }}
-            >
-              {item.icon}
-              <Typography sx={{ marginLeft: 1 }}>{item.name}</Typography>
-            </Box>
-          ))}
-        </Navitem>
+         
+        </HoverableNavItem>
+        
+        {/* Additional HoverableNavItems... */}
       </Box>
     </Box>
   );

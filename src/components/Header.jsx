@@ -10,7 +10,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Image from "next/image";
 import creworderIcon from "../images/crewordericon.png"; 
-import ProfileHeader from "./profileHeader";
+import ProfileHeader from "./ProfileHeader";
 import SearchBar from "./SearchBar";
 import { logout } from "@/utils/auth";
 import { useRouter } from "next/router";
@@ -44,7 +44,8 @@ const Header = ({ onMenuClick }) => {
         backgroundColor: "white",
         position: "sticky",
         top: 0,
-        boxShadow: "0 1.6rem 3rem #0000000f",
+        boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+
         zIndex: "100",
         display: "flex",
         marginTop:"10px",
@@ -75,6 +76,7 @@ const Header = ({ onMenuClick }) => {
           <IconButton color="black" onClick={onMenuClick} sx={{ marginRight: 2 }}>
             <MenuIcon />
           </IconButton>
+          
           <SearchBar />
         </Grid>
 
@@ -90,7 +92,7 @@ const Header = ({ onMenuClick }) => {
             }}
             onClick={handleMenuOpen}
           >
-            <ProfileHeader />
+          <ProfileHeader />
           </Box>
 
           <Menu
