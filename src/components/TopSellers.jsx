@@ -9,6 +9,7 @@ import {
   FormControl,
   Divider,
 } from "@mui/material";
+import CustomCard from "./CustomCard";
 
 const TopSellers = () => {
   const [filter, setFilter] = useState("Report");
@@ -72,7 +73,7 @@ const TopSellers = () => {
   ];
 
   return (
-    <Card>
+    <CustomCard>
       <CardContent>
         <Box
           sx={{
@@ -176,7 +177,7 @@ const TopSellers = () => {
           </React.Fragment>
         ))}
       </CardContent>
-    </Card>
+    </CustomCard>
   );
 };
 

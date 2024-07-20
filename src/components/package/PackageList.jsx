@@ -73,25 +73,53 @@ const PackageList = ({ onCreatePackage }) => {
   return (
     <Grid container sx={{ padding: 3 }}>
     <Grid item xs={12}>
-      <Button
-        onClick={onCreatePackage}
-        sx={{
-          padding: "8px 16px",
-          fontSize: "14px",
-          backgroundColor: "#405189",
-          color: "white",
-          "&:hover": {
-            backgroundColor: "#334a6c",
-          },
-          marginLeft: '20px',
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-        }}
-      >
-        <AddIcon sx={{ fontSize: 15 }} />
-        Add Package
-      </Button>
+    <Grid container sx={{ marginBottom: "10px" }}>
+          <Grid item xs={12}>
+            <CustomCard padding="13px">
+              <Grid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid item>
+                  <Typography
+                    sx={{
+                      fontWeight: "600",
+                      fontSize: "20px",
+                      whiteSpace: "nowrap",
+                      textTransform: "capitalize",
+                      color: "black",
+                      marginLeft: "30px",
+                    }}
+                  >
+                    Package List
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Button
+                    onClick={onCreatePackage}
+                    sx={{
+                      padding: "8px",
+                      fontSize: "14px",
+                      backgroundColor: "#405189",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#334a6c",
+                      },
+                      borderRadius: "30px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <AddIcon sx={{ fontSize: 15 }} />
+                    Add Package
+                  </Button>
+                </Grid>
+              </Grid>
+            </CustomCard>
+          </Grid>
+        </Grid>
   
       <CustomCard sx={{ marginTop: 3 }}>
         <CardContent>

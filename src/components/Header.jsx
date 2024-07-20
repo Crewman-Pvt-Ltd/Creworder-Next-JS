@@ -45,12 +45,11 @@ const Header = ({ onMenuClick }) => {
         backgroundColor: "white",
         position: "sticky",
         top: 0,
-        boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-
+        boxShadow: "0 1px 2px rgba(56, 65, 74, 0.15)",
         zIndex: "100",
         display: "flex",
-        marginTop:"10px",
-        borderRadius: '15px',
+        // marginTop:"10px",
+        // borderRadius: '15px',
         flexDirection: "column",
       }}
     >
@@ -59,7 +58,7 @@ const Header = ({ onMenuClick }) => {
         spacing={2}
         sx={{
           padding: 1,
-          // borderBottom: "1px solid #ddd",
+          
         }}
       >
      

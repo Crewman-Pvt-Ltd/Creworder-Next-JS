@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Typography, Collapse } from '@mui/material';
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  weight: "300",
+  subsets: ['latin']
+});
+
 
 const Navitem = ({ name, children, icon, onClick }) => {
   const [open, setOpen] = useState(false);
