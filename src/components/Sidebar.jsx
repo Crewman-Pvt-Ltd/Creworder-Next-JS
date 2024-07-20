@@ -11,14 +11,6 @@ import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
 
-const workItems = [
-  { name: 'Contracts', icon: <SupervisedUserCircleIcon /> },
-  { name: 'Projects', icon: <SupervisedUserCircleIcon /> }
-];
-const financeItems = [
-  { name: 'Proposal', icon: <SupportAgentIcon /> },
-  { name: 'Invoices', icon: <SupportAgentIcon /> }
-];
 
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick }) => {
   const [hovered, setHovered] = useState(false);
@@ -51,7 +43,7 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick }) => {
             top: hoveredItemPosition.top + 'px',
             backgroundColor: '#fff',
             color: '#405189',
-            padding: '8px 16px',
+            padding: '8px 7px',
             borderRadius: '4px',
             boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
             zIndex: 1,
@@ -67,18 +59,16 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick }) => {
 const Sidebar = ({ isOpen }) => {
   const router = useRouter();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Update to `xs` for mobile only
+
+  if (isMobile) {
+    return null; // Hide sidebar on mobile view
+  }
 
   const handleItemClick = (path) => {
     if (path) {
       router.push(path);
     }
-  };
-  const logoStyle = {
-    margin: '10px',
-    width: '200px',
-    height: 'auto',
-    cursor: 'pointer',
   };
 
   return (
@@ -88,15 +78,11 @@ const Sidebar = ({ isOpen }) => {
         backgroundColor: '#405189',
         padding: 2,
         boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
-        // height: '100vh',
         display: 'flex',
-        borderRadius :'20px',
-        margin:'10px 10px',
-        marginBottom:"20px",
         flexDirection: 'column',
         overflowY: 'auto',
         color: 'white',
-        transition: 'width 0.3s ease',
+        transition: 'width 0.2s ease',
         "&::-webkit-scrollbar": {
           width: '6px',
         },
@@ -128,7 +114,7 @@ const Sidebar = ({ isOpen }) => {
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              marginTop: 1, 
+              marginTop: 1,
             }}
           >
             <Image
@@ -143,10 +129,10 @@ const Sidebar = ({ isOpen }) => {
       
       <Box
         sx={{
-          overflowY: 'auto',  
-          scrollbarWidth: 'none',  
+          overflowY: 'auto',
+          scrollbarWidth: 'none',
           '&::-webkit-scrollbar': {
-            display: 'none',  
+            display: 'none',
           },
         }}
       >
@@ -170,7 +156,7 @@ const Sidebar = ({ isOpen }) => {
         />
         <HoverableNavItem
           isOpen={isOpen}
-          name="Super Admin"
+          name="Employee"
           icon={<SupervisedUserCircleIcon />}
           onClick={() => handleItemClick('/superadmin/employees')}
         />
@@ -183,8 +169,7 @@ const Sidebar = ({ isOpen }) => {
         >
          
         </HoverableNavItem>
-        
-        {/* Additional HoverableNavItems... */}
+     
       </Box>
     </Box>
   );

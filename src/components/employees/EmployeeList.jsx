@@ -35,7 +35,7 @@ const initialData = [
   },
 ];
 
-const EmployeeList = ({ onCreateTicket }) => {
+const EmployeeList = ({ onCreateEmployee }) => {
   const [data, setData] = useState(initialData);
 
   const handleEdit = (id) => {
@@ -73,102 +73,108 @@ const EmployeeList = ({ onCreateTicket }) => {
   );
 
   return (
-    <>
-      <CustomCard>
-        <Grid container alignItems="center" sx={{ padding: "10px" }}>
-          <Grid item>
-            <Typography
-              sx={{
-                fontWeight: "600",
-                fontSize: "1rem",
-                whiteSpace: "nowrap",
-                textTransform: "capitalize",
-                color: "black",
-                marginLeft: "30px",
-              }}
-            >
-              Employee List
-            </Typography>
-          </Grid>
-          <Box sx={{ flexGrow: 1 }} />
-          <Grid item>
-            <Button
-              onClick={onCreateTicket}
-              sx={{
-                padding: "8px",
-                fontSize: "14px",
-                backgroundColor: "#405189",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#334a6c",
-                },
-                borderRadius: "30px",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                marginRight: "30px",
-              }}
-            >
-              <AddIcon sx={{ fontSize: 15 }} />
-              Create Employee
-            </Button>
+    <Grid container sx={{ padding: 3 }}>
+      <Grid item xs={12}>
+        <Grid container sx={{ marginBottom: "10px" }}>
+          <Grid item xs={12}>
+            <CustomCard padding="13px">
+              <Grid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid item>
+                  <Typography
+                    sx={{
+                      fontWeight: "600",
+                      fontSize: "20px",
+                      whiteSpace: "nowrap",
+                      textTransform: "capitalize",
+                      color: "black",
+                      marginLeft: "30px",
+                    }}
+                  >
+                    Employee List
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Button
+                    onClick={onCreateEmployee}
+                    sx={{
+                      padding: "8px",
+                      fontSize: "14px",
+                      backgroundColor: "#405189",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#334a6c",
+                      },
+                      borderRadius: "30px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <AddIcon sx={{ fontSize: 15 }} />
+                    Add Employee
+                  </Button>
+                </Grid>
+              </Grid>
+            </CustomCard>
           </Grid>
         </Grid>
-      </CustomCard>
-      <Grid container sx={{ marginTop: "20px" }}>
-        <Grid item xs={12}>
-          <CustomCard>
-            <CardContent>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <HeaderCell>ID</HeaderCell>
-                      <HeaderCell>Name</HeaderCell>
-                      <HeaderCell>Email</HeaderCell>
-                      <HeaderCell>Profile Image</HeaderCell>
-                      <HeaderCell>Action</HeaderCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.map((row, index) => (
-                      <TableRow key={row.id}>
-                        <DataCell>{index + 1}</DataCell>
-                        <DataCell>{row.name}</DataCell>
-                        <DataCell>{row.email}</DataCell>
-                        <DataCell>
-                          <img
-                            src={row.profileimage}
-                            alt={row.name}
-                            style={{ width: 80, borderRadius: "50%" }}
-                          />
-                        </DataCell>
-                        <TableCell>
-                          <IconButton
-                            onClick={() => handleEdit(row.id)}
-                            aria-label="edit"
-                            sx={{ color: "green" }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleDelete(row.id)}
-                            aria-label="delete"
-                            sx={{ color: "red" }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
+       
+            <CustomCard>
+              <CardContent>
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <HeaderCell>ID</HeaderCell>
+                        <HeaderCell>Name</HeaderCell>
+                        <HeaderCell>Email</HeaderCell>
+                        <HeaderCell>Profile Image</HeaderCell>
+                        <HeaderCell>Action</HeaderCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </CustomCard>
+                    </TableHead>
+                    <TableBody>
+                      {data.map((row, index) => (
+                        <TableRow key={row.id}>
+                          <DataCell>{index + 1}</DataCell>
+                          <DataCell>{row.name}</DataCell>
+                          <DataCell>{row.email}</DataCell>
+                          <DataCell>
+                            <img
+                              src={row.profileimage}
+                              alt={row.name}
+                              style={{ width: 80, borderRadius: "50%" }}
+                            />
+                          </DataCell>
+                          <TableCell>
+                            <IconButton
+                              onClick={() => handleEdit(row.id)}
+                              aria-label="edit"
+                              sx={{ color: "green" }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => handleDelete(row.id)}
+                              aria-label="delete"
+                              sx={{ color: "red" }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </CustomCard>
+          </Grid>
         </Grid>
-      </Grid>
-    </>
+     
   );
 };
 

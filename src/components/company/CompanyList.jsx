@@ -1,14 +1,13 @@
 import React from "react";
-import { useRouter } from "next/router";
+import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
+
 import {
   Grid,
-  Card,
   CardContent,
   Divider,
   Typography,
   Button,
   TableContainer,
-  Paper,
   Table,
   TableHead,
   TableRow,
@@ -25,31 +24,9 @@ import {
   CheckCircle,
   Cancel,
 } from "@mui/icons-material";
-const data = [
-  {
-    id: 1,
-    companyName: "Company A",
-    package: "Gold Plan (Monthly)",
-    registerDate: "15 Jun, 2024",
-    employees: "5/200",
-    totalUsers: "10",
-    lastActivity: "2024-07-10",
-    date: "2024-07-01",
-    status: "active",
-  },
-  {
-    id: 2,
-    companyName: "Company B",
-    package: "Gold Plan (yearly)",
-    registerDate: "05 Jun, 2024",
-    employees: "1/100",
-    totalUsers: "1",
-    lastActivity: "2024-07-09",
-    date: "2024-06-30",
-    status: "suspended",
-  },
-];
+
 const CompanyList = ({ onCreateCompany }) => {
+  const { data } = useGetAllCompanies();
   const handleView = (id) => {
     console.log("View", id);
   };
@@ -75,11 +52,11 @@ const CompanyList = ({ onCreateCompany }) => {
   const HeaderCell = (props) => (
     <TableCell
       sx={{
-        fontSize: "1rem",
+       fontSize: "0.8rem",
         whiteSpace: "nowrap",
         fontWeight: "500",
         textTransform: "capitalize",
-        color: "black",
+        color: "gray",
       }}
       {...props}
     />
@@ -103,7 +80,7 @@ const CompanyList = ({ onCreateCompany }) => {
       <Grid item xs={12}>
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
-            <CustomCard>
+            <CustomCard padding="13px">
               <Grid
                 container
                 justifyContent="space-between"
@@ -113,7 +90,7 @@ const CompanyList = ({ onCreateCompany }) => {
                   <Typography
                     sx={{
                       fontWeight: "600",
-                      fontSize: "rem",
+                      fontSize: "20px",
                       whiteSpace: "nowrap",
                       textTransform: "capitalize",
                       color: "black",
@@ -166,10 +143,10 @@ const CompanyList = ({ onCreateCompany }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map((row) => (
+                  {data?.map((row, index) =>(
                     <TableRow key={row.id}>
-                      <DataCell>{row.id}</DataCell>
-                      <DataCell>{row.companyName}</DataCell>
+                      <DataCell>{index+1}</DataCell>
+                      <DataCell>{row.name}</DataCell>
                       <DataCell>{row.package}</DataCell>
                       <DataCell>
                         <Typography

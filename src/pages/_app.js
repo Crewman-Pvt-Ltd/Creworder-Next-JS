@@ -1,6 +1,7 @@
 import { PermissionsProvider } from "@/contexts/PermissionsContext";
 import "@/styles/globals.css";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Poppins } from "next/font/google";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -10,16 +11,31 @@ const queryClient = new QueryClient({
     },
   },
 });
-export default function App({ Component, pageProps }) {
 
+const poppins = Poppins({
+  weight: "300",
+  subsets: ["latin"],
+});
+
+export default function App({ Component, pageProps }) {
   const queryClient = new QueryClient();
 
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <PermissionsProvider>
-        <Component {...pageProps} />
-      </PermissionsProvider>
-    </QueryClientProvider>
+    <>
+    <style jsx global>
+      {`
+      html {
+        font-family: ${poppins.style.fontFamily}
+      }
+      `}
+    </style>
+      <QueryClientProvider client={queryClient}>
+        <PermissionsProvider>
+          <main className={poppins.className}>
+            <Component {...pageProps} />
+          </main>
+        </PermissionsProvider>
+      </QueryClientProvider>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import { Box, Card, Typography, Button, ButtonGroup } from '@mui/material';
+import { Box, Typography, Button, ButtonGroup, Grid } from '@mui/material';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,7 +23,9 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
 import CustomCard from './CustomCard';
+
 const chartData = {
   labels: [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
@@ -64,7 +66,6 @@ const chartOptions = {
   },
 };
 
-
 const typodata = [
   { value: '7,585', label: 'Orders' },
   { value: '$22.89k', label: 'Earnings' },
@@ -75,28 +76,27 @@ const typodata = [
 const Chartone = () => {
   return (
     <CustomCard>
-      <Box sx={{ padding: 3 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-         <Typography sx={{ fontSize: '16px', fontWeight: 600, color: "#495057" }}>
-  Orders
-</Typography>
+      <Box sx={{ padding: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={8} md={9}>
+            <Typography sx={{ fontSize: { xs: '14px', sm: '16px' }, fontWeight: 600, color: "#495057" }}>
+              Orders
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={4} md={3} container justifyContent="flex-end">
+            <ButtonGroup size="small" sx={{ backgroundColor: '#e1ebfd' }}>
+              <Button>ALL</Button>
+              <Button>1M</Button>
+              <Button>6M</Button>
+              <Button>1Y</Button>
+            </ButtonGroup>
+          </Grid>
+        </Grid>
 
-          <ButtonGroup size="small" sx={{ backgroundColor: '#e1ebfd' }}>
-            <Button>ALL</Button>
-            <Button>1M</Button>
-            <Button>6M</Button>
-            <Button>1Y</Button>
-          </ButtonGroup>
-        </Box>
         <Box
           sx={{
             display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
             gap: 2,
             marginTop: 2,
             backgroundColor: '#f9fbfc',
@@ -104,19 +104,21 @@ const Chartone = () => {
           }}
         >
           {typodata.map((item, index) => (
-            <Box key={index} sx={{  flex: 1,
-                display: 'flex',         
-                flexDirection: 'column',    
-                alignItems: 'center',     
-              
-             }}>
-              <Typography sx={{ color: '#4a4a4a', fontWeight: "600",fontSize: "17px"  }}>{item.value}</Typography>
-              <Typography sx={{ color: 'gray', fontSize: "14px" }}>{item.label}</Typography>
+            <Box key={index} sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography sx={{ color: '#4a4a4a', fontWeight: 600, fontSize: { xs: '14px', sm: '17px' } }}>
+                {item.value}
+              </Typography>
+              <Typography sx={{ color: 'gray', fontSize: { xs: '12px', sm: '14px' } }}>
+                {item.label}
+              </Typography>
             </Box>
           ))}
         </Box>
+
         <Box sx={{ marginTop: 3 }}>
-          <Line data={chartData} options={chartOptions} />
+          <Box sx={{ width: '100%', height: { xs: '300px', sm: '350px', md: '400px' } }}>
+            <Line data={chartData} options={chartOptions} />
+          </Box>
         </Box>
       </Box>
     </CustomCard>

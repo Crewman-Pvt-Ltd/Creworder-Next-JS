@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Card, Typography, CardContent, MenuItem, Select, FormControl, Divider } from '@mui/material';
+import CustomCard from './CustomCard';
 
 const BestSellingProducts = () => {
   const [filter, setFilter] = useState('Today');
@@ -58,7 +59,7 @@ const BestSellingProducts = () => {
   ];
 
   return (
-    <Card>
+    <CustomCard>
       <CardContent>
         <Box sx={{
           display: 'flex',
@@ -153,7 +154,7 @@ const BestSellingProducts = () => {
           </React.Fragment>
         ))}
       </CardContent>
-    </Card>
+    </CustomCard>
   );
 }
 

@@ -8,12 +8,11 @@ import {
   Typography,
   Button,
   Grid,
-  Card,
+
   TextField,
   CardContent,
   Divider,
-  Checkbox,
-  FormControlLabel,
+
 } from "@mui/material";
 
 const handleFileChange = (event) => {
@@ -28,35 +27,10 @@ const handleFileChange = (event) => {
 };
 
 const SupportTicketCreate = ({ onTicketList }) => {
-  const [showDetails, setShowDetails] = useState(false);
-  const [branches, setBranches] = useState([
-    { id: 1, branchname: "", branchid: "" },
-  ]);
+ 
 
-  const handleCheckboxChange = (event) => {
-    setShowDetails(event.target.checked);
-  };
 
-  const handleAddBranch = () => {
-    const lastBranch = branches[branches.length - 1];
-    if (lastBranch.branchname && lastBranch.branchid) {
-      setBranches([
-        ...branches,
-        { id: branches.length + 1, branchname: "", branchid: "" },
-      ]);
-    } else {
-      alert(
-        "Please fill in the details for the current branch before adding a new one."
-      );
-    }
-  };
 
-  const handleInputChange = (index, field, value) => {
-    const newBranches = branches.map((branch, i) =>
-      i === index ? { ...branch, [field]: value } : branch
-    );
-    setBranches(newBranches);
-  };
 
   return (
     <Grid container sx={{ padding: 3 }}>

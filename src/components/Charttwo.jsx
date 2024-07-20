@@ -1,6 +1,7 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Box, Card, Typography, Button, ButtonGroup } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import CustomCard from "./CustomCard";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -77,12 +78,17 @@ const chartOptions = {
 
 const Charttwo = () => {
   return (
-    
-    <Card>
-      <Box sx={{ padding: 3 , height : 572}}>
-      <Bar data={chartData} options={chartOptions} />
-    </Box>
-    </Card>
+    <CustomCard>
+      <Box
+        sx={{
+          padding: 2,
+          height: { xs: '300px', sm: '600px', md: '580px' },
+          overflow: 'hidden',
+        }}
+      >
+        <Bar data={chartData} options={chartOptions} />
+      </Box>
+    </CustomCard>
   );
 };
 

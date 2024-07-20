@@ -1,32 +1,22 @@
 import React from "react";
-import {
-  Box,
-  Grid,
-  Card,
-  Typography,
-  Button,
-  ButtonGroup,
-  CardContent,
-} from "@mui/material";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PeopleIcon from "@mui/icons-material/People";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import { Grid, Typography } from "@mui/material";
+
 import Tile from "../Tile";
 import Chartone from "../Chartone";
 import Charttwo from "../Charttwo";
 import BestSellingProducts from "../BestSellingProducts";
 import TopSellers from "../TopSellers";
+import StoresVisitBySource from "../StoresVisitBySource";
+import RecentOrders from "../RecentOrders";
+import CalendarFilter from "../CalendarFilter";
 
 const SuperAdminDashboard = () => {
   return (
     <Grid
       container
-      sx={{
-        flexDirection: "column",
-        flexGrow: 1,
-        padding: 3,
-      }}
+      direction="column"
+      spacing={3}
+      sx={{ padding: 3 }}
     >
       <Grid item>
         <Typography
@@ -49,26 +39,55 @@ const SuperAdminDashboard = () => {
           Here's what's happening with your store today.
         </Typography>
       </Grid>
-   <Tile />
-   <Box sx={{ display: "flex", gap: 2, marginTop: 4 }}>
-  <Box sx={{ flex: 8 }}>
-    <Chartone />
-  </Box>
-  
-  <Box sx={{ flex: 4 }}>
-    <Charttwo />
-  </Box>
-</Box>
 
-      <Box sx={{ display: "flex", gap: 2, marginTop: 4 }}>
-        <Box sx={{ flex: 1 }}>
-          <BestSellingProducts />
-        </Box>
+      <Grid item>
+        <Grid container spacing={2}>
+          {[...Array(4)].map((_, index) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={3}
+              key={index}
+            >
+              <Tile />
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>
 
-        <Box sx={{ flex: 1 }}>
-        <TopSellers />
-        </Box>
-      </Box>
+      <Grid item>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={8}>
+            <Chartone />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Charttwo />
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <Grid item>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4} sm={12}>
+            <StoresVisitBySource />
+          </Grid>
+          <Grid item xs={12} md={8} sm={12}>
+            <RecentOrders />
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <Grid item>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <BestSellingProducts />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TopSellers />
+          </Grid>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };

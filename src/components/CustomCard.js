@@ -4,22 +4,20 @@ import { Card } from '@mui/material';
 import { styled } from '@mui/system';
 
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(({ theme, mb_padding }) => ({
 
   borderRadius: theme.shape.borderRadius,
-
   backgroundColor: '#fff',
-
-  borderRadius: '20px',
-  
-  boxShadow: "rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px",
+  padding: mb_padding,
+  borderRadius: '5px',
+  boxShadow: "0 1px 2px rgba(56, 65, 74, 0.15)",
  '&:hover': {
    
   },
 }));
 
-const CustomCard = ({ children }) => {
-  return <StyledCard>{children}</StyledCard>;
+const CustomCard = ({ children, padding }) => {
+  return <StyledCard mb_padding={padding}>{children}</StyledCard>;
 };
 
 export default CustomCard;
