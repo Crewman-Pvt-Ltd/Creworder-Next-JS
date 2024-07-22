@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CustomCard from "../CustomCard";
+import { useRouter } from "next/router";
 import {
   Grid,
   Typography,
@@ -21,25 +22,30 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const initialData = [
   {
     id: 1,
-    name: "Admin 1",
+    name: "Rahul Sir",
     email: "admin1@gmail.com",
     profileimage:
-      "https://www.themesbrand.com/velzon/html/master/assets/images/users/avatar-1.jpg",
+      "https://crewconect.com/public/user-uploads/avatar/36b9daf7aea7d35fd6aca8a881ebe8c8.png",
   },
   {
     id: 2,
     name: "Admin 2",
     email: "admin2@gmail.com",
     profileimage:
-      "https://www.themesbrand.com/velzon/html/master/assets/images/users/avatar-2.jpg",
+      "https://crewconect.com/public/user-uploads/avatar/36b9daf7aea7d35fd6aca8a881ebe8c8.png",
   },
 ];
 
-const EmployeeList = ({ onCreateEmployee }) => {
+const EmployeeList = () => {
   const [data, setData] = useState(initialData);
+const router = useRouter();
 
-  const handleEdit = (id) => {
-    console.log("Edit", id);
+  const handleEdit = () => {
+    router.push("/superadmin/employees/editemployee");
+  };
+
+  const handleCreatePackage = () => {
+    router.push("/superadmin/employees/createemployee");
   };
 
   const handleDelete = (id) => {
@@ -99,7 +105,7 @@ const EmployeeList = ({ onCreateEmployee }) => {
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={onCreateEmployee}
+                    onClick={handleCreatePackage}
                     sx={{
                       padding: "8px",
                       fontSize: "14px",
@@ -146,12 +152,12 @@ const EmployeeList = ({ onCreateEmployee }) => {
                             <img
                               src={row.profileimage}
                               alt={row.name}
-                              style={{ width: 80, borderRadius: "50%" }}
+                              style={{ width: 70, borderRadius:"10px" }}
                             />
                           </DataCell>
                           <TableCell>
                             <IconButton
-                              onClick={() => handleEdit(row.id)}
+                              onClick={() => handleEdit(row)}
                               aria-label="edit"
                               sx={{ color: "green" }}
                             >

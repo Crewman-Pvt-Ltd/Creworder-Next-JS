@@ -29,6 +29,7 @@ const Header = ({ onMenuClick }) => {
   };
 
   const handleProfileClick = () => {
+    router.push("/profile");
     handleMenuClose();
   };
 
@@ -38,7 +39,6 @@ const Header = ({ onMenuClick }) => {
     handleMenuClose();
   };
 
- 
   return (
     <Box
       sx={{
@@ -48,8 +48,6 @@ const Header = ({ onMenuClick }) => {
         boxShadow: "0 1px 2px rgba(56, 65, 74, 0.15)",
         zIndex: "100",
         display: "flex",
-        // marginTop:"10px",
-        // borderRadius: '15px',
         flexDirection: "column",
       }}
     >
@@ -58,10 +56,8 @@ const Header = ({ onMenuClick }) => {
         spacing={2}
         sx={{
           padding: 1,
-          
         }}
       >
-     
         <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
           {isMobile && (
             <Image
@@ -72,15 +68,11 @@ const Header = ({ onMenuClick }) => {
               sx={{ marginRight: 2 }}
             />
           )}
-      
           <IconButton color="black" onClick={onMenuClick} sx={{ marginRight: 2 }}>
             <MenuIcon />
           </IconButton>
-          
           <SearchBar />
         </Grid>
-
-       
         <Grid item xs={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
           <Box
             sx={{
@@ -88,13 +80,12 @@ const Header = ({ onMenuClick }) => {
               alignItems: "center",
               color: "black",
               cursor: "pointer",
-              marginRight : '30px',
+              marginRight: '30px',
             }}
             onClick={handleMenuOpen}
           >
-          <ProfileHeader />
+            <ProfileHeader />
           </Box>
-
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}

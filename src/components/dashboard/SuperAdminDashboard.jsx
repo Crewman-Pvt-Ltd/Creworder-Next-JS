@@ -8,22 +8,26 @@ import BestSellingProducts from "../BestSellingProducts";
 import TopSellers from "../TopSellers";
 import StoresVisitBySource from "../StoresVisitBySource";
 import RecentOrders from "../RecentOrders";
-import CalendarFilter from "../CalendarFilter";
+
 
 const SuperAdminDashboard = () => {
+  const tilesTypes = ["totalCompanies", "activeCompanies", "suspendedCompanies", "totalPackages"];
   return (
     <Grid
       container
       direction="column"
       spacing={3}
-      sx={{ padding: 3 }}
+    sx={{
+     padding: 2,
+    }}
     >
       <Grid item>
         <Typography
           sx={{
-            fontSize: "18px",
-            fontWeight: "bold",
+            fontSize: "16px",
+            fontWeight: "600",
             margin: 0,
+            color:"#495057",
           }}
         >
           Welcome..., Superadmin!
@@ -41,19 +45,13 @@ const SuperAdminDashboard = () => {
       </Grid>
 
       <Grid item>
-        <Grid container spacing={2}>
-          {[...Array(4)].map((_, index) => (
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              md={3}
-              key={index}
-            >
-              <Tile />
-            </Grid>
-          ))}
+      <Grid container spacing={2}>
+      {tilesTypes.map((type, index) => (
+        <Grid item xs={12} sm={6} md={3} key={index}>
+          <Tile type={type} />
         </Grid>
+      ))}
+    </Grid>
       </Grid>
 
       <Grid item>

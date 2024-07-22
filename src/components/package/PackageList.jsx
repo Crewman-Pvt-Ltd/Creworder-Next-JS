@@ -3,13 +3,11 @@ import { useRouter } from "next/router";
 import CustomCard from "../CustomCard";
 import {
   Grid,
-  Card,
   CardContent,
   Divider,
   Typography,
   Button,
   TableContainer,
-  Paper,
   Table,
   TableHead,
   TableRow,
@@ -19,27 +17,28 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {
-  Visibility,
+
   Edit,
-  Delete,
-  CheckCircle,
-  Cancel,
+ 
 } from "@mui/icons-material";
 import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
 
 
-const PackageList = ({ onCreatePackage }) => {
+const PackageList = () => {
 
 
   const { data } = useGetAllPackages();
 
 
-  const handleView = (id) => {
-    console.log("View", id);
+
+  const router = useRouter();
+
+  const handleEdit = () => {
+    router.push("/superadmin/package/editpackage");
   };
 
-  const handleEdit = (id) => {
-    console.log("Edit", id);
+  const handleCreatePackage = () => {
+    router.push("/superadmin/package/createpackage");
   };
 
  
@@ -97,7 +96,7 @@ const PackageList = ({ onCreatePackage }) => {
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={onCreatePackage}
+                    onClick={handleCreatePackage}
                     sx={{
                       padding: "8px",
                       fontSize: "14px",
@@ -163,7 +162,7 @@ const PackageList = ({ onCreatePackage }) => {
                     </DataCell>
                     <TableCell>
                       <IconButton
-                        onClick={() => handleEdit(row.id)}
+                        onClick={() => handleEdit(row)}
                         aria-label="edit"
                         sx={{ color: "green" }}
                       >

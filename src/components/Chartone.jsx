@@ -1,13 +1,13 @@
 import React from 'react';
-import { Line } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 import { Box, Typography, Button, ButtonGroup, Grid } from '@mui/material';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
+  BarElement,
   LineElement,
   PointElement,
-  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -16,9 +16,9 @@ import {
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  BarElement,
   LineElement,
   PointElement,
-  BarElement,
   Title,
   Tooltip,
   Legend
@@ -32,18 +32,22 @@ const chartData = {
   ],
   datasets: [
     {
-      type: 'line',
+      type: 'bar',
       label: 'Orders',
       data: [90, 110, 60, 120, 90, 100, 70, 50, 110, 80, 90, 60],
-      borderColor: '#8884d8',
-      borderWidth: 2,
-      fill: false,
+      backgroundColor: 'rgba(10, 179, 156, 0.9)',
+      hoverBackgroundColor: '#74edd2', // Change color on hover
+      borderSkipped: false,
+      barPercentage: 0.5, 
+      categoryPercentage: 0.8, 
     },
     {
-      type: 'bar',
+      type: 'line',
       label: 'Earnings',
       data: [40, 30, 60, 50, 70, 80, 40, 30, 50, 60, 70, 50],
-      backgroundColor: '#82ca9d',
+      borderColor: '#3832a6',
+      borderWidth: 2,
+      fill: false,
     },
     {
       type: 'line',
@@ -52,16 +56,43 @@ const chartData = {
       borderColor: '#FF8042',
       borderWidth: 2,
       fill: false,
-      borderDash: [5, 5],
+      borderDash: [9, 9],
     },
   ],
 };
+
+  
 
 const chartOptions = {
   responsive: true,
   plugins: {
     legend: {
       position: 'bottom',
+    },
+    tooltip: {
+      callbacks: {
+        label: function (context) {
+          let label = context.dataset.label || '';
+          if (label) {
+            label += ': ';
+          }
+          if (context.parsed.y !== null) {
+            label += new Intl.NumberFormat().format(context.parsed.y);
+          }
+          return label;
+        },
+      },
+    },
+  },
+  scales: {
+    x: {
+      stacked: true,
+      barPercentage: 0.5,
+      categoryPercentage: 0.8,
+    },
+    y: {
+      stacked: false,
+      beginAtZero: true,
     },
   },
 };
@@ -80,7 +111,7 @@ const Chartone = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={8} md={9}>
             <Typography sx={{ fontSize: { xs: '14px', sm: '16px' }, fontWeight: 600, color: "#495057" }}>
-              Orders
+              Revenue
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4} md={3} container justifyContent="flex-end">
@@ -117,7 +148,7 @@ const Chartone = () => {
 
         <Box sx={{ marginTop: 3 }}>
           <Box sx={{ width: '100%', height: { xs: '300px', sm: '350px', md: '400px' } }}>
-            <Line data={chartData} options={chartOptions} />
+            <Bar data={chartData} options={chartOptions} />
           </Box>
         </Box>
       </Box>

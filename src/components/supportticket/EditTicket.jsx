@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
+import { useRouter } from "next/router";
 import {
   Typography,
   Button,
@@ -10,7 +11,6 @@ import {
   CardContent,
   Divider,
 } from "@mui/material";
-import { useRouter } from "next/router";
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
@@ -23,12 +23,13 @@ const handleFileChange = (event) => {
   }
 };
 
-const SupportTicketCreate = () => {
+const EditTicket = ({ ticketData }) => {
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleUpdate = () => {
     router.push("/superadmin/supportticket");
   };
+
 
   return (
     <Grid container sx={{ padding: 3 }}>
@@ -36,7 +37,7 @@ const SupportTicketCreate = () => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Add Ticket Details
+             Update Ticket Details
             </Typography>
             <Divider sx={{ my: 2 }} />
 
@@ -59,6 +60,7 @@ const SupportTicketCreate = () => {
                   type="text"
                   required
                   fullWidth
+                  value={ticketData?.companyname || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -68,10 +70,11 @@ const SupportTicketCreate = () => {
                 <CustomTextField
                   id="ticketsubject"
                   name="ticketsubject"
-                  type="text"
+                  type="ticketsubject"
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={ticketData?.ticketsubject || ''}
                 />
               </Grid>
             </Grid>
@@ -92,15 +95,15 @@ const SupportTicketCreate = () => {
                 <TextField
                   id="description"
                   name="description"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  required
+                  placeholder="Description"
                   fullWidth
                   multiline
                   rows={4}
+                  value={ticketData?.description || ''}
                 />
               </Grid>
-              <Grid item xs={6}>
+
+             <Grid item xs={6}>
                 <Typography variant="subtitle1" htmlFor="adminProfile">
                   Upload Attachment
                 </Typography>
@@ -137,6 +140,7 @@ const SupportTicketCreate = () => {
                   type="text"
                   required
                   fullWidth
+                  value={ticketData?.agent || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -146,10 +150,11 @@ const SupportTicketCreate = () => {
                 <CustomTextField
                   id="priority"
                   name="priority"
-                  type="text"
+                  type="priority"
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={ticketData?.description || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -159,37 +164,39 @@ const SupportTicketCreate = () => {
                 <CustomTextField
                   id="type"
                   name="type"
-                  type="text"
+                  type="type"
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={ticketData?.type || ''}
                 />
               </Grid>
             </Grid>
-            <Grid
-              item
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                }}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
+
+            <Grid container justifyContent="flex-end" spacing={2} sx={{ marginTop: "20px" }}>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleUpdate}
+                >
+                  Update
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    handleUpdate();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
             </Grid>
+
+            
           </CardContent>
         </CustomCard>
       </Grid>
@@ -197,4 +204,4 @@ const SupportTicketCreate = () => {
   );
 };
 
-export default SupportTicketCreate;
+export default EditTicket;

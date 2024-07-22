@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import CustomCard from "./CustomCard";
 import {
   Chart as ChartJS,
@@ -31,18 +31,11 @@ const chartData = {
     {
       label: "Sessions",
       data: [1010, 1640, 490, 1255, 1050, 689, 800, 420, 1085, 589],
-      backgroundColor: [
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(255, 99, 132, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-        "rgba(54, 162, 235, 0.6)",
-      ],
+      backgroundColor: "rgba(41, 156, 219, 0.85)",
+      hoverBackgroundColor: '#a5e6fa',
+      borderWidth: 1,
+      barPercentage: 0.9,
+      borderRadius: 8,
     },
   ],
 };
@@ -54,10 +47,39 @@ const chartOptions = {
   plugins: {
     legend: {
       position: "top",
+      labels: {
+        font: {
+          size: 14,
+          weight: 'bold',
+        },
+        color: '#333',
+      },
     },
     title: {
       display: true,
-      text: "Sessions by Countries",
+      text: "Sessions by Country",
+      font: {
+        size: 16,
+        weight: 'bold',
+      },
+      color: '#333',
+    },
+    tooltip: {
+      callbacks: {
+        label: function(context) {
+          let label = context.dataset.label || '';
+          if (label) {
+            label += ': ';
+          }
+          if (context.parsed.x !== null) {
+            label += new Intl.NumberFormat().format(context.parsed.x);
+          }
+          return label;
+        }
+      },
+      backgroundColor: '#333',
+      titleColor: '#fff',
+      bodyColor: '#fff',
     },
   },
   scales: {
@@ -65,12 +87,30 @@ const chartOptions = {
       title: {
         display: true,
         text: 'Number of Sessions',
+        font: {
+          size: 14,
+          weight: 'bold',
+        },
+        color: '#333',
+      },
+      grid: {
+        color: '#ddd',
+        borderColor: '#ddd',
       },
     },
     y: {
       title: {
         display: true,
         text: 'Country',
+        font: {
+          size: 14,
+          weight: 'bold',
+        },
+        color: '#333',
+      },
+      grid: {
+        color: '#ddd',
+        borderColor: '#ddd',
       },
     },
   },

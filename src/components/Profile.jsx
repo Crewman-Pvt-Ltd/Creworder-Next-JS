@@ -28,6 +28,7 @@ const Profile = () => {
         container
         sx={{
           backgroundColor: "#f3f3f9",
+          
         }}
       >
         <Grid
