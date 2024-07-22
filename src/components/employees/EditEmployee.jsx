@@ -16,10 +16,10 @@ const handleFileChange = (event) => {
   }
 };
 
-const CreateEmployees = () => {
+const EditEmployee = ({ employeeData }) => {
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleUpdate = () => {
     router.push("/superadmin/employees");
   };
 
@@ -31,7 +31,7 @@ const CreateEmployees = () => {
           <CardContent>
           <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Add Employee
+                Update Employee Details
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -55,6 +55,7 @@ const CreateEmployees = () => {
                   type="text"
                   required
                   fullWidth
+                  value={employeeData?.name || ''}
                 />
               </Grid>
               <Grid item sx={{ flex: 1 }}>
@@ -68,6 +69,7 @@ const CreateEmployees = () => {
                   placeholder="(+91)"
                   required
                   fullWidth
+                  value={employeeData?.phone || ''}
                 />
               </Grid>
               <Grid item sx={{ flex: 1 }}>
@@ -81,6 +83,7 @@ const CreateEmployees = () => {
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={employeeData?.email || ''}
                 />
               </Grid>
               
@@ -106,20 +109,22 @@ const CreateEmployees = () => {
                   type="text"
                   required
                   fullWidth
+                  value={employeeData?.password || ''}
                 />
                
               </Grid>
               <Grid item sx={{ flex: 1 }}>
-              <CustomLabel htmlFor="Confirm Password" required>
+              <CustomLabel htmlFor="confirmpassword" required>
                   Confirm Password
                 </CustomLabel>
                 <CustomTextField
-                  id="password"
-                  name="password"
+                  id="confirmpassword"
+                  name="confirmpassword"
                   type="password"
                   placeholder="e.g. XXXXX"
                   required
                   fullWidth
+                  value={employeeData?.confirmpassword || ''}
                 />
               </Grid>
             
@@ -157,30 +162,32 @@ const CreateEmployees = () => {
               </Grid>
             
             </Grid>
- 
             <Grid
-              item
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
+              container
+              justifyContent="flex-end"
+              spacing={2}
+              sx={{ marginTop: "20px" }}
             >
-              <Button
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                }}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleUpdate}
+                >
+                  Update
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    handleUpdate();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
             </Grid>
           </CardContent>
          
@@ -190,4 +197,4 @@ const CreateEmployees = () => {
   );
 };
 
-export default CreateEmployees;
+export default EditEmployee;

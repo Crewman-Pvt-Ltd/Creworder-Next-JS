@@ -11,8 +11,7 @@ import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
 
-
-const HoverableNavItem = ({ isOpen, name, icon, children, onClick }) => {
+const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
   const [hoveredItemPosition, setHoveredItemPosition] = useState({ top: 0 });
 
@@ -32,7 +31,7 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick }) => {
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      <Navitem name={isOpen ? name : ''} icon={icon}>
+      <Navitem name={isOpen ? name : ''} icon={icon} active={active}>
         {children}
       </Navitem>
       {!isOpen && hovered && (
@@ -71,10 +70,12 @@ const Sidebar = ({ isOpen }) => {
     }
   };
 
+  const currentPath = router.pathname;
+
   return (
     <Box
       sx={{
-        width: isOpen ? 220 : 70,
+        width: isOpen ? 250 : 70,
         backgroundColor: '#405189',
         padding: 2,
         boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
@@ -134,42 +135,46 @@ const Sidebar = ({ isOpen }) => {
           '&::-webkit-scrollbar': {
             display: 'none',
           },
+          marginTop: "13px",
+          color: "#abb9e8",
         }}
       >
         <HoverableNavItem
           isOpen={isOpen}
           name="Dashboard"
           icon={<DashboardIcon />}
+          active={currentPath === '/dashboard'}
           onClick={() => handleItemClick('/dashboard')}
         />
         <HoverableNavItem
           isOpen={isOpen}
           name="Package"
           icon={<PackageIcon />}
+          active={currentPath === '/superadmin/package'}
           onClick={() => handleItemClick('/superadmin/package')}
         />
         <HoverableNavItem
           isOpen={isOpen}
           name="Company"
           icon={<CompanyIcon />}
+          active={currentPath === '/superadmin/company'}
           onClick={() => handleItemClick('/superadmin/company')}
         />
         <HoverableNavItem
           isOpen={isOpen}
           name="Employee"
           icon={<SupervisedUserCircleIcon />}
+          active={currentPath === '/superadmin/employees'}
           onClick={() => handleItemClick('/superadmin/employees')}
         />
-        
         <HoverableNavItem
           isOpen={isOpen}
           name="Support Ticket"
           icon={<SupportAgentIcon />}
+          active={currentPath === '/superadmin/supportticket'}
           onClick={() => handleItemClick('/superadmin/supportticket')}
         >
-         
         </HoverableNavItem>
-     
       </Box>
     </Box>
   );

@@ -7,8 +7,7 @@ const poppins = Poppins({
   subsets: ['latin']
 });
 
-
-const Navitem = ({ name, children, icon, onClick }) => {
+const Navitem = ({ name, children, icon, onClick, active }) => {
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
@@ -17,6 +16,7 @@ const Navitem = ({ name, children, icon, onClick }) => {
       onClick();
     }
   };
+
   return (
     <Box>
       <Box
@@ -26,15 +26,19 @@ const Navitem = ({ name, children, icon, onClick }) => {
           borderRadius: 1,
           display: 'flex',
           alignItems: 'center',
+          color: active ? 'white' : 'inherit',
           '&:hover': {
-            backgroundColor: '#c0c0c0',
+            color: 'white',
           },
           cursor: 'pointer',
         }}
         onClick={handleClick}
       >
         {icon && <Box sx={{ marginRight: 1 }}>{icon}</Box>}
-        <Typography>{name}</Typography>
+        <Typography sx={{
+          fontSize:"15px",
+          fontFamily:"sans-serif",
+        }}>{name}</Typography>
       </Box>
       <Collapse in={open}>
         {children}

@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
-import { useCreatePackage } from "@/api-manage/react-query/useCreatePackage";
 import {
   Typography,
   Button,
   Grid,
-  Card,
   CardContent,
   Divider,
   Box,
@@ -55,58 +53,30 @@ const modules = [
   "Assets",
   "Letter",
 ];
-
-const CreatePackage = () => {
+const EditPackage = ({ packageData }) => {
   const router = useRouter();
-  const { mutate: createPackage, isLoading, error } = useCreatePackage();
-  
-  const [formState, setFormState] = useState({
-    name: "",
-    type: "",
-    max_employees: "",
-    monthly_price: "",
-    annual_price: "",
-    description: "",
-    created_by: "",
-    checkedModules: []
-  });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormState(prevState => ({ ...prevState, [name]: value }));
+  const handleUpdate = () => {
+    router.push("/superadmin/package");
   };
+  const [checked, setChecked] = React.useState([]);
 
-  const handleCheckboxChange = (event) => {
+  const handleCheck = (event) => {
     const name = event.target.name;
-    setFormState(prevState => ({
-      ...prevState,
-      checkedModules: prevState.checkedModules.includes(name)
-        ? prevState.checkedModules.filter(item => item !== name)
-        : [...prevState.checkedModules, name]
-    }));
+    setChecked((prev) =>
+      prev.includes(name)
+        ? prev.filter((item) => item !== name)
+        : [...prev, name]
+    );
   };
 
   const handleSelectAll = (event) => {
-    setFormState(prevState => ({
-      ...prevState,
-      checkedModules: event.target.checked ? modules : []
-    }));
+    setChecked(event.target.checked ? modules : []);
   };
+  const [selectedPlan, setSelectedPlan] = useState("");
 
   const handlePlanChange = (event) => {
-    setFormState(prevState => ({ ...prevState, selectedPlan: event.target.value }));
-  };
-
-  const handleSubmit = async () => {
-    try {
-      await createPackage({
-        ...formState,
-        modules: formState.checkedModules
-      });
-      router.push("/superadmin/package");
-    } catch (err) {
-      console.error("Failed to create package:", err);
-    }
+    setSelectedPlan(event.target.value);
   };
 
   return (
@@ -116,7 +86,7 @@ const CreatePackage = () => {
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Add Package
+                Update Package
               </Typography>
             </Grid>
 
@@ -132,7 +102,7 @@ const CreatePackage = () => {
                     row
                     aria-label="package-type"
                     name="row-radio-buttons-group"
-                    value={formState.type}
+                    value={selectedPlan}
                     onChange={handlePlanChange}
                   >
                     <Box
@@ -207,39 +177,37 @@ const CreatePackage = () => {
                 }}
               >
                 <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="name" required>
+                  <CustomLabel htmlFor="packagename" required>
                     Package Name
                   </CustomLabel>
                   <CustomTextField
-                    id="name"
-                    name="name"
+                    id="packagename"
+                    name="packagename"
                     placeholder="e.g. creworder"
                     type="text"
                     required
                     fullWidth
-                    value={formState.name}
-                    onChange={handleInputChange}
+                    value={packageData?.packagename || ''}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="maxEmployees" required>
+                  <CustomLabel htmlFor="maxemployees" required>
                     Max Employees
                   </CustomLabel>
                   <CustomTextField
-                    id="maxEmployees"
-                    name="maxEmployees"
+                    id="maxemployees"
+                    name="maxemployees"
                     type="number"
                     placeholder="e.g. 100"
                     required
                     fullWidth
-                    value={formState.max_employees}
-                    onChange={handleInputChange}
+                    value={packageData?.maxemployees || ''}
                   />
                 </Grid>
               </Grid>
             </Grid>
 
-            {formState.selectedPlan === "paid" && (
+            {selectedPlan === "paid" && (
               <>
                 <Divider sx={{ my: 2 }} />
                 <Grid item sx={{ marginTop: 3 }}>
@@ -269,13 +237,12 @@ const CreatePackage = () => {
                         </CustomLabel>
                         <CustomTextField
                           id="monthlyplanprice"
-                          name="monthlyPlanPrice"
+                          name="monthlyplanprice"
                           placeholder=""
                           type="number"
                           required
                           fullWidth
-                          value={formState.monthly_price}
-                          onChange={handleInputChange}
+                          value={packageData?.monthlyplanprice || ''}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
@@ -284,13 +251,12 @@ const CreatePackage = () => {
                         </CustomLabel>
                         <CustomTextField
                           id="annualplanprice"
-                          name="annualPlanPrice"
+                          name="annualplanprice"
                           type="number"
                           placeholder=""
                           required
                           fullWidth
-                          value={formState.annual_price}
-                          onChange={handleInputChange}
+                          value={packageData?.annualplanprice || ''}
                         />
                       </Grid>
                     </Grid>
@@ -313,7 +279,7 @@ const CreatePackage = () => {
                     control={
                       <Checkbox
                         onChange={handleSelectAll}
-                        checked={formState.checkedModules.length === modules.length}
+                        checked={checked.length === modules.length}
                       />
                     }
                     label="Select All"
@@ -328,8 +294,8 @@ const CreatePackage = () => {
                       control={
                         <Checkbox
                           name={module}
-                          checked={formState.checkedModules.includes(module)}
-                          onChange={handleCheckboxChange}
+                          checked={checked.includes(module)}
+                          onChange={handleCheck}
                         />
                       }
                       label={module}
@@ -350,41 +316,36 @@ const CreatePackage = () => {
                 type="text"
                 required
                 fullWidth
-                value={formState.description}
-                onChange={handleInputChange}
               />
             </Grid>
             
             <Grid
-              item
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
+              container
+              justifyContent="flex-end"
+              spacing={2}
+              sx={{ marginTop: "20px" }}
             >
-              <Button
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                }}
-                onClick={handleSubmit}
-                disabled={isLoading}
-              >
-                {isLoading ? "Submitting..." : "Submit"}
-              </Button>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleUpdate}
+                >
+                  Update
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    handleUpdate();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
             </Grid>
-            {error && (
-              <Typography color="error" sx={{ mt: 2 }}>
-                Error: {error.message}
-              </Typography>
-            )}
           </CardContent>
         </CustomCard>
       </Grid>
@@ -392,4 +353,4 @@ const CreatePackage = () => {
   );
 };
 
-export default CreatePackage;
+export default EditPackage;

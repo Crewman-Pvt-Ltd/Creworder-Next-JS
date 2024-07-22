@@ -17,15 +17,18 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
+import { useRouter } from "next/router";
 
 const initialData = [
   {
+    id: 1,
     ticket: "TKT-20240605-9",
     ticketsubject: "Company A",
     requestername: "Test 1",
     requestedon: "15 Jun, 2024",
   },
   {
+    id: 2,
     ticket: "TKT-3456705-9",
     ticketsubject: "Company B",
     requestername: "Test 2",
@@ -33,15 +36,20 @@ const initialData = [
   },
 ];
 
-const SupportTicketList = ({ onCreateTicket }) => {
+const SupportTicketList = () => {
   const [data, setData] = useState(initialData);
+  const router = useRouter();
 
-  const handleEdit = (id) => {
-    console.log("Edit", id);
+  const handleEdit = () => {
+    router.push("/superadmin/supportticket/editticket");
   };
 
   const handleDelete = (id) => {
     console.log("Delete", id);
+  };
+
+  const handleCreateTicket = () => {
+    router.push("/superadmin/supportticket/createticket");
   };
 
   const HeaderCell = (props) => (
@@ -66,7 +74,6 @@ const SupportTicketList = ({ onCreateTicket }) => {
         fontWeight: "500",
         textTransform: "capitalize",
       }}
-      c
       {...props}
     />
   );
@@ -77,11 +84,7 @@ const SupportTicketList = ({ onCreateTicket }) => {
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
             <CustomCard padding="13px">
-              <Grid
-                container
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Grid container justifyContent="space-between" alignItems="center">
                 <Grid item>
                   <Typography
                     sx={{
@@ -93,12 +96,12 @@ const SupportTicketList = ({ onCreateTicket }) => {
                       marginLeft: "30px",
                     }}
                   >
-                    Employee List
+                    Ticket List
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={onCreateTicket}
+                    onClick={handleCreateTicket}
                     sx={{
                       padding: "8px",
                       fontSize: "14px",
@@ -114,7 +117,7 @@ const SupportTicketList = ({ onCreateTicket }) => {
                     }}
                   >
                     <AddIcon sx={{ fontSize: 15 }} />
-                    Add Employee
+                    Add Ticket
                   </Button>
                 </Grid>
               </Grid>
@@ -146,7 +149,7 @@ const SupportTicketList = ({ onCreateTicket }) => {
                       <DataCell>{row.requestedon}</DataCell>
                       <TableCell>
                         <IconButton
-                          onClick={() => handleEdit(row.id)}
+                          onClick={() => handleEdit(row)}
                           aria-label="edit"
                           sx={{ color: "green" }}
                         >

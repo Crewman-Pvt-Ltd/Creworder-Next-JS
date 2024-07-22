@@ -1,6 +1,6 @@
 import React from "react";
 import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
-
+import { useRouter } from "next/router";
 import {
   Grid,
   CardContent,
@@ -25,15 +25,23 @@ import {
   Cancel,
 } from "@mui/icons-material";
 
-const CompanyList = ({ onCreateCompany }) => {
+const CompanyList = ({ onCreateCompany, onEditCompany }) => {
   const { data } = useGetAllCompanies();
+  const router = useRouter();
+
+  const handleEdit = () => {
+    router.push("/superadmin/company/editcompany");
+  };
+
+  const handleCreatePackage = () => {
+    router.push("/superadmin/company/createcompany");
+  };
+
+
   const handleView = (id) => {
     console.log("View", id);
   };
 
-  const handleEdit = (id) => {
-    console.log("Edit", id);
-  };
 
   const handleDelete = (id) => {
     console.log("Delete", id);
@@ -102,7 +110,7 @@ const CompanyList = ({ onCreateCompany }) => {
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={onCreateCompany}
+                    onClick={handleCreatePackage}
                     sx={{
                       padding: "8px",
                       fontSize: "14px",
@@ -175,7 +183,7 @@ const CompanyList = ({ onCreateCompany }) => {
                           <Visibility />
                         </IconButton>
                         <IconButton
-                          onClick={() => handleEdit(row.id)}
+                          onClick={() => handleEdit(row)}
                           aria-label="edit"
                           sx={{ color: "green" }}
                         >

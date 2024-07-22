@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
+
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
@@ -15,7 +15,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   const reader = new FileReader();
@@ -27,12 +26,13 @@ const handleFileChange = (event) => {
   }
 };
 
-const CreateCompanyLayout = () => {
+const EditCompany = ({ onUpdateCompany, companyData }) => {
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const handleUpdate = () => {
     router.push("/superadmin/company");
   };
+
   const [showDetails, setShowDetails] = useState(false);
   const [branches, setBranches] = useState([
     { id: 1, branchname: "", branchid: "" },
@@ -69,7 +69,7 @@ const CreateCompanyLayout = () => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Add Company
+              Update Company Details
             </Typography>
             <Divider sx={{ my: 2 }} />
 
@@ -92,6 +92,7 @@ const CreateCompanyLayout = () => {
                   type="text"
                   required
                   fullWidth
+                  value={companyData?.companyname || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -105,6 +106,7 @@ const CreateCompanyLayout = () => {
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={companyData?.email || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -118,11 +120,11 @@ const CreateCompanyLayout = () => {
                   placeholder="1234567890"
                   required
                   fullWidth
+                  value={companyData?.phone || ''}
                 />
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginTop: 2 }}>
-           
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="website" required>
                   Website
@@ -134,6 +136,7 @@ const CreateCompanyLayout = () => {
                   type="text"
                   required
                   fullWidth
+                  value={companyData?.website || ''}
                 />
                 <CustomLabel htmlFor="address" required sx={{ marginTop: 2 }}>
                   Address
@@ -145,10 +148,10 @@ const CreateCompanyLayout = () => {
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={companyData?.address || ''}
                 />
               </Grid>
 
-             
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="companyLogo" required>
                   Upload Company Logo
@@ -198,6 +201,7 @@ const CreateCompanyLayout = () => {
                   type="text"
                   required
                   fullWidth
+                  value={companyData?.packagename || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -211,6 +215,7 @@ const CreateCompanyLayout = () => {
                   placeholder="e.g. monthly"
                   required
                   fullWidth
+                  value={companyData?.occurrence || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -224,33 +229,36 @@ const CreateCompanyLayout = () => {
                   placeholder="e.g. 123456"
                   required
                   fullWidth
+                  value={companyData?.amount || ''}
                 />
               </Grid>
             </Grid>
 
             <Grid container spacing={2} sx={{ marginTop: 1 }}>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="paymentDate" required>
+                <CustomLabel htmlFor="paymentdate" required>
                   Payment Date
                 </CustomLabel>
                 <CustomTextField
-                  id="paymentDate"
-                  name="paymentDate"
+                  id="paymentdate"
+                  name="paymentdate"
                   type="date"
                   required
                   fullWidth
+                  value={companyData?.paymentdate || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="nextPaymentDate" required>
+                <CustomLabel htmlFor="nextpaymentdate" required>
                   Next Payment Date
                 </CustomLabel>
                 <CustomTextField
-                  id="nextPaymentDate"
-                  name="nextPaymentDate"
+                  id="nextpaymentdate"
+                  name="nextpaymentdate"
                   type="date"
                   required
                   fullWidth
+                  value={companyData?.nextpaymentdate || ''}
                 />
               </Grid>
             </Grid>
@@ -272,29 +280,31 @@ const CreateCompanyLayout = () => {
               }}
             >
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="adminName" required>
+                <CustomLabel htmlFor="adminname" required>
                   Name
                 </CustomLabel>
                 <CustomTextField
-                  id="adminName"
-                  name="adminName"
+                  id="adminname"
+                  name="adminname"
                   placeholder="e.g. John Doe"
                   type="text"
                   required
                   fullWidth
+                  value={companyData?.adminname || ''}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="adminEmail" required>
+                <CustomLabel htmlFor="adminemail" required>
                   Email (Login details will be emailed to this email)
                 </CustomLabel>
                 <CustomTextField
-                  id="adminEmail"
-                  name="adminEmail"
+                  id="adminemail"
+                  name="adminemail"
                   type="email"
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={companyData?.adminemail || ''}
                 />
               </Grid>
             </Grid>
@@ -332,6 +342,7 @@ const CreateCompanyLayout = () => {
                           type="text"
                           required
                           fullWidth
+                          
                           value={branch.branchname}
                           onChange={(e) =>
                             handleInputChange(
@@ -379,28 +390,31 @@ const CreateCompanyLayout = () => {
             )}
 
             <Grid
-              item
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
+              container
+              justifyContent="flex-end"
+              spacing={2}
+              sx={{ marginTop: "20px" }}
             >
-              <Button
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                }}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleUpdate}
+                >
+                  Update
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    handleUpdate();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Grid>
             </Grid>
           </CardContent>
         </CustomCard>
@@ -409,4 +423,4 @@ const CreateCompanyLayout = () => {
   );
 };
 
-export default CreateCompanyLayout;
+export default EditCompany;
