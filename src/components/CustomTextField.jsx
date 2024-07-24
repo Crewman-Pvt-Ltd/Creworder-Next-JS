@@ -6,20 +6,20 @@ import { TextField } from '@mui/material';
 const CustomTextField = (props) => {
   return (
     <TextField
-      defaultValue="68585"
+      // defaultValue="68585"
       {...props}
       InputProps={{
-        style: { lineHeight: 1.5 }, // Default line height
+        style: { lineHeight: 1.5 }, 
       }}
       InputLabelProps={{
-        style: { lineHeight: 1.5 }, // Default line height for the label
+        style: { lineHeight: 1.5 },
       }}
       sx={{
         '& .MuiInputBase-input': {
-          padding: '8px 12px', // Default padding
+          padding: '8px 12px',
         },
         '& .MuiFormLabel-root': {
-          lineHeight: 1.5, // Default line height for the label
+          lineHeight: 1.5, 
         },
       }}
     />

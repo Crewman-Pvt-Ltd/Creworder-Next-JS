@@ -58,10 +58,10 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => 
 const Sidebar = ({ isOpen }) => {
   const router = useRouter();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md')); // Update to `xs` for mobile only
+  const isMobile = useMediaQuery(theme.breakpoints.down('md')); 
 
   if (isMobile) {
-    return null; // Hide sidebar on mobile view
+    return null;
   }
 
   const handleItemClick = (path) => {
