@@ -145,39 +145,20 @@ const NoticeList = ({onNotice}) => {
                           <IconButton
                             onClick={() => handleView(row.id)}
                             aria-label="view"
-                            sx={{ color: "blue" }}
-                          >
+                            sx={{ color: "blue" }}>
                             <Visibility />
                           </IconButton>
                           <IconButton
                             onClick={() => handleEdit(row.id)}
                             aria-label="edit"
-                            sx={{ color: "green" }}
-                          >
+                            sx={{ color: "green" }}>
                             <Edit />
                           </IconButton>
                           <IconButton
                             onClick={() => handleDelete(row.id)}
                             aria-label="delete"
-                            sx={{ color: "red" }}
-                          >
+                            sx={{ color: "red" }}>
                             <Delete />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleStatusToggle(row.id)}
-                            aria-label={
-                              row.status === "active" ? "suspend" : "activate"
-                            }
-                            sx={{
-                              color:
-                                row.status === "active" ? "orange" : "green",
-                            }}
-                          >
-                            {row.status === "active" ? (
-                              <Cancel />
-                            ) : (
-                              <CheckCircle />
-                            )}
                           </IconButton>
                         </TableCell>
                       </TableRow>

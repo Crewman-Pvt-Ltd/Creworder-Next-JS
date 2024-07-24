@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {Typography, Button, Grid, Card, CardContent, Divider, Checkbox, FormControlLabel,} from "@mui/material";
 
 const handleFileChange = (event) => {
@@ -19,7 +21,6 @@ const handleFileChange = (event) => {
   const [showDetails, setShowDetails] = useState(false);
   const [branches, setBranches] = useState([{ id: 1 }]);
 
-
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
@@ -32,115 +33,64 @@ const handleFileChange = (event) => {
             </Grid>
             <Divider sx={{ my: 2 }} />
             <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
-              <Grid item >
-                <CustomLabel htmlFor="title" required>
-                   Title
-                </CustomLabel>
-                <CustomTextField
-                  id="title"
-                  name="title"
-                  placeholder="title "
-                  type="text"
-                  required
-                  fullWidth
-                />
-              </Grid>
+            item
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              gap: 2,
+              marginTop: 2,
+            }}
+          >
+            <Grid item xs={12}>
+              <CustomLabel htmlFor="title" required>
+                Title
+              </CustomLabel>
+              <CustomTextField
+                id="title"
+                name="title"
+                placeholder="title"
+                type="text"
+                required
+                fullWidth
+              />
             </Grid>
+          </Grid>
 
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
+
+          <Grid
+          item
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 2,
+            marginTop: 2,
+          }}>
+          <Grid item xs={12}>
+            <CustomLabel htmlFor="description" required>
+              Description
+            </CustomLabel>
+            <CKEditor
+              editor={ClassicEditor}
+              data=""
+              onReady={(editor) => {
+                // You can store the "editor" and use when it is needed.
+                console.log('Editor is ready to use!', editor);
               }}
-            >
-              <Grid item sx={{ flex: 1 }}>
-                <CustomLabel htmlFor="password" required>
-                Password
-                </CustomLabel>
-                <CustomTextField
-                  id="password"
-                  name="password"
-                  placeholder="XXXXX"
-                  type="text"
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item sx={{ flex: 1 }}>
-                <CustomLabel htmlFor="Confirm Password" required>
-                  Confirm Password
-                </CustomLabel>
-                <CustomTextField
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="e.g. XXXXX"
-                  required
-                  fullWidth
-                />
-              </Grid>
-            
-            </Grid>
-
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                console.log({ event, editor, data });
               }}
-            >
-              <Grid item sx={{ flex: 1 }}>
-              <CustomLabel htmlFor="website">
-                    Website <span style={{ color: "red" }}>*</span>
-                  </CustomLabel>
-                  <CustomTextField
-                    id="website"
-                    name="website"
-                    placeholder="e.g. creworder"
-                    type="text"
-                    required
-                    fullWidth
-                    sx={{ marginTop: 1 }}
-                  />
-              </Grid>
-              <Grid item sx={{ flex: 1 }}>
-             
-                  <img
-                    id="preview"
-                    src="https://placehold.co/600x400/EEE/31343C"
-                    alt="Preview"
-                    width="35%"
-                    style={{ objectFit: "contain" }}
-                  />
-                   <CustomLabel htmlFor="profile">
-                  Upload Images <span style={{ color: "red" }}>*</span>
-                </CustomLabel>
-                <input
-                  type="file"
-                  id="companyLogo"
-                  onChange={handleFileChange}
-                  style={{ marginTop: "8px", display: "block", width: "100%" }}
-                />
-              </Grid>
-            
-            </Grid>
- 
-          
-        
+              onBlur={(event, editor) => {
+                console.log('Blur.', editor);
+              }}
+              onFocus={(event, editor) => {
+                console.log('Focus.', editor);
+              }}
+            />
+          </Grid>
+        </Grid>
 
+    
 
             <Grid
               item
@@ -161,7 +111,7 @@ const handleFileChange = (event) => {
                     backgroundColor: "#334a6c",
                   },
                 }}
-                onClick={onSuperAdminList}
+                onClick={onNoticeList}
               >
                 Submit
               </Button>
@@ -174,4 +124,4 @@ const handleFileChange = (event) => {
   );
 };
 
-export default CreateCompanyLayout;
+export default CreateNoticeLayout;
