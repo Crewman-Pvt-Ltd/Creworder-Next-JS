@@ -1,13 +1,7 @@
 import React from "react";
 import { Grid, Typography,useTheme } from "@mui/material";
-
+import CompanyDetailsdashboard from "../CompanyDetailsDashboard";
 import Tile from "../Tile";
-
-import NewlyRegisteredComapany from "../NewlyRegisteredComapany";
-import CompaniesWithMostUsers from "../CompaniesWithMostUsers";
-import RecentPaidSubscription from "../RecentPaidSubscription";
-import RecentLicenceExpired from "../RecentLicenceExpired";
-import PackageCompanyCount from "../PackageCompanyCount";
 import CompanyRegistrationGraph from "../CompanyRegistrationGraph";
 
 
@@ -59,10 +53,10 @@ const SuperAdminDashboard = () => {
        <Grid item>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-          <NewlyRegisteredComapany />
+          <CompanyDetailsdashboard type="newlyRegistered" />
           </Grid>
           <Grid item xs={12} md={6}>
-         <CompaniesWithMostUsers />
+          <CompanyDetailsdashboard type="mostUsers" />
           </Grid>
         </Grid>
       </Grid>
@@ -70,10 +64,10 @@ const SuperAdminDashboard = () => {
       <Grid item>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} sm={12}>
-           <RecentPaidSubscription />
+          <CompanyDetailsdashboard type="recentPaid" />
           </Grid>
           <Grid item xs={12} md={6} sm={12}>
-            <RecentLicenceExpired />
+          <CompanyDetailsdashboard type="recentExpired" />
           </Grid>
         </Grid>
       </Grid>
@@ -81,7 +75,7 @@ const SuperAdminDashboard = () => {
         <Grid item>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-         <PackageCompanyCount />
+          <CompanyDetailsdashboard type="packageCompanyCount" />
           </Grid>
           <Grid item xs={12} md={6}>
            <CompanyRegistrationGraph />

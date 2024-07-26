@@ -1,43 +1,86 @@
 import React, { useState } from "react";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import CustomCard from "../CustomCard";
-import {
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Divider,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
-
-
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById("preview").src = e.target.result;
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
+import { Typography, Button, Grid, CardContent, Divider, FormControlLabel, Checkbox } from "@mui/material";
 
 const CreateCompanyLayout = () => {
   const router = useRouter();
+  const currentDate = new Date().toISOString().split("T")[0];
+  const [formData, setFormData] = useState({
+    name: "",
+    company_email: "",
+    company_phone: "",
+    company_website: "",
+    company_address: "",
+    company_image: null, 
+    package_name: "",
+    payment_mode: "",
+    amount: "",
+    paymentDate: currentDate,
+    nextPaymentDate: "",
+    first_name: "",
+    email: "",
+  });
 
-  const handleSubmit = () => {
-    router.push("/superadmin/company");
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let formErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key] && key !== "paymentDate") {
+        formErrors[key] = "This field is required";
+      }
+    });
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0;
   };
   const [showDetails, setShowDetails] = useState(false);
   const [branches, setBranches] = useState([
     { id: 1, branchname: "", branchid: "" },
   ]);
+  const handleSubmit = async () => {
+    if (validateForm()) {
+      try {
+        const token = getToken();
+        if (!token) {
+          throw new Error("No authentication token found.");
+        }
 
+        const form = new FormData();
+        Object.keys(formData).forEach((key) => {
+          form.append(key, formData[key]);
+        });
+
+        const response = await MainApi.post("/api/companies/", form, {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "multipart/form-data", 
+          },
+        });
+
+        if (response.status === 201) {
+          router.push("/superadmin/company");
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error.response?.data || error.message);
+      }
+    }
+  };
+
+  const handleInputChange = (field, value, index) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+    const newBranches = branches.map((branch, i) =>
+      i === index ? { ...branch, [field]: value } : branch
+    );
+    setBranches(newBranches);
+  };
   const handleCheckboxChange = (event) => {
     setShowDetails(event.target.checked);
   };
@@ -56,11 +99,22 @@ const CreateCompanyLayout = () => {
     }
   };
 
-  const handleInputChange = (index, field, value) => {
-    const newBranches = branches.map((branch, i) =>
-      i === index ? { ...branch, [field]: value } : branch
-    );
-    setBranches(newBranches);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFormData((prevState) => ({
+        ...prevState,
+        company_image: file,
+      }));
+
+      // Preview image
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById("preview").src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -73,89 +127,97 @@ const CreateCompanyLayout = () => {
             </Typography>
             <Divider sx={{ my: 2 }} />
 
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-            >
+            <Grid container spacing={2}>
+              {/* Company Details */}
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="companyname" required>
+                <CustomLabel htmlFor="name" required>
                   Company Name
                 </CustomLabel>
                 <CustomTextField
-                  id="companyname"
-                  name="companyname"
+                  id="name"
+                  name="name"
                   placeholder="e.g. creworder"
                   type="text"
                   required
                   fullWidth
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="email" required>
+                <CustomLabel htmlFor="company_email" required>
                   Email
                 </CustomLabel>
                 <CustomTextField
-                  id="email"
-                  name="email"
+                  id="company_email"
+                  name="company_email"
                   type="email"
                   placeholder="e.g. test@creworder.com"
                   required
                   fullWidth
+                  value={formData.company_email}
+                  onChange={(e) => handleInputChange("company_email", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="phone" required>
+                <CustomLabel htmlFor="company_phone" required>
                   Phone Number
                 </CustomLabel>
                 <CustomTextField
-                  id="phone"
-                  name="phone"
-                  type="number"
+                  id="company_phone"
+                  name="company_phone"
+                  type="tel"
                   placeholder="1234567890"
                   required
                   fullWidth
+                  value={formData.company_phone}
+                  onChange={(e) => handleInputChange("company_phone", e.target.value)}
                 />
               </Grid>
             </Grid>
-            <Grid container spacing={2} sx={{ marginTop: 2 }}>
-           
+
+            <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="website" required>
+                <CustomLabel htmlFor="company_website" required>
                   Website
                 </CustomLabel>
                 <CustomTextField
-                  id="website"
-                  name="website"
-                  placeholder="e.g. creworder"
+                  id="company_website"
+                  name="company_website"
+                  placeholder="e.g. creworder.com"
                   type="text"
                   required
                   fullWidth
+                  value={formData.company_website}
+                  onChange={(e) => handleInputChange("company_website", e.target.value)}
                 />
-                <CustomLabel htmlFor="address" required sx={{ marginTop: 2 }}>
+
+                <CustomLabel
+                  htmlFor="company_address"
+                  required
+                  sx={{ marginTop: 2 }}
+                >
                   Address
                 </CustomLabel>
                 <CustomTextField
-                  id="address"
-                  name="address"
+                  id="company_address"
+                  name="company_address"
                   type="text"
-                  placeholder="e.g. test@creworder.com"
+                  placeholder="e.g. 1234 Main St"
                   required
                   fullWidth
+                  value={formData.company_address}
+                  onChange={(e) => handleInputChange("company_address", e.target.value)}
                 />
               </Grid>
 
-             
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="companyLogo" required>
+                <CustomLabel htmlFor="company_image" required>
                   Upload Company Logo
                 </CustomLabel>
                 <input
                   type="file"
-                  id="companyLogo"
+                  id="company_image"
                   onChange={handleFileChange}
                   style={{ marginTop: "8px", display: "block", width: "100%" }}
                 />
@@ -173,44 +235,38 @@ const CreateCompanyLayout = () => {
 
             <Divider sx={{ my: 2 }} />
 
-            <Typography
-              sx={{ fontSize: "15px", fontWeight: "bold", marginTop: 3 }}
-            >
+            <Typography sx={{ fontSize: "15px", fontWeight: "bold", marginTop: 3 }}>
               Package Details
             </Typography>
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-            >
+            <Grid container spacing={2} sx={{ mt: 3 }}>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="packagename" required>
+                <CustomLabel htmlFor="package_name" required>
                   Package Name
                 </CustomLabel>
                 <CustomTextField
-                  id="packagename"
-                  name="packagename"
-                  placeholder="e.g. creworder"
+                  id="package_name"
+                  name="package_name"
                   type="text"
+                  placeholder="e.g. Premium"
                   required
                   fullWidth
+                  value={formData.package_name}
+                  onChange={(e) => handleInputChange("package_name", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="occurrence" required>
-                  Occurrence
+                <CustomLabel htmlFor="payment_mode" required>
+                  Payment Mode
                 </CustomLabel>
                 <CustomTextField
-                  id="occurrence"
-                  name="occurrence"
+                  id="payment_mode"
+                  name="payment_mode"
                   type="text"
-                  placeholder="e.g. monthly"
+                  placeholder="e.g. Credit Card"
                   required
                   fullWidth
+                  value={formData.payment_mode}
+                  onChange={(e) => handleInputChange("payment_mode", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -221,15 +277,17 @@ const CreateCompanyLayout = () => {
                   id="amount"
                   name="amount"
                   type="number"
-                  placeholder="e.g. 123456"
+                  placeholder="e.g. 500"
                   required
                   fullWidth
+                  value={formData.amount}
+                  onChange={(e) => handleInputChange("amount", e.target.value)}
                 />
               </Grid>
             </Grid>
 
-            <Grid container spacing={2} sx={{ marginTop: 1 }}>
-              <Grid item xs={12} sm={4}>
+            <Grid container spacing={2} sx={{ mt: 2 }}>
+              <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="paymentDate" required>
                   Payment Date
                 </CustomLabel>
@@ -237,68 +295,61 @@ const CreateCompanyLayout = () => {
                   id="paymentDate"
                   name="paymentDate"
                   type="date"
-                  required
                   fullWidth
+                  value={formData.paymentDate}
+                  onChange={(e) => handleInputChange("paymentDate", e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="nextPaymentDate" required>
+              <Grid item xs={12} sm={6}>
+                <CustomLabel htmlFor="nextPaymentDate">
                   Next Payment Date
                 </CustomLabel>
                 <CustomTextField
                   id="nextPaymentDate"
                   name="nextPaymentDate"
                   type="date"
-                  required
                   fullWidth
+                  value={formData.nextPaymentDate}
+                  onChange={(e) => handleInputChange("nextPaymentDate", e.target.value)}
                 />
               </Grid>
             </Grid>
 
-            <Divider sx={{ my: 2 }} />
-
-            <Typography
-              sx={{ fontSize: "15px", fontWeight: "bold", marginTop: 3 }}
-            >
-              Account Details (First Company Admin)
+            <Typography sx={{ fontSize: "15px", fontWeight: "bold", marginTop: 3 }}>
+              Contact Details
             </Typography>
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-              }}
-            >
+            <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="adminName" required>
-                  Name
+                <CustomLabel htmlFor="first_name" required>
+                  First Name
                 </CustomLabel>
                 <CustomTextField
-                  id="adminName"
-                  name="adminName"
-                  placeholder="e.g. John Doe"
+                  id="first_name"
+                  name="first_name"
                   type="text"
+                  placeholder="e.g. John"
                   required
                   fullWidth
+                  value={formData.first_name}
+                  onChange={(e) => handleInputChange("first_name", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="adminEmail" required>
-                  Email (Login details will be emailed to this email)
+                <CustomLabel htmlFor="email" required>
+                  Email
                 </CustomLabel>
                 <CustomTextField
-                  id="adminEmail"
-                  name="adminEmail"
+                  id="email"
+                  name="email"
                   type="email"
-                  placeholder="e.g. test@creworder.com"
+                  placeholder="e.g. john@example.com"
                   required
                   fullWidth
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                 />
               </Grid>
             </Grid>
-
             <Grid item sx={{ marginTop: 3 }}>
               <FormControlLabel
                 control={<Checkbox onChange={handleCheckboxChange} />}
@@ -377,31 +428,14 @@ const CreateCompanyLayout = () => {
                 </Grid>
               </>
             )}
-
-            <Grid
-              item
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
+            <Button
+              sx={{ marginTop: 4 }}
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
             >
-              <Button
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                }}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-            </Grid>
+              Submit
+            </Button>
           </CardContent>
         </CustomCard>
       </Grid>
