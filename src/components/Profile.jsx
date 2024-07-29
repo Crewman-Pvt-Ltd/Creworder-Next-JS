@@ -10,17 +10,13 @@ import {
 } from "@mui/material";
 import Layout from "./Layout";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import { usePermissions } from '@/contexts/PermissionsContext';
+
+
 const Profile = () => {
   // Example data to be passed as a prop
-  const profiledata = [
-    { label: "User Id", value: "ADMIN002" },
-    { label: "Gender", value: "Male" },
-    { label: "User Role", value: "Super Admin" },
-    { label: "User Email", value: "superadmin@creworder.com" },
-    { label: "Created", value: "2024-07-16 15:11:46" },
-    { label: "Last Login", value: "2024-07-16 15:11:46" },
-    { label: "Status", value: "Active" },
-  ];
+
+  const { fetchPermissions, permissionsData } = usePermissions();
 
   return (
     <Layout>
@@ -28,7 +24,7 @@ const Profile = () => {
         container
         sx={{
           backgroundColor: "#f3f3f9",
-          
+
         }}
       >
         <Grid
@@ -66,7 +62,7 @@ const Profile = () => {
                 }}
               >
                 <Typography fontSize="22px" color="white">
-                  Full Name
+                  {permissionsData?.user?.username}
                 </Typography>
                 <Typography variant="body2" color="#d1d1d1">
                   Owner & Founder
@@ -78,8 +74,8 @@ const Profile = () => {
                   display="flex"
                   alignItems="center"
                 >
-                  <MailOutlineIcon sx={{ marginRight: 1 }} />{" "}
-                  superadmin@creworder.com
+                  <MailOutlineIcon sx={{ marginRight: 1 }} />
+                  {permissionsData?.user?.email}
                 </Typography>
               </Grid>
             </Grid>
@@ -140,44 +136,146 @@ const Profile = () => {
                   </Button>
                 </Box>{" "}
                 <Divider sx={{ my: 2 }} />
-                {profiledata.map((item, index) => (
-                  <Grid
-                    key={index}
-                    item
-                    xs={12}
+
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                    padding: "6px",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
                     sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginTop: "10px",
-                      padding: "6px",
-                      alignItems: "center",
+                      color: "gray",
                     }}
                   >
-                    <Typography
-                      sx={{
-                        color: "gray",
-                      }}
-                    >
-                      {item.label}
-                    </Typography>
-                    {item.label === "Status" ? (
-                      <Button
-                        sx={{
-                          fontSize: "14px",
-                          backgroundColor: "#4caf50",
-                          color: "white",
-                          "&:hover": {
-                            backgroundColor: "#388e3c",
-                          },
-                        }}
-                      >
-                        {item.value}
-                      </Button>
-                    ) : (
-                      <Typography>{item.value}</Typography>
-                    )}
-                  </Grid>
-                ))}
+                    User Id
+                  </Typography>
+                  <Typography>{permissionsData?.user?.profile?.employee_id}</Typography>
+                </Grid>
+
+
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                    padding: "6px",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "gray",
+                    }}
+                  >
+                    Gender
+                  </Typography>
+                  <Typography>
+                    {permissionsData?.user?.profile?.gender === 'm'
+                      ? 'Male'
+                      : permissionsData?.user?.profile?.gender === 'f'
+                        ? 'Female'
+                        : permissionsData?.user?.profile?.gender === 'f'
+                          ? 'Transgender'
+                          : 'Unknown'
+                    }</Typography>
+                </Grid>
+
+
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                    padding: "6px",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "gray",
+                    }}
+                  >
+                    User Role
+                  </Typography>
+                  <Typography>{permissionsData?.role}</Typography>
+                </Grid>
+
+
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                    padding: "6px",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "gray",
+                    }}
+                  >
+                    User Email
+                  </Typography>
+                  <Typography>{permissionsData?.user?.email}</Typography>
+                </Grid>
+
+
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                    padding: "6px",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "gray",
+                    }}
+                  >
+                    Created
+                  </Typography>
+                  <Typography suppressHydrationWarning>{Date(permissionsData?.user?.date_joined)}</Typography>
+                </Grid>
+
+
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                    padding: "6px",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "gray",
+                    }}
+                  >
+                    Last Login
+                  </Typography>
+                  <Typography suppressHydrationWarning>{Date(permissionsData?.user?.last_login)}</Typography>
+                </Grid>
+
               </CardContent>
             </Card>
           </Grid>

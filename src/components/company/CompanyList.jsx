@@ -38,8 +38,8 @@ const CompanyList = ({ onCreateCompany, onEditCompany }) => {
   };
 
 
-  const handleView = (id) => {
-    console.log("View", id);
+  const handleView = () => {
+    router.push("/superadmin/company/viewcompany");
   };
 
 
@@ -176,7 +176,7 @@ const CompanyList = ({ onCreateCompany, onEditCompany }) => {
                       <DataCell>{row.date}</DataCell>
                       <TableCell>
                         <IconButton
-                          onClick={() => handleView(row.id)}
+                          onClick={() => handleView(row)}
                           aria-label="view"
                           sx={{ color: "blue" }}
                         >
