@@ -7,6 +7,7 @@ import PackageIcon from '@mui/icons-material/LocalOffer';
 import CompanyIcon from '@mui/icons-material/Business';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
@@ -173,6 +174,14 @@ const Sidebar = ({ isOpen }) => {
           icon={<SupportAgentIcon />}
           active={currentPath === '/superadmin/supportticket'}
           onClick={() => handleItemClick('/superadmin/supportticket')}
+        >
+        </HoverableNavItem>
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Notice"
+          icon={<NotificationsIcon />}
+          active={currentPath === '/superadmin/Notice'}
+          onClick={() => handleItemClick('/superadmin/Notice')}
         >
         </HoverableNavItem>
       </Box>

@@ -1,9 +1,12 @@
 import React from "react";
 import { Grid, Typography,useTheme } from "@mui/material";
-import CompanyDetailsdashboard from "../CompanyDetailsDashboard";
 import Tile from "../Tile";
+import NewlyRegisteredComapany from "../NewlyRegisteredComapany";
+import CompaniesWithMostUsers from "../CompaniesWithMostUsers";
+import RecentPaidSubscription from "../RecentPaidSubscription";
+import RecentLicenceExpired from "../RecentLicenceExpired";
+import PackageCompanyCount from "../PackageCompanyCount";
 import CompanyRegistrationGraph from "../CompanyRegistrationGraph";
-
 
 const SuperAdminDashboard = () => {
  

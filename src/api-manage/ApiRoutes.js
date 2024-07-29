@@ -5,3 +5,4 @@ export const get_packages = '/api/packages/';
 export const get_companies = '/api/companies/';
 export const get_orders = '/api/orders/';
 export const users = '/api/users/';
+export const get_notices = '/api/notices/';

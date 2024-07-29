@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
-import {Typography, Button, Grid, Card, CardContent, Divider,} from "@mui/material";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {Typography, Button, Grid, Card, CardContent, Divider, Checkbox, FormControlLabel,} from "@mui/material";
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
@@ -14,7 +17,7 @@ const handleFileChange = (event) => {
   }
 };
 
-  const CreateNotice = ({ onNoticeList }) => {
+  const EditNotice = ({ onNoticeList }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [branches, setBranches] = useState([{ id: 1 }]);
 
@@ -62,21 +65,29 @@ const handleFileChange = (event) => {
             gap: 2,
             marginTop: 2,
           }}>
-          <Grid item xs={12} sm={12}>
-                  <CustomLabel htmlFor="description" required>
-                    Description:
-                  </CustomLabel>
-                  <CustomTextField
-                    id="description"
-                    name="description"
-                    type="text"
-                    placeholder="Full Description"
-                    required
-                    fullWidth
-                    multiline
-                    rows={4}  // This makes it a textarea
-                  />
-                </Grid> 
+          <Grid item xs={12}>
+            <CustomLabel htmlFor="description" required>
+              Description
+            </CustomLabel>
+            <CKEditor
+              editor={ClassicEditor}
+              data=""
+              onReady={(editor) => {
+                // You can store the "editor" and use when it is needed.
+                console.log('Editor is ready to use!', editor);
+              }}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                console.log({ event, editor, data });
+              }}
+              onBlur={(event, editor) => {
+                console.log('Blur.', editor);
+              }}
+              onFocus={(event, editor) => {
+                console.log('Focus.', editor);
+              }}
+            />
+          </Grid>
         </Grid>
 
     
@@ -113,4 +124,4 @@ const handleFileChange = (event) => {
   );
 };
 
-export default CreateNotice;
+export default EditNotice;
