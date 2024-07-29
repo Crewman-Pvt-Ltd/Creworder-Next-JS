@@ -1,5 +1,6 @@
 import React from "react";
-import { useRouter } from 'next/router';
+import useGetAllNotices from "@/api-manage/react-query/useGetAllNotices";
+import { useRouter } from "next/router";
 import {
   Grid,
   Card,
@@ -15,9 +16,8 @@ import {
   TableCell,
   TableBody,
   IconButton,
-
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import {
   Visibility,
   Edit,
@@ -25,7 +25,9 @@ import {
   CheckCircle,
   Cancel,
 } from "@mui/icons-material";
-const data = [
+
+
+/* const data = [
   {
     id: 1,
     title: "Test Title",
@@ -34,9 +36,11 @@ const data = [
     date: "2024-07-18",
     status: "active",
   },
+]; */
+const NoticeList = ({ onNotice }) => {
+  const { data } = useGetAllNotices();
 
-];
-const NoticeList = ({onNotice}) => { 
+  // console.log("nOTICES dATA", notices);
 
   const handleView = (id) => {
     console.log("View", id);
@@ -74,10 +78,29 @@ const NoticeList = ({onNotice}) => {
   );
 
   const DataCell = (props) => (
-    <TableCell sx={{ color: "#999999", fontSize: "14px", whiteSpace: "nowrap",
+    <TableCell
+      sx={{
+        color: "#999999",
+        fontSize: "14px",
+        whiteSpace: "nowrap",
         fontWeight: "500",
-        textTransform: "capitalize", }} {...props} />
+        textTransform: "capitalize",
+      }}
+      {...props}
+    />
   );
+  const truncateDescription = (description) => {
+    const words = description.split(' ');
+    if (words.length > 50) {
+      return words.slice(0, 50).join(' ') + '...'; // Truncate after 50 words
+    }
+    return description;
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
 
   return (
     <Grid container sx={{ padding: 3 }}>
@@ -92,7 +115,7 @@ const NoticeList = ({onNotice}) => {
               >
                 <Typography
                   sx={{
-                    fontWeight: '600',
+                    fontWeight: "600",
                     fontSize: "1rem",
                     whiteSpace: "nowrap",
                     textTransform: "capitalize",
@@ -102,22 +125,22 @@ const NoticeList = ({onNotice}) => {
                   Notice List
                 </Typography>
                 <Button
-                    onClick={onNotice}
-                    sx={{
-                        padding: "8px 16px",
-                        fontSize: "14px",
-                        backgroundColor: "#405189",
-                        color: "white",
-                        "&:hover": {
-                        backgroundColor: "#334a6c",
-                        },
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                    }}
-                    >
-                    <AddIcon sx={{ fontSize: 20 }} />  
-                    Create Notice
+                  onClick={onNotice}
+                  sx={{
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#334a6c",
+                    },
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <AddIcon sx={{ fontSize: 20 }} />
+                  Create Notice
                 </Button>
               </Grid>
             </Grid>
@@ -134,13 +157,16 @@ const NoticeList = ({onNotice}) => {
                       <HeaderCell>Action</HeaderCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody>
-                    {data.map((row) => (
-                      <TableRow key={row.id}>
-                        <DataCell>{row.id}</DataCell>
+                    {data?.map((row, index) => (
+                      <TableRow key={index+1}>
+                        <DataCell>{index+1}</DataCell>
                         <DataCell>{row.title}</DataCell>
-                        <DataCell>{row.message}</DataCell>
-                        <DataCell>{row.date}</DataCell>
+                        <DataCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>
+                          {truncateDescription(row.description)}
+                        </DataCell>
+                        <DataCell>{formatDate(row.created_at)}</DataCell>
                         <TableCell>
                           <IconButton
                             onClick={() => handleView(row.id)}
@@ -151,19 +177,22 @@ const NoticeList = ({onNotice}) => {
                           <IconButton
                             onClick={() => handleEdit(row.id)}
                             aria-label="edit"
-                            sx={{ color: "green" }}>
+                            sx={{ color: "green" }}
+                          >
                             <Edit />
                           </IconButton>
                           <IconButton
                             onClick={() => handleDelete(row.id)}
                             aria-label="delete"
-                            sx={{ color: "red" }}>
+                            sx={{ color: "red" }}
+                          >
                             <Delete />
                           </IconButton>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
+
                 </Table>
               </TableContainer>
             </Grid>

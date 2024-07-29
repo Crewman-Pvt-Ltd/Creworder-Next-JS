@@ -25,14 +25,14 @@ const initialData = [
     name: "Rahul Sir",
     email: "admin1@gmail.com",
     profileimage:
-      "https://crewconect.com/public/user-uploads/avatar/36b9daf7aea7d35fd6aca8a881ebe8c8.png",
+      "https://static.vecteezy.com/system/resources/thumbnails/021/353/308/small_2x/user-icon-for-website-and-mobile-apps-png.png",
   },
   {
     id: 2,
     name: "Admin 2",
     email: "admin2@gmail.com",
     profileimage:
-      "https://crewconect.com/public/user-uploads/avatar/36b9daf7aea7d35fd6aca8a881ebe8c8.png",
+      "https://static.vecteezy.com/system/resources/thumbnails/021/353/308/small_2x/user-icon-for-website-and-mobile-apps-png.png",
   },
 ];
 
