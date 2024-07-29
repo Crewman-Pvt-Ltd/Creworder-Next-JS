@@ -178,21 +178,21 @@ const CompanyList = ({ onCreateCompany, onEditCompany }) => {
                         <IconButton
                           onClick={() => handleView(row)}
                           aria-label="view"
-                          sx={{ color: "blue" }}
+                          sx={{ color: "#708090" }}
                         >
                           <Visibility />
                         </IconButton>
                         <IconButton
                           onClick={() => handleEdit(row)}
                           aria-label="edit"
-                          sx={{ color: "green" }}
+                          sx={{ color: "#001F3F" }}
                         >
                           <Edit />
                         </IconButton>
                         <IconButton
                           onClick={() => handleDelete(row.id)}
                           aria-label="delete"
-                          sx={{ color: "red" }}
+                          sx={{ color: "#333333" }}
                         >
                           <Delete />
                         </IconButton>

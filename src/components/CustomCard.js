@@ -9,7 +9,7 @@ const StyledCard = styled(Card)(({ theme, mb_padding }) => ({
   borderRadius: theme.shape.borderRadius,
   backgroundColor: '#fff',
   padding: mb_padding,
-  borderRadius: '5px',
+  borderRadius: '4px',
   boxShadow: "0 1px 2px rgba(56, 65, 74, 0.15)",
  '&:hover': {
    
