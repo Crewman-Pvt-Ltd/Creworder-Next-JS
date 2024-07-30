@@ -7,7 +7,11 @@ import PackageIcon from '@mui/icons-material/LocalOffer';
 import CompanyIcon from '@mui/icons-material/Business';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+<<<<<<< Updated upstream
 import NotificationsIcon from '@mui/icons-material/Notifications';
+=======
+import ChatIcon from '@mui/icons-material/Chat';
+>>>>>>> Stashed changes
 import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
@@ -176,6 +180,7 @@ const Sidebar = ({ isOpen }) => {
           onClick={() => handleItemClick('/superadmin/supportticket')}
         >
         </HoverableNavItem>
+<<<<<<< Updated upstream
         <HoverableNavItem
           isOpen={isOpen}
           name="Notice"
@@ -184,6 +189,18 @@ const Sidebar = ({ isOpen }) => {
           onClick={() => handleItemClick('/superadmin/Notice')}
         >
         </HoverableNavItem>
+=======
+
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Chat"
+          icon={<ChatIcon />}
+          onClick={() => handleItemClick('/chat')}
+        >
+
+        </HoverableNavItem>
+     
+>>>>>>> Stashed changes
       </Box>
     </Box>
   );
