@@ -22,11 +22,7 @@ export default function Login() {
     try {
       const response = await MainApi.post(`${login}`, { username, password });
       const { key } = response.data;
-
-
       console.log("key", key);
-
-
       localStorage.setItem('crew_token', key);
       document.cookie = `token=${key};path=/`;
       await fetchPermissions(key);

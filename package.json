@@ -9,12 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "@ckeditor/ckeditor5-build-classic": "^42.0.1",
     "@ckeditor/ckeditor5-react": "^8.0.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+=======
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+>>>>>>> Stashed changes
     "@mui/icons-material": "^5.16.0",
-    "@mui/material": "^5.11.0",
+    "@mui/material": "^5.16.4",
     "@mui/x-date-pickers": "^5.0.0",
     "@nextui-org/date-picker": "^2.1.5",
     "axios": "^1.7.2",
