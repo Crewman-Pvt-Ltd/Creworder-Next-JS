@@ -179,10 +179,10 @@ const Sidebar = ({ isOpen }) => {
         </HoverableNavItem>
         <HoverableNavItem
           isOpen={isOpen}
-          name="Notice"
+          name="notice"
           icon={<NotificationsIcon />}
-          active={currentPath === '/superadmin/Notice'}
-          onClick={() => handleItemClick('/superadmin/Notice')}
+          active={currentPath === '/superadmin/notice'}
+          onClick={() => handleItemClick('/superadmin/notice')}
         >
         </HoverableNavItem>
 

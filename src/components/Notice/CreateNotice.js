@@ -1,22 +1,72 @@
 import React, { useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
+import { useRouter } from "next/router";
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 import {Typography, Button, Grid, Card, CardContent, Divider,} from "@mui/material";
 
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById("preview").src = e.target.result;
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
+  const CreateNotice = ( ) => {
 
-  const CreateNotice = ({ onNoticeList }) => {
-  const [showDetails, setShowDetails] = useState(false);
-  const [branches, setBranches] = useState([{ id: 1 }]);
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    user: 1
+  });
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let formErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (!formData[key]) {
+        formErrors[key] = "This field is required";
+      }
+    });
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0;
+  };
+  
+  const handleInputChange = (field, value, index) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
+
+
+  const handleSubmit = async () => {
+    if (validateForm()) {
+      try {
+        const token = getToken();
+        if (!token) {
+          throw new Error("No authentication token found.");
+        }
+
+        const form = new FormData();
+        Object.keys(formData).forEach((key) => {
+          form.append(key, formData[key]);
+        });
+
+        const response = await MainApi.post("/api/notices/", form, {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "multipart/form-data", 
+          },
+        });
+
+        if (response.status === 201) {
+          router.push("/superadmin/notice");
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error.response?.data || error.message);
+      }
+    }
+  };
+
+
+  
 
   return (
     <Grid container sx={{ padding: 3 }}>
@@ -47,6 +97,8 @@ const handleFileChange = (event) => {
                 name="title"
                 placeholder="title"
                 type="text"
+                value={formData.title}
+                onChange={(e) => handleInputChange("title", e.target.value)}
                 required
                 fullWidth
               />
@@ -70,6 +122,8 @@ const handleFileChange = (event) => {
                     id="description"
                     name="description"
                     type="text"
+                    value={formData.description}
+                    onChange={(e) => handleInputChange("description", e.target.value)}
                     placeholder="Full Description"
                     required
                     fullWidth
@@ -100,7 +154,7 @@ const handleFileChange = (event) => {
                     backgroundColor: "#334a6c",
                   },
                 }}
-                onClick={onNoticeList}
+                onClick={handleSubmit}
               >
                 Submit
               </Button>
