@@ -59,7 +59,7 @@ const modules = [
 const CreatePackage = () => {
   const router = useRouter();
   const { mutate: createPackage, isLoading, error } = useCreatePackage();
-  
+
   const [formState, setFormState] = useState({
     name: "",
     type: "",
@@ -68,40 +68,43 @@ const CreatePackage = () => {
     annual_price: "",
     description: "",
     created_by: "",
-    checkedModules: []
+    checkedModules: [],
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormState(prevState => ({ ...prevState, [name]: value }));
+    setFormState((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleCheckboxChange = (event) => {
     const name = event.target.name;
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
       checkedModules: prevState.checkedModules.includes(name)
-        ? prevState.checkedModules.filter(item => item !== name)
-        : [...prevState.checkedModules, name]
+        ? prevState.checkedModules.filter((item) => item !== name)
+        : [...prevState.checkedModules, name],
     }));
   };
 
   const handleSelectAll = (event) => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      checkedModules: event.target.checked ? modules : []
+      checkedModules: event.target.checked ? modules : [],
     }));
   };
 
   const handlePlanChange = (event) => {
-    setFormState(prevState => ({ ...prevState, selectedPlan: event.target.value }));
+    setFormState((prevState) => ({
+      ...prevState,
+      selectedPlan: event.target.value,
+    }));
   };
 
   const handleSubmit = async () => {
     try {
       await createPackage({
         ...formState,
-        modules: formState.checkedModules
+        modules: formState.checkedModules,
       });
       router.push("/superadmin/package");
     } catch (err) {
@@ -114,19 +117,19 @@ const CreatePackage = () => {
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
-            <Grid item>
-              <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Add Package
-              </Typography>
-            </Grid>
+            <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
+              Add Package
+            </Typography>
 
             <Divider sx={{ my: 2 }} />
 
-            <Grid item sx={{ marginTop: 3 }}>
-              <Typography sx={{ fontSize: "15px" }}>
-                Choose Package Type
-              </Typography>
-              <Grid item sx={{ marginTop: 3 }}>
+            <Grid container spacing={2} sx={{ marginTop: 3 }}>
+              <Grid item xs={12}>
+                <Typography sx={{ fontSize: "15px" }}>
+                  Choose Package Type
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
                 <FormControl component="fieldset">
                   <RadioGroup
                     row
@@ -135,53 +138,38 @@ const CreatePackage = () => {
                     value={formState.type}
                     onChange={handlePlanChange}
                   >
-                    <Box
-                      sx={{
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        padding: "3px 5px",
-                        display: "flex",
-                        alignItems: "center",
-                        marginRight: 2,
-                      }}
-                    >
-                      <FormControlLabel
-                        value="free"
-                        control={
-                          <Radio
-                            sx={{ "& .MuiSvgIcon-root": { fontSize: 12 } }}
-                          />
-                        }
-                        label={
-                          <Typography sx={{ fontSize: "16px" }}>
-                            Free Plan
-                          </Typography>
-                        }
-                      />
-                    </Box>
-                    <Box
-                      sx={{
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        padding: "3px 5px",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <FormControlLabel
-                        value="paid"
-                        control={
-                          <Radio
-                            sx={{ "& .MuiSvgIcon-root": { fontSize: 12 } }}
-                          />
-                        }
-                        label={
-                          <Typography sx={{ fontSize: "16px" }}>
-                            Paid Plan
-                          </Typography>
-                        }
-                      />
-                    </Box>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <FormControlLabel
+                          value="free"
+                          control={
+                            <Radio
+                              sx={{ "& .MuiSvgIcon-root": { fontSize: 12 } }}
+                            />
+                          }
+                          label={
+                            <Typography sx={{ fontSize: "16px" }}>
+                              Free Plan
+                            </Typography>
+                          }
+                        />
+                      </Grid>
+                      <Grid item>
+                        <FormControlLabel
+                          value="paid"
+                          control={
+                            <Radio
+                              sx={{ "& .MuiSvgIcon-root": { fontSize: 12 } }}
+                            />
+                          }
+                          label={
+                            <Typography sx={{ fontSize: "16px" }}>
+                              Paid Plan
+                            </Typography>
+                          }
+                        />
+                      </Grid>
+                    </Grid>
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -189,52 +177,53 @@ const CreatePackage = () => {
 
             <Divider sx={{ my: 2 }} />
 
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
+            <Grid container spacing={2} mt={2}>
               <Grid
                 item
+                xs={12}
                 sx={{
                   display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
+                  flexDirection: "column",
                 }}
               >
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="name" required>
-                    Package Name
-                  </CustomLabel>
-                  <CustomTextField
-                    id="name"
-                    name="name"
-                    placeholder="e.g. creworder"
-                    type="text"
-                    required
-                    fullWidth
-                    value={formState.name}
-                    onChange={handleInputChange}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="maxEmployees" required>
-                    Max Employees
-                  </CustomLabel>
-                  <CustomTextField
-                    id="maxEmployees"
-                    name="maxEmployees"
-                    type="number"
-                    placeholder="e.g. 100"
-                    required
-                    fullWidth
-                    value={formState.max_employees}
-                    onChange={handleInputChange}
-                  />
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                  }}
+                >
+                  <Grid item xs={12} sm={6}>
+                    <CustomLabel htmlFor="name" required>
+                      Package Name
+                    </CustomLabel>
+                    <CustomTextField
+                      id="name"
+                      name="name"
+                      placeholder="e.g. creworder"
+                      type="text"
+                      required
+                      fullWidth
+                      value={formState.name}
+                      onChange={handleInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <CustomLabel htmlFor="maxEmployees" required>
+                      Max Employees
+                    </CustomLabel>
+                    <CustomTextField
+                      id="maxEmployees"
+                      name="maxEmployees"
+                      type="number"
+                      placeholder="e.g. 100"
+                      required
+                      fullWidth
+                      value={formState.max_employees}
+                      onChange={handleInputChange}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
@@ -242,27 +231,14 @@ const CreatePackage = () => {
             {formState.selectedPlan === "paid" && (
               <>
                 <Divider sx={{ my: 2 }} />
-                <Grid item sx={{ marginTop: 3 }}>
-                  <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
-                    Payment Gateway Plans
-                  </Typography>
-                  <Grid
-                    item
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 2,
-                      marginTop: 2,
-                    }}
-                  >
-                    <Grid
-                      item
-                      sx={{
-                        display: "flex",
-                        flexDirection: { xs: "column", sm: "row" },
-                        gap: 2,
-                      }}
-                    >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography sx={{ fontSize: "15px", fontWeight: "bold" }}>
+                      Payment Gateway Plans
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Grid container spacing={2} mt={2}>
                       <Grid item xs={12} sm={6}>
                         <CustomLabel htmlFor="monthlyplanprice" required>
                           Monthly Plan Price
@@ -300,20 +276,22 @@ const CreatePackage = () => {
             )}
             <Divider sx={{ my: 2 }} />
 
-            <Grid item>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>
                   Select Modules for this package
                 </Typography>
               </Grid>
-              
-              <Grid container xs={12}>
+
+              <Grid item xs={12}>
                 <FormGroup>
                   <FormControlLabel
                     control={
                       <Checkbox
                         onChange={handleSelectAll}
-                        checked={formState.checkedModules.length === modules.length}
+                        checked={
+                          formState.checkedModules.length === modules.length
+                        }
                       />
                     }
                     label="Select All"
@@ -354,7 +332,7 @@ const CreatePackage = () => {
                 onChange={handleInputChange}
               />
             </Grid>
-            
+
             <Grid
               item
               sx={{

@@ -4,16 +4,15 @@ import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
-import {Typography, Button, Grid, Card, CardContent, Divider,} from "@mui/material";
+import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
 
-  const CreateNotice = ( ) => {
-
+const CreateNotice = () => {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    user: 1
+    user: 1,
   });
   const [errors, setErrors] = useState({});
 
@@ -27,14 +26,19 @@ import {Typography, Button, Grid, Card, CardContent, Divider,} from "@mui/materi
     setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
-  
-  const handleInputChange = (field, value, index) => {
+
+  const handleInputChange = (field, value) => {
     setFormData((prevState) => ({
       ...prevState,
       [field]: value,
     }));
+    if (value) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [field]: "",
+      }));
+    }
   };
-
 
   const handleSubmit = async () => {
     if (validateForm()) {
@@ -52,7 +56,7 @@ import {Typography, Button, Grid, Card, CardContent, Divider,} from "@mui/materi
         const response = await MainApi.post("/api/notices/", form, {
           headers: {
             Authorization: `Token ${token}`,
-            "Content-Type": "multipart/form-data", 
+            "Content-Type": "multipart/form-data",
           },
         });
 
@@ -65,75 +69,74 @@ import {Typography, Button, Grid, Card, CardContent, Divider,} from "@mui/materi
     }
   };
 
-
-  
-
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <Card>
           <CardContent>
-          <Grid item>
+            <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
                 Add Notice
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
             <Grid
-            item
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              gap: 2,
-              marginTop: 2,
-            }}
-          >
-            <Grid item xs={12}>
-              <CustomLabel htmlFor="title" required>
-                Title
-              </CustomLabel>
-              <CustomTextField
-                id="title"
-                name="title"
-                placeholder="title"
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange("title", e.target.value)}
-                required
-                fullWidth
-              />
+              item
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 2,
+                marginTop: 2,
+              }}
+            >
+              <Grid item xs={12}>
+                <CustomLabel htmlFor="title" required>
+                  Title
+                </CustomLabel>
+                <CustomTextField
+                  id="title"
+                  name="title"
+                  placeholder="title"
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange("title", e.target.value)}
+                  error={!!errors.title}
+                  helperText={errors.title}
+                  required
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-          </Grid>
 
-
-          <Grid
-          item
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            gap: 2,
-            marginTop: 2,
-          }}>
-          <Grid item xs={12} sm={12}>
-                  <CustomLabel htmlFor="description" required>
-                    Description:
-                  </CustomLabel>
-                  <CustomTextField
-                    id="description"
-                    name="description"
-                    type="text"
-                    value={formData.description}
-                    onChange={(e) => handleInputChange("description", e.target.value)}
-                    placeholder="Full Description"
-                    required
-                    fullWidth
-                    multiline
-                    rows={4}  // This makes it a textarea
-                  />
-                </Grid> 
-        </Grid>
-
-    
+            <Grid
+              item
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 2,
+                marginTop: 2,
+              }}
+            >
+              <Grid item xs={12} sm={12}>
+                <CustomLabel htmlFor="description" required>
+                  Description
+                </CustomLabel>
+                <CustomTextField
+                  id="description"
+                  name="description"
+                  type="text"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  placeholder="Full Description"
+                  error={!!errors.description}
+                  helperText={errors.description}
+                  required
+                  fullWidth
+                  multiline
+                  rows={4}
+                />
+              </Grid>
+            </Grid>
 
             <Grid
               item
@@ -160,7 +163,6 @@ import {Typography, Button, Grid, Card, CardContent, Divider,} from "@mui/materi
               </Button>
             </Grid>
           </CardContent>
-         
         </Card>
       </Grid>
     </Grid>

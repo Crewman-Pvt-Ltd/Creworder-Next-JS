@@ -179,7 +179,7 @@ const Sidebar = ({ isOpen }) => {
         </HoverableNavItem>
         <HoverableNavItem
           isOpen={isOpen}
-          name="notice"
+          name="Notice"
           icon={<NotificationsIcon />}
           active={currentPath === '/superadmin/notice'}
           onClick={() => handleItemClick('/superadmin/notice')}
@@ -190,6 +190,7 @@ const Sidebar = ({ isOpen }) => {
           isOpen={isOpen}
           name="Chat"
           icon={<ChatIcon />}
+          active={currentPath === '/chat'}
           onClick={() => handleItemClick('/chat')}
         >
 
