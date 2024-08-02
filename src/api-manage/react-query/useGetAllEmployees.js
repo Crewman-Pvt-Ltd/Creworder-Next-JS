@@ -17,8 +17,8 @@ const getUsers = async () => {
   return data;
 };
 
-export default function useGetAllCompanies() {
-  return useQuery(["companies"], () => getUsers(), {
+export default function useGetAllEmployees() {
+  return useQuery(["employees"], () => getUsers(), {
     cacheTime: 300000,
   });
 }
