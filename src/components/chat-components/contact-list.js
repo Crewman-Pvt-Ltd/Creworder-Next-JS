@@ -19,7 +19,9 @@ const ContactList = () => {
     const [selectedOption, setSelectedOption] = useState("Chats");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = React.useState([]);
+    const [socket, setSocket] = useState(null);
     const { fetchPermissions, permissionsData } = usePermissions();
+    const [chatusrDetails, setChatusrDetails] = useState('');
     useEffect(() => {
         fetch(`${baseApiUrl}users`)
         .then(response => {
@@ -39,6 +41,7 @@ const ContactList = () => {
     }, []);
 
     const handleUserClick = (user) => {
+        setChatusrDetails(user);
         setUserInfo({
             username: user.username,
             text: 'Hello!',
@@ -48,7 +51,6 @@ const ContactList = () => {
         axios.get(`${baseApiUrl}getChatDetail/`, {
             params: {
                 from_user: permissionsData.user.id,
-                // user_id: permissionsData.user.id,
                 to_user: user.id
             }
         })
@@ -74,24 +76,94 @@ const ContactList = () => {
         setSearchQuery(event.target.value);
     };
 
+    useEffect(() => {
+        const connectWebSocket = () => {
+            const ws = new WebSocket('ws://localhost:3001');
+            ws.onopen = () => {
+                console.log('WebSocket connection established');
+                setSocket(ws);
+            };
+            ws.onmessage = (event) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    try {
+                        const incomingMessage = JSON.parse(reader.result);
+                        setMessages((prevMessages) => [...prevMessages, incomingMessage]);
+                    } catch (error) {
+                        console.error('Error parsing JSON message:', error);
+                    }
+                };
+                reader.readAsText(event.data);
+            };
+            ws.onclose = (event) => {
+                console.log('WebSocket connection closed:', event.reason);
+            };
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        };
+        connectWebSocket();
+        return () => {
+            if (socket) {
+                socket.close();
+            }
+        };
+    }, []);
+
+
     const handleMessageChange = (event) => {
         setMessage(event.target.value);
-      };
-    
-      const handleSendMessage = () => {
-        if (message.trim() !== '') {
-          setMessages([...messages, { type: 'outgoing', text: message, avatar: '' }]);
-          setMessage('');
+    };
+
+    const handleSendMessage = () => {
+        if (message.trim() !== '' && socket) {
+            const messageObject = {
+                from_user: permissionsData.user.id,
+                to_user: chatusrDetails.id,
+                type: 'text',
+                text: message,
+                avatar: ''
+            };
+            const messageString = JSON.stringify(messageObject);
+            socket.send(messageString);
+            setMessages((prevMessages) => [...prevMessages, messageObject]);
+            setMessage('');
+            let data = JSON.stringify({
+                "type": "text",
+                "text": message,
+                "massage_type": "text",
+                "user_id": permissionsData.user.id,
+                "from_user": permissionsData.user.id,
+                "to_user": chatusrDetails.id
+              });
+              
+              let config = {
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: `${baseApiUrl}createChat/`,
+                headers: { 
+                  'Content-Type': 'application/json'
+                },
+                data : data
+              };
+              
+              axios.request(config)
+              .then((response) => {
+                console.log(JSON.stringify(response.data));
+              })
+              .catch((error) => {
+                console.log(error);
+              });
         }
-      };
-    
-      const handleKeyDown = (event) => {
+    };
+
+    const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
-          event.preventDefault();
-          handleSendMessage();
+            event.preventDefault();
+            handleSendMessage();
         }
-      };
-    
+    };
+    const sortedMessages = messages.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     return (
         <section maxWidth="md">
             <Grid container>
@@ -153,13 +225,13 @@ const ContactList = () => {
                     <Grid item xs={12} lg={8}>
                         <Box style={{ display: 'flex', flexDirection: 'column', width: "100%", height: "84vh", backgroundColor: "#ffffff" }}>
                             <Box style={{ flexGrow: 1, overflowY: "scroll", padding: "1em" }}>
-                                {messages.map((msg, index) => (
-                                    <Box key={index} display="flex" alignItems="center" justifyContent={msg.type === 'incoming' ? 'flex-start' : 'flex-end'} marginBottom="1em">
-                                        {msg.type === 'incoming' && <Avatar sx={{ bgcolor: deepOrange[500], marginRight: '0.5em' }}>{msg.avatar}</Avatar>}
-                                            <Box style={{ backgroundColor: msg.type === 'incoming' ? '#f1f0f0' : '#04774d', color: msg.type === 'incoming' ? '#000' : '#fff', padding: '0.5em 1em', borderRadius: '10px', maxWidth: '70%',}}>
+                                {sortedMessages.map((msg, index) => (
+                                    <Box key={index} display="flex" alignItems="center" justifyContent={msg.to_user === permissionsData.user.id ? 'flex-start' : 'flex-end'} marginBottom="1em">
+                                        {msg.to_user === permissionsData.user.id && <Avatar sx={{ bgcolor: deepOrange[500], marginRight: '0.5em' }}>{msg.avatar}</Avatar>}
+                                            <Box style={{ backgroundColor: msg.to_user === permissionsData.user.id ? '#f1f0f0' : '#04774d', color: msg.to_user === permissionsData.user.id ? '#000' : '#fff', padding: '0.5em 1em', borderRadius: '10px', maxWidth: '70%',}}>
                                               {msg.text}
                                             </Box>
-                                        {msg.type === 'outgoing' && <Avatar sx={{ bgcolor: deepPurple[500], marginLeft: '0.5em' }}>{msg.avatar}</Avatar>}
+                                        {msg.from_user === permissionsData.user.id && <Avatar sx={{ bgcolor: deepPurple[500], marginLeft: '0.5em' }}>{msg.avatar}</Avatar>}
                                     </Box>
                                 ))}
                             </Box>
@@ -205,145 +277,3 @@ const ContactList = () => {
     );
   };  
 export default ContactList;
-//   import { styled } from "@mui/system";
-//   import SendIcon from "@mui/icons-material/Send";
-// Define your styles using `styled`
-// const useStyles = {
-//     table: {
-//       minWidth: 650,
-//     },
-//     chatSection: {
-//       width: "100%",
-//       height: "80vh",
-//     },
-//     headBG: {
-//       backgroundColor: "#e0e0e0",
-//     },
-//     borderRight500: {
-//       borderRight: "1px solid #e0e0e0",
-//     },
-//     messageArea: {
-//       height: "70vh",
-//       overflowY: "auto",
-//     },
-//   };
-  
-//   // Create styled components
-//   const ChatSection = styled(Paper)(useStyles.chatSection);
-//   const BorderRight500 = styled(Grid)(useStyles.borderRight500);
-//   const MessageArea = styled(List)(useStyles.messageArea);
-// const Chat = () => {
-//     return (
-//       <div>
-//         <Grid container>
-//           <Grid item xs={12}>
-//           </Grid>
-//         </Grid>
-//         <Grid container component={ChatSection}>
-//           <BorderRight500 item xs={3}>
-//             <List>
-//               <ListItem button key="RemySharp">
-//                 <ListItemIcon>
-//                   <Avatar
-//                     alt="Remy Sharp"
-//                     src="https://material-ui.com/static/images/avatar/1.jpg"
-//                   />
-//                 </ListItemIcon>
-//                 <ListItemText primary="John Wick"></ListItemText>
-//               </ListItem>
-//             </List>
-//             <Divider />
-//             <Grid item xs={12} style={{ padding: "10px" }}>
-//               <TextField
-//                 id="outlined-basic-email"
-//                 label="Search"
-//                 variant="outlined"
-//                 fullWidth
-//               />
-//             </Grid>
-//             <Divider />
-//             <List>
-//               <ListItem button key="RemySharp">
-//                 <ListItemIcon>
-//                   <Avatar
-//                     alt="Remy Sharp"
-//                     src="https://material-ui.com/static/images/avatar/1.jpg"
-//                   />
-//                 </ListItemIcon>
-//                 <ListItemText primary="Remy Sharp">Remy Sharp</ListItemText>
-//                 <ListItemText secondary="online" align="right"></ListItemText>
-//               </ListItem>
-//               <ListItem button key="Alice">
-//                 <ListItemIcon>
-//                   <Avatar
-//                     alt="Alice"
-//                     src="https://material-ui.com/static/images/avatar/3.jpg"
-//                   />
-//                 </ListItemIcon>
-//                 <ListItemText primary="Alice">Alice</ListItemText>
-//               </ListItem>
-//               <ListItem button key="CindyBaker">
-//                 <ListItemIcon>
-//                   <Avatar
-//                     alt="Cindy Baker"
-//                     src="https://material-ui.com/static/images/avatar/2.jpg"
-//                   />
-//                 </ListItemIcon>
-//                 <ListItemText primary="Cindy Baker">Cindy Baker</ListItemText>
-//               </ListItem>
-//             </List>
-//           </BorderRight500>
-//           <Grid item xs={9}>
-//             <MessageArea>
-//               <ListItem key="1">
-//                 <Grid container>
-//                   <Grid item xs={12}>
-//                     <ListItemText align="right" primary="Hey man, What's up ?"></ListItemText>
-//                   </Grid>
-//                   <Grid item xs={12}>
-//                     <ListItemText align="right" secondary="09:30"></ListItemText>
-//                   </Grid>
-//                 </Grid>
-//               </ListItem>
-//               <ListItem key="2">
-//                 <Grid container>
-//                   <Grid item xs={12}>
-//                     <ListItemText align="left" primary="Hey, I am Good! What about you ?"></ListItemText>
-//                   </Grid>
-//                   <Grid item xs={12}>
-//                     <ListItemText align="left" secondary="09:31"></ListItemText>
-//                   </Grid>
-//                 </Grid>
-//               </ListItem>
-//               <ListItem key="3">
-//                 <Grid container>
-//                   <Grid item xs={12}>
-//                     <ListItemText align="right" primary="Cool. I am good, let's catch up!"></ListItemText>
-//                   </Grid>
-//                   <Grid item xs={12}>
-//                     <ListItemText align="right" secondary="10:30"></ListItemText>
-//                   </Grid>
-//                 </Grid>
-//               </ListItem>
-//             </MessageArea>
-//             <Divider />
-//             <Grid container style={{ padding: "20px" }}>
-//               <Grid item xs={11}>
-//                 <TextField
-//                   id="outlined-basic-email"
-//                   label="Type Something"
-//                   fullWidth
-//                 />
-//               </Grid>
-//               <Grid xs={1} align="right">
-//                 <Fab color="primary" aria-label="add">
-//                   <SendIcon />
-//                 </Fab>
-//               </Grid>
-//             </Grid>
-//           </Grid>
-//         </Grid>
-//       </div>
-//    );
-// };
-  
