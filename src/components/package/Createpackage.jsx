@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
-import { useCreatePackage } from "@/api-manage/react-query/useCreatePackage";
+
 import {
   Typography,
   Button,
@@ -58,7 +58,7 @@ const modules = [
 
 const CreatePackage = () => {
   const router = useRouter();
-  const { mutate: createPackage, isLoading, error } = useCreatePackage();
+
 
   const [formState, setFormState] = useState({
     name: "",
@@ -353,16 +353,12 @@ const CreatePackage = () => {
                   },
                 }}
                 onClick={handleSubmit}
-                disabled={isLoading}
+           
               >
-                {isLoading ? "Submitting..." : "Submit"}
+             
               </Button>
             </Grid>
-            {error && (
-              <Typography color="error" sx={{ mt: 2 }}>
-                Error: {error.message}
-              </Typography>
-            )}
+           
           </CardContent>
         </CustomCard>
       </Grid>

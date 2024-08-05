@@ -75,6 +75,11 @@ const TopSellers = () => {
   return (
     <CustomCard>
       <CardContent>
+        <Box sx={{
+      
+        }}>
+
+        
         <Box
           sx={{
             display: "flex",
@@ -128,7 +133,7 @@ const TopSellers = () => {
         <Divider sx={{ my: 2 }} />
         {products.map((product, index) => (
           <React.Fragment key={index}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 2 , height:30}}>
               <Box sx={{ display: 'flex', alignItems: 'center' , width: "200px" }}>
                 <Box component="img" src={product.image} alt={product.name} sx={{ width: 50, height: 50, mr: 2 }} />
                 <Box>
@@ -175,7 +180,7 @@ const TopSellers = () => {
             </Box>
             {index < products.length - 1 && <Divider sx={{ my: 2 }} />}
           </React.Fragment>
-        ))}
+        ))} </Box>
       </CardContent>
     </CustomCard>
   );

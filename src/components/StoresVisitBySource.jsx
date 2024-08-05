@@ -37,6 +37,15 @@ const StoresVisitBySource = () => {
       legend: {
         display: false,
       },
+      datalabels: {
+        display: true,
+        color: '#000000', 
+        formatter: (value) => value,
+        font: {
+          weight: 'bold',
+        },
+       
+      },
     },
   };
 

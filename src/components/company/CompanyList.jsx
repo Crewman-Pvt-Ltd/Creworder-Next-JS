@@ -25,7 +25,7 @@ import {
   Cancel,
 } from "@mui/icons-material";
 
-const CompanyList = ({ onCreateCompany, onEditCompany }) => {
+const CompanyList = ({ }) => {
   const { data } = useGetAllCompanies();
   const router = useRouter();
 
