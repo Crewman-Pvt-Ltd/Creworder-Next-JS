@@ -22,6 +22,10 @@ const ContactList = () => {
     const [socket, setSocket] = useState(null);
     const { fetchPermissions, permissionsData } = usePermissions();
     const [chatusrDetails, setChatusrDetails] = useState('');
+
+    //=======================================================================
+    //                   Get users for chat here
+    //=======================================================================
     useEffect(() => {
         fetch(`${baseApiUrl}users`)
         .then(response => {
@@ -40,6 +44,9 @@ const ContactList = () => {
         });
     }, []);
 
+    //=======================================================================
+    //                 Get Old chat here form database
+    //=======================================================================
     const handleUserClick = (user) => {
         setChatusrDetails(user);
         setUserInfo({
@@ -57,6 +64,7 @@ const ContactList = () => {
         .then(response => {
             if (Array.isArray(response.data.data)) {
                 setMessages(response.data.data);
+                console.log("SHIVAM1");
             } else {
                 console.error('Unexpected response data format:', response.data);
                 setMessages([]);
@@ -76,28 +84,47 @@ const ContactList = () => {
         setSearchQuery(event.target.value);
     };
 
+    //=======================================================================
+    //                    WebSocket Setup And Incomming massage manage here
+    //=======================================================================
     useEffect(() => {
         const connectWebSocket = () => {
             const ws = new WebSocket('ws://localhost:3001');
+            
             ws.onopen = () => {
                 console.log('WebSocket connection established');
                 setSocket(ws);
             };
+    
             ws.onmessage = (event) => {
                 const reader = new FileReader();
                 reader.onload = () => {
                     try {
                         const incomingMessage = JSON.parse(reader.result);
-                        setMessages((prevMessages) => [...prevMessages, incomingMessage]);
+                        setMessages(prevMessages => {
+                            const messageExists = prevMessages.some(
+                                msg => msg.id === incomingMessage.id
+                            );
+    
+                            if (!messageExists) {
+                                return [...prevMessages, incomingMessage];
+                            }
+                            return prevMessages;
+                        });
+    
+                        console.log("Updated Messages:", incomingMessage.from_user);
+                        console.log("SHIVAM2");
                     } catch (error) {
                         console.error('Error parsing JSON message:', error);
                     }
                 };
                 reader.readAsText(event.data);
             };
+    
             ws.onclose = (event) => {
                 console.log('WebSocket connection closed:', event.reason);
             };
+    
             ws.onerror = (error) => {
                 console.error('WebSocket error:', error);
             };
@@ -109,12 +136,14 @@ const ContactList = () => {
             }
         };
     }, []);
-
-
+    
     const handleMessageChange = (event) => {
         setMessage(event.target.value);
     };
 
+    //=======================================================================
+    //         Sendmassage Setup and Create Chat manage here
+    //=======================================================================
     const handleSendMessage = () => {
         if (message.trim() !== '' && socket) {
             const messageObject = {
@@ -124,10 +153,7 @@ const ContactList = () => {
                 text: message,
                 avatar: ''
             };
-            const messageString = JSON.stringify(messageObject);
-            socket.send(messageString);
-            setMessages((prevMessages) => [...prevMessages, messageObject]);
-            setMessage('');
+
             let data = JSON.stringify({
                 "type": "text",
                 "text": message,
@@ -136,7 +162,7 @@ const ContactList = () => {
                 "from_user": permissionsData.user.id,
                 "to_user": chatusrDetails.id
               });
-              
+
               let config = {
                 method: 'post',
                 maxBodyLength: Infinity,
@@ -146,17 +172,24 @@ const ContactList = () => {
                 },
                 data : data
               };
-              
+
               axios.request(config)
               .then((response) => {
-                console.log(JSON.stringify(response.data));
+                console.log(JSON.stringify(response.data.Success));
+                if(response.data.Success===true){
+                    messageObject['id']=response.data.ChatData.id;
+                    const messageString = JSON.stringify(messageObject);
+                    socket.send(messageString);
+                }
               })
               .catch((error) => {
                 console.log(error);
               });
         }
     };
-
+    //=======================================================================
+    //        Hadle Type massage here
+    //=======================================================================
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
