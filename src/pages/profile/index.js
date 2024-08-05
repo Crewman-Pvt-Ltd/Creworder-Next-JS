@@ -1,12 +1,12 @@
-import Profile from '@/components/Profile'
+import Profile from '@/components/profile/Profile'
 import React from 'react'
-
+import Layout from '@/components/Layout'
 
 const index = () => {
   return (
-    <div>
+    <Layout>
       < Profile />
-    </div>
+    </Layout>
   )
 }
 

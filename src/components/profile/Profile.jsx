@@ -8,7 +8,7 @@ import {
   Divider,
   CardContent,
 } from "@mui/material";
-import Layout from "./Layout";
+
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { usePermissions } from '@/contexts/PermissionsContext';
 import { useRouter } from "next/router";

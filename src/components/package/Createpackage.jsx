@@ -94,10 +94,14 @@ const CreatePackage = () => {
   };
 
   const handlePlanChange = (event) => {
+<<<<<<< Updated upstream
     setFormState((prevState) => ({
       ...prevState,
       selectedPlan: event.target.value,
     }));
+=======
+    setFormState(prevState => ({ ...prevState, type: event.target.value }));
+>>>>>>> Stashed changes
   };
 
   const handleSubmit = async () => {
@@ -138,6 +142,7 @@ const CreatePackage = () => {
                     value={formState.type}
                     onChange={handlePlanChange}
                   >
+<<<<<<< Updated upstream
                     <Grid container spacing={2}>
                       <Grid item>
                         <FormControlLabel
@@ -170,6 +175,73 @@ const CreatePackage = () => {
                         />
                       </Grid>
                     </Grid>
+=======
+                    <Box
+                      sx={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        padding: "3px 5px",
+                        display: "flex",
+                        alignItems: "center",
+                        marginRight: 2,
+                        bgcolor: formState.type === "free" ? "#e3f2fd" : "transparent",
+                        borderColor: formState.type === "free" ? "#2196f3" : "#ccc",
+                      }}
+                    >
+                      <FormControlLabel
+                        value="free"
+                        control={
+                          <Radio
+                            sx={{
+                              "&.Mui-checked": {
+                                color: "#2196f3",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                fontSize: 12,
+                              },
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography sx={{ fontSize: "16px" }}>
+                            Free Plan
+                          </Typography>
+                        }
+                      />
+                    </Box>
+                    <Box
+                      sx={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        padding: "3px 5px",
+                        display: "flex",
+                        alignItems: "center",
+                        bgcolor: formState.type === "paid" ? "#e3f2fd" : "transparent",
+                        borderColor: formState.type === "paid" ? "#2196f3" : "#ccc",
+                      }}
+                    >
+                      <FormControlLabel
+                        value="paid"
+                        control={
+                          <Radio
+                            sx={{
+                              "&.Mui-checked": {
+                                color: "#2196f3",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                fontSize: 12,
+                              },
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography sx={{ fontSize: "16px" }}>
+                            Paid Plan
+                          </Typography>
+                        }
+                      />
+                    </Box>
+>>>>>>> Stashed changes
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -186,6 +258,7 @@ const CreatePackage = () => {
                   flexDirection: "column",
                 }}
               >
+<<<<<<< Updated upstream
                 <Grid
                   container
                   spacing={2}
@@ -224,11 +297,42 @@ const CreatePackage = () => {
                       onChange={handleInputChange}
                     />
                   </Grid>
+=======
+                <Grid item xs={12} sm={6}>
+                  <CustomLabel htmlFor="name" required>
+                    Package Name
+                  </CustomLabel>
+                  <CustomTextField
+                    id="name"
+                    name="name"
+                    placeholder="e.g. creworder"
+                    type="text"
+                    required
+                    fullWidth
+                    value={formState.name}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <CustomLabel htmlFor="maxEmployees" required>
+                    Max Employees
+                  </CustomLabel>
+                  <CustomTextField
+                    id="maxEmployees"
+                    name="max_employees"
+                    type="number"
+                    placeholder="e.g. 100"
+                    required
+                    fullWidth
+                    value={formState.max_employees}
+                    onChange={handleInputChange}
+                  />
+>>>>>>> Stashed changes
                 </Grid>
               </Grid>
             </Grid>
 
-            {formState.selectedPlan === "paid" && (
+            {formState.type === "paid" && (
               <>
                 <Divider sx={{ my: 2 }} />
                 <Grid container spacing={2}>
@@ -245,7 +349,7 @@ const CreatePackage = () => {
                         </CustomLabel>
                         <CustomTextField
                           id="monthlyplanprice"
-                          name="monthlyPlanPrice"
+                          name="monthly_price"
                           placeholder=""
                           type="number"
                           required
@@ -260,7 +364,7 @@ const CreatePackage = () => {
                         </CustomLabel>
                         <CustomTextField
                           id="annualplanprice"
-                          name="annualPlanPrice"
+                          name="annual_price"
                           type="number"
                           placeholder=""
                           required
@@ -299,9 +403,9 @@ const CreatePackage = () => {
                 </FormGroup>
               </Grid>
 
-              <Grid item xs={12} sm={4} md={2}>
+             <Grid container spacing={2} sx={{ width: '1000px' }}>
                 {modules.map((module, index) => (
-                  <Grid key={index}>
+                  <Grid item xs={12} sm={6} md={2} key={index}>
                     <FormControlLabel
                       control={
                         <Checkbox
