@@ -7,9 +7,11 @@ import Stack from '@mui/material/Stack';
 import { deepOrange, deepPurple } from '@mui/material/colors';
 import ListItemButton from '@mui/material/ListItemButton';
 import { baseApiUrl } from '@/api-manage/ApiRoutes';
+import Badge from '@mui/material/Badge';
 import { usePermissions } from '@/contexts/PermissionsContext';
 
 import {Typography,IconButton,List,ListItem,TextField,ListItemText,Avatar,InputAdornment,FormControl, Select, MenuItem ,ListItemIcon,Grid} from "@mui/material";
+import { Forest } from '@mui/icons-material';
 const ContactList = () => {
     const items = Array.from({ length: 20 }, (_, index) => `Item ${index + 1}`);
     const [users, setUsers] = useState([]);
@@ -22,10 +24,35 @@ const ContactList = () => {
     const [socket, setSocket] = useState(null);
     const { fetchPermissions, permissionsData } = usePermissions();
     const [chatusrDetails, setChatusrDetails] = useState('');
+    //=======================================================================
+    //                   Get unread chat count
+    //=======================================================================
+    const get_chat_count = async (user_data) => {
+        const updatedUsers = await Promise.all(user_data.map(async (element) => {
+            try {
+                const config = {
+                    method: 'get',
+                    maxBodyLength: Infinity,
+                    url: `${baseApiUrl}getChatCount?to_user=${permissionsData.user.id}&from_user=${element.id}`,
+                    headers: {},
+                };
+    
+                const response = await axios.request(config);
+                element.chat_count = response.data.chat_count;
+            } catch (error) {
+                element.chat_count = null;
+                console.log(error);
+            }
+            return element;
+        }));
+    
+        setUsers(updatedUsers);
+    }
 
     //=======================================================================
     //                   Get users for chat here
     //=======================================================================
+
     useEffect(() => {
         fetch(`${baseApiUrl}users`)
         .then(response => {
@@ -35,7 +62,8 @@ const ContactList = () => {
             return response.json();
         })
         .then(data => {
-            setUsers(data);
+            // setUsers(data);
+            get_chat_count(data);
             setLoading(false);
         })
         .catch(error => {
@@ -160,7 +188,8 @@ const ContactList = () => {
                 "massage_type": "text",
                 "user_id": permissionsData.user.id,
                 "from_user": permissionsData.user.id,
-                "to_user": chatusrDetails.id
+                "to_user": chatusrDetails.id,
+                "chat_status":1
               });
 
               let config = {
@@ -180,6 +209,7 @@ const ContactList = () => {
                     messageObject['id']=response.data.ChatData.id;
                     const messageString = JSON.stringify(messageObject);
                     socket.send(messageString);
+                    setMessage('')
                 }
               })
               .catch((error) => {
@@ -198,6 +228,7 @@ const ContactList = () => {
     };
     const sortedMessages = messages.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     return (
+        <>
         <section maxWidth="md">
             <Grid container>
                 <Grid item xs={12} md={6} lg={3}>
@@ -238,6 +269,8 @@ const ContactList = () => {
                                 <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>{user.username[0].toUpperCase()}</Avatar>
                             </ListItemIcon>
                             <ListItemText style={{ marginLeft: "1em", color:"#04774d"}} primary={user.username} />
+                                <Badge badgeContent={user.chat_count} color="primary">
+                            </Badge>
                             </ListItemButton>
                         </ListItem>
                         ))}
@@ -307,6 +340,7 @@ const ContactList = () => {
                 </Grid>
             </Grid>
       </section>
+      </>
     );
   };  
 export default ContactList;
