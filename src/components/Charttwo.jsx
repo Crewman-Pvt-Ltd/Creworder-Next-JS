@@ -122,7 +122,7 @@ const Charttwo = () => {
       <Box
         sx={{
           padding: 2,
-          height: { xs: '300px', sm: '600px', md: '580px' },
+          height: { xs: '300px', sm: '600px', md: '490px' },
           overflow: 'hidden',
         }}
       >

@@ -21,7 +21,7 @@ const Layout = ({ children }) => {
       <Sidebar isOpen={isSidebarOpen} />
       <Box
         sx={{
-          flexGrow: 1,
+          flex: 1,
           display: "flex",
           flexDirection: "column",
         }}
@@ -29,8 +29,7 @@ const Layout = ({ children }) => {
         <Header onMenuClick={handleMenuClick} />
         <Box
           sx={{
-            flexGrow: 1,
-           
+            flexGrow: 1,           
             overflowY: "scroll",
             transition: "width 0.2s ease",
             "&::-webkit-scrollbar": {

@@ -1,183 +1,233 @@
 import React, { useState } from "react";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { Typography, Button, Grid, Divider, CardContent } from "@mui/material";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
-import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById("preview").src = e.target.result;
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
+import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 
 const CreateEmployees = () => {
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
     last_name: "",
+    
+   
+    phone: "",
     email: "",
+    profile_images: null,
+    address: "",
+    designation: "",
+    department: "",
+   
+    profile: {
+      gender: "",
+      date_of_joining: "",
+      date_of_birth: "",
+      marital_status: "",
+    }
   });
+
+  const [errors, setErrors] = useState({});
+
+  const token = getToken();
   const router = useRouter();
 
-  const handleSubmit = () => {
-    router.push("/superadmin/employees");
+  const handleChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "file" ? files[0] : value,
+    });
   };
-  return (
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById("preview").src = e.target.result;
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    for (const [key, value] of Object.entries(formData)) {
+      if (!value && key !== "profile_images") {
+        newErrors[key] = "This field is required";
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      try {
+        const response = await MainApi.post("/api/users/", formData, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+
+        if (response.status === 201) {
+          router.push("/superadmin/company");
+        } else {
+          throw new Error("Unexpected response from server");
+        }
+      } catch (error) {
+        console.error("Error:", error.response ? error.response.data : error.message);
+      }
+    }
+  };
+
+  return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
-
-
-          <Grid item>
-              <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
+            <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
               Personal Information.
-              </Typography>
-            </Grid>
+            </Typography>
+
             <Divider sx={{ my: 2 }} />
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
-              }} >
-                 <Grid item sx={{ flex: 1 }}>
+            <Grid container spacing={2} mt={2}>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="username" required>
-                Username: : 
+                  Username:
                 </CustomLabel>
                 <CustomTextField
                   id="username"
                   name="username"
                   type="text"
-                  placeholder="Enter UserName"
-                  required
+                  placeholder="Enter Username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  error={!!errors.username}
+                  helperText={errors.username}
                   fullWidth
                 />
-              </Grid> 
+              </Grid>
 
-              <Grid item sx={{ flex: 1 }}>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="first_name" required>
-                   First Name
+                  First Name:
                 </CustomLabel>
                 <CustomTextField
                   id="first_name"
                   name="first_name"
                   placeholder="First Name"
                   type="text"
-                  required
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  error={!!errors.first_name}
+                  helperText={errors.first_name}
                   fullWidth
                 />
               </Grid>
 
-              <Grid item sx={{ flex: 1 }}>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="last_name" required>
-                   Last Name
+                  Last Name:
                 </CustomLabel>
                 <CustomTextField
                   id="last_name"
                   name="last_name"
                   placeholder="Last Name"
                   type="text"
-                  required
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  error={!!errors.last_name}
+                  helperText={errors.last_name}
                   fullWidth
                 />
               </Grid>
-                          
             </Grid>
 
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
-              <Grid item sx={{ flex: 1 }}>
+            <Grid container spacing={2} mt={2}>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="gender" required>
                   Gender:
                 </CustomLabel>
-                <FormControl fullWidth required sx={{ minHeight: 40, height: 40 }}>
+                <FormControl fullWidth required sx={{ height: 40 }}>
                   <InputLabel htmlFor="gender">Choose</InputLabel>
                   <Select
                     id="gender"
                     name="gender"
-                    placeholder="Select Gender"
-                    fullWidth
+                    value={formData.profile.gender}
+                    onChange={handleChange}
+                    error={!!errors['profile.gender']}
                     sx={{ height: 40 }}
                   >
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                    <MenuItem value="transgender">Transgender</MenuItem>
+                    <MenuItem value="m">Male</MenuItem>
+                    <MenuItem value="f">Female</MenuItem>
+                    <MenuItem value="t">Transgender</MenuItem>
                   </Select>
+                  {errors['profile.gender'] && <Typography color="error">{errors['profile.gender']}</Typography>}
                 </FormControl>
               </Grid>
 
-              <Grid item sx={{ flex: 1 }}>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="maritalStatus" required>
                   Marital Status:
                 </CustomLabel>
-                <FormControl fullWidth required sx={{ minHeight: 40, height: 40 }}>
-                  <InputLabel htmlFor="maritalStatus">Choose</InputLabel>
+                <FormControl fullWidth required sx={{ height: 40 }}>
+                  <InputLabel htmlFor="marital_status">Choose</InputLabel>
                   <Select
-                    id="maritalStatus"
-                    name="maritalStatus"
-                    placeholder="Select Marital Status"
-                    fullWidth
+                    id="marital_status"
+                    name="marital_status"
+                    value={formData.profile.marital_status}
+                    onChange={handleChange}
+                    error={!!errors['profile.marital_status']}
                     sx={{ height: 40 }}
                   >
                     <MenuItem value="married">Married</MenuItem>
-                    <MenuItem value="unmarried">UnMarried</MenuItem>
+                    <MenuItem value="unmarried">Unmarried</MenuItem>
                   </Select>
+                  {errors['profile.marital_status'] && <Typography color="error">{errors['profile.marital_status']}</Typography>}
                 </FormControl>
               </Grid>
-              <Grid item sx={{ flex: 1 }}>
-                <CustomLabel htmlFor="dob" required>
-                Date of Birth:
+
+              <Grid item xs={12} md={4}>
+                <CustomLabel htmlFor="date_of_birth" required>
+                  Date of Birth:
                 </CustomLabel>
                 <CustomTextField
-                  id="dob"
-                  name="dob"
+                  id="date_of_birth"
+                  name="date_of_birth"
                   type="date"
-                  required
+                  value={formData.profile.date_of_birth}
+                  onChange={handleChange}
+                  error={!!errors['profile.date_of_birth']}
+                 
                   fullWidth
                 />
-              </Grid> 
+              </Grid>
             </Grid>
 
-
-            <Grid
-                item
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
-                  marginTop: 2,
-                }}>
-                <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="phone" required>
-                    Phone Number
-                  </CustomLabel>
-                  <CustomTextField
-                    id="phone"
-                    name="phone"
-                    type="number"
-                    placeholder="(+91)"
-                    required
-                    fullWidth/>
-                </Grid>
-                <Grid item xs={12} sm={4}>
+            <Grid container spacing={2} mt={2}>
+              <Grid item xs={12} md={4}>
+                <CustomLabel htmlFor="phone" required>
+                  Phone Number
+                </CustomLabel>
+                <CustomTextField
+                  id="phone"
+                  name="phone"
+                  type="number"
+                  placeholder="(+91)"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  error={!!errors.phone}
+                  helperText={errors.phone}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="email" required>
                   Email
                 </CustomLabel>
@@ -186,136 +236,130 @@ const CreateEmployees = () => {
                   name="email"
                   type="email"
                   placeholder="e.g. test@creworder.com"
-                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
                   fullWidth
-                  sx={{ height: 40 }}
                 />
               </Grid>
-                
-              <Grid item xs={12} sm={4}>
+
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="profile_images" required>
                   Upload Profile
                 </CustomLabel>
-               
+
                 <img
-                    id="preview"
-                    src="https://static.vecteezy.com/system/resources/thumbnails/021/353/308/small_2x/user-icon-for-website-and-mobile-apps-png.png"
-                    alt="Preview"
-                    width="35%"
-                    style={{ objectFit: "contain" }}
-                  />
+                  id="preview"
+                  src="https://static.vecteezy.com/system/resources/thumbnails/021/353/308/small_2x/user-icon-for-website-and-mobile-apps-png.png"
+                  alt="Preview"
+                  width="35%"
+                  style={{ objectFit: "contain" }}
+                />
                 <input
                   type="file"
                   id="profile_images"
-                  onChange={handleFileChange}
-                  style={{ marginTop: "8px", display: "block", width: "100%" }}/>                
-              </Grid>             
+                  name="profile_images"
+                  onChange={(e) => {
+                    handleFileChange(e);
+                    handleChange(e);
+                  }}
+                  style={{ marginTop: "8px", display: "block", width: "100%" }}
+                />
               </Grid>
+            </Grid>
 
-
-              <Grid
-                item
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  gap: 2,
-                  marginTop: 2,
-                }}>     
-                
-                <Grid item xs={12} sm={12}>
-                  <CustomLabel htmlFor="address" required>
-                    Address:
-                  </CustomLabel>
-                  <CustomTextField
-                    id="address"
-                    name="address"
-                    type="text"
-                    placeholder="Address"
-                    required
-                    fullWidth
-                    multiline
-                    rows={4}  // This makes it a textarea
-                  />
-                </Grid>              
+            <Grid container spacing={2} mt={1}>
+              <Grid item xs={12} sm={12}>
+                <CustomLabel htmlFor="address" required>
+                  Address:
+                </CustomLabel>
+                <CustomTextField
+                  id="address"
+                  name="address"
+                  type="text"
+                  placeholder="Address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  error={!!errors.address}
+                  helperText={errors.address}
+                  fullWidth
+                  multiline
+                  rows={4}
+                />
               </Grid>
+            </Grid>
 
-
-
-
-             
-              <Grid container>
-      {/* Other components/content above */}
-      <Grid item xs={12}>
-        <Divider sx={{ marginBottom: 2 }} />
-      </Grid>
-      <Grid item>
-        <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
-          Office Information.
-        </Typography>
-      </Grid>
-      {/* Other components/content below */}
-    </Grid>
+            <Grid container>
+              <Grid item xs={12}>
+                <Divider sx={{ marginBottom: 2 }} />
+              </Grid>
+              <Grid item>
+                <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
+                  Office Information.
+                </Typography>
+              </Grid>
+            </Grid>
             <Divider sx={{ my: 2 }} />
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
-              <Grid item sx={{ flex: 1 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="designation" required>
-                Designation:
+                  Designation:
                 </CustomLabel>
                 <CustomTextField
                   id="designation"
                   name="designation"
                   placeholder="Designation"
                   type="text"
-                  required
+                  value={formData.designation}
+                  onChange={handleChange}
+                  error={!!errors.designation}
+                  helperText={errors.designation}
                   fullWidth
                 />
               </Grid>
 
-              <Grid item sx={{ flex: 1 }}>
+              <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="department" required>
-                Department:
+                  Department:
                 </CustomLabel>
                 <CustomTextField
                   id="department"
                   name="department"
                   placeholder="Department"
                   type="text"
-                  required
+                  value={formData.department}
+                  onChange={handleChange}
+                  error={!!errors.department}
+                  helperText={errors.department}
                   fullWidth
                 />
               </Grid>
-              <Grid item sx={{ flex: 1 }}>
-                <CustomLabel htmlFor="doj" required>
-                Date of Joining:
+              <Grid item xs={12} md={4}>
+                <CustomLabel htmlFor="date_of_joining" required>
+                  Date of Joining:
                 </CustomLabel>
                 <CustomTextField
-                  id="doj"
-                  name="doj"
+                  id="date_of_joining"
+                  name="date_of_joining"
                   type="date"
-                  required
+                  value={formData.profile.date_of_joining}
+                  onChange={handleChange}
+                  error={!!errors['profile.date_of_joining']}
+               
                   fullWidth
                 />
-              </Grid>   
-                       
+              </Grid>
             </Grid>
 
-         
-          
             <Grid
               item
               sx={{
                 marginTop: 3,
                 display: "flex",
                 justifyContent: "flex-end",
-              }}>
+              }}
+            >
               <Button
                 sx={{
                   padding: "8px 16px",
@@ -326,205 +370,17 @@ const CreateEmployees = () => {
                   "&:hover": {
                     backgroundColor: "#334a6c",
                   },
+                  marginTop: 3,
                 }}
-                onClick={handleSubmit}>
+                onClick={handleSubmit}
+              >
                 Submit
               </Button>
             </Grid>
-          </CardContent>         
+          </CardContent>
         </CustomCard>
       </Grid>
     </Grid>
-
-    //<Grid container sx={{ padding: 3 }}>
-    //   <Grid item xs={12}>
-    //     <CustomCard>
-    //       <CardContent>
-    //       <Grid item>
-    //           <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-    //             Add Employee
-    //           </Typography>
-    //         </Grid>
-    //         <Divider sx={{ my: 2 }} />
-    //         <Grid
-    //           item
-    //           sx={{
-    //             display: "flex",
-    //             flexDirection: { xs: "column", sm: "row" },
-    //             gap: 2,
-    //             marginTop: 2,
-    //           }}
-    //         >
-
-    //           <Grid item sx={{ flex: 1 }}>
-    //             <CustomLabel htmlFor="username" required>
-    //                Username
-    //             </CustomLabel>
-    //             <CustomTextField
-    //               id="username"
-    //               name="username"
-    //               placeholder="username"
-    //               type="text"
-    //               required
-    //               fullWidth
-    //             />
-    //           </Grid>
-    //           <Grid item sx={{ flex: 1 }}>
-    //             <CustomLabel htmlFor="first_name" required>
-    //                First Name
-    //             </CustomLabel>
-    //             <CustomTextField
-    //               id="first_name"
-    //               name="first_name"
-    //               placeholder="first_name"
-    //               type="text"
-    //               required
-    //               fullWidth
-    //             />
-    //           </Grid>
-    //           <Grid item sx={{ flex: 1 }}>
-    //             <CustomLabel htmlFor="last_name" required>
-    //                Last Name
-    //             </CustomLabel>
-    //             <CustomTextField
-    //               id="last_name"
-    //               name="last_name"
-    //               placeholder="last_name"
-    //               type="text"
-    //               required
-    //               fullWidth
-    //             />
-    //           </Grid>
-    //           <Grid item sx={{ flex: 1 }}>
-    //             <CustomLabel htmlFor="phone" required>
-    //               Phone Number
-    //             </CustomLabel>
-    //             <CustomTextField
-    //               id="phone"
-    //               name="phone"
-    //               type="number"
-    //               placeholder="(+91)"
-    //               required
-    //               fullWidth
-    //             />
-    //           </Grid>
-    //           <Grid item sx={{ flex: 1 }}>
-    //             <CustomLabel htmlFor="email" required>
-    //               Email
-    //             </CustomLabel>
-    //             <CustomTextField
-    //               id="email"
-    //               name="email"
-    //               type="email"
-    //               placeholder="e.g. test@creworder.com"
-    //               required
-    //               fullWidth
-    //             />
-    //           </Grid>
-
-    //         </Grid>
-
-    //         <Grid
-    //           item
-    //           sx={{
-    //             display: "flex",
-    //             flexDirection: { xs: "column", sm: "row" },
-    //             gap: 2,
-    //             marginTop: 2,
-    //           }}
-    //         >
-    //           <Grid item sx={{ flex: 1 }}>
-    //             <CustomLabel htmlFor="password" required>
-    //             Password
-    //             </CustomLabel>
-    //             <CustomTextField
-    //               id="password"
-    //               name="password"
-    //               placeholder="XXXXX"
-    //               type="text"
-    //               required
-    //               fullWidth
-    //             />
-
-    //           </Grid>
-    //           <Grid item sx={{ flex: 1 }}>
-    //           <CustomLabel htmlFor="Confirm Password" required>
-    //               Confirm Password
-    //             </CustomLabel>
-    //             <CustomTextField
-    //               id="password"
-    //               name="password"
-    //               type="password"
-    //               placeholder="e.g. XXXXX"
-    //               required
-    //               fullWidth
-    //             />
-    //           </Grid>
-
-    //         </Grid>
-
-    //         <Grid
-    //           item
-    //           sx={{
-    //             display: "flex",
-    //             flexDirection: { xs: "column", sm: "row" },
-    //             gap: 2,
-    //             marginTop: 2,
-    //           }}
-    //         >
-
-    //           <Grid item xs={6} sm={6}>
-    //             <CustomLabel htmlFor="companyLogo" required>
-    //               Upload Company Logo
-    //             </CustomLabel>
-    //             <input
-    //               type="file"
-    //               id="companyLogo"
-    //               onChange={handleFileChange}
-    //               style={{ marginTop: "8px", display: "block", width: "100%" }}
-    //             />
-    //             <Grid sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-    //               <img
-    //                 id="preview"
-    //                 src="https://placehold.co/600x400/EEE/31343C"
-    //                 alt="Preview"
-    //                 width="35%"
-    //                 style={{ objectFit: "contain" }}
-    //               />
-    //             </Grid>
-    //           </Grid>
-
-    //         </Grid>
-
-    //         <Grid
-    //           item
-    //           sx={{
-    //             marginTop: 3,
-    //             display: "flex",
-    //             justifyContent: "flex-end",
-    //           }}
-    //         >
-    //           <Button
-    //             sx={{
-    //               padding: "8px 16px",
-    //               fontSize: "14px",
-    //               fontWeight: "bold",
-    //               backgroundColor: "#405189",
-    //               color: "white",
-    //               "&:hover": {
-    //                 backgroundColor: "#334a6c",
-    //               },
-    //             }}
-    //             onClick={handleSubmit}
-    //           >
-    //             Submit
-    //           </Button>
-    //         </Grid>
-    //       </CardContent>
-
-    //     </CustomCard>
-    //   </Grid>
-    // </Grid>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useGetAllNotices from "@/api-manage/react-query/useGetAllNotices";
 import { useRouter } from "next/router";
 import {
@@ -9,38 +9,32 @@ import {
   Typography,
   Button,
   TableContainer,
-  Paper,
   Table,
   TableHead,
   TableRow,
   TableCell,
   TableBody,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import {
-  Visibility,
-  Edit,
-  Delete,
-  CheckCircle,
-  Cancel,
-} from "@mui/icons-material";
+import { Visibility, Edit, Delete } from "@mui/icons-material";
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
 
+const NoticeList = () => {
+  const router = useRouter();
+  const { data, refetch } = useGetAllNotices();
+  const [open, setOpen] = useState(false);
+  const [noticeToDelete, setNoticeToDelete] = useState(null);
 
-/* const data = [
-  {
-    id: 1,
-    title: "Test Title",
-    message: "Message for notice",
-    lastActivity: "2024-07-10",
-    date: "2024-07-18",
-    status: "active",
-  },
-]; */
-const NoticeList = ({ onNotice }) => {
-  const { data } = useGetAllNotices();
-
-  // console.log("nOTICES dATA", notices);
+  const handleCreateNotice = () => {
+    router.push("/superadmin/notice/createnotice");
+  };
 
   const handleView = (id) => {
     console.log("View", id);
@@ -50,18 +44,40 @@ const NoticeList = ({ onNotice }) => {
     console.log("Edit", id);
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete", id);
+  const handleDeleteClick = (id) => {
+    setNoticeToDelete(id);
+    setOpen(true);
   };
 
-  const handleStatusToggle = (id) => {
-    setData(
-      data.map((row) =>
-        row.id === id
-          ? { ...row, status: row.status === "active" ? "suspended" : "active" }
-          : row
-      )
-    );
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const response = await MainApi.delete(`/api/notices/${noticeToDelete}`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 204) {
+        console.log("Notice deleted successfully");
+        refetch(); // Refetch the notices to update the list
+      } else {
+        console.error("Failed to delete the notice");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the notice:", error);
+    }
+    setOpen(false);
+    setNoticeToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpen(false);
+    setNoticeToDelete(null);
   };
 
   const HeaderCell = (props) => (
@@ -89,10 +105,11 @@ const NoticeList = ({ onNotice }) => {
       {...props}
     />
   );
+
   const truncateDescription = (description) => {
-    const words = description.split(' ');
+    const words = description.split(" ");
     if (words.length > 50) {
-      return words.slice(0, 50).join(' ') + '...'; // Truncate after 50 words
+      return words.slice(0, 50).join(" ") + "...";
     }
     return description;
   };
@@ -125,7 +142,7 @@ const NoticeList = ({ onNotice }) => {
                   Notice List
                 </Typography>
                 <Button
-                  onClick={onNotice}
+                  onClick={handleCreateNotice}
                   sx={{
                     padding: "8px 16px",
                     fontSize: "14px",
@@ -157,13 +174,14 @@ const NoticeList = ({ onNotice }) => {
                       <HeaderCell>Action</HeaderCell>
                     </TableRow>
                   </TableHead>
-
                   <TableBody>
                     {data?.map((row, index) => (
-                      <TableRow key={index+1}>
-                        <DataCell>{index+1}</DataCell>
+                      <TableRow key={index + 1}>
+                        <DataCell>{index + 1}</DataCell>
                         <DataCell>{row.title}</DataCell>
-                        <DataCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>
+                        <DataCell
+                          sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}
+                        >
                           {truncateDescription(row.description)}
                         </DataCell>
                         <DataCell>{formatDate(row.created_at)}</DataCell>
@@ -171,7 +189,8 @@ const NoticeList = ({ onNotice }) => {
                           <IconButton
                             onClick={() => handleView(row.id)}
                             aria-label="view"
-                            sx={{ color: "blue" }}>
+                            sx={{ color: "blue" }}
+                          >
                             <Visibility />
                           </IconButton>
                           <IconButton
@@ -182,7 +201,7 @@ const NoticeList = ({ onNotice }) => {
                             <Edit />
                           </IconButton>
                           <IconButton
-                            onClick={() => handleDelete(row.id)}
+                            onClick={() => handleDeleteClick(row.id)}
                             aria-label="delete"
                             sx={{ color: "red" }}
                           >
@@ -192,13 +211,30 @@ const NoticeList = ({ onNotice }) => {
                       </TableRow>
                     ))}
                   </TableBody>
-
                 </Table>
               </TableContainer>
             </Grid>
           </CardContent>
         </Card>
       </Grid>
+
+      <Dialog open={open} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete Notice</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this notice? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

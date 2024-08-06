@@ -12,6 +12,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
@@ -148,6 +149,13 @@ const Sidebar = ({ isOpen }) => {
           active={currentPath === '/dashboard'}
           onClick={() => handleItemClick('/dashboard')}
         />
+         <HoverableNavItem
+          isOpen={isOpen}
+          name="User"
+          icon={<DashboardIcon />}
+          active={currentPath === '/user'}
+          onClick={() => handleItemClick('/user')}
+        />
         <HoverableNavItem
           isOpen={isOpen}
           name="Package"
@@ -181,8 +189,8 @@ const Sidebar = ({ isOpen }) => {
           isOpen={isOpen}
           name="Notice"
           icon={<NotificationsIcon />}
-          active={currentPath === '/superadmin/Notice'}
-          onClick={() => handleItemClick('/superadmin/Notice')}
+          active={currentPath === '/superadmin/notice'}
+          onClick={() => handleItemClick('/superadmin/notice')}
         >
         </HoverableNavItem>
 
@@ -190,7 +198,17 @@ const Sidebar = ({ isOpen }) => {
           isOpen={isOpen}
           name="Chat"
           icon={<ChatIcon />}
+          active={currentPath === '/chat'}
           onClick={() => handleItemClick('/chat')}
+        >
+
+        </HoverableNavItem>
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Settings"
+          icon={<SettingsIcon />}
+          active={currentPath === '/settings'}
+          onClick={() => handleItemClick('/settings')}
         >
 
         </HoverableNavItem>
