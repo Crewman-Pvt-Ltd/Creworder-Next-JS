@@ -28,7 +28,8 @@
     "react-datepicker": "^7.3.0",
     "react-dom": "^18",
     "react-query": "^3.39.3",
-    "react-spinners": "^0.14.1"
+    "react-spinners": "^0.14.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "eslint": "^8",
