@@ -8,22 +8,22 @@ import { deepOrange, deepPurple } from '@mui/material/colors';
 import ListItemButton from '@mui/material/ListItemButton';
 import { baseApiUrl } from '@/api-manage/ApiRoutes';
 import Badge from '@mui/material/Badge';
-import SvgIcon from '@mui/material/SvgIcon';
+import GroupIcon from '@mui/icons-material/Group';
 import { usePermissions } from '@/contexts/PermissionsContext';
 
 import { Typography, IconButton, List, ListItem, TextField, ListItemText, Avatar, InputAdornment, FormControl, Select, MenuItem, ListItemIcon, Grid } from "@mui/material";
-import { Forest } from '@mui/icons-material';
 const ContactList = () => {
     const items = Array.from({ length: 20 }, (_, index) => `Item ${index + 1}`);
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadings, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userInfo, setUserInfo] = React.useState({ username: "CrewOrder", text: 'Hello!', avatar: 'C', status: 'Online' });
     const [selectedOption, setSelectedOption] = useState("Chats");
     const [message, setMessage] = useState('');
+    const [chatGroups, setchatGroups] = useState([]);
     const [messages, setMessages] = React.useState([]);
     const [socket, setSocket] = useState(null);
-    const { fetchPermissions, permissionsData } = usePermissions();
+    const { fetchPermissions, permissionsData, loading } = usePermissions();
     const [chatusrDetails, setChatusrDetails] = useState('');
     //=======================================================================
     //                   Get unread chat count
@@ -110,6 +110,25 @@ const ContactList = () => {
 
     const handleChange = (event) => {
         setSelectedOption(event.target.value);
+        console.log(event.target.value)
+        if (event.target.value === 'Group') {
+            permissionsData != null &&
+            fetch(`${baseApiUrl}getChatgroups/?user_id=${permissionsData?.user?.id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    setchatGroups(data.Groups);
+                })
+                .catch(error => {
+                    setError(error);
+                    setLoading(false);
+                });
+        }
     };
     const [searchQuery, setSearchQuery] = useState("");
     const handleSearchChange = (event) => {
@@ -211,6 +230,7 @@ const ContactList = () => {
                     console.log(JSON.stringify(response.data.Success));
                     if (response.data.Success === true) {
                         messageObject['id'] = response.data.ChatData.id;
+                        messageObject['chat_session'] = response.data.ChatData.chat_session;
                         const messageString = JSON.stringify(messageObject);
                         socket.send(messageString);
                         setMessage('')
@@ -231,6 +251,8 @@ const ContactList = () => {
         }
     };
     const sortedMessages = messages.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    const chatSessionId = sortedMessages.length > 0 ? sortedMessages[0].chat_session : 0;
+    console.log("Groop ID : " + chatGroups);
     return (
         <>
             <section maxWidth="md">
@@ -239,7 +261,7 @@ const ContactList = () => {
                         <Box style={{ width: "100%", backgroundColor: "#ffffff", padding: "1em", border: "1px solid #ccc" }} display="flex" justifyContent="space-between" alignItems="center">
                             <FormControl>
                                 <Select value={selectedOption} onChange={handleChange} displayEmpty inputProps={{ 'aria-label': 'Without label' }}>
-                                    <MenuItem value="Chats" selected>Chats</MenuItem>
+                                    <MenuItem value="Chats">Chats</MenuItem>
                                     <MenuItem value="Contacts">Contacts</MenuItem>
                                     <MenuItem value="Group">Group</MenuItem>
                                     <MenuItem value="Archived">Archived</MenuItem>
@@ -252,35 +274,92 @@ const ContactList = () => {
                                 </IconButton>
                             </Avatar>
                         </Box>
+
                         <Box style={{ width: "100%", height: "84vh", overflowY: "scroll", backgroundColor: "#ffffff", padding: "1em" }}>
                             {/* Search Box */}
                             <Box display="flex" alignItems="center" marginBottom="1em">
-                                <TextField variant="outlined" size="small" placeholder="Search Chats" value={searchQuery} onChange={handleSearchChange} style={{ flexGrow: 1 }} />
+                                <TextField variant="outlined" size="small" placeholder="Search" value={searchQuery} onChange={handleSearchChange} style={{ flexGrow: 1 }} />
                             </Box>
-                            <Typography variant="h7" style={{ marginBottom: "1em", color: "#04774d" }}>Frequent contact</Typography>
-                            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                                <Avatar sx={{ width: 56, height: 56 }}>H</Avatar>
-                                <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>S</Avatar>
-                                <Avatar sx={{ width: 56, height: 56, bgcolor: deepPurple[500] }}>H</Avatar>
-                                <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>I</Avatar>
-                                <Avatar sx={{ width: 56, height: 56, bgcolor: deepPurple[500] }}>V</Avatar>
-                            </Stack>
-                            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                {users.map((user, index) => (
-                                    <ListItem key={index} disablePadding>
-                                        <ListItemButton onClick={() => handleUserClick(user)}>
-                                            <ListItemIcon>
-                                                <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>{user.username[0].toUpperCase()}</Avatar>
-                                            </ListItemIcon>
-                                            <ListItemText style={{ marginLeft: "1em", color: "#04774d" }} primary={user.username} />
-                                            <Badge badgeContent={user.chat_count} color="primary">
-                                            </Badge>
-                                        </ListItemButton>
-                                    </ListItem>
-                                ))}
-                            </List>
+
+                            {/* Conditional Rendering Based on Selected Option */}
+                            {selectedOption === 'Chats' && (
+                                <>
+                                    <Typography variant="h7" style={{ marginBottom: "1em", color: "#04774d" }}>Frequent Contacts</Typography>
+                                    <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                                        {/* Display Avatars for Frequent Contacts */}
+                                        <Avatar sx={{ width: 56, height: 56 }}>S</Avatar>
+                                        <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>H</Avatar>
+                                        <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>I</Avatar>
+                                        <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>V</Avatar>
+                                        <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>A</Avatar>
+                                        {/* Add more avatars */}
+                                    </Stack>
+                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                        {users.map((user, index) => (
+                                            <ListItem key={index} disablePadding>
+                                                <ListItemButton onClick={() => handleUserClick(user)}>
+                                                    <ListItemIcon>
+                                                        <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>{user.username[0].toUpperCase()}</Avatar>
+                                                    </ListItemIcon>
+                                                    <ListItemText style={{ marginLeft: "1em", color: "#04774d" }} primary={user.username} />
+                                                    <Badge badgeContent={user.chat_count} color="primary" />
+                                                </ListItemButton>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </>
+                            )}
+
+                            {selectedOption === 'Contacts' && (
+                                <>
+                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                        {users.map((user, index) => (
+                                            <ListItem key={index} disablePadding>
+                                                <ListItemButton onClick={() => handleUserClick(user)}>
+                                                    <ListItemIcon>
+                                                        <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>{user.username[0].toUpperCase()}</Avatar>
+                                                    </ListItemIcon>
+                                                    <ListItemText style={{ marginLeft: "1em", color: "#04774d" }} primary={user.username} />
+                                                    <Badge badgeContent={user.chat_count} color="primary" />
+                                                </ListItemButton>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </>
+                            )}
+                            {selectedOption === 'Group' && (
+                                <>
+                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                        {chatGroups.map((group, index) => (
+                                            <ListItem key={index} disablePadding>
+                                                <ListItemButton onClick={() => handleUserClick(group)}>
+                                                    <ListItemIcon>
+                                                        <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>{group.group_name[0].toUpperCase()}</Avatar>
+                                                    </ListItemIcon>
+                                                    <ListItemText style={{ marginLeft: "1em", color: "#04774d" }} primary={group.group_name} />
+                                                    <Badge badgeContent={0} color="primary" />
+                                                </ListItemButton>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </>
+                            )}
+                            {selectedOption === 'Archived' && (
+                                <>
+                                    <Typography variant="h6">Archived</Typography>
+                                    {/* Add your archived content here */}
+                                </>
+                            )}
+
+                            {selectedOption === 'Favorites' && (
+                                <>
+                                    <Typography variant="h6">Favorites</Typography>
+                                    {/* Add your favorites content here */}
+                                </>
+                            )}
                         </Box>
                     </Grid>
+
                     <Grid item xs={12} md={6} lg={9}>
                         {userInfo && (
                             <Box style={{ width: "100%", backgroundColor: "#ffffff", padding: "1em", border: "1px solid #ccc" }} display="flex" alignItems="center">
@@ -295,15 +374,40 @@ const ContactList = () => {
                             <Grid item xs={12} lg={8}>
                                 <Box style={{ display: 'flex', flexDirection: 'column', width: "100%", height: "84vh", backgroundColor: "#ffffff" }}>
                                     <Box style={{ flexGrow: 1, overflowY: "scroll", padding: "1em" }}>
-                                        {sortedMessages.map((msg, index) => (
-                                            <Box key={index} display="flex" alignItems="center" justifyContent={msg.to_user === permissionsData.user.id ? 'flex-start' : 'flex-end'} marginBottom="1em">
-                                                {msg.to_user === permissionsData.user.id && <Avatar sx={{ bgcolor: deepOrange[500], marginRight: '0.5em' }}>{msg.avatar}</Avatar>}
-                                                <Box style={{ backgroundColor: msg.to_user === permissionsData.user.id ? '#f1f0f0' : '#04774d', color: msg.to_user === permissionsData.user.id ? '#000' : '#fff', padding: '0.5em 1em', borderRadius: '10px', maxWidth: '70%', }}>
-                                                    {msg.text}
+                                        {sortedMessages
+                                            .filter((msg) => chatSessionId === msg.chat_session)
+                                            .map((msg, index) => (
+                                                <Box
+                                                    key={index}
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent={msg.to_user === permissionsData.user.id ? 'flex-start' : 'flex-end'}
+                                                    marginBottom="1em"
+                                                >
+                                                    {msg.to_user === permissionsData.user.id && (
+                                                        <Avatar sx={{ bgcolor: deepOrange[500], marginRight: '0.5em' }}>
+                                                            {msg.avatar}
+                                                        </Avatar>
+                                                    )}
+                                                    <Box
+                                                        style={{
+                                                            backgroundColor: msg.to_user === permissionsData.user.id ? '#f1f0f0' : '#04774d',
+                                                            color: msg.to_user === permissionsData.user.id ? '#000' : '#fff',
+                                                            padding: '0.5em 1em',
+                                                            borderRadius: '10px',
+                                                            maxWidth: '70%',
+                                                        }}
+                                                    >
+                                                        {msg.text}
+                                                    </Box>
+                                                    {msg.from_user === permissionsData.user.id && (
+                                                        <Avatar sx={{ bgcolor: deepPurple[500], marginLeft: '0.5em' }}>
+                                                            {msg.avatar}
+                                                        </Avatar>
+                                                    )}
                                                 </Box>
-                                                {msg.from_user === permissionsData.user.id && <Avatar sx={{ bgcolor: deepPurple[500], marginLeft: '0.5em' }}>{msg.avatar}</Avatar>}
-                                            </Box>
-                                        ))}
+                                            ))
+                                        }
                                     </Box>
                                     <Box style={{ padding: "1em", borderTop: "1px solid #ccc" }}>
                                         <TextField variant="outlined" size="small" fullWidth placeholder="Type a message..." value={message} onChange={handleMessageChange} onKeyDown={handleKeyDown} InputProps={{
@@ -339,7 +443,7 @@ const ContactList = () => {
                                         </Box>
                                         <Box style={{ width: '100%', padding: '1em', backgroundColor: '#ffffff' }}>
                                             {/* Row 1 */}
-                                            <Box style={{ width: '100%', padding: '1em 0', display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                            <Box style={{ width: '100%', padding: '1em 0', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                                 <span className="feather-icon" style={{ display: 'flex', alignItems: 'center' }}>
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -359,7 +463,7 @@ const ContactList = () => {
                                                 </span>
                                             </Box>
 
-                                            <Box style={{ width: '100%', padding: '1em 0', display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                            <Box style={{ width: '100%', padding: '1em 0', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                                 <span className="feather-icon" style={{ display: 'flex', alignItems: 'center' }}>
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -379,7 +483,7 @@ const ContactList = () => {
                                                 </span>
                                             </Box>
 
-                                            <Box style={{ width: '100%', padding: '1em 0', display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                                            <Box style={{ width: '100%', padding: '1em 0', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                                 <span className="feather-icon" style={{ display: 'flex', alignItems: 'center' }}>
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
