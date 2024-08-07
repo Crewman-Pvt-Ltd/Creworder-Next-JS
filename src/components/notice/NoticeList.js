@@ -34,7 +34,7 @@ const NoticeList = () => {
   const [viewNotice, setViewNotice] = useState(null);
 
   const handleCreateNotice = () => {
-    router.push("/superadmin/notice/createnotice");
+    router.push("/superadmin/notice-board/createnotice");
   };
 
   const handleView = (notice) => {
@@ -42,7 +42,7 @@ const NoticeList = () => {
   };
 
   const handleEdit = (id) => {
-    router.push(`/superadmin/notice/editnotice?id=${id}`);
+    router.push(`/superadmin/notice-board/editnotice?id=${id}`);
   };
 
   const handleDeleteClick = (id) => {
