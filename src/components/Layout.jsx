@@ -3,7 +3,7 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { Box } from "@mui/material";
 
-const Layout = ({ children }) => {
+const Layout = ({ children, type }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const handleMenuClick = () => {
@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
         // overflow: 'hidden',
       }}
     >
-      <Sidebar isOpen={isSidebarOpen} />
+      <Sidebar isOpen={isSidebarOpen} type={type}/>
       <Box
         sx={{
           flex: 1,

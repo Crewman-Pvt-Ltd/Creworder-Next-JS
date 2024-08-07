@@ -28,7 +28,7 @@ const Index = () => {
   // };
 
   return (
-    <Layout>
+    <Layout type="superadmin">
       {/* {showCreateTicket ? (
         editingTicket ? (
           <EditTicket onUpdateTicket={handleUpdateTicket} />

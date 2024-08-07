@@ -111,7 +111,7 @@ const CompanyDetailsdashboard = ({ type }) => {
   const { title, headers, mapRow } = configuration[type] || {};
   if (!title) return null;
 
-  const rows = data?.map(mapRow) || [];
+  const rows = data?.results.map(mapRow) || [];
 
   
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);

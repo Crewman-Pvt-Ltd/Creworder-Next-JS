@@ -151,7 +151,7 @@ const CompanyList = ({ }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.map((row, index) =>(
+                  {data?.results.map((row, index) =>(
                     <TableRow key={row.id}>
                       <DataCell>{index+1}</DataCell>
                       <DataCell>{row.name}</DataCell>
