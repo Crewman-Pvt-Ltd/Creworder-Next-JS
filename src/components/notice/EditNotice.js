@@ -69,7 +69,7 @@ const EditNotice = () => {
 
       if (response.status === 200) {
         console.log("Notice updated successfully");
-        router.push("/superadmin/notice");
+        router.push("/superadmin/notice-board");
       } else {
         console.error("Failed to update the notice");
         setError("Failed to update the notice");
