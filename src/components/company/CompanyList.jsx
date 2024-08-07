@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
 import { useRouter } from "next/router";
 import {
@@ -14,6 +14,11 @@ import {
   TableCell,
   TableBody,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
@@ -24,27 +29,61 @@ import {
   CheckCircle,
   Cancel,
 } from "@mui/icons-material";
+import MainApi from "@/api-manage/MainApi"; // Adjust the import path as needed
+import { getToken } from "@/utils/getToken"; // Adjust the import path as needed
 
-const CompanyList = ({ }) => {
-  const { data } = useGetAllCompanies();
+const CompanyList = () => {
+  const { data, refetch } = useGetAllCompanies();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [companyToDelete, setCompanyToDelete] = useState(null);
 
-  const handleEdit = () => {
-    router.push("/superadmin/company/editcompany");
+  const handleEdit = (row) => {
+    router.push(`/superadmin/company/editcompany?id=${row.id}`);
   };
 
   const handleCreatePackage = () => {
     router.push("/superadmin/company/createcompany");
   };
 
-
-  const handleView = () => {
-    router.push("/superadmin/company/viewcompany");
+  const handleView = (row) => {
+    router.push(`/superadmin/company/viewcompany?id=${row.id}`);
   };
 
+  const handleDeleteClick = (id) => {
+    setCompanyToDelete(id);
+    setOpen(true);
+  };
 
-  const handleDelete = (id) => {
-    console.log("Delete", id);
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const response = await MainApi.delete(`/api/companies/${companyToDelete}`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 204) {
+        console.log("Company deleted successfully");
+        refetch(); // Refetch the companies to update the list
+      } else {
+        console.error("Failed to delete the company");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the company:", error);
+    }
+    setOpen(false);
+    setCompanyToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpen(false);
+    setCompanyToDelete(null);
   };
 
   const handleStatusToggle = (id) => {
@@ -60,7 +99,7 @@ const CompanyList = ({ }) => {
   const HeaderCell = (props) => (
     <TableCell
       sx={{
-       fontSize: "0.8rem",
+        fontSize: "0.8rem",
         whiteSpace: "nowrap",
         fontWeight: "500",
         textTransform: "capitalize",
@@ -153,7 +192,7 @@ const CompanyList = ({ }) => {
                 <TableBody>
                   {data?.results.map((row, index) =>(
                     <TableRow key={row.id}>
-                      <DataCell>{index+1}</DataCell>
+                      <DataCell>{index + 1}</DataCell>
                       <DataCell>{row.name}</DataCell>
                       <DataCell>{row.package}</DataCell>
                       <DataCell>
@@ -190,9 +229,9 @@ const CompanyList = ({ }) => {
                           <Edit />
                         </IconButton>
                         <IconButton
-                          onClick={() => handleDelete(row.id)}
+                          onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
-                          sx={{ color: "#333333" }}
+                          sx={{ color: "red" }}
                         >
                           <Delete />
                         </IconButton>
@@ -220,6 +259,24 @@ const CompanyList = ({ }) => {
           </CardContent>
         </CustomCard>
       </Grid>
+
+      <Dialog open={open} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete Company</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this company? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
