@@ -108,6 +108,43 @@ const ContactList = () => {
             });
     };
 
+    //=======================================================================
+    //                 Get Old Group chat here form database
+    //=======================================================================
+    const getGroupChats = (group_details) => {
+        group_details['id'] = group_details.group_id
+        console.log(group_details);
+        setChatusrDetails(group_details);
+        setUserInfo({
+            username: group_details.group_name || '',
+            email: group_details.email || '',
+            phone: group_details.profile?.contact_no || '',
+            role: group_details.role?.role || '',
+            text: 'Hello!',
+            avatar: group_details.group_name ? group_details.group_name[0].toUpperCase() : '',
+            status: 'offline'
+        });
+        axios.get(`${baseApiUrl}getChatDetail/`, {
+            params: {
+                from_user: permissionsData.user.id,
+                group_id:group_details.group_id
+            }
+        })
+            .then(response => {
+                if (Array.isArray(response.data.data)) {
+                    setMessages(response.data.data);
+                    console.log("SHIVAM1");
+                } else {
+                    console.error('Unexpected response data format:', response.data);
+                    setMessages([]);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching chat details:', error);
+                setMessages([]);
+            });
+    };
+
     const handleChange = (event) => {
         setSelectedOption(event.target.value);
         console.log(event.target.value)
@@ -196,6 +233,7 @@ const ContactList = () => {
     //         Sendmassage Setup and Create Chat manage here
     //=======================================================================
     const handleSendMessage = () => {
+        let chat_type;
         if (message.trim() !== '' && socket) {
             const messageObject = {
                 from_user: permissionsData.user.id,
@@ -204,7 +242,11 @@ const ContactList = () => {
                 text: message,
                 avatar: ''
             };
-
+            if ('group_id' in chatusrDetails) {
+                chat_type = "group_chat";
+            } else {
+                chat_type = "simple_chat";
+            }
             let data = JSON.stringify({
                 "type": "text",
                 "text": message,
@@ -212,7 +254,8 @@ const ContactList = () => {
                 "user_id": permissionsData.user.id,
                 "from_user": permissionsData.user.id,
                 "to_user": chatusrDetails.id,
-                "chat_status": 1
+                "chat_status": 1,
+                "chat_type": chat_type
             });
 
             let config = {
@@ -332,7 +375,7 @@ const ContactList = () => {
                                     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                                         {chatGroups.map((group, index) => (
                                             <ListItem key={index} disablePadding>
-                                                <ListItemButton onClick={() => handleUserClick(group)}>
+                                                <ListItemButton onClick={() => getGroupChats(group)}>
                                                     <ListItemIcon>
                                                         <Avatar sx={{ width: 56, height: 56, bgcolor: deepOrange[500] }}>{group.group_name[0].toUpperCase()}</Avatar>
                                                     </ListItemIcon>
