@@ -29,7 +29,7 @@ const ContactList = () => {
     //                   Get unread chat count
     //=======================================================================
     const get_chat_count = async (user_data) => {
-        const updatedUsers = await Promise.all(user_data.map(async (element) => {
+        const updatedUsers = await Promise.all(user_data.results.map(async (element) => {
             try {
                 const config = {
                     method: 'get',
