@@ -25,7 +25,7 @@ const Index = () => {
 //   handleBackToList();
 // }
   return (
-    <Layout>
+    <Layout type="superadmin">
       {/* {showCreatePackage ? (
         editingPackage ?(
           <EditPackage onUpdatePackage={handleUpdatepackage}/>

@@ -13,20 +13,20 @@ export const Admin = () => {
 
     const router = useRouter();
 
-    const { permissionsData, loading } = usePermissions();
+    const { permissionsData, permissionLoading } = usePermissions();
 
-    if (loading) return <Loader />;
+    if (permissionLoading) return <Loader />;
 
     if (permissionsData?.role == "admin") {
         return (
-            <Layout>
+            <Layout type="admin">
                 <AdminDashboard/>
             </Layout>
         );
     }
     else if (permissionsData?.role == "superadmin") {
         return (
-            <Layout>
+            <Layout type="superadmin">
                 <SuperAdminDashboard/>
             </Layout>
         )
@@ -34,10 +34,14 @@ export const Admin = () => {
 
     else if (permissionsData?.role == "agent") {
         return (
-            <Layout>
+            <Layout type="agent">
                 <AgentDashboard/>
             </Layout>
         )
+    }
+
+    else{
+        alert("No role defined");
     }
 
     router.push("/login");

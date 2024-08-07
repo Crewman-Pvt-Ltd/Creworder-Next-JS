@@ -7,6 +7,8 @@ import { ClockLoader, PacmanLoader, PulseLoader } from "react-spinners";
 import MainApi from '@/api-manage/MainApi';
 import { login } from '@/api-manage/ApiRoutes';
 import { usePermissions } from '@/contexts/PermissionsContext';
+import Loader from '@/components/Loader';
+import { getToken } from '@/utils/getToken';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -14,7 +16,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const { fetchPermissions, permissionsData } = usePermissions();
+  const { fetchPermissions, permissionsData, permissionLoading } = usePermissions();
+  const token = getToken();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,7 +31,7 @@ export default function Login() {
       await fetchPermissions(key);
 
       console.log("Permission Data", permissionsData);
-      
+
       router.push("/dashboard");
 
     } catch (error) {
@@ -112,4 +115,6 @@ export default function Login() {
       </form>
     </LoginPage>
   );
+
+
 }

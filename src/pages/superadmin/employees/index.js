@@ -23,7 +23,7 @@ const Index = () => {
   //   handleBackToList();
   // }
     return (
-      <Layout>
+      <Layout type="superadmin">
         {/* {showCreateEmployee ? (
           editingEmployee ?(
             <EditEmployee  onUpdateEmployee={handleUpdateEmployee}/>

@@ -6,7 +6,7 @@ import CompanyList from "@/components/company/CompanyList";
 const Index = () => {
 
     return (
-      <Layout>
+      <Layout type="superadmin">
         <CompanyList />
       </Layout>
     );

@@ -47,7 +47,7 @@ const Tile = ({ type, height, padding }) => {
       break;
     case "totalPackages":
       title = "Total Packages";
-      count = packagesData?.length || 0;
+      count = packagesData?.results?.length || 0;
       IconComponent = SettingIcon;
       iconColor = "#000000";
       break;

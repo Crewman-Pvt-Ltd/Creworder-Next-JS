@@ -58,10 +58,10 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => 
   );
 };
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, type }) => {
   const router = useRouter();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md')); 
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   if (isMobile) {
     return null;
@@ -130,7 +130,7 @@ const Sidebar = ({ isOpen }) => {
           </Box>
         )}
       </Box>
-      
+
       <Box
         sx={{
           overflowY: 'auto',
@@ -149,27 +149,30 @@ const Sidebar = ({ isOpen }) => {
           active={currentPath === '/dashboard'}
           onClick={() => handleItemClick('/dashboard')}
         />
-         <HoverableNavItem
+        {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name="User"
           icon={<DashboardIcon />}
           active={currentPath === '/user'}
           onClick={() => handleItemClick('/user')}
-        />
-        <HoverableNavItem
+        />)}
+
+        {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Package"
           icon={<PackageIcon />}
           active={currentPath === '/superadmin/package'}
           onClick={() => handleItemClick('/superadmin/package')}
-        />
-        <HoverableNavItem
+        />)}
+
+        {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Company"
           icon={<CompanyIcon />}
           active={currentPath === '/superadmin/company'}
           onClick={() => handleItemClick('/superadmin/company')}
-        />
+        />)}
+
         <HoverableNavItem
           isOpen={isOpen}
           name="Employee"
@@ -177,14 +180,13 @@ const Sidebar = ({ isOpen }) => {
           active={currentPath === '/superadmin/employees'}
           onClick={() => handleItemClick('/superadmin/employees')}
         />
-        <HoverableNavItem
+        {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Support Ticket"
           icon={<SupportAgentIcon />}
           active={currentPath === '/superadmin/supportticket'}
           onClick={() => handleItemClick('/superadmin/supportticket')}
-        >
-        </HoverableNavItem>
+        ></HoverableNavItem>)}
         <HoverableNavItem
           isOpen={isOpen}
           name="Notice"
@@ -212,7 +214,7 @@ const Sidebar = ({ isOpen }) => {
         >
 
         </HoverableNavItem>
-     
+
       </Box>
     </Box>
   );

@@ -6,7 +6,7 @@ const PermissionsContext = createContext();
 
 export const PermissionsProvider = ({ children }) => {
   const [permissionsData, setPermissionsData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [permissionLoading, setLoading] = useState(true);
 
   const fetchPermissions = async (token) => {
     try {
@@ -33,7 +33,7 @@ export const PermissionsProvider = ({ children }) => {
   }, []);
 
   return (
-    <PermissionsContext.Provider value={{ permissionsData, loading, fetchPermissions }}>
+    <PermissionsContext.Provider value={{ permissionsData, permissionLoading, fetchPermissions }}>
       {children}
     </PermissionsContext.Provider>
   );

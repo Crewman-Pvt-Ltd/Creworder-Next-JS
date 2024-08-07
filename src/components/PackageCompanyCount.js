@@ -70,7 +70,7 @@ const PackageCompanyCount = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((packagedata, index) => (
+            {data?.results.map((packagedata, index) => (
               <TableRow key={packagedata.id}>
                 <DataCell>{index + 1}</DataCell>
                 <DataCell>{packagedata.name || 'N/A'}</DataCell>
