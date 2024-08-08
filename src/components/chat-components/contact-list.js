@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box } from "@mui/system";
 import AddIcon from "@mui/icons-material/Add";
 import SendIcon from '@mui/icons-material/Send';
-import Stack from '@mui/material/Stack';
 import { deepOrange, deepPurple } from '@mui/material/colors';
 import ListItemButton from '@mui/material/ListItemButton';
 import { baseApiUrl } from '@/api-manage/ApiRoutes';
-import Badge from '@mui/material/Badge';
-import GroupIcon from '@mui/icons-material/Group';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { usePermissions } from '@/contexts/PermissionsContext';
 
-import { Typography, IconButton, List, ListItem, TextField, ListItemText, Avatar, InputAdornment, FormControl, Select, MenuItem, ListItemIcon, Grid } from "@mui/material";
+import {
+    Box, Typography, IconButton, List, ListItem, TextField, ListItemText, Avatar,
+    InputAdornment, FormControl, Select, MenuItem, ListItemIcon, Grid, Menu, Badge, Stack, Dialog,
+    DialogTitle, DialogContent, DialogActions, Checkbox, Button
+  } from "@mui/material";
 const ContactList = () => {
     const items = Array.from({ length: 20 }, (_, index) => `Item ${index + 1}`);
     const [users, setUsers] = useState([]);
@@ -24,7 +25,11 @@ const ContactList = () => {
     const [messages, setMessages] = React.useState([]);
     const [socket, setSocket] = useState(null);
     const { fetchPermissions, permissionsData, loading } = usePermissions();
+    const [anchorEl, setAnchorEl] = useState(null);
     const [chatusrDetails, setChatusrDetails] = useState('');
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false); // State for dialog open/close
+    const [openGroupDialog, setOpenGroupDialog] = useState(false); // State for dialog open/close
     //=======================================================================
     //                   Get unread chat count
     //=======================================================================
@@ -296,6 +301,58 @@ const ContactList = () => {
     const sortedMessages = messages.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     const chatSessionId = sortedMessages.length > 0 ? sortedMessages[0].chat_session : 0;
     console.log("Groop ID : " + chatGroups);
+
+    
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+      };
+    
+      const handleMenuClose = () => {
+        setAnchorEl(null);
+      };
+    
+      const handleCreateChat = () => {
+        setOpenDialog(true); // Open dialog
+        handleMenuClose();
+      };
+    
+      const handleDialogClose = () => {
+        setOpenDialog(false); // Close dialog
+      };
+
+      const handleGroupDialogClose = () => {
+        setOpenGroupDialog(false); // Close dialog
+      };
+
+    
+      const handleCreateGroup = () => {
+        // Implement group creation functionality here
+        setOpenGroupDialog(true);
+        handleMenuClose(); // Close the menu
+      };
+      
+      const handleSelectUser = (user) => {
+        // Toggle user selection
+        setSelectedUsers((prevSelected) =>
+          prevSelected.includes(user)
+            ? prevSelected.filter((u) => u !== user)
+            : [...prevSelected, user]
+        );
+      };
+
+
+      const createGroup = () => {
+        console.log('Create group successfully');
+    };
+
+
+
+
+
+
+
+
+
     return (
         <>
             <section maxWidth="md">
@@ -311,11 +368,19 @@ const ContactList = () => {
                                     <MenuItem value="Favorites">Favorites</MenuItem>
                                 </Select>
                             </FormControl>
-                            <Avatar style={{ backgroundColor: "#405189" }}>
-                                <IconButton color="primary">
-                                    <AddIcon style={{ color: "#ffffff" }} />
-                                </IconButton>
+                            <Avatar >
+                            <IconButton onClick={handleMenuOpen}>
+                                <MoreVertIcon style={{ color: "#000" }} />
+                            </IconButton>
                             </Avatar>
+                            <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={handleCreateChat}>Create Chat</MenuItem>
+                            <MenuItem onClick={handleCreateGroup}>Create Group</MenuItem>
+                        </Menu>
                         </Box>
 
                         <Box style={{ width: "100%", height: "84vh", overflowY: "scroll", backgroundColor: "#ffffff", padding: "1em" }}>
@@ -571,6 +636,61 @@ const ContactList = () => {
                         </Grid>
                     </Grid>
                 </Grid>
+
+
+                 {/* Start Dialog for creating a new chat */}
+                 <Dialog open={openDialog} onClose={handleDialogClose}>
+                    <DialogTitle>Select a User to Chat</DialogTitle>
+                    <DialogContent>
+                    <List>
+                        {users.map((user) => (
+                        <ListItem key={user.id} button onClick={() => { handleUserClick(user); handleDialogClose(); }}>
+                            <ListItemIcon>
+                            <Avatar sx={{ bgcolor: deepPurple[500] }}>{user.username ? user.username[0].toUpperCase() : ''}</Avatar>
+                            </ListItemIcon>
+                            <ListItemText primary={user.username} secondary={user.email} />
+                        </ListItem>
+                        ))}
+                    </List>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Cancel
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+                 {/* END Dialog for creating a new chat */}
+
+                 {/* Start Group Dialog for creating a new chat */}
+                 <Dialog open={openGroupDialog} onClose={handleGroupDialogClose}>
+                        <DialogTitle>Select a User to Chat</DialogTitle>
+                        <DialogContent>
+                            <List>
+                                {users.map((user) => (
+                                    <ListItem key={user.id}>
+                                        <ListItemIcon>
+                                            <Checkbox
+                                                checked={selectedUsers.includes(user)}
+                                                onChange={() => handleSelectUser(user)}
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemIcon>
+                                            <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                                                {user.username ? user.username[0].toUpperCase() : ''}
+                                            </Avatar>
+                                        </ListItemIcon>
+                                        <ListItemText primary={user.username} secondary={user.email} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={createGroup} color="primary">
+                                Create Group
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+              {/* END Group Dialog for creating a new chat */}
             </section>
         </>
     );
