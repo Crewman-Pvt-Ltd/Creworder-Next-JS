@@ -3,7 +3,7 @@ import Layout from '@/components/Layout'
 import EditEmployee from '@/components/employees/EditEmployee'
 const editemployee = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
         <EditEmployee />
     </Layout>
   )

@@ -4,7 +4,7 @@ import Layout from '@/components/Layout'
 
 const editpackage = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
         <EditPackage />
     </Layout>
   )

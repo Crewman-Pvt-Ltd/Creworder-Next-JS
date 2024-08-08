@@ -4,7 +4,7 @@ import React from 'react'
 
 const index = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
      <SettingsSidebar />
     </Layout>
   )

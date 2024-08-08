@@ -191,8 +191,8 @@ const Sidebar = ({ isOpen, type }) => {
           isOpen={isOpen}
           name="Notice"
           icon={<NotificationsIcon />}
-          active={currentPath === '/superadmin/notice'}
-          onClick={() => handleItemClick('/superadmin/notice')}
+          active={currentPath === '/superadmin/notice-board'}
+          onClick={() => handleItemClick('/superadmin/notice-board')}
         >
         </HoverableNavItem>
 
@@ -209,8 +209,8 @@ const Sidebar = ({ isOpen, type }) => {
           isOpen={isOpen}
           name="Settings"
           icon={<SettingsIcon />}
-          active={currentPath === '/settings'}
-          onClick={() => handleItemClick('/settings')}
+          active={currentPath === '/superadmin/settings'}
+          onClick={() => handleItemClick('/superadmin/settings')}
         >
 
         </HoverableNavItem>

@@ -4,7 +4,7 @@ import React from 'react'
 
 const editticket = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
         <EditTicket />
     </Layout>
   )

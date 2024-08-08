@@ -4,7 +4,7 @@ import React from 'react';
 
 const EditNoticePage = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
       <EditNotice />
     </Layout>
   );

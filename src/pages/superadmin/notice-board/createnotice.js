@@ -4,7 +4,7 @@ import React from 'react'
 
 const createnotice = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
         <CreateNotice />
     </Layout>
   )

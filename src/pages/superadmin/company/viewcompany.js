@@ -3,7 +3,7 @@ import Layout from '@/components/Layout'
 import ViewCompany from '@/components/company/ViewCompany'
 const viewcompany = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
 <ViewCompany />
     </Layout>
   )
