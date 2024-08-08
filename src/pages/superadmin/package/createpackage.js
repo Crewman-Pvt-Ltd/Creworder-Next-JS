@@ -3,7 +3,7 @@ import React from 'react'
 import Layout from '@/components/Layout'
 const createpackage = () => {
   return (
-   <Layout>
+   <Layout type="superadmin">
     <Createpackage />
    </Layout>
   )

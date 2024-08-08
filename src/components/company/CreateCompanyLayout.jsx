@@ -409,19 +409,19 @@ const CreateCompanyLayout = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <CustomLabel htmlFor={`branchid_${branch.id}`} required>
-                      Branch ID
+                    <CustomLabel htmlFor={`branchaddress_${branch.address}`} required>
+                      Branch Address
                     </CustomLabel>
                     <CustomTextField
-                      id={`branchid_${branch.id}`}
-                      name={`branchid_${branch.id}`}
+                      id={`branchaddress_${branch.address}`}
+                      name={`branchaddress_${branch.address}`}
                       type="text"
                       placeholder="e.g. BR001"
                       fullWidth
-                      value={branch.branchid}
-                      onChange={(e) => handleInputChange(e, index, "branchid")}
-                      error={!!formErrors[`branchid_${branch.id}`]}
-                      helperText={formErrors[`branchid_${branch.id}`]}
+                      value={branch.branchaddress}
+                      onChange={(e) => handleInputChange(e, index, "branchadress")}
+                      error={!!formErrors[`branchaddress_${branch.address}`]}
+                      helperText={formErrors[`branchaddress_${branch.address}`]}
                     />
                   </Grid>
                 </Grid>

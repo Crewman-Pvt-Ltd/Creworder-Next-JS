@@ -3,7 +3,7 @@ import Layout from '@/components/Layout'
 import SupportTicketCreate from '@/components/supportticket/SupportTicketCreate'
 const createticket = () => {
   return (
-    <Layout>
+    <Layout type="superadmin">
         <SupportTicketCreate />
     </Layout>
   )

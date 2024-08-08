@@ -37,12 +37,9 @@ const smallLabelStyles = {
   fontSize: "13px",
 };
 
-const AppSettings = () => {
-  const [allowedFileTypes, setAllowedFileTypes] = useState([]);
 
-  const handleAllowedFileTypesChange = (event) => {
-    setAllowedFileTypes(event.target.value);
-  };
+const AppSettings = () => {
+  
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (event, newValue) => {
@@ -254,10 +251,10 @@ const AppSettings = () => {
               >
                 <Button
                   sx={{
-                    backgroundColor: "red",
+                    backgroundColor: "#405189",
                     color: "white",
                     "&:hover": {
-                      backgroundColor: "red",
+                      backgroundColor: "#405189",
                     },
                   }}
                 >
@@ -319,10 +316,10 @@ const AppSettings = () => {
               >
                 <Button
                   sx={{
-                    backgroundColor: "red",
+                    backgroundColor: "#405189",
                     color: "white",
                     "&:hover": {
-                      backgroundColor: "red",
+                      backgroundColor: "#405189",
                     },
                   }}
                 >
@@ -360,10 +357,10 @@ const AppSettings = () => {
               >
                 <Button
                   sx={{
-                    backgroundColor: "red",
+                    backgroundColor: "#405189",
                     color: "white",
                     "&:hover": {
-                      backgroundColor: "red",
+                      backgroundColor: "#405189",
                     },
                   }}
                 >
