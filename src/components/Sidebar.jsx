@@ -13,6 +13,7 @@ import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
 import SettingsIcon from '@mui/icons-material/Settings';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
@@ -212,7 +213,24 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === '/superadmin/settings'}
           onClick={() => handleItemClick('/superadmin/settings')}
         >
+        </HoverableNavItem>
 
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Notepad"
+          icon={<MenuBookIcon />}
+          active={currentPath === '/notepad'}
+          onClick={() => handleItemClick('/notepad')}
+        >
+        </HoverableNavItem>
+
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Follow Up"
+          icon={<SettingsIcon />}
+          active={currentPath === '/followup'}
+          onClick={() => handleItemClick('/followup')}
+        >
         </HoverableNavItem>
 
       </Box>
