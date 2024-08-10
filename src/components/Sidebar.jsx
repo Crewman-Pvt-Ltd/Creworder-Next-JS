@@ -14,6 +14,10 @@ import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import EventNoteIcon from '@mui/icons-material/EventNote'; 
+import LocalShippingIcon from '@mui/icons-material/Map';
+import PhoneIcon from '@mui/icons-material/Phone';
+import ShippingIcon from '@mui/icons-material/LocalShipping';
 
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
@@ -245,12 +249,36 @@ const Sidebar = ({ isOpen, type }) => {
         <HoverableNavItem
           isOpen={isOpen}
           name="Follow Up"
-          icon={<SettingsIcon />}
+          icon={<EventNoteIcon />}
           active={currentPath === '/followup'}
           onClick={() => handleItemClick('/followup')}
         >
         </HoverableNavItem>
 
+        {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Courier Service"
+          icon={<LocalShippingIcon />}
+          active={currentPath === '/admin/courier-service'}
+          onClick={() => handleItemClick('/admin/courier-service')}>
+        </HoverableNavItem>)}
+
+        {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Telephonic Channels"
+          icon={<PhoneIcon />}
+          active={currentPath === '/admin/telephonic-channels'}
+          onClick={() => handleItemClick('/admin/telephonic-channels')}>
+        </HoverableNavItem>)}
+
+        {type == 'admin' && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Shipment Channels"
+          icon={<ShippingIcon />}
+          active={currentPath === '/admin/shipment-channels'}
+          onClick={() => handleItemClick('/admin/shipment-channels')}>
+        </HoverableNavItem>)}
+        
       </Box>
     </Box>
   );

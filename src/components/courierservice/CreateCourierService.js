@@ -6,13 +6,11 @@ import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
 import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
 
-const CreateFollowUp = () => {
+const CreateCourierService = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    customer_name: "",
-    customer_phone: "",
-    remainder_date: "",
-    remainder_time: "",
+    courier_name: "",
+    courier_url: "",
     remark: "",
     user: 1,
   });
@@ -55,7 +53,7 @@ const CreateFollowUp = () => {
           form.append(key, formData[key]);
         });
 
-        const response = await MainApi.post("/api/followup/", form, {
+        const response = await MainApi.post("/api/courierservice/", form, {
           headers: {
             Authorization: `Token ${token}`,
             "Content-Type": "multipart/form-data",
@@ -63,7 +61,7 @@ const CreateFollowUp = () => {
         });
 
         if (response.status === 201) {
-          router.push("/followup");
+          router.push("/courierservice");
         }
       } catch (error) {
         console.error("Error submitting form:", error.response?.data || error.message);
@@ -78,7 +76,7 @@ const CreateFollowUp = () => {
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Add Follow Up
+              Add Courier Service
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -92,96 +90,35 @@ const CreateFollowUp = () => {
               }}
             >
               <Grid item xs={6}>
-                <CustomLabel htmlFor="customer_name" required>
-                Customer Name :
+                <CustomLabel htmlFor="courier_name" required>
+                Courier Name:
                 </CustomLabel>
                 <CustomTextField
-                  id="customer_name"
-                  name="customer_name"
-                  placeholder="Customer Name"
+                  id="courier_name"
+                  name="courier_name"
+                  placeholder="Courier Name"
                   type="text"
-                  value={formData.customer_name}
-                  onChange={(e) => handleInputChange("customer_name", e.target.value)}
-                  error={!!errors.customer_name}
-                  helperText={errors.customer_name}
+                  value={formData.courier_name}
+                  onChange={(e) => handleInputChange("courier_name", e.target.value)}
+                  error={!!errors.courier_name}
+                  helperText={errors.courier_name}
                   required
                   fullWidth
                 />
               </Grid>
               <Grid item xs={6}>
-                <CustomLabel htmlFor="customer_phone" required>
-                Customer Phone :
+                <CustomLabel htmlFor="courier_url" required>
+                Courier URL:
                 </CustomLabel>
                 <CustomTextField
-                  id="customer_phone"
-                  name="customer_phone"
-                  placeholder="Customer Phone"
+                  id="courier_url"
+                  name="courier_url"
+                  placeholder="Courier URL"
                   type="text"
-                  value={formData.customer_phone}
-                  onChange={(e) => handleInputChange("customer_phone", e.target.value)}
-                  error={!!errors.customer_phone}
-                  helperText={errors.customer_phone}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              </Grid>
-              <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
-              <Grid item xs={4}>
-                <CustomLabel htmlFor="Call Id" required>
-                Call Id :
-                </CustomLabel>
-                <CustomTextField
-                  id="call_id"
-                  name="call_id"
-                  placeholder="Call Id"
-                  type="text"
-                  value={formData.call_id}
-                  onChange={(e) => handleInputChange("call_id", e.target.value)}
-                  error={!!errors.call_id}
-                  helperText={errors.call_id}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <CustomLabel htmlFor="remainder_date" required>
-                Reminder Date :
-                </CustomLabel>
-                <CustomTextField
-                  id="remainder_date"
-                  name="Reminder Date"
-                  placeholder="Reminder Date"
-                  type="date"
-                  value={formData.remainder_date}
-                  onChange={(e) => handleInputChange("remainder_date", e.target.value)}
-                  error={!!errors.remainder_date}
-                  helperText={errors.remainder_date}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <CustomLabel htmlFor="remainder_time" required>
-                Reminder Time :
-                </CustomLabel>
-                <CustomTextField
-                  id="remainder_time"
-                  name="remainder_time"
-                  placeholder="Reminder Time"
-                  type="time"
-                  value={formData.remainder_time}
-                  onChange={(e) => handleInputChange("remainder_time", e.target.value)}
-                  error={!!errors.remainder_time}
-                  helperText={errors.remainder_time}
+                  value={formData.courier_url}
+                  onChange={(e) => handleInputChange("courier_url", e.target.value)}
+                  error={!!errors.courier_url}
+                  helperText={errors.courier_url}
                   required
                   fullWidth
                 />
@@ -249,4 +186,4 @@ const CreateFollowUp = () => {
   );
 };
 
-export default CreateFollowUp;
+export default CreateCourierService;

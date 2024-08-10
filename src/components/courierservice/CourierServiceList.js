@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
+import EditIcon from '@mui/icons-material/Edit';
+import BlockIcon from '@mui/icons-material/Block';
 import {
   Grid,
   Typography,
@@ -21,24 +23,24 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const initialData = [
   {
     id: 1,
-    name: "Rahul Kumar",
-    phone: "+91 85952-46884",
-    call_id: "0011",
+    name: "Shiprocket",
+    url: "https://shiprocket.co/tracking/",
     remark: "This setup",
-    reminder_date: "2023-07-14",
-    status: "pending",
     created: "2023-07-14",
-    
   },
  
 ];
 
-const FollowUpList = () => {
+const CourierServiceList = () => {
   const [data, setData] = useState(initialData);
 const router = useRouter();
 
-  const handleCreateFollowUp = () => {
-    router.push("/followup/createfollowup");
+  const handleEdit = () => {
+    router.push("/admin/courier-service/edit-courier-service");
+  };
+
+  const handleCreateCourierService = () => {
+    router.push("/admin/courier-service/create-courier-service");
   };
 
   const handleDelete = (id) => {
@@ -93,12 +95,12 @@ const router = useRouter();
                       marginLeft: "30px",
                     }}
                   >
-                    Follow Up List
+                    All Courier
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={handleCreateFollowUp}
+                    onClick={handleCreateCourierService}
                     sx={{
                       padding: "8px",
                       fontSize: "14px",
@@ -114,7 +116,7 @@ const router = useRouter();
                     }}
                   >
                     <AddIcon sx={{ fontSize: 15 }} />
-                    Add Follow Up
+                    Add Courier
                   </Button>
                 </Grid>
               </Grid>
@@ -128,13 +130,10 @@ const router = useRouter();
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <HeaderCell>ID</HeaderCell>
-                        <HeaderCell>Customer Name</HeaderCell>
-                        <HeaderCell>Customer Phone</HeaderCell>
-                        <HeaderCell>Call ID</HeaderCell>
+                        <HeaderCell>Sr.</HeaderCell>
+                        <HeaderCell>Courier Name</HeaderCell>
+                        <HeaderCell>API URL</HeaderCell>
                         <HeaderCell>Remark</HeaderCell>
-                        <HeaderCell>Reminder Date</HeaderCell>
-                        <HeaderCell >Status</HeaderCell>
                         <HeaderCell>Created</HeaderCell>
                         <HeaderCell>Action</HeaderCell>
                       </TableRow>
@@ -144,21 +143,29 @@ const router = useRouter();
                         <TableRow key={row.id}>
                           <DataCell>{index + 1}.</DataCell>
                           <DataCell>{row.name}</DataCell>
-                          <DataCell>{row.phone}</DataCell>
-                          <DataCell>{row.call_id}</DataCell>
-                          <DataCell>{row.remark}</DataCell>
-                          <DataCell>{row.reminder_date}</DataCell>
-                          <DataCell>
-                            <Button
-                              variant="contained"
-                              style={{ backgroundColor: "#213a8b", color: "#fff" }}
-                              // Add your handler function here
-                            >
-                              {row.status}
-                            </Button>
-                          </DataCell>
+                          <DataCell>{row.url}</DataCell>
+                          <DataCell>{row.remark}</DataCell> 
                           <DataCell>{row.created}</DataCell>
                           <TableCell>
+                          <IconButton>
+                            <Box 
+                             onClick={() => handleEdit(row)}
+                              aria-label="edit"
+                              sx={{ 
+                                width: 30, 
+                                height: 30, 
+                                display: 'flex', 
+                                justifyContent: 'center', 
+                                alignItems: 'center', 
+                                border: '1px solid green', 
+                                borderRadius: '4px' 
+                              }}>
+                              <EditIcon sx={{ color: 'green' }} />
+                            </Box>
+                          </IconButton>
+                          <IconButton sx={{ color: "red" }}>
+                          <BlockIcon />
+                          </IconButton>
                             <IconButton
                               onClick={() => handleDelete(row.id)}
                               aria-label="delete"
@@ -179,4 +186,4 @@ const router = useRouter();
   );
 };
 
-export default FollowUpList;
+export default CourierServiceList;
