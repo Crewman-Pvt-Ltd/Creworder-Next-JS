@@ -13,6 +13,7 @@ import Image from 'next/image';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
 import SettingsIcon from '@mui/icons-material/Settings';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
@@ -156,14 +157,14 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === '/user'}
           onClick={() => handleItemClick('/user')}
         />)}
-         {type == "admin" && (<HoverableNavItem
+        {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Order"
           icon={<DashboardIcon />}
           active={currentPath === '/admin/orders'}
           onClick={() => handleItemClick('/admin/orders')}
         />)}
-           {type == "admin" && (<HoverableNavItem
+        {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Branch"
           icon={<DashboardIcon />}
@@ -217,7 +218,6 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === '/chat'}
           onClick={() => handleItemClick('/chat')}
         >
-
         </HoverableNavItem>
         {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
@@ -225,14 +225,31 @@ const Sidebar = ({ isOpen, type }) => {
           icon={<SettingsIcon />}
           active={currentPath === '/superadmin/settings'}
           onClick={() => handleItemClick('/superadmin/settings')}
-          ></HoverableNavItem>)}
-           {type == "superadmin" && (<HoverableNavItem
+        ></HoverableNavItem>)}
+        {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Landing Page Settings"
           icon={<SettingsIcon />}
           active={currentPath === '/superadmin/landingpage'}
           onClick={() => handleItemClick('/superadmin/landingpage')}
-          ></HoverableNavItem>)}
+        ></HoverableNavItem>)}
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Notepad"
+          icon={<MenuBookIcon />}
+          active={currentPath === '/notepad'}
+          onClick={() => handleItemClick('/notepad')}
+        >
+        </HoverableNavItem>
+
+        <HoverableNavItem
+          isOpen={isOpen}
+          name="Follow Up"
+          icon={<SettingsIcon />}
+          active={currentPath === '/followup'}
+          onClick={() => handleItemClick('/followup')}
+        >
+        </HoverableNavItem>
 
       </Box>
     </Box>
