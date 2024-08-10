@@ -8,33 +8,12 @@ import {
   Grid,
   CardContent,
   Divider,
-  FormControlLabel,
-  Checkbox,
-  handleCheckboxChange,
+ 
 } from "@mui/material";
-import { useRouter } from "next/router";
-import { getToken } from "@/utils/getToken";
+
 
 const CreateUser = () => {
-  const [branches, setBranches] = useState([
-    { id: 1, branchname: "", branchid: "" },
-  ]);
-  const [showDetails, setShowDetails] = useState(false);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    company_email: "",
-    company_phone: "",
-    company_website: "",
-    company_address: "",
-    package_name: "",
-    payment_mode: "",
-    amount: "",
-    paymentDate: "",
-    nextPaymentDate: "",
-    first_name: "",
-    email: "",
-  });
+  
 
   return (
     <Grid container sx={{ padding: 3 }}>

@@ -2,13 +2,20 @@ import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
-import { Typography, Button, Grid, CardContent, Divider, FormControlLabel ,Checkbox,handleCheckboxChange} from "@mui/material";
+import {
+  Typography,
+  Button,
+  Grid,
+  CardContent,
+  Divider,
+ 
+} from "@mui/material";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
 const CreateCompanyLayout = () => {
-  const [branches, setBranches] = useState([{ id: 1, branchname: "", branchid: "" }]);
-  const [showDetails, setShowDetails] = useState(false); // State to toggle branch details
+
+
   const token = getToken();
   const [formData, setFormData] = useState({
     name: "",
@@ -39,14 +46,9 @@ const CreateCompanyLayout = () => {
   const handleInputChange = (e, index = null, field = null) => {
     const { name, value } = e.target;
 
-    if (index !== null && field !== null) {
-      // Update branches
-      const updatedBranches = branches.map((branch, i) =>
-        i === index ? { ...branch, [field]: value } : branch
-      );
-      setBranches(updatedBranches);
-    } else {
-      // Update form data
+   
+    
+ 
       setFormData({
         ...formData,
         [name]: value,
@@ -55,7 +57,7 @@ const CreateCompanyLayout = () => {
         ...formErrors,
         [name]: !value ? "This field is required" : "",
       });
-    }
+    
   };
 
   const handleFileChange = (event) => {
@@ -69,26 +71,9 @@ const CreateCompanyLayout = () => {
     }
   };
 
-  const handleAddBranch = () => {
-    const lastBranch = branches[branches.length - 1];
-    if (lastBranch.branchname && lastBranch.branchid) {
-      setBranches([
-        ...branches,
-        { id: branches.length + 1, branchname: "", branchid: "" },
-      ]);
-    } else {
-      alert("Please fill in the details for the current branch before adding a new one.");
-    }
-  };
-
-  const handleCheckboxChange = () => {
-    setShowDetails(!showDetails);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form data
     const errors = Object.keys(formData).reduce((acc, key) => {
       if (!formData[key]) acc[key] = "This field is required";
       return acc;
@@ -112,16 +97,17 @@ const CreateCompanyLayout = () => {
         throw new Error("Unexpected response from server");
       }
     } catch (error) {
-      console.error("Error:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
-
-
 
   return (
     <form onSubmit={handleSubmit}>
       <Grid container sx={{ padding: 3 }}>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={12} md={12}>
           <CustomCard>
             <CardContent>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
@@ -315,8 +301,8 @@ const CreateCompanyLayout = () => {
                     onChange={handleInputChange}
                     error={!!formErrors.paymentDate}
                     helperText={formErrors.paymentDate}
-                    InputProps={{ readOnly: true }} // Makes the field non-editable
-                    inputProps={{ readOnly: true }} // Makes the field non-clickable
+                    InputProps={{ readOnly: true }}
+                    inputProps={{ readOnly: true }} 
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -377,70 +363,7 @@ const CreateCompanyLayout = () => {
                   />
                 </Grid>
               </Grid>
-              <Grid item sx={{ marginTop: 3 }}>
-              <FormControlLabel
-                control={<Checkbox onChange={handleCheckboxChange} />}
-                label={
-                  <Typography variant="body1" sx={{ fontFamily: "serif" }}>
-                    Branches
-                  </Typography>
-                }
-              />
-            </Grid>
 
-            {showDetails && (
-              <>
-                {branches.map((branch, index) => (
-                <Grid container spacing={2} sx={{ mt: 2 }} key={branch.id}>
-                  <Grid item xs={12} sm={6}>
-                    <CustomLabel htmlFor={`branchname_${branch.id}`} required>
-                      Branch Name
-                    </CustomLabel>
-                    <CustomTextField
-                      id={`branchname_${branch.id}`}
-                      name={`branchname_${branch.id}`}
-                      type="text"
-                      placeholder="e.g. Main Branch"
-                      fullWidth
-                      value={branch.branchname}
-                      onChange={(e) => handleInputChange(e, index, "branchname")}
-                      error={!!formErrors[`branchname_${branch.id}`]}
-                      helperText={formErrors[`branchname_${branch.id}`]}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <CustomLabel htmlFor={`branchaddress_${branch.address}`} required>
-                      Branch Address
-                    </CustomLabel>
-                    <CustomTextField
-                      id={`branchaddress_${branch.address}`}
-                      name={`branchaddress_${branch.address}`}
-                      type="text"
-                      placeholder="e.g. BR001"
-                      fullWidth
-                      value={branch.branchaddress}
-                      onChange={(e) => handleInputChange(e, index, "branchadress")}
-                      error={!!formErrors[`branchaddress_${branch.address}`]}
-                      helperText={formErrors[`branchaddress_${branch.address}`]}
-                    />
-                  </Grid>
-                </Grid>
-              ))}
-                <Grid item xs={12} sx={{ marginTop: 3 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleAddBranch}
-                    disabled={
-                      !branches[branches.length - 1].branchname ||
-                      !branches[branches.length - 1].branchid
-                    }
-                  >
-                    Add Branch
-                  </Button>
-                </Grid>
-              </>
-            )}
               <Grid
                 item
                 sx={{
