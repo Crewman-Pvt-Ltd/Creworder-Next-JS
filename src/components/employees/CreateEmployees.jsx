@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
+import CustomLabel from "../CustomLabel";
 import { Typography, Button, Grid, Divider, CardContent } from "@mui/material";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";

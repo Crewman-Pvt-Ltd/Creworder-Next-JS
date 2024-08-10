@@ -29,7 +29,7 @@ const Notepad = () => {
   };
 
   return (
-    <ContainerStyled style={{ backgroundColor: "#ffffff", padding: "10px" }} maxWidth="lg">
+    <ContainerStyled style={{ backgroundColor: "#ffffff", padding: "10px", marginLeft: "4px" }} maxWidth="lg">
       <Typography variant="h5" gutterBottom>
         Notepad
       </Typography>
