@@ -1,10 +1,11 @@
-import UserList from '@/components/user/UserList'
-import React from 'react'
+import BranchList from '@/components/branch/BranchList'
 import Layout from '@/components/Layout'
+import React from 'react'
+
 const index = () => {
   return (
     <Layout type="admin">
-    <UserList />
+     <BranchList /> 
     </Layout>
   )
 }

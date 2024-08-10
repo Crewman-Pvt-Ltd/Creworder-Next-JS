@@ -39,6 +39,7 @@ const menuItems = [
   { text: "Social Login Settings", icon: <LockIcon /> },
   { text: "Theme Settings", icon: <ColorLensIcon /> },
   { text: "Database Backup Settings", icon: <BackupIcon /> },
+  
 ];
 
 const SettingsSidebarListItems = () => {

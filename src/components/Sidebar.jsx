@@ -157,6 +157,20 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === '/user'}
           onClick={() => handleItemClick('/user')}
         />)}
+        {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Order"
+          icon={<DashboardIcon />}
+          active={currentPath === '/admin/orders'}
+          onClick={() => handleItemClick('/admin/orders')}
+        />)}
+        {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Branch"
+          icon={<DashboardIcon />}
+          active={currentPath === '/admin/branch'}
+          onClick={() => handleItemClick('/admin/branch')}
+        />)}
 
         {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
@@ -174,13 +188,13 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick('/superadmin/company')}
         />)}
 
-        <HoverableNavItem
+        {type == "superadmin" && <HoverableNavItem
           isOpen={isOpen}
           name="Employee"
           icon={<SupervisedUserCircleIcon />}
           active={currentPath === '/superadmin/employees'}
           onClick={() => handleItemClick('/superadmin/employees')}
-        />
+        />}
         {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Support Ticket"
@@ -204,17 +218,21 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === '/chat'}
           onClick={() => handleItemClick('/chat')}
         >
-
         </HoverableNavItem>
-        <HoverableNavItem
+        {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Settings"
           icon={<SettingsIcon />}
           active={currentPath === '/superadmin/settings'}
           onClick={() => handleItemClick('/superadmin/settings')}
-        >
-        </HoverableNavItem>
-
+        ></HoverableNavItem>)}
+        {type == "superadmin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Landing Page Settings"
+          icon={<SettingsIcon />}
+          active={currentPath === '/superadmin/landingpage'}
+          onClick={() => handleItemClick('/superadmin/landingpage')}
+        ></HoverableNavItem>)}
         <HoverableNavItem
           isOpen={isOpen}
           name="Notepad"

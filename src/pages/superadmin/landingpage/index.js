@@ -1,10 +1,10 @@
-import UserList from '@/components/user/UserList'
 import React from 'react'
+import LandingPageSettings from '@/components/LandingPageSettings'
 import Layout from '@/components/Layout'
 const index = () => {
   return (
-    <Layout type="admin">
-    <UserList />
+    <Layout type="superadmin">
+      <LandingPageSettings />
     </Layout>
   )
 }
