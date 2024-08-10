@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import AddIcon from "@mui/icons-material/Add";
+import { getToken } from "@/utils/getToken";
 import SendIcon from '@mui/icons-material/Send';
 import { deepOrange, deepPurple } from '@mui/material/colors';
 import ListItemButton from '@mui/material/ListItemButton';
 import { baseApiUrl } from '@/api-manage/ApiRoutes';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { usePermissions } from '@/contexts/PermissionsContext';
-
 import {
     Box, Typography, IconButton, List, ListItem, TextField, ListItemText, Avatar,
     InputAdornment, FormControl, Select, MenuItem, ListItemIcon, Grid, Menu, Badge, Stack, Dialog,
     DialogTitle, DialogContent, DialogActions, Checkbox, Button
-  } from "@mui/material";
+} from "@mui/material";
 const ContactList = () => {
     const items = Array.from({ length: 20 }, (_, index) => `Item ${index + 1}`);
     const [users, setUsers] = useState([]);
+    const [groupName, setGroupName] = useState('');
+    const [usersList, setUsersList] = useState([]);
     const [loadings, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userInfo, setUserInfo] = React.useState({ username: "CrewOrder", text: 'Hello!', avatar: 'C', status: 'Online' });
@@ -28,11 +29,36 @@ const ContactList = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [chatusrDetails, setChatusrDetails] = useState('');
     const [selectedUsers, setSelectedUsers] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
     const [openDialog, setOpenDialog] = useState(false); // State for dialog open/close
     const [openGroupDialog, setOpenGroupDialog] = useState(false); // State for dialog open/close
+    const token = getToken();
     //=======================================================================
-    //                   Get unread chat count
+    //                   Get Unread Chat Count
     //=======================================================================
+
+    /**
+     * Fetches the unread chat count for a list of users and updates the 
+     * `users` state with the retrieved counts. This function iterates over 
+     * each user in the `user_data` and makes an API call to get the unread 
+     * chat count between the current user and the target user.
+     * 
+     * - `user_data` (Object): The data object containing a list of users 
+     *   in the `results` property.
+     * 
+     * The function performs the following steps:
+     * 1. Uses `Promise.all` to handle concurrent API requests for each user 
+     *    in the `user_data.results` array.
+     * 2. For each user, constructs a GET request to the `getChatCount` API endpoint,
+     *    with the current user ID and the target user's ID as query parameters.
+     * 3. If the API request is successful, updates the `chat_count` property 
+     *    of the user object with the count received from the API.
+     * 4. If an error occurs during the API request, sets the `chat_count` to `null`
+     *    and logs the error to the console.
+     * 5. Updates the state with the list of users, now including the unread chat counts.
+     * 
+     * @param {Object} user_data - The data object containing a list of users.
+     */
     const get_chat_count = async (user_data) => {
         const updatedUsers = await Promise.all(user_data.results.map(async (element) => {
             try {
@@ -51,16 +77,38 @@ const ContactList = () => {
             }
             return element;
         }));
-
         setUsers(updatedUsers);
-    }
+    };
+
 
     //=======================================================================
-    //                   Get users for chat here
+    //                   Get Users for Chat
     //=======================================================================
 
+    /**
+     * Fetches the list of users for chat when the component mounts. 
+     * This effect performs an asynchronous fetch request to retrieve 
+     * users that the current user can chat with. It also handles 
+     * updating the state based on the fetch result.
+     * 
+     * The effect performs the following steps:
+     * 1. Executes a fetch request to the `getUserListChat` API endpoint with
+     *    the current user's ID as a query parameter.
+     * 2. Checks the response from the fetch request. If the response is not
+     *    OK (e.g., network error or non-200 status code), it throws an error.
+     * 3. If the response is successful, parses the JSON data from the response.
+     * 4. Calls the `get_chat_count` function with the fetched data to update
+     *    each user's unread chat count.
+     * 5. Sets the `loading` state to `false` once the data has been processed.
+     * 6. If an error occurs during the fetch operation, sets the `error` state 
+     *    and also sets the `loading` state to `false`.
+     * 
+     * Dependencies:
+     * - The empty dependency array `[]` ensures this effect only runs once,
+     *   when the component mounts.
+     */
     useEffect(() => {
-        fetch(`${baseApiUrl}users`)
+        fetch(`${baseApiUrl}getUserListChat/?user_id=${permissionsData?.user?.id}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -68,7 +116,6 @@ const ContactList = () => {
                 return response.json();
             })
             .then(data => {
-                // setUsers(data);
                 get_chat_count(data);
                 setLoading(false);
             })
@@ -79,8 +126,33 @@ const ContactList = () => {
     }, []);
 
     //=======================================================================
-    //                 Get Old chat here form database
+    //                 Get Old Chat Here from Database
     //=======================================================================
+
+    /**
+     * Handles the click event on a user, retrieves the chat history
+     * between the current user and the selected user, and updates
+     * the state with the retrieved chat details.
+     * 
+     * This function performs the following actions:
+     * 1. Sets the details of the selected user in the `chatusrDetails` state.
+     * 2. Updates the `userInfo` state with the selected user's information,
+     *    including username, email, phone number, role, a default message, 
+     *    avatar (initial of the username), and status.
+     * 3. Makes an HTTP GET request to the `getChatDetail` API endpoint to
+     *    fetch the chat history between the current user (`from_user`) and
+     *    the selected user (`to_user`).
+     * 4. If the response data is an array, it sets the `messages` state with
+     *    the chat data.
+     * 5. Logs a message to the console for debugging purposes if the data
+     *    format is correct.
+     * 6. If the response data format is unexpected, logs an error and clears
+     *    the messages.
+     * 7. Catches and logs any errors that occur during the API request and
+     *    clears the messages state in case of an error.
+     * 
+     * @param {Object} user - The user object representing the selected user.
+     */
     const handleUserClick = (user) => {
         setChatusrDetails(user);
         setUserInfo({
@@ -101,7 +173,6 @@ const ContactList = () => {
             .then(response => {
                 if (Array.isArray(response.data.data)) {
                     setMessages(response.data.data);
-                    console.log("SHIVAM1");
                 } else {
                     console.error('Unexpected response data format:', response.data);
                     setMessages([]);
@@ -113,9 +184,36 @@ const ContactList = () => {
             });
     };
 
+
     //=======================================================================
-    //                 Get Old Group chat here form database
+    //                 Get Old Group Chat Here from Database
     //=======================================================================
+
+    /**
+     * Handles the retrieval of chat history for a selected group from the database.
+     * Updates the chat interface with the group's chat details and information.
+     * 
+     * This function performs the following actions:
+     * 1. Adds an `id` property to the `group_details` object, derived from the `group_id` property.
+     * 2. Sets the group details in the `chatusrDetails` state.
+     * 3. Updates the `userInfo` state with the group's information, including:
+     *    - `username`: The name of the group.
+     *    - `email`: The group's email (if available).
+     *    - `phone`: The group's contact number (if available).
+     *    - `role`: The group's role (if available).
+     *    - `text`: A default message ('Hello!').
+     *    - `avatar`: The first letter of the group's name capitalized.
+     *    - `status`: Default status set to 'offline'.
+     * 4. Makes an HTTP GET request to the `getChatDetail` API endpoint to fetch the chat history
+     *    for the selected group using the `group_id`.
+     * 5. If the response data is an array, it updates the `messages` state with the retrieved chat data.
+     * 6. Logs a message to the console for debugging purposes if the data format is correct.
+     * 7. If the response data format is unexpected, logs an error and clears the messages.
+     * 8. Catches and logs any errors that occur during the API request and clears the messages state
+     *    in case of an error.
+     * 
+     * @param {Object} group_details - The object containing details of the selected group.
+     */
     const getGroupChats = (group_details) => {
         group_details['id'] = group_details.group_id
         console.log(group_details);
@@ -132,7 +230,7 @@ const ContactList = () => {
         axios.get(`${baseApiUrl}getChatDetail/`, {
             params: {
                 from_user: permissionsData.user.id,
-                group_id:group_details.group_id
+                group_id: group_details.group_id
             }
         })
             .then(response => {
@@ -150,36 +248,152 @@ const ContactList = () => {
             });
     };
 
+    //=======================================================================
+    //                 Handle Option Change for Chat View
+    //=======================================================================
+
+    /**
+     * Handles changes in the selected option for viewing chat groups, contacts, or chats.
+     * 
+     * This function is triggered when the user selects an option from a dropdown or similar
+     * control. It performs the following actions based on the selected option:
+     * 
+     * 1. **Group**:
+     *    - If the selected option is 'Group', it checks if `permissionsData` is not null.
+     *    - Fetches the list of chat groups for the user from the API using `fetch` with the endpoint
+     *      `getChatgroups`.
+     *    - Checks the response status and throws an error if it's not OK.
+     *    - Parses the response as JSON and updates the `chatGroups` state with the retrieved groups.
+     *    - Catches and handles any errors that occur during the fetch operation, and sets the error
+     *      state.
+     * 
+     * 2. **Contacts**:
+     *    - If the selected option is 'Contacts', it checks if `permissionsData` is not null.
+     *    - Fetches the list of contacts from the API using `fetch` with the endpoint `users`.
+     *    - Checks the response status and throws an error if it's not OK.
+     *    - Parses the response as JSON and updates the list of users by calling the `get_chat_count` function.
+     *    - Catches and handles any errors that occur during the fetch operation, and sets the error
+     *      state.
+     * 
+     * 3. **Chats**:
+     *    - If the selected option is 'Chats', it checks if `permissionsData` is not null.
+     *    - Fetches the list of chat users from the API using `fetch` with the endpoint
+     *      `getUserListChat`, passing the user ID as a parameter.
+     *    - Checks the response status and throws an error if it's not OK.
+     *    - Parses the response as JSON and updates the list of chats by calling the `get_chat_count` function.
+     *    - Catches and handles any errors that occur during the fetch operation, and sets the error
+     *      state.
+     * 
+     * @param {Object} event - The event object from the change event, containing the selected value.
+     */
     const handleChange = (event) => {
         setSelectedOption(event.target.value);
-        console.log(event.target.value)
+        console.log(event.target.value);
+
         if (event.target.value === 'Group') {
             permissionsData != null &&
-            fetch(`${baseApiUrl}getChatgroups/?user_id=${permissionsData?.user?.id}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(data);
-                    setchatGroups(data.Groups);
-                })
-                .catch(error => {
-                    setError(error);
-                    setLoading(false);
-                });
+                fetch(`${baseApiUrl}getChatgroups/?user_id=${permissionsData?.user?.id}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        setchatGroups(data.Groups);
+                    })
+                    .catch(error => {
+                        setError(error);
+                        setLoading(false);
+                    });
+        }
+
+        if (event.target.value === 'Contacts') {
+            permissionsData != null &&
+                fetch(`${baseApiUrl}users`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        get_chat_count(data);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        setError(error);
+                        setLoading(false);
+                    });
+        }
+
+        if (event.target.value === 'Chats') {
+            permissionsData != null &&
+                fetch(`${baseApiUrl}getUserListChat/?user_id=${permissionsData?.user?.id}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        get_chat_count(data);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        setError(error);
+                        setLoading(false);
+                    });
         }
     };
-    const [searchQuery, setSearchQuery] = useState("");
+
+
+    //=======================================================================
+    //                 Handle Search Query Change
+    //=======================================================================
+
+    /**
+     * Updates the search query based on user input.
+     * 
+     * This function is triggered when the user types in a search input field. It updates
+     * the state with the current value of the search input field, allowing for dynamic
+     * filtering or searching of data based on the user’s input.
+     * 
+     * @param {Object} event - The event object from the change event, containing the current value of the input.
+     */
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
+
     //=======================================================================
-    //                    WebSocket Setup And Incomming massage manage here
+    //                 WebSocket Setup and Incoming Message Management
     //=======================================================================
+
+    /**
+     * Establishes a WebSocket connection and handles incoming messages.
+     * 
+     * This effect sets up a WebSocket connection to the specified URL and manages
+     * the connection's lifecycle. It includes event handlers for:
+     * 
+     * - `onopen`: Logs a message when the WebSocket connection is successfully
+     *   established and stores the WebSocket instance in the state.
+     * 
+     * - `onmessage`: Handles incoming messages by reading the message data, 
+     *   parsing it from JSON, and updating the messages state if the message
+     *   is not already present.
+     * 
+     * - `onclose`: Logs a message when the WebSocket connection is closed, 
+     *   including the reason for closure.
+     * 
+     * - `onerror`: Logs errors encountered during WebSocket communication.
+     * 
+     * The WebSocket connection is cleaned up by closing it when the component
+     * unmounts or the effect is re-run.
+     */
     useEffect(() => {
         const connectWebSocket = () => {
             const ws = new WebSocket('ws://localhost:3001');
@@ -230,13 +444,45 @@ const ContactList = () => {
         };
     }, []);
 
+
+    //=======================================================================
+    //                  Handle Message Input Change
+    //=======================================================================
+
+    /**
+     * Updates the message state with the current value of the input field.
+     * 
+     * This function is called when the user types into the message input field.
+     * It retrieves the current value from the input event and updates the 
+     * `message` state accordingly. This allows the component to keep track of
+     * the user's message input in real-time.
+     * 
+     * @param {Object} event - The change event object from the input field.
+     */
     const handleMessageChange = (event) => {
         setMessage(event.target.value);
     };
 
     //=======================================================================
-    //         Sendmassage Setup and Create Chat manage here
+    //             Send Message and Create Chat Entry
     //=======================================================================
+
+    /**
+     * Handles the sending of a chat message and creates a chat entry in the database.
+     * 
+     * This function is triggered when the user sends a message. It first checks if 
+     * the message input is not empty and if a WebSocket connection exists. It then 
+     * constructs a message object with relevant details, including the sender's ID, 
+     * recipient's ID, and message content.
+     * 
+     * The function determines the chat type based on whether the recipient is a group 
+     * or a single user. It then sends a POST request to create a new chat entry in the 
+     * database. If the request is successful, the message object is sent through the 
+     * WebSocket connection to update the chat in real-time. The message input field is 
+     * then cleared.
+     * 
+     * @returns {void}
+     */
     const handleSendMessage = () => {
         let chat_type;
         if (message.trim() !== '' && socket) {
@@ -281,7 +527,7 @@ const ContactList = () => {
                         messageObject['chat_session'] = response.data.ChatData.chat_session;
                         const messageString = JSON.stringify(messageObject);
                         socket.send(messageString);
-                        setMessage('')
+                        setMessage('');
                     }
                 })
                 .catch((error) => {
@@ -289,68 +535,204 @@ const ContactList = () => {
                 });
         }
     };
+
     //=======================================================================
-    //        Hadle Type massage here
+    //            Handle Enter Key Press for Sending Message
     //=======================================================================
+
+    /**
+     * Handles the 'Enter' key press event to send a message.
+     * 
+     * This function is triggered when the user presses a key while typing in the
+     * message input field. If the pressed key is 'Enter', it prevents the default
+     * behavior (which might include adding a new line in a text area) and calls
+     * the `handleSendMessage` function to send the message.
+     * 
+     * @param {KeyboardEvent} event - The keyboard event triggered by the user.
+     * @returns {void}
+     */
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             handleSendMessage();
         }
     };
+
+    //=======================================================================
+    //       Sort Messages and Extract Chat Session ID
+    //=======================================================================
+
+    /**
+     * Sorts chat messages based on their creation time and extracts the chat session ID.
+     * 
+     * The `sortedMessages` variable contains a sorted array of messages, ordered
+     * chronologically by their `created_at` timestamp. The `chatSessionId` is extracted
+     * from the first message in the sorted array, if it exists, or defaults to 0.
+     * 
+     * @type {Array} sortedMessages - Array of sorted messages by creation time.
+     * @type {number} chatSessionId - ID of the chat session derived from the sorted messages.
+     */
     const sortedMessages = messages.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     const chatSessionId = sortedMessages.length > 0 ? sortedMessages[0].chat_session : 0;
-    console.log("Groop ID : " + chatGroups);
 
-    
+
+
+    //=======================================================================
+    //                  Handle Menu Open and Close
+    //=======================================================================
+
+    /**
+     * Opens the menu by setting the anchor element for the menu.
+     * 
+     * This function sets the anchor element to the current target of the event,
+     * which is typically the element that triggered the menu to open.
+     * 
+     * @param {Object} event - The event object from the menu trigger.
+     * @returns {void}
+     */
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
-      };
-    
-      const handleMenuClose = () => {
+    };
+
+    /**
+     * Closes the menu by clearing the anchor element.
+     * 
+     * This function sets the anchor element to null, which causes the menu
+     * to be hidden.
+     * 
+     * @returns {void}
+     */
+    const handleMenuClose = () => {
         setAnchorEl(null);
-      };
-    
-      const handleCreateChat = () => {
+    };
+
+    //=======================================================================
+    //                  Handle Dialog Open and Close
+    //=======================================================================
+
+    /**
+     * Opens the chat creation dialog.
+     * 
+     * This function sets the state to open the chat creation dialog and
+     * closes the menu if it is open.
+     * 
+     * @returns {void}
+     */
+    const handleCreateChat = () => {
         setOpenDialog(true); // Open dialog
-        handleMenuClose();
-      };
-    
-      const handleDialogClose = () => {
+        handleMenuClose();   // Close menu
+    };
+
+    /**
+     * Closes the chat creation dialog.
+     * 
+     * This function sets the state to close the chat creation dialog.
+     * 
+     * @returns {void}
+     */
+    const handleDialogClose = () => {
         setOpenDialog(false); // Close dialog
-      };
+    };
 
-      const handleGroupDialogClose = () => {
+    /**
+     * Closes the group creation dialog.
+     * 
+     * This function sets the state to close the group creation dialog.
+     * 
+     * @returns {void}
+     */
+    const handleGroupDialogClose = () => {
         setOpenGroupDialog(false); // Close dialog
-      };
+    };
 
-    
-      const handleCreateGroup = () => {
-        // Implement group creation functionality here
-        setOpenGroupDialog(true);
-        handleMenuClose(); // Close the menu
-      };
-      
-      const handleSelectUser = (user) => {
-        // Toggle user selection
-        setSelectedUsers((prevSelected) =>
-          prevSelected.includes(user)
-            ? prevSelected.filter((u) => u !== user)
-            : [...prevSelected, user]
-        );
-      };
-
-
-      const createGroup = () => {
-        console.log('Create group successfully');
+    /**
+     * Opens the group creation dialog.
+     * 
+     * This function sets the state to open the group creation dialog and
+     * closes the menu if it is open.
+     * 
+     * @returns {void}
+     */
+    const handleCreateGroup = () => {
+        setOpenGroupDialog(true); // Open dialog
+        handleMenuClose();        // Close menu
     };
 
 
+    //=======================================================================
+    //                Handle User Selection for Group Creation
+    //=======================================================================
 
+    /**
+     * Toggles the selection of a user for group creation.
+     * 
+     * This function adds the user's ID to the `selectedUsers` array if it's not
+     * already present, or removes it if it is. It updates the state with the
+     * new list of selected user IDs.
+     * 
+     * @param {Object} user - The user object containing the user's ID.
+     * @returns {void}
+     */
+    const handleSelectUser = (user) => {
+        setSelectedUsers((prevSelectedUsers) =>
+            prevSelectedUsers.includes(user.id)
+                ? prevSelectedUsers.filter((id) => id !== user.id)
+                : [...prevSelectedUsers, user.id]
+        );
+    };
 
+    //=======================================================================
+    //                Create Group and Send Data to Server
+    //=======================================================================
 
+    /**
+     * Creates a new group with the selected users and sends the data to the server.
+     * 
+     * This function constructs the group data object, including the group name and
+     * a list of selected users with their status. It then sends a POST request to
+     * the server to create the group. On success, it closes the group dialog; on
+     * failure, it logs an error message.
+     * 
+     * @returns {void}
+     */
+    const createGroup = () => {
+        // Construct the group data object
+        const groupData = {
+            group_name: groupName,
+            members: selectedUsers.map(userId => ({
+                group_member_id: userId,
+                group_member_status: 1
+            }))
+        };
 
+        // Log the group data for debugging purposes
+        console.log("Group Data:", JSON.stringify(groupData, null, 2));
 
+        // Configuration for the POST request
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: `${baseApiUrl}createGroup/`,
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'application/json'
+            },
+            data: groupData
+        };
+
+        // Send the request to create the group
+        axios.request(config)
+            .then((response) => {
+                // Log the response data for debugging purposes
+                console.log("Response Data:", JSON.stringify(response.data, null, 2));
+                // Close the group creation dialog
+                handleGroupDialogClose();
+            })
+            .catch((error) => {
+                // Log any errors that occur
+                console.error("Error creating group:", error);
+            });
+    };
 
 
     return (
@@ -369,18 +751,18 @@ const ContactList = () => {
                                 </Select>
                             </FormControl>
                             <Avatar >
-                            <IconButton onClick={handleMenuOpen}>
-                                <MoreVertIcon style={{ color: "#000" }} />
-                            </IconButton>
+                                <IconButton onClick={handleMenuOpen}>
+                                    <MoreVertIcon style={{ color: "#000" }} />
+                                </IconButton>
                             </Avatar>
                             <Menu
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={handleMenuClose}
-                        >
-                            <MenuItem onClick={handleCreateChat}>Create Chat</MenuItem>
-                            <MenuItem onClick={handleCreateGroup}>Create Group</MenuItem>
-                        </Menu>
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleMenuClose}
+                            >
+                                <MenuItem onClick={handleCreateChat}>Create Chat</MenuItem>
+                                <MenuItem onClick={handleCreateGroup}>Create Group</MenuItem>
+                            </Menu>
                         </Box>
 
                         <Box style={{ width: "100%", height: "84vh", overflowY: "scroll", backgroundColor: "#ffffff", padding: "1em" }}>
@@ -638,59 +1020,71 @@ const ContactList = () => {
                 </Grid>
 
 
-                 {/* Start Dialog for creating a new chat */}
-                 <Dialog open={openDialog} onClose={handleDialogClose}>
+                {/* Start Dialog for creating a new chat */}
+                <Dialog open={openDialog} onClose={handleDialogClose}>
                     <DialogTitle>Select a User to Chat</DialogTitle>
                     <DialogContent>
-                    <List>
-                        {users.map((user) => (
-                        <ListItem key={user.id} button onClick={() => { handleUserClick(user); handleDialogClose(); }}>
-                            <ListItemIcon>
-                            <Avatar sx={{ bgcolor: deepPurple[500] }}>{user.username ? user.username[0].toUpperCase() : ''}</Avatar>
-                            </ListItemIcon>
-                            <ListItemText primary={user.username} secondary={user.email} />
-                        </ListItem>
-                        ))}
-                    </List>
+                        <List>
+                            {users.map((user) => (
+                                <ListItem key={user.id} button onClick={() => { handleUserClick(user); handleDialogClose(); }}>
+                                    <ListItemIcon>
+                                        <Avatar sx={{ bgcolor: deepPurple[500] }}>{user.username ? user.username[0].toUpperCase() : ''}</Avatar>
+                                    </ListItemIcon>
+                                    <ListItemText primary={user.username} secondary={user.email} />
+                                </ListItem>
+                            ))}
+                        </List>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
-                        Cancel
-                    </Button>
+                        <Button onClick={handleDialogClose} color="primary">
+                            Cancel
+                        </Button>
                     </DialogActions>
                 </Dialog>
-                 {/* END Dialog for creating a new chat */}
+                {/* END Dialog for creating a new chat */}
 
-                 {/* Start Group Dialog for creating a new chat */}
-                 <Dialog open={openGroupDialog} onClose={handleGroupDialogClose}>
-                        <DialogTitle>Select a User to Chat</DialogTitle>
-                        <DialogContent>
-                            <List>
-                                {users.map((user) => (
-                                    <ListItem key={user.id}>
-                                        <ListItemIcon>
-                                            <Checkbox
-                                                checked={selectedUsers.includes(user)}
-                                                onChange={() => handleSelectUser(user)}
-                                            />
-                                        </ListItemIcon>
-                                        <ListItemIcon>
-                                            <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                                                {user.username ? user.username[0].toUpperCase() : ''}
-                                            </Avatar>
-                                        </ListItemIcon>
-                                        <ListItemText primary={user.username} secondary={user.email} />
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={createGroup} color="primary">
-                                Create Group
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-              {/* END Group Dialog for creating a new chat */}
+                <Dialog open={openGroupDialog} onClose={handleGroupDialogClose}>
+                    <DialogTitle>Select a User for Group</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            placeholder="Enter Group Name"
+                            value={groupName}
+                            onChange={(e) => setGroupName(e.target.value)}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end"></InputAdornment>,
+                            }}
+                        />
+                        <List>
+                            {users.map((user) => (
+                                <ListItem key={user.id}>
+                                    <ListItemIcon>
+                                        <Checkbox
+                                            checked={selectedUsers.includes(user.id)}
+                                            onChange={() => handleSelectUser(user)}
+                                        />
+                                    </ListItemIcon>
+                                    <ListItemIcon>
+                                        <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                                            {user.username ? user.username[0].toUpperCase() : ''}
+                                        </Avatar>
+                                    </ListItemIcon>
+                                    <ListItemText primary={user.username} secondary={user.email} />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={createGroup} color="primary">
+                            Create Group
+                        </Button>
+                        <Button onClick={handleGroupDialogClose} color="secondary">
+                            Cancel
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </section>
         </>
     );
