@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomCard from "./CustomCard";
 import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
 import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
@@ -98,27 +98,43 @@ const configuration = {
 };
 
 const CompanyDetailsdashboard = ({ type }) => {
-  const { data, isLoading, isError } = type === "packageCompanyCount"
-    ? useGetAllPackages()
-    : useGetAllCompanies();
-
+  const [url, setUrl] = useState(null);
+  const [currentstate, setCurrentState] = useState(null);
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [previousPageUrl, setPreviousPageUrl] = useState(null);
   const [page, setPage] = useState(0);
-  const rowsPerPage = 5;
+  const rowsPerPage = 10; 
 
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError) return <Typography>Error loading data</Typography>;
+  const { data, isLoading, isError, refetch } = type === "packageCompanyCount"
+    ? useGetAllPackages(url)
+    : useGetAllCompanies(url);
+
+  useEffect(() => {
+    if (data) {
+      setNextPageUrl(data.next);
+      setPreviousPageUrl(data.previous);
+    }
+  }, [data]);
 
   const { title, headers, mapRow } = configuration[type] || {};
   if (!title) return null;
 
   const rows = data?.results.map(mapRow) || [];
 
-  
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
   const handleChangePage = (event, newPage) => {
+    if (newPage > page) {
+      setUrl(nextPageUrl);
+    } else {
+      setUrl(previousPageUrl);
+    }
     setPage(newPage);
+    refetch();
   };
+
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isError) return <Typography>Error loading data</Typography>;
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <CustomCard>
@@ -168,10 +184,12 @@ const CompanyDetailsdashboard = ({ type }) => {
         <TablePagination
           rowsPerPageOptions={[rowsPerPage]}
           component="div"
-          count={rows.length}
+          count={data?.count || 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
+          nextPageUrl={nextPageUrl}
+          previousPageUrl={previousPageUrl}
         />
       </Box>
     </CustomCard>
