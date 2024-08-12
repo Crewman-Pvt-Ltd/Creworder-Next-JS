@@ -18,7 +18,9 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import LocalShippingIcon from '@mui/icons-material/Map';
 import PhoneIcon from '@mui/icons-material/Phone';
 import ShippingIcon from '@mui/icons-material/LocalShipping';
-
+import PersonIcon from '@mui/icons-material/Person';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
   const [hoveredItemPosition, setHoveredItemPosition] = useState({ top: 0 });
@@ -157,21 +159,21 @@ const Sidebar = ({ isOpen, type }) => {
         {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name="User"
-          icon={<DashboardIcon />}
+          icon={<PersonIcon />}
           active={currentPath === '/user'}
           onClick={() => handleItemClick('/user')}
         />)}
         {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Order"
-          icon={<DashboardIcon />}
+          icon={<LocalMallIcon />} 
           active={currentPath === '/admin/orders'}
           onClick={() => handleItemClick('/admin/orders')}
         />)}
         {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Branch"
-          icon={<DashboardIcon />}
+           icon={<AccountTreeIcon />} 
           active={currentPath === '/admin/branch'}
           onClick={() => handleItemClick('/admin/branch')}
         />)}
