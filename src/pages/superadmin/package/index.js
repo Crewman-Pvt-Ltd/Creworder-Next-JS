@@ -1,43 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 import PackageList from "@/components/package/PackageList";
 import Layout from "@/components/Layout";
-import Createpackage from "@/components/package/Createpackage";
-import { useState } from "react";
-import {} from "@mui/material";
-import EditPackage from "@/components/package/EditPackage";
+import Loader from "@/components/Loader";
+import { usePermissions } from "@/contexts/PermissionsContext";
 
 const Index = () => {
-//   const [showCreatePackage, setShowCreatePackage] = useState(false);
-//   const [editingPackage, setEditingPackage] = useState(null);
+  const { permissionsData, permissionLoading } = usePermissions();
+  const router = useRouter();
 
-//   const handleShowCreatePackage = () => {
-//     setShowCreatePackage(true);
-//   };
-//   const handleBackToList = () => {
-//     setShowCreatePackage(false);
-//     setEditingPackage(null);
-//   };
-// const handleEditPackage =(packages) =>{
-//   setEditingPackage(packages);
-//   setShowCreatePackage(true);
-// }
-// const handleUpdatepackage =() =>{
-//   handleBackToList();
-// }
-  return (
-    <Layout type="superadmin">
-      {/* {showCreatePackage ? (
-        editingPackage ?(
-          <EditPackage onUpdatePackage={handleUpdatepackage}/>
-        ) : (
-        <Createpackage onPackageList={handleBackToList} />
-        )
-      ) : (
-        <PackageList onCreatePackage={handleShowCreatePackage} onEditPackage={handleEditPackage}/>
-      )} */}
-      <PackageList />
-    </Layout>
-  );
+  useEffect(() => {
+    if (!permissionLoading && permissionsData?.role !== "superadmin") {
+      router.push("/login");
+    }
+  }, [permissionLoading, permissionsData, router]);
+
+  if (permissionLoading) return <Loader />;
+
+  if (permissionsData?.role === "superadmin") {
+    return (
+      <Layout type="superadmin">
+        <PackageList />
+      </Layout>
+    );
+  }
+
+  return null;
 };
 
 export default Index;

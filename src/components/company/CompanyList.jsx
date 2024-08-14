@@ -29,8 +29,8 @@ import {
   CheckCircle,
   Cancel,
 } from "@mui/icons-material";
-import MainApi from "@/api-manage/MainApi"; // Adjust the import path as needed
-import { getToken } from "@/utils/getToken"; // Adjust the import path as needed
+import MainApi from "@/api-manage/MainApi"; 
+import { getToken } from "@/utils/getToken"; 
 
 const CompanyList = () => {
   const { data, refetch } = useGetAllCompanies();

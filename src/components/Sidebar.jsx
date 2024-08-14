@@ -239,6 +239,14 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === '/superadmin/landingpage'}
           onClick={() => handleItemClick('/superadmin/landingpage')}
         ></HoverableNavItem>)}
+
+{type == "superadmin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="StickyNote"
+          icon={<SettingsIcon />}
+          active={currentPath === '/superadmin/stickynote'}
+          onClick={() => handleItemClick('/superadmin/stickynote')}
+        ></HoverableNavItem>)}
         <HoverableNavItem
           isOpen={isOpen}
           name="Notepad"
