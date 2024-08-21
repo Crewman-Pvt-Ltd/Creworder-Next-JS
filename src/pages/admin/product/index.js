@@ -1,11 +1,11 @@
 import Layout from '@/components/Layout'
-import OrderList from '@/components/orders/OrderList'
+import ProductList from '@/components/product/ProductList'
 import React from 'react'
 
 const index = () => {
   return (
     <Layout type= "admin">
-        <OrderList />
+        <ProductList />
     </Layout>
   )
 }
