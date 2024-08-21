@@ -1,30 +1,70 @@
 import React, { useState } from 'react';
 import { Grid, TextField, Button, Typography, Box } from '@mui/material';
+import MainApi from '@/api-manage/MainApi';
+import { useRouter } from "next/router";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    phoneNumber: '',
-    gmail: '',
-    companyName: '',
-    companyAddress: '',
-    companyContactDetail: '',
-    companyWebsite: '',
-    state: '',
-    pincode: '',
+    username: '',
+    email: '',
+    password: '',
+    contact_no: '',
+    company: {
+      name: '',
+      company_email: '',
+      company_phone: '',
+      company_address: '',
+      company_website: '',
+    }
   });
+
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const nameParts = name.split('.');
+
+    if (nameParts.length > 1) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [nameParts[0]]: {
+          ...prevData[nameParts[0]],
+          [nameParts[1]]: value,
+        },
+      }));
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    const payload = {
+      user: {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+       contact_no: formData.contact_no,
+        company: formData.company,
+
+      },
+    };
+
+    try {
+      const response = await MainApi.post("/api/self-signup/", payload);
+
+      if (response.status === 201) {
+        router.push("/dashboard");
+      } else {
+        console.error("Signup failed");
+      }
+    } catch (error) {
+      console.error("An error occurred during signup", error);
+    }
   };
 
   return (
@@ -34,7 +74,6 @@ const SignupForm = () => {
       alignItems="center"
       minHeight="100vh"
       sx={{
-
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         padding: 2,
@@ -58,7 +97,7 @@ const SignupForm = () => {
           gutterBottom
           textAlign="center"
           sx={{
-            fontFamily: "'Playfair Display', poppins",
+            fontFamily: "'Playfair Display', Poppins",
             fontWeight: 'bold',
             color: '#333',
             letterSpacing: '0.5px',
@@ -67,13 +106,13 @@ const SignupForm = () => {
         >
           Signup
         </Typography>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Full Name"
-              name="name"
-              value={formData.name}
+              label="Username"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
               variant="outlined"
               margin="normal"
@@ -94,9 +133,10 @@ const SignupForm = () => {
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Phone Number"
-              name="phoneNumber"
-              value={formData.phoneNumber}
+              label="Contact No"
+              name="contact_no"
+              type="text"
+              value={formData.contact_no}
               onChange={handleChange}
               variant="outlined"
               margin="normal"
@@ -118,101 +158,9 @@ const SignupForm = () => {
             <TextField
               fullWidth
               label="Email Address"
-              name="gmail"
+              name="email"
               type="email"
-              value={formData.gmail}
-              onChange={handleChange}
-              variant="outlined"
-              margin="normal"
-              InputLabelProps={{
-                sx: {
-                  color: '#555',
-                  fontWeight: 'bold',
-                },
-              }}
-              InputProps={{
-                sx: {
-                  borderRadius: 2,
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Company Name"
-              name="companyName"
-              value={formData.companyName}
-              onChange={handleChange}
-              variant="outlined"
-              margin="normal"
-              InputLabelProps={{
-                sx: {
-                  color: '#555',
-                  fontWeight: 'bold',
-                },
-              }}
-              InputProps={{
-                sx: {
-                  borderRadius: 2,
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Company Address"
-              name="companyAddress"
-              value={formData.companyAddress}
-              onChange={handleChange}
-              variant="outlined"
-              margin="normal"
-              InputLabelProps={{
-                sx: {
-                  color: '#555',
-                  fontWeight: 'bold',
-                },
-              }}
-              InputProps={{
-                sx: {
-                  borderRadius: 2,
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Company Contact"
-              name="companyContactDetail"
-              value={formData.companyContactDetail}
-              onChange={handleChange}
-              variant="outlined"
-              margin="normal"
-              InputLabelProps={{
-                sx: {
-                  color: '#555',
-                  fontWeight: 'bold',
-                },
-              }}
-              InputProps={{
-                sx: {
-                  borderRadius: 2,
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Company Website"
-              name="companyWebsite"
-              value={formData.companyWebsite}
+              value={formData.email}
               onChange={handleChange}
               variant="outlined"
               margin="normal"
@@ -231,6 +179,153 @@ const SignupForm = () => {
             />
           </Grid>
          
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Company Name"
+              name="company.name"
+              value={formData.company.name}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              InputLabelProps={{
+                sx: {
+                  color: '#555',
+                  fontWeight: 'bold',
+                },
+              }}
+              InputProps={{
+                sx: {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                },
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Company Email"
+              name="company.company_email"
+              type="email"
+              value={formData.company.company_email}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              InputLabelProps={{
+                sx: {
+                  color: '#555',
+                  fontWeight: 'bold',
+                },
+              }}
+              InputProps={{
+                sx: {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                },
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <TextField
+              fullWidth
+              label="Company Address"
+              name="company.company_address"
+              value={formData.company.company_address}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              InputLabelProps={{
+                sx: {
+                  color: '#555',
+                  fontWeight: 'bold',
+                },
+              }}
+              InputProps={{
+                sx: {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                },
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Company Phone"
+              name="company.company_phone"
+              value={formData.company.company_phone}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              InputLabelProps={{
+                sx: {
+                  color: '#555',
+                  fontWeight: 'bold',
+                },
+              }}
+              InputProps={{
+                sx: {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                },
+              }}
+            />
+          </Grid>
+         
+
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Company Website"
+              name="company.company_website"
+              value={formData.company.company_website}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              InputLabelProps={{
+                sx: {
+                  color: '#555',
+                  fontWeight: 'bold',
+                },
+              }}
+              InputProps={{
+                sx: {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                },
+              }}
+            />
+          </Grid>
+
+         
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              InputLabelProps={{
+                sx: {
+                  color: '#555',
+                  fontWeight: 'bold',
+                },
+              }}
+              InputProps={{
+                sx: {
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                },
+              }}
+            />
+          </Grid>
+
           <Grid item xs={12} sx={{ textAlign: 'center', mt: 2 }}>
             <Button
               type="submit"
