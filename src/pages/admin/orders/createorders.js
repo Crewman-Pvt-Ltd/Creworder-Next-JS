@@ -4,7 +4,7 @@ import React from 'react'
 
 const createorders = () => {
   return (
-    <Layout>
+    <Layout type= "admin">
       <CreateOrder />
     </Layout>
   )

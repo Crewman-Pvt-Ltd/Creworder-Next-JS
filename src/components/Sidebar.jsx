@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import Navitem from './Navitem';
 import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from '@mui/icons-material/home';
+import ReceiptIcon from '@mui/icons-material/ShoppingCart';
 import PackageIcon from '@mui/icons-material/LocalOffer';
 import CompanyIcon from '@mui/icons-material/Business';
+import BusinessIcon from '@mui/icons-material/Store';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -21,6 +23,9 @@ import ShippingIcon from '@mui/icons-material/LocalShipping';
 import PersonIcon from '@mui/icons-material/Person';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import CategoryIcon from '@mui/icons-material/Widgets';
+import StoreIcon from '@mui/icons-material/Store';
+
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
   const [hoveredItemPosition, setHoveredItemPosition] = useState({ top: 0 });
@@ -163,13 +168,7 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === '/user'}
           onClick={() => handleItemClick('/user')}
         />)}
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Order"
-          icon={<LocalMallIcon />} 
-          active={currentPath === '/admin/orders'}
-          onClick={() => handleItemClick('/admin/orders')}
-        />)}
+     
         {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Branch"
@@ -289,6 +288,33 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick('/admin/shipment-channels')}>
         </HoverableNavItem>)}
         
+        <Typography className="sidebar-section-label" style={{color: "#fff" }}>Product</Typography>
+        {type == 'admin' && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Category"
+          icon={<CategoryIcon />}
+          active={currentPath === '/admin/category'}
+          onClick={() => handleItemClick('/admin/category')}>
+        </HoverableNavItem>)}
+
+        {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Order"
+          icon={<LocalMallIcon />}
+          active={currentPath === '/admin/orders'}
+          onClick={() => handleItemClick('/admin/orders')}
+        />)}
+
+        {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Product"
+          icon={<StoreIcon />}
+          active={currentPath === '/admin/product'}
+          onClick={() => handleItemClick('/admin/product')}
+        />)}  
+
+        
+
       </Box>
     </Box>
   );

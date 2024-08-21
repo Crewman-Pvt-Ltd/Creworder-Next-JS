@@ -8,3 +8,6 @@ body{
   background-color: #f3f3f9;
   /* overflow-y: auto; */
 }
+.dropdown{
+  padding: '8px 12px' !important;
+}

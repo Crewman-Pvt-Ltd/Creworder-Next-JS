@@ -17,26 +17,20 @@ import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
 
-const OrderList = () => {
+const ProductList = () => {
   const router = useRouter();
   
   const createOrder = () => {
-    router.push("/admin/orders/createorders");
+    router.push("/admin/product/createproduct");
   };
   
   const rows = [
     {
       id: 1,
-      order_id: "PRXTW987",
-      name: "Shivam",
-      city: "Noida",
-      product: "Weight loss",
-      amount: "2024",
-      agent: "Vikash",
+      product_id: "PRXTW987",
+      product_name: "Slim Fit Combo",
       status: "Pending",
-      payment_mode: "COD",
-      order_date: "2024-08-01",
-      remark: "You can override the style of the component using one of these customization options.",
+      created_at: "2024-08-01",
       action: "Edit"
     },
     // Add more rows as needed
@@ -58,7 +52,7 @@ const OrderList = () => {
                   marginLeft: "30px"
                 }}
               >
-                Order List
+                Product List
               </Typography>
             </Grid>
             <Grid item>
@@ -79,7 +73,7 @@ const OrderList = () => {
                 }}
               >
                 <AddIcon sx={{ fontSize: 15 }} />
-                Add Order
+                Add Product
               </Button>
             </Grid>
           </Grid>
@@ -93,18 +87,11 @@ const OrderList = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Sr.</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Order ID</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Customer Name</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>City</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Product</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Amount</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Agent</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Order Status</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Payment Mode</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Order Date</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Remark</TableCell>
-                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>C.C Call</TableCell>
+                  <TableCell  sx={{ whiteSpace: 'nowrap' }}>Sr.</TableCell>
+                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Product ID</TableCell>
+                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Product Name</TableCell>
+                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Status</TableCell>
+                    <TableCell  sx={{ whiteSpace: 'nowrap' }}>Created At</TableCell>
                     <TableCell  sx={{ whiteSpace: 'nowrap' }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -112,17 +99,10 @@ const OrderList = () => {
                   {rows.map((row) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.id}.</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.order_id}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.name}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.city}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.amount}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.agent}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_id}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_name}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.status}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.payment_mode}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.order_date}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.remark}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.call}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.created_at}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.action}</TableCell>
                     </TableRow>
                   ))}
@@ -149,4 +129,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default ProductList;
