@@ -27,6 +27,9 @@ import CategoryIcon from '@mui/icons-material/Widgets';
 import StoreIcon from '@mui/icons-material/Store';
 import EmailIcon from '@mui/icons-material/Email';
 import Receipt from '@mui/icons-material/Receipt';
+import IconButton from "@mui/material/IconButton";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
@@ -48,20 +51,20 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => 
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      <Navitem name={isOpen ? name : ''} icon={icon} active={active}>
+      <Navitem name={isOpen ? name : ""} icon={icon} active={active}>
         {children}
       </Navitem>
       {!isOpen && hovered && (
         <Box
           sx={{
-            position: 'fixed',
-            left: '70px',
-            top: hoveredItemPosition.top + 'px',
-            backgroundColor: '#fff',
-            color: '#405189',
-            padding: '8px 7px',
-            borderRadius: '4px',
-            boxShadow: '0px 0px 10px rgba(0,0,0,0.1)',
+            position: "fixed",
+            left: "70px",
+            top: hoveredItemPosition.top + "px",
+            backgroundColor: "#fff",
+            color: "#405189",
+            padding: "8px 7px",
+            borderRadius: "4px",
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
             zIndex: 1,
           }}
         >
@@ -75,7 +78,7 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => 
 const Sidebar = ({ isOpen, type }) => {
   const router = useRouter();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   if (isMobile) {
     return null;
@@ -92,38 +95,41 @@ const Sidebar = ({ isOpen, type }) => {
   const handleOrderClick = () => {
     setIsOrderOpen(!isOrderOpen);
   };
-
+  const [isNDROpen, setIsNDROpen] = useState(false);
+  const handleNDRClick = () => {
+    setIsNDROpen(!isNDROpen);
+  };
   const currentPath = router.pathname;
 
   return (
     <Box
       sx={{
         width: isOpen ? 250 : 70,
-        backgroundColor: '#405189',
+        backgroundColor: "#405189",
         padding: 2,
-        boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflowY: 'auto',
-        color: 'white',
-        transition: 'width 0.2s ease',
+        boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
+        display: "flex",
+        flexDirection: "column",
+        overflowY: "auto",
+        color: "white",
+        transition: "width 0.2s ease",
         "&::-webkit-scrollbar": {
-          width: '6px',
+          width: "6px",
         },
         "&::-webkit-scrollbar-thumb": {
-          backgroundColor: '#c9c9c9',
-          borderRadius: '10px',
+          backgroundColor: "#c9c9c9",
+          borderRadius: "10px",
         },
         "&::-webkit-scrollbar-track": {
-          backgroundColor: '#405189',
+          backgroundColor: "#405189",
         },
       }}
     >
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           marginBottom: 2,
         }}
       >
@@ -136,8 +142,8 @@ const Sidebar = ({ isOpen, type }) => {
         {!isOpen && !isMobile && (
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
+              display: "flex",
+              justifyContent: "center",
               marginTop: 1,
             }}
           >
@@ -153,10 +159,10 @@ const Sidebar = ({ isOpen, type }) => {
 
       <Box
         sx={{
-          overflowY: 'auto',
-          scrollbarWidth: 'none',
-          '&::-webkit-scrollbar': {
-            display: 'none',
+          overflowY: "auto",
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
           },
           marginTop: "13px",
           color: "#abb9e8",
@@ -166,144 +172,173 @@ const Sidebar = ({ isOpen, type }) => {
           isOpen={isOpen}
           name="Dashboard"
           icon={<DashboardIcon />}
-          active={currentPath === '/dashboard'}
-          onClick={() => handleItemClick('/dashboard')}
+          active={currentPath === "/dashboard"}
+          onClick={() => handleItemClick("/dashboard")}
         />
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="User"
-          icon={<PersonIcon />}
-          active={currentPath === '/user'}
-          onClick={() => handleItemClick('/user')}
-        />)}
-     
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Branch"
-           icon={<AccountTreeIcon />} 
-          active={currentPath === '/admin/branch'}
-          onClick={() => handleItemClick('/admin/branch')}
-        />)}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="User"
+            icon={<PersonIcon />}
+            active={currentPath === "/user"}
+            onClick={() => handleItemClick("/user")}
+          />
+        )}
 
-        {type == "superadmin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Package"
-          icon={<PackageIcon />}
-          active={currentPath === '/superadmin/package'}
-          onClick={() => handleItemClick('/superadmin/package')}
-        />)}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Branch"
+            icon={<AccountTreeIcon />}
+            active={currentPath === "/admin/branch"}
+            onClick={() => handleItemClick("/admin/branch")}
+          />
+        )}
 
-        {type == "superadmin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Company"
-          icon={<CompanyIcon />}
-          active={currentPath === '/superadmin/company'}
-          onClick={() => handleItemClick('/superadmin/company')}
-        />)}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Package"
+            icon={<PackageIcon />}
+            active={currentPath === "/superadmin/package"}
+            onClick={() => handleItemClick("/superadmin/package")}
+          />
+        )}
 
-        {type == "superadmin" && <HoverableNavItem
-          isOpen={isOpen}
-          name="Employee"
-          icon={<SupervisedUserCircleIcon />}
-          active={currentPath === '/superadmin/employees'}
-          onClick={() => handleItemClick('/superadmin/employees')}
-        />}
-        {type == "superadmin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Support Ticket"
-          icon={<SupportAgentIcon />}
-          active={currentPath === '/superadmin/supportticket'}
-          onClick={() => handleItemClick('/superadmin/supportticket')}
-        ></HoverableNavItem>)}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Company"
+            icon={<CompanyIcon />}
+            active={currentPath === "/superadmin/company"}
+            onClick={() => handleItemClick("/superadmin/company")}
+          />
+        )}
+
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Employee"
+            icon={<SupervisedUserCircleIcon />}
+            active={currentPath === "/superadmin/employees"}
+            onClick={() => handleItemClick("/superadmin/employees")}
+          />
+        )}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Support Ticket"
+            icon={<SupportAgentIcon />}
+            active={currentPath === "/superadmin/supportticket"}
+            onClick={() => handleItemClick("/superadmin/supportticket")}
+          ></HoverableNavItem>
+        )}
         <HoverableNavItem
           isOpen={isOpen}
           name="Notice"
           icon={<NotificationsIcon />}
-          active={currentPath === '/superadmin/notice-board'}
-          onClick={() => handleItemClick('/superadmin/notice-board')}
-        >
-        </HoverableNavItem>
+          active={currentPath === "/superadmin/notice-board"}
+          onClick={() => handleItemClick("/superadmin/notice-board")}
+        ></HoverableNavItem>
 
         <HoverableNavItem
           isOpen={isOpen}
           name="Chat"
           icon={<ChatIcon />}
-          active={currentPath === '/chat'}
-          onClick={() => handleItemClick('/chat')}
-        >
-        </HoverableNavItem>
-        {type == "superadmin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Settings"
-          icon={<SettingsIcon />}
-          active={currentPath === '/superadmin/settings'}
-          onClick={() => handleItemClick('/superadmin/settings')}
-        ></HoverableNavItem>)}
-        {type == "superadmin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Landing Page Settings"
-          icon={<SettingsIcon />}
-          active={currentPath === '/superadmin/landingpage'}
-          onClick={() => handleItemClick('/superadmin/landingpage')}
-        ></HoverableNavItem>)}
+          active={currentPath === "/chat"}
+          onClick={() => handleItemClick("/chat")}
+        ></HoverableNavItem>
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Settings"
+            icon={<SettingsIcon />}
+            active={currentPath === "/superadmin/settings"}
+            onClick={() => handleItemClick("/superadmin/settings")}
+          ></HoverableNavItem>
+        )}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Landing Page Settings"
+            icon={<SettingsIcon />}
+            active={currentPath === "/superadmin/landingpage"}
+            onClick={() => handleItemClick("/superadmin/landingpage")}
+          ></HoverableNavItem>
+        )}
 
-{type == "superadmin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="StickyNote"
-          icon={<SettingsIcon />}
-          active={currentPath === '/superadmin/stickynote'}
-          onClick={() => handleItemClick('/superadmin/stickynote')}
-        ></HoverableNavItem>)}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="StickyNote"
+            icon={<SettingsIcon />}
+            active={currentPath === "/superadmin/stickynote"}
+            onClick={() => handleItemClick("/superadmin/stickynote")}
+          ></HoverableNavItem>
+        )}
         <HoverableNavItem
           isOpen={isOpen}
           name="Notepad"
           icon={<MenuBookIcon />}
-          active={currentPath === '/notepad'}
-          onClick={() => handleItemClick('/notepad')}
-        >
-        </HoverableNavItem>
+          active={currentPath === "/notepad"}
+          onClick={() => handleItemClick("/notepad")}
+        ></HoverableNavItem>
 
         <HoverableNavItem
           isOpen={isOpen}
           name="Follow Up"
           icon={<EventNoteIcon />}
-          active={currentPath === '/followup'}
-          onClick={() => handleItemClick('/followup')}
-        >
-        </HoverableNavItem>
+          active={currentPath === "/followup"}
+          onClick={() => handleItemClick("/followup")}
+        ></HoverableNavItem>
 
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Courier Service"
-          icon={<LocalShippingIcon />}
-          active={currentPath === '/admin/courier-service'}
-          onClick={() => handleItemClick('/admin/courier-service')}>
-        </HoverableNavItem>)}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Courier Service"
+            icon={<LocalShippingIcon />}
+            active={currentPath === "/admin/courier-service"}
+            onClick={() => handleItemClick("/admin/courier-service")}
+          ></HoverableNavItem>
+        )}
 
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Telephonic Channels"
-          icon={<PhoneIcon />}
-          active={currentPath === '/admin/telephonic-channels'}
-          onClick={() => handleItemClick('/admin/telephonic-channels')}>
-        </HoverableNavItem>)}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Telephonic Channels"
+            icon={<PhoneIcon />}
+            active={currentPath === "/admin/telephonic-channels"}
+            onClick={() => handleItemClick("/admin/telephonic-channels")}
+          ></HoverableNavItem>
+        )}
 
-        {type == 'admin' && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Shipment Channels"
-          icon={<ShippingIcon />}
-          active={currentPath === '/admin/shipment-channels'}
-          onClick={() => handleItemClick('/admin/shipment-channels')}>
-        </HoverableNavItem>)}
-        
-        {type == 'admin' && (<Typography className="sidebar-section-label" style={{color: "#fff" }}>Product</Typography>)}
-        {type == 'admin' && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Category"
-          icon={<CategoryIcon />}
-          active={currentPath === '/admin/category'}
-          onClick={() => handleItemClick('/admin/category')}>
-        </HoverableNavItem>)}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Shipment Channels"
+            icon={<ShippingIcon />}
+            active={currentPath === "/admin/shipment-channels"}
+            onClick={() => handleItemClick("/admin/shipment-channels")}
+          ></HoverableNavItem>
+        )}
+
+        {type == "admin" && (
+          <Typography
+            className="sidebar-section-label"
+            style={{ color: "#fff" }}
+          >
+            Product
+          </Typography>
+        )}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Category"
+            icon={<CategoryIcon />}
+            active={currentPath === "/admin/category"}
+            onClick={() => handleItemClick("/admin/category")}
+          ></HoverableNavItem>
+        )}
 
         {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
@@ -315,7 +350,26 @@ const Sidebar = ({ isOpen, type }) => {
              
           {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
-          name="Order"
+          name={
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+            >
+              <span>Order</span>
+              <IconButton
+                size="small"
+                onClick={handleOrderClick}
+                sx={{
+                  color: "white",
+                  marginLeft:"100px",
+                }}
+              >
+                {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </Box>
+          }
           icon={<LocalMallIcon />}
           active={currentPath.startsWith('/order')}
           onClick={handleOrderClick}
@@ -357,10 +411,11 @@ const Sidebar = ({ isOpen, type }) => {
               >
                 <ListItemText primary="Schedule Order" />
               </ListItem>
+             
+             
             </List>
           </Collapse>
         </HoverableNavItem>)}
-
         {type == "superadmin" && (<HoverableNavItem
           isOpen={isOpen}
           name="Form Enquiry"
@@ -377,7 +432,54 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick('/admin/invoce-managementt')}
         ></HoverableNavItem>)}
         
-
+{type === "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name={
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+              >
+                <span>NDR</span>
+                <IconButton
+                  size="small"
+                  onClick={handleNDRClick}
+                  sx={{
+                    color: "white",
+                    marginLeft:"100px",
+                  }}
+                >
+                  {isNDROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
+            }
+            icon={<LocalMallIcon />}
+            active={currentPath.startsWith("/order")}
+            onClick={handleNDRClick}
+          >
+            <Collapse in={isNDROpen}>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="EDD" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders/repeatorder")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="OFD" />
+                </ListItem>
+               
+              </List>
+            </Collapse>
+          </HoverableNavItem>
+        )}
       </Box>
     </Box>
   );

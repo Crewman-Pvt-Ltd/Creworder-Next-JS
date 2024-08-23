@@ -63,6 +63,8 @@ const CreatePackage = () => {
   const [formState, setFormState] = useState({
     name: "",
     type: "",
+    max_admin: "",
+    setupfee: "",
     max_employees: "",
     monthly_price: "",
     annual_price: "",
@@ -224,7 +226,7 @@ const CreatePackage = () => {
                     flexDirection: { xs: "column", sm: "row" },
                   }}
                 >
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={3}>
                     <CustomLabel htmlFor="name" required>
                       Package Name
                     </CustomLabel>
@@ -239,7 +241,22 @@ const CreatePackage = () => {
                       onChange={handleInputChange}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="maxAdmin" required>
+                      Max Admin
+                    </CustomLabel>
+                    <CustomTextField
+                      id="maxAdmin"
+                      name="maxAdmin"
+                      type="number"
+                      placeholder="e.g. 100"
+                      required
+                      fullWidth
+                      value={formState.max_admin}
+                      onChange={handleInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
                     <CustomLabel htmlFor="maxEmployees" required>
                       Max Employees
                     </CustomLabel>
@@ -251,6 +268,21 @@ const CreatePackage = () => {
                       required
                       fullWidth
                       value={formState.max_employees}
+                      onChange={handleInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="setupFee" required>
+                      Setup Fee
+                    </CustomLabel>
+                    <CustomTextField
+                      id="setupFee"
+                      name="setupFee"
+                      type="number"
+                      placeholder="e.g. 100"
+                      required
+                      fullWidth
+                      value={formState.setupfee}
                       onChange={handleInputChange}
                     />
                   </Grid>

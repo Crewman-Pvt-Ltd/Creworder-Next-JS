@@ -2,19 +2,9 @@ import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
-import {
-  Typography,
-  Button,
-  Grid,
-  CardContent,
-  Divider,
- 
-} from "@mui/material";
-
+import { Typography, Button, Grid, CardContent, Divider } from "@mui/material";
 
 const CreateUser = () => {
-  
-
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
@@ -108,9 +98,9 @@ const CreateUser = () => {
               </Grid>
             </Grid>
             <Grid container spacing={2} mt={1}>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={4} md={4}>
                 <CustomLabel htmlFor="email" required>
-                  Email
+                   Personal Email
                 </CustomLabel>
                 <CustomTextField
                   id="email"
@@ -120,16 +110,31 @@ const CreateUser = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} sm={8}>
+              <Grid item xs={12} sm={4} md={4}>
+                <CustomLabel htmlFor="professional" required>
+                  Professional Email
+                </CustomLabel>
+                <CustomTextField
+                  id="professional"
+                  name="professional"
+                  placeholder="e.g. professional@gmail.com"
+                  type="professional"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
                 <CustomLabel htmlFor="address" required>
                   Address
                 </CustomLabel>
                 <CustomTextField
                   id="address"
                   name="address"
-                  type="textarea"
-                  placeholder="e.g. address"
+                  type="text"
+                  placeholder="Full Address"
+                  required
                   fullWidth
+                  multiline
+                  rows={2}
                 />
               </Grid>
             </Grid>
@@ -143,11 +148,6 @@ const CreateUser = () => {
             </Grid>
 
             <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                  Personal Info.
-                </Typography>
-              </Grid>
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="desigination" required>
                   Desigination

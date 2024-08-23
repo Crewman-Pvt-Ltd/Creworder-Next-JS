@@ -6,8 +6,10 @@ import {
   Typography,
   Button,
   Grid,
+  Select,
   TextField,
   CardContent,
+  MenuItem,
   Divider,
 } from "@mui/material";
 import { useRouter } from "next/router";
@@ -29,7 +31,28 @@ const SupportTicketCreate = () => {
   const handleSubmit = () => {
     router.push("/superadmin/supportticket");
   };
+  const [companyname, setcompanyname] = useState("");
 
+  const handlecompanyname = (event) => {
+    setcompanyname(event.target.value);
+  };
+  const [agent, setagent] = useState("");
+
+  const handleagent = (event) => {
+    setagent(event.target.value);
+  };
+
+  const [priority, setpriority] = useState("");
+
+  const handlepriority = (event) => {
+    setpriority(event.target.value);
+  };
+
+  const [type, settype] = useState("");
+
+  const handletype = (event) => {
+    settype(event.target.value);
+  };
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
@@ -48,20 +71,30 @@ const SupportTicketCreate = () => {
                 flexDirection: { xs: "column", sm: "row" },
               }}
             >
-              <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="companyname" required>
+               <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="Company Name" required>
                   Company Name
                 </CustomLabel>
-                <CustomTextField
+                <Select
+                  labelId="Company Name"
                   id="companyname"
                   name="companyname"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  required
+                  value={companyname}
+                  onChange={handlecompanyname}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                />
+                >
+                  <MenuItem value="" disabled>
+                    Select Company
+                  </MenuItem>
+                  <MenuItem value={1}>Company 1</MenuItem>
+                  <MenuItem value={2}>Company 2</MenuItem>
+                  <MenuItem value={3}>Company 2</MenuItem>
+                  <MenuItem value={4}>Company 4</MenuItem>
+                </Select>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={8}>
                 <CustomLabel htmlFor="ticketsubject" required>
                   Ticket Subject
                 </CustomLabel>
@@ -85,7 +118,7 @@ const SupportTicketCreate = () => {
                 marginTop: "10px",
               }}
             >
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={8}>
                 <CustomLabel htmlFor="description" required>
                   Description
                 </CustomLabel>
@@ -100,7 +133,7 @@ const SupportTicketCreate = () => {
                   rows={4}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6}sm={2} md={4}>
                 <Typography variant="subtitle1" htmlFor="adminProfile">
                   Upload Attachment
                 </Typography>
@@ -127,43 +160,73 @@ const SupportTicketCreate = () => {
               }}
             >
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="agent" required>
+                <CustomLabel htmlFor="Agent" required>
                   Agent
                 </CustomLabel>
-                <CustomTextField
+                <Select
+                  labelId="Agent"
                   id="agent"
                   name="agent"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  required
+                  value={agent}
+                  onChange={handleagent}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                />
+                >
+                  <MenuItem value="" disabled>
+                    Select Agent
+                  </MenuItem>
+                  <MenuItem value={1}>Agent 1</MenuItem>
+                  <MenuItem value={2}>Agent 2</MenuItem>
+                  <MenuItem value={3}>Agent 3</MenuItem>
+                  
+                </Select>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="priority" required>
+                <CustomLabel htmlFor="Priority" required>
                   Priority
                 </CustomLabel>
-                <CustomTextField
+                <Select
+                  labelId="Priority"
                   id="priority"
                   name="priority"
-                  type="text"
-                  placeholder="e.g. test@creworder.com"
-                  required
+                  value={priority}
+                  onChange={handlepriority}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                />
+                >
+                  <MenuItem value="" disabled>
+                    Select Priority
+                  </MenuItem>
+                  <MenuItem value={1}>Low</MenuItem>
+                  <MenuItem value={2}>Medium</MenuItem>
+                  <MenuItem value={3}>High</MenuItem>
+                  <MenuItem value={4}>Urgent</MenuItem>
+                </Select>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="type" required>
+                <CustomLabel htmlFor="Type" required>
                   Type
                 </CustomLabel>
-                <CustomTextField
+                <Select
+                  labelId="Type"
                   id="type"
                   name="type"
-                  type="text"
-                  placeholder="e.g. test@creworder.com"
-                  required
+                  value={type}
+                  onChange={handletype}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                />
+                >
+                  <MenuItem value="" disabled>
+                    Select Type
+                  </MenuItem>
+                  <MenuItem value={1}>Question</MenuItem>
+                  <MenuItem value={2}>Problem</MenuItem>
+                  <MenuItem value={3}>General Query</MenuItem>
+                  
+                </Select>
               </Grid>
             </Grid>
             <Grid
