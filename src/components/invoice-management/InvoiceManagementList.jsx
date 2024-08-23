@@ -29,14 +29,17 @@ import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-import CallIcon from "@mui/icons-material/Call";
+// import { DemoItem } from "@mui/x-date-pickers/internals/demo";
+/* import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateRangePicker } from "@mui/x-date-pickers/DateRangePicker"; */
 import { DateRangePicker } from "@nextui-org/date-picker";
 
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
-const OrderList = () => {
+const InvoiceManagementList = () => {
   const router = useRouter();
 
   const createOrder = () => {
@@ -89,27 +92,23 @@ const OrderList = () => {
   const rows = [
     {
       id: 1,
-      order_id: "PRXTW987",
+      invoice_id: "INVOI98765",
       name: "Shivam",
-      city: "Noida",
-      product: "Weight loss",
-      amount: "2024",
-      agent: "Vikash",
+      amount: "10,000",
       status: "Pending",
       payment_mode: "COD",
-      order_date: "2024-08-01",
-      remark:
-        "You can override the style of the component using one of these customization options.",
+      order_date: "2024-08-01",    
       action: "Edit",
     },
   ];
 
   return (
     <Grid container spacing={2} p={3}>
+      
+
       <Grid item xs={12}>
         <CustomCard padding="13px">
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
+        <Grid item>
               <Typography
                 sx={{
                   fontWeight: "600",
@@ -120,36 +119,9 @@ const OrderList = () => {
                   marginLeft: "30px",
                 }}
               >
-                Order List
+               Total Order
               </Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={createOrder}
-                sx={{
-                  padding: "8px",
-                  fontSize: "14px",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                  borderRadius: "30px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <AddIcon sx={{ fontSize: 15 }} />
-                Add Order
-              </Button>
-            </Grid>
-          </Grid>
-        </CustomCard>
-      </Grid>
-
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
+            </Grid><br></br>
           <Grid
             container
             spacing={1}
@@ -157,7 +129,9 @@ const OrderList = () => {
             alignItems="center"
           >
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="order_id">Order Id.</CustomLabel>
+              <CustomLabel htmlFor="order_id" >
+                Order Id.
+              </CustomLabel>
               <CustomTextField
                 id="order_id"
                 name="order_id"
@@ -169,7 +143,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="awb_no">AWB No.</CustomLabel>
+              <CustomLabel htmlFor="awb_no">
+                AWB No.
+              </CustomLabel>
               <CustomTextField
                 id="awb_no"
                 name="awb_no"
@@ -180,7 +156,9 @@ const OrderList = () => {
               />
             </Grid>
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="phone">Phone No.</CustomLabel>
+              <CustomLabel htmlFor="phone" >
+                Phone No.
+              </CustomLabel>
               <CustomTextField
                 id="phone"
                 name="phone"
@@ -192,7 +170,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="product">Product Name</CustomLabel>
+              <CustomLabel htmlFor="product" >
+                Product Name
+              </CustomLabel>
               <Select
                 labelId="product"
                 id="product"
@@ -213,7 +193,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="payment">Payment Type</CustomLabel>
+              <CustomLabel htmlFor="payment" >
+                Payment Type
+              </CustomLabel>
               <Select
                 labelId="payment"
                 id="payment"
@@ -234,7 +216,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Status">Agent Status</CustomLabel>
+              <CustomLabel htmlFor="Agent Status" >
+                Agent Status
+              </CustomLabel>
               <Select
                 labelId="Agent Status"
                 id="agent"
@@ -254,7 +238,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Name">Agent Name</CustomLabel>
+              <CustomLabel htmlFor="Agent Name" >
+                Agent Name
+              </CustomLabel>
               <Select
                 labelId="Agent Name"
                 id="agentname"
@@ -275,7 +261,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Team Lead">Team Lead</CustomLabel>
+              <CustomLabel htmlFor="Team Lead" >
+                Team Lead
+              </CustomLabel>
               <Select
                 labelId="Team Lead"
                 id="teamlead"
@@ -295,7 +283,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="state">State</CustomLabel>
+              <CustomLabel htmlFor="state" >
+                State
+              </CustomLabel>
               <Select
                 labelId="state"
                 id="state"
@@ -315,7 +305,9 @@ const OrderList = () => {
               </Select>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="Order Status">Order Status</CustomLabel>
+              <CustomLabel htmlFor="Order Status">
+                Order Status
+              </CustomLabel>
               <Select
                 labelId="Order Status"
                 id="status"
@@ -336,16 +328,19 @@ const OrderList = () => {
               </Select>
             </Grid>
             <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
-              <CustomLabel htmlFor="dateRange">Date Range</CustomLabel>
-              <DateRangePicker
-                label="Stay duration"
-                visibleMonths={2}
+              <CustomLabel htmlFor="dateRange">
+                Date Range
+              </CustomLabel>
+              <DateRangePicker 
+                label="Stay duration" 
+                visibleMonths={2} 
                 style={{
-                  backgroundColor: "#fff",
+            
+                  backgroundColor: '#fff',
                 }}
                 popoverProps={{
                   style: {
-                    backgroundColor: "#fff",
+                    backgroundColor: '#fff', 
                   },
                 }}
               />
@@ -367,7 +362,24 @@ const OrderList = () => {
               >
                 Submit
               </Button>
-            </Grid>
+              <Button
+                sx={{
+                  marginLeft: "20px",
+                  marginTop: "24px",
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  backgroundColor: "#405189",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#334a6c",
+                  },
+                  fontFamily: poppins.style.fontFamily,
+                }}
+              >
+                Export
+              </Button>
+            </Grid>           
           </Grid>
         </CustomCard>
       </Grid>
@@ -390,15 +402,13 @@ const OrderList = () => {
                   <TableRow>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>Sr.</TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order ID
+                      Invoice ID
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Customer Name
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>City</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Product</TableCell>
+                    </TableCell>                   
                     <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Agent</TableCell>
+                   
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Order Status
                     </TableCell>
@@ -407,11 +417,7 @@ const OrderList = () => {
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Order Date
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Remark</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      C.C Call
-                    </TableCell>
+                    </TableCell>                   
                     <TableCell sx={{ whiteSpace: "nowrap" }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -422,34 +428,19 @@ const OrderList = () => {
                         {row.id}.
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_id}
+                        {row.invoice_id}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.name}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.city}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.product}
-                      </TableCell>
+                      </TableCell>                     
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.amount}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.agent}
-                      </TableCell>
+                      </TableCell>                     
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.status}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.payment_mode}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_date}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.remark}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         <IconButton aria-label="call" sx={{ color: "green" }}>
@@ -492,4 +483,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default InvoiceManagementList;

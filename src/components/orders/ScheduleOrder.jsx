@@ -13,10 +13,16 @@ import {
   Paper,
   Select,
   Box,
+  IconButton,
   TableFooter,
   TablePagination,
   FormControl,
 } from "@mui/material";
+import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
+import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import CustomCard from "../CustomCard";
@@ -93,8 +99,7 @@ const ScheduleOrder = () => {
               <DateRangePicker 
                 label="Stay duration" 
                 visibleMonths={2} 
-                style={{
-            
+                style={{            
                   backgroundColor: '#fff',
                 }}
                 popoverProps={{
@@ -206,10 +211,20 @@ const ScheduleOrder = () => {
                         {row.remark}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.call}
+                        <IconButton aria-label="call" sx={{ color: "green" }}>
+                          <CallIcon />
+                        </IconButton>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.action}
+                        <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          sx={{ color: "#FF0000" }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}

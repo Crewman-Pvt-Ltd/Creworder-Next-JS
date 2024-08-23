@@ -25,6 +25,8 @@ import LocalMallIcon from '@mui/icons-material/LocalMall';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import CategoryIcon from '@mui/icons-material/Widgets';
 import StoreIcon from '@mui/icons-material/Store';
+import EmailIcon from '@mui/icons-material/Email';
+import Receipt from '@mui/icons-material/Receipt';
 
 const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
   const [hovered, setHovered] = useState(false);
@@ -355,11 +357,25 @@ const Sidebar = ({ isOpen, type }) => {
               >
                 <ListItemText primary="Schedule Order" />
               </ListItem>
-             
-             
             </List>
           </Collapse>
         </HoverableNavItem>)}
+
+        {type == "superadmin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Form Enquiry"
+          icon={<EmailIcon />}
+          active={currentPath === '/superadmin/form-enquiry'}
+          onClick={() => handleItemClick('/superadmin/form-enquiry')}
+        ></HoverableNavItem>)}
+
+        {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Invoice Management"
+          icon={<Receipt />}
+          active={currentPath === '/admin/invoce-managementt'}
+          onClick={() => handleItemClick('/admin/invoce-managementt')}
+        ></HoverableNavItem>)}
         
 
       </Box>
