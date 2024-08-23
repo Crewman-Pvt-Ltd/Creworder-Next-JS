@@ -20,7 +20,7 @@ const CreateEmployeePage = () => {
   if (permissionsData?.role === "superadmin") {
     return (
       <Layout type="superadmin">
-        <CreateEmployees />
+        <CreateEmployees role="superadmin"/>
       </Layout>
     );
   }
