@@ -8,25 +8,25 @@ import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 
-const CreateEmployees = () => {
+const CreateEmployees = ({role}) => {
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
     last_name: "",
-    
-   
-    phone: "",
     email: "",
-    profile_images: null,
     address: "",
     designation: "",
     department: "",
-   
     profile: {
       gender: "",
       date_of_joining: "",
       date_of_birth: "",
       marital_status: "",
+      contact_no: "",
+      profile_image: null
+    },
+    role: {
+      role: role
     }
   });
 
@@ -37,10 +37,20 @@ const CreateEmployees = () => {
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "file" ? files[0] : value,
-    });
+    if (name in formData.profile) {
+      setFormData({
+        ...formData,
+        profile: {
+          ...formData.profile,
+          [name]: type === "file" ? files[0] : value,
+        },
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === "file" ? files[0] : value,
+      });
+    }
   };
 
   const handleFileChange = (event) => {
@@ -57,7 +67,7 @@ const CreateEmployees = () => {
   const validateForm = () => {
     const newErrors = {};
     for (const [key, value] of Object.entries(formData)) {
-      if (!value && key !== "profile_images") {
+      if (!value && key !== "profile_image") {
         newErrors[key] = "This field is required";
       }
     }
@@ -212,18 +222,18 @@ const CreateEmployees = () => {
 
             <Grid container spacing={2} mt={2}>
               <Grid item xs={12} md={4}>
-                <CustomLabel htmlFor="phone" required>
+                <CustomLabel htmlFor="contact_no" required>
                   Phone Number
                 </CustomLabel>
                 <CustomTextField
                   id="phone"
-                  name="phone"
-                  type="number"
+                  name="contact_no"
+                  type="text"
                   placeholder="(+91)"
-                  value={formData.phone}
+                  value={formData.profile.contact_no}
                   onChange={handleChange}
-                  error={!!errors.phone}
-                  helperText={errors.phone}
+                  error={!!errors['profile.contact_no']}
+                  helperText={errors['profile.contact_no']}
                   fullWidth
                 />
               </Grid>
@@ -245,7 +255,7 @@ const CreateEmployees = () => {
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <CustomLabel htmlFor="profile_images" required>
+                <CustomLabel htmlFor="profile_image" required>
                   Upload Profile
                 </CustomLabel>
 
@@ -258,8 +268,8 @@ const CreateEmployees = () => {
                 />
                 <input
                   type="file"
-                  id="profile_images"
-                  name="profile_images"
+                  id="profile_image"
+                  name="profile_image"
                   onChange={(e) => {
                     handleFileChange(e);
                     handleChange(e);
