@@ -9,6 +9,7 @@ import {
   CardContent,
   MenuItem,
   Select,
+  Switch,
   FormControl,
   Checkbox,
   FormControlLabel,
@@ -37,15 +38,17 @@ const smallLabelStyles = {
   fontSize: "13px",
 };
 
-
 const AppSettings = () => {
-  
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
+  const [isChecked, setIsChecked] = useState(false);
 
+  const handleChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
   return (
     <CustomCard>
       <CardContent>
@@ -184,6 +187,7 @@ const AppSettings = () => {
                   </Select>
                 </FormControl>
               </Grid>
+
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6} md={2}>
@@ -238,6 +242,28 @@ const AppSettings = () => {
                       }
                       sx={checkboxStyles}
                     />
+                  </Grid>
+                </Grid> <Divider sx={{ my: 2 }} />
+                <Grid container spacing={2}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={3}
+                    md={3}
+                    container
+                    alignItems="center"
+                  >
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={isChecked}
+                          onChange={handleChange}
+                          color="primary"
+                        />
+                      }
+                    />
+
+                    <Typography>Maintainance Mode</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -338,13 +364,13 @@ const AppSettings = () => {
                   Google Map Key
                 </CustomLabel>
                 <FormControl fullWidth sx={commonFormControlStyles}>
-                <CustomTextField
-                  id="api_key"
-                  name="api_key"
-                  placeholder="e.g. Ahdteu56XXXXXXXXXXXXXXXXXXXX"
-                  type="text"
-                  fullWidth
-                />
+                  <CustomTextField
+                    id="api_key"
+                    name="api_key"
+                    placeholder="e.g. Ahdteu56XXXXXXXXXXXXXXXXXXXX"
+                    type="text"
+                    fullWidth
+                  />
                 </FormControl>
               </Grid>
 

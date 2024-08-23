@@ -1,22 +1,23 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/router';
-import LoginPage from '@/components/LoginPage';
-import { Box, Typography, Button } from '@mui/material';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
+import LoginPage from "@/components/LoginPage";
+import { Box, Typography, Button } from "@mui/material";
 import { ClockLoader, PacmanLoader, PulseLoader } from "react-spinners";
-import MainApi from '@/api-manage/MainApi';
-import { login } from '@/api-manage/ApiRoutes';
-import { usePermissions } from '@/contexts/PermissionsContext';
-import Loader from '@/components/Loader';
-import { getToken } from '@/utils/getToken';
+import MainApi from "@/api-manage/MainApi";
+import { login } from "@/api-manage/ApiRoutes";
+import { usePermissions } from "@/contexts/PermissionsContext";
+import Loader from "@/components/Loader";
+import { getToken } from "@/utils/getToken";
 
 export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
-  const { fetchPermissions, permissionsData, permissionLoading } = usePermissions();
+  const { fetchPermissions, permissionsData, permissionLoading } =
+    usePermissions();
   const token = getToken();
 
   const handleLogin = async (e) => {
@@ -26,16 +27,15 @@ export default function Login() {
       const response = await MainApi.post(`${login}`, { username, password });
       const { key } = response.data;
       console.log("key", key);
-      localStorage.setItem('crew_token', key);
+      localStorage.setItem("crew_token", key);
       document.cookie = `token=${key};path=/`;
       await fetchPermissions(key);
 
       console.log("Permission Data", permissionsData);
 
       router.push("/dashboard");
-
     } catch (error) {
-      console.error('Login failed', error);
+      console.error("Login failed", error);
       setLoading(false);
       setError(error.response?.data?.non_field_errors);
     } finally {
@@ -47,11 +47,7 @@ export default function Login() {
     <LoginPage>
       <form onSubmit={handleLogin}>
         <Box sx={{ marginTop: 2 }}>
-          <Typography
-            variant="body1"
-            component="label"
-            htmlFor="username"
-          >
+          <Typography variant="body1" component="label" htmlFor="username">
             Username
           </Typography>
           <Box
@@ -72,11 +68,7 @@ export default function Login() {
           />
         </Box>
         <Box sx={{ marginTop: 2 }}>
-          <Typography
-            variant="body1"
-            component="label"
-            htmlFor="password"
-          >
+          <Typography variant="body1" component="label" htmlFor="password">
             Password
           </Typography>
           <Box
@@ -106,15 +98,13 @@ export default function Login() {
         >
           {loading ? <ClockLoader size={18} color="white" /> : "Login"}
         </Button>
-        <Typography
-          variant='body1'
-          color="red"
-          mt={2}>
+        <Typography mt={2} align="center" gutterBottom color="gray">
+          By signing in, you agree to our Terms of Use and Privacy Policy
+        </Typography>
+        <Typography variant="body1" color="red" mt={2}>
           {error}
         </Typography>
       </form>
     </LoginPage>
   );
-
-
 }
