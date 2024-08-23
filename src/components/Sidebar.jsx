@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navitem from './Navitem';
-import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Collapse, List, ListItem, ListItemText, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import DashboardIcon from '@mui/icons-material/home';
 import ReceiptIcon from '@mui/icons-material/ShoppingCart';
@@ -83,6 +83,12 @@ const Sidebar = ({ isOpen, type }) => {
     if (path) {
       router.push(path);
     }
+  };
+
+  const [isOrderOpen, setIsOrderOpen] = useState(false);
+
+  const handleOrderClick = () => {
+    setIsOrderOpen(!isOrderOpen);
   };
 
   const currentPath = router.pathname;
@@ -288,7 +294,7 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick('/admin/shipment-channels')}>
         </HoverableNavItem>)}
         
-        <Typography className="sidebar-section-label" style={{color: "#fff" }}>Product</Typography>
+        {type == 'admin' && (<Typography className="sidebar-section-label" style={{color: "#fff" }}>Product</Typography>)}
         {type == 'admin' && (<HoverableNavItem
           isOpen={isOpen}
           name="Category"
@@ -299,20 +305,61 @@ const Sidebar = ({ isOpen, type }) => {
 
         {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
-          name="Order"
-          icon={<LocalMallIcon />}
-          active={currentPath === '/admin/orders'}
-          onClick={() => handleItemClick('/admin/orders')}
-        />)}
-
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
           name="Product"
           icon={<StoreIcon />}
           active={currentPath === '/admin/product'}
           onClick={() => handleItemClick('/admin/product')}
         />)}  
-
+             
+          {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Order"
+          icon={<LocalMallIcon />}
+          active={currentPath.startsWith('/order')}
+          onClick={handleOrderClick}
+        >
+          <Collapse in={isOrderOpen}>
+            <List component="div" disablePadding>
+            <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders')}
+                sx={{ pl: 4 }}
+              >
+              <ListItemText primary="All Orders" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/repeatorder')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Repeat Order" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/pincodeorder')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Pincode Order" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/course')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Course Order" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/schedule-order')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Schedule Order" />
+              </ListItem>
+             
+             
+            </List>
+          </Collapse>
+        </HoverableNavItem>)}
         
 
       </Box>

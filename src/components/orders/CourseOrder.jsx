@@ -33,7 +33,7 @@ const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
-const OrderList = () => {
+const CourseOrder = () => {
   const router = useRouter();
 
   const createOrder = () => {
@@ -117,30 +117,9 @@ const OrderList = () => {
                   marginLeft: "30px",
                 }}
               >
-                Order List
+                Course Orders
               </Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={createOrder}
-                sx={{
-                  padding: "8px",
-                  fontSize: "14px",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                  borderRadius: "30px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <AddIcon sx={{ fontSize: 15 }} />
-                Add Order
-              </Button>
-            </Grid>
+            </Grid>            
           </Grid>
         </CustomCard>
       </Grid>
@@ -329,29 +308,7 @@ const OrderList = () => {
                 <MenuItem value={3}>West Bengal</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="Order Status" required>
-                Order Status
-              </CustomLabel>
-              <Select
-                labelId="Order Status"
-                id="status"
-                name="status"
-                value={status}
-                onChange={handlestatus}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Order Status
-                </MenuItem>
-                <MenuItem value={1}>Suspended</MenuItem>
-                <MenuItem value={2}>Active</MenuItem>
-                <MenuItem value={3}>InActive</MenuItem>
-                <MenuItem value={4}>Delete</MenuItem>
-              </Select>
-            </Grid>
+           
             <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
               <CustomLabel htmlFor="dateRange" required>
                 Date Range
@@ -502,4 +459,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default CourseOrder;

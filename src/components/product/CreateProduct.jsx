@@ -73,6 +73,7 @@ const CreateProduct = () => {
 
   return (
     <Grid container spacing={2} p={3}>
+
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
@@ -162,7 +163,7 @@ const CreateProduct = () => {
               </Grid>
 
               <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="course-order" required>
+              <CustomLabel htmlFor="gst" required>
               GST (in %)
               </CustomLabel>
               <Select
