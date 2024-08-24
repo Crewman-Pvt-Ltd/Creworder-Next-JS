@@ -10,4 +10,5 @@ export const get_branches = '/api/branches/';
 export const self_signup = '/api/self-signup/';
 export const support_tickets = '/api/support-tickets/';
 export const form_enquiries = '/api/form-enquiries/';
+export const get_category = '/api/category/';
 export const baseApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL+"/api/";

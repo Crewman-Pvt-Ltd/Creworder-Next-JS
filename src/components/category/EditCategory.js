@@ -1,20 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
-import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
+import {
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Divider,
+} from "@mui/material";
 
 const EditCategory = () => {
   const router = useRouter();
+  const { id } = router.query; 
+
   const [formData, setFormData] = useState({
-    category_name: "Weight Loss",
-    images: "",
-    description: "Test",
-  
+    category_name: "",
+    images: "", 
+    description: "",
   });
+
   const [errors, setErrors] = useState({});
+  const [previewImage, setPreviewImage] = useState(""); 
+
+  useEffect(() => {
+    if (id) {
+      const fetchCategory = async () => {
+        try {
+          const token = getToken();
+          if (!token) {
+            throw new Error("No authentication token found.");
+          }
+
+          const response = await MainApi.get(`/api/category/${id}`, {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          });
+
+          if (response.status === 200) {
+            setFormData({
+              category_name: response.data?.Data?.name,
+              images: response.data?.Data?.image || "", // Set image URL for preview
+              description: response.data?.Data?.description,
+            });
+            setPreviewImage(response.data.image); // Set preview image URL
+          }
+        } catch (error) {
+          console.error("Error fetching category data:", error.response?.data || error.message);
+        }
+      };
+
+      fetchCategory();
+    }
+  }, [id]); 
 
   const validateForm = () => {
     let formErrors = {};
@@ -40,6 +82,20 @@ const EditCategory = () => {
     }
   };
 
+  const handleImageUpload = (file) => {
+    if (file) {
+      setFormData((prevState) => ({
+        ...prevState,
+        images: file, 
+      }));
+      setPreviewImage(URL.createObjectURL(file)); s
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        images: "",
+      }));
+    }
+  };
+
   const handleSubmit = async () => {
     if (validateForm()) {
       try {
@@ -49,19 +105,21 @@ const EditCategory = () => {
         }
 
         const form = new FormData();
-        Object.keys(formData).forEach((key) => {
-          form.append(key, formData[key]);
-        });
+        form.append("name", formData.category_name);
+        form.append("description", formData.description);
+        if (formData.images instanceof File) {
+          form.append("image", formData.images); 
+        }
 
-        const response = await MainApi.post("/api/category/", form, {
+        const response = await MainApi.put(`/api/category/${id}`, form, {
           headers: {
             Authorization: `Token ${token}`,
             "Content-Type": "multipart/form-data",
           },
         });
 
-        if (response.status === 201) {
-          router.push("/category");
+        if (response.status === 200) {
+          router.push("/admin/category"); 
         }
       } catch (error) {
         console.error("Error submitting form:", error.response?.data || error.message);
@@ -76,7 +134,7 @@ const EditCategory = () => {
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Edit Category
+                Edit Category
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -91,7 +149,7 @@ const EditCategory = () => {
             >
               <Grid item xs={6}>
                 <CustomLabel htmlFor="category_name" required>
-                Category Name:
+                  Category Name:
                 </CustomLabel>
                 <CustomTextField
                   id="category_name"
@@ -107,21 +165,26 @@ const EditCategory = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-              <CustomLabel htmlFor="category_image" required>
-                Category Image:
-              </CustomLabel>
-              <CustomTextField
-                id="category_image"
-                name="category_image"
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleImageUpload(e.target.files[0])} // Handle image upload
-                error={!!errors.category_image}
-                helperText={errors.category_image}
-                required
-                fullWidth
-              />
-            </Grid>
+                <CustomLabel htmlFor="category_image" required>
+                  Category Image:
+                </CustomLabel>
+                {previewImage && (
+                  <div style={{ marginBottom: "10px" }}>
+                    <img src={previewImage} alt="Preview" style={{ width: "100%", maxHeight: "200px" }} />
+                  </div>
+                )}
+                <CustomTextField
+                  id="category_image"
+                  name="category_image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e.target.files[0])}
+                  error={!!errors.images}
+                  helperText={errors.images}
+                  required
+                  fullWidth
+                />
+              </Grid>
             </Grid>
 
             <Grid
@@ -135,7 +198,7 @@ const EditCategory = () => {
             >
               <Grid item xs={12} sm={12}>
                 <CustomLabel htmlFor="description" required>
-                Description:
+                  Description:
                 </CustomLabel>
                 <CustomTextField
                   id="description"

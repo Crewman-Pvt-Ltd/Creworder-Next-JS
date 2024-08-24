@@ -248,6 +248,15 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === "/chat"}
           onClick={() => handleItemClick("/chat")}
         ></HoverableNavItem>
+         {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Settings"
+            icon={<SettingsIcon />}
+            active={currentPath === "/admin/settings"}
+            onClick={() => handleItemClick("/admin/settings")}
+          ></HoverableNavItem>
+        )}
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -292,7 +301,7 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick("/followup")}
         ></HoverableNavItem>
 
-        {type == "admin" && (
+        {/* {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name="Courier Service"
@@ -320,7 +329,7 @@ const Sidebar = ({ isOpen, type }) => {
             active={currentPath === "/admin/shipment-channels"}
             onClick={() => handleItemClick("/admin/shipment-channels")}
           ></HoverableNavItem>
-        )}
+        )} */}
 
         {type == "admin" && (
           <Typography

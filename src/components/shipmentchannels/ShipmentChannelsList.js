@@ -168,7 +168,7 @@ const ShipmentChannelsList = () => {
         </Grid>
         <Grid container spacing={2} sx={{ marginBottom: "10px" }}>
             {/* Card 1 */}
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={4}>
               <CustomCard padding="20px">
                 <Grid container justifyContent="space-between" alignItems="center">
                   <Grid item>
@@ -205,7 +205,7 @@ const ShipmentChannelsList = () => {
               </CustomCard>
             </Grid>
             {/* Card 2 */}
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={4}>
               <CustomCard padding="20px">
                 <Grid container justifyContent="space-between" alignItems="center">
                   <Grid item>
@@ -244,7 +244,7 @@ const ShipmentChannelsList = () => {
               </CustomCard>
             </Grid>
             {/* Card 3 */}
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={4}>
               <CustomCard padding="20px">
                 <Grid container justifyContent="space-between" alignItems="center">
                   <Grid item>
@@ -282,7 +282,7 @@ const ShipmentChannelsList = () => {
               </CustomCard>
             </Grid>
               {/* Card 4 */}
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={4}>
               <CustomCard padding="20px">
                 <Grid container justifyContent="space-between" alignItems="center">
                   <Grid item>

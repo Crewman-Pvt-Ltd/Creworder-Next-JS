@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
-import EditIcon from '@mui/icons-material/Edit';
-import BlockIcon from '@mui/icons-material/Block';
+import CustomCard from "../CustomCard";
+import EditIcon from "@mui/icons-material/Edit";
+import BlockIcon from "@mui/icons-material/Block";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import useGetAllCategories from "@/api-manage/react-query/useGetAllCategories";
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 import {
   Grid,
   Typography,
   Button,
-  Box,
   IconButton,
   CardContent,
   TableContainer,
@@ -18,34 +20,64 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
-
-const initialData = [
-  {
-    id: 1,
-    name: "Weight Gain",
-    status: "Active",
-    description: "This is description.",
-    created_at: "2023-07-14",
-    updated_at: "2023-07-18",
-  },
- 
-];
-
 const CategoryList = () => {
-  const [data, setData] = useState(initialData);
-const router = useRouter();
-
-  const handleEdit = () => {
-    router.push("/admin/category/edit-category");
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const router = useRouter();
+  const { data, refetch } = useGetAllCategories();
+  const handleEdit = (id) => {
+    router.push(`/admin/category/edit-category?id=${id}`);
   };
 
   const handleCreateCategory = () => {
     router.push("/admin/category/create-category");
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete", id);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
+  const handleDeleteClick = (id) => {
+    setCategoryToDelete(id);
+    setOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+      const response = await MainApi.delete(`/api/category/${categoryToDelete}`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 204) {
+        console.log("Category deleted successfully");
+        refetch();
+      } else {
+        console.error("Failed to delete the Category");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the Category:", error);
+    }
+    setOpen(false);
+    setCategoryToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpen(false);
+    setCategoryToDelete(null);
   };
 
   const HeaderCell = (props) => (
@@ -80,11 +112,7 @@ const router = useRouter();
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
             <CustomCard padding="13px">
-              <Grid
-                container
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Grid container justifyContent="space-between" alignItems="center">
                 <Grid item>
                   <Typography
                     sx={{
@@ -96,7 +124,7 @@ const router = useRouter();
                       marginLeft: "30px",
                     }}
                   >
-                    All Category
+                    All Categories
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -124,65 +152,84 @@ const router = useRouter();
             </CustomCard>
           </Grid>
         </Grid>
-       
-            <CustomCard>
-              <CardContent>
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <HeaderCell>ID</HeaderCell>
-                        <HeaderCell>Category Name</HeaderCell>
-                        <HeaderCell>Status</HeaderCell>
-                        <HeaderCell>Created At</HeaderCell>
-                        <HeaderCell>Updated At</HeaderCell>
-                        <HeaderCell>Action</HeaderCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data.map((row, index) => (
-                        <TableRow key={row.id}>
-                          <DataCell>{index + 1}.</DataCell>
-                          <DataCell>{row.name}</DataCell>
-                          <DataCell>{row.status}</DataCell>
-                          <DataCell>{row.created_at}</DataCell> 
-                          <DataCell>{row.updated_at}</DataCell>
-                          <TableCell>
-                          <IconButton>
-                            <Box 
-                             onClick={() => handleEdit(row)}
-                              aria-label="edit"
-                              sx={{ 
-                                width: 30, 
-                                height: 30, 
-                                display: 'flex', 
-                                justifyContent: 'center', 
-                                alignItems: 'center', 
-                                border: '1px solid green', 
-                                borderRadius: '4px' 
-                              }}>
-                              <EditIcon sx={{ color: 'green' }} />
-                            </Box>
+
+        <CustomCard>
+          <CardContent>
+            {error ? (
+              <Typography color="error">{error}</Typography>
+            ) : (
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <HeaderCell>ID</HeaderCell>
+                      <HeaderCell>Category Name</HeaderCell>
+                      <HeaderCell>Status</HeaderCell>
+                      <HeaderCell>Created At</HeaderCell>
+                      <HeaderCell>Updated At</HeaderCell>
+                      <HeaderCell>Action</HeaderCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data?.Data?.map((row, index) => (
+                      <TableRow key={row.id}>
+                        <DataCell>{index + 1}.</DataCell>
+                        <DataCell>{row.name}</DataCell>
+                        <DataCell>{row.status === 1 ? "Active" : "Inactive"}</DataCell>
+                        <DataCell>{formatDate(row.created_at)}</DataCell>
+                        <DataCell>{formatDate(row.updated_at)}</DataCell>
+                        <TableCell>
+                          <IconButton
+                            onClick={() => handleEdit(row.id)}
+                            aria-label="edit"
+                            sx={{ color: "green" }}
+                           >
+                            <EditIcon sx={{ color: "green" }} />
                           </IconButton>
                           <IconButton sx={{ color: "red" }}>
-                          <BlockIcon />
+                            <BlockIcon />
                           </IconButton>
-                            <IconButton
-                              onClick={() => handleDelete(row.id)}
-                              aria-label="delete"
-                              sx={{ color: "red" }}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-            </CustomCard>
-          </Grid>
-        </Grid>
+                          <IconButton
+                            onClick={() => handleDeleteClick(row.id)}
+                            aria-label="delete"
+                            sx={{ color: "red" }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </CardContent>
+        </CustomCard>
+
+        {/* Confirmation Dialog */}
+        <Dialog
+          open={open}
+          onClose={handleDeleteCancel}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this category?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Grid>
+    </Grid>
   );
 };
 

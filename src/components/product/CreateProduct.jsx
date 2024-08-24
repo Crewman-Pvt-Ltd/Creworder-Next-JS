@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from "react";
-import {Grid, Typography, Divider, CardContent, Button, IconButton, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, 
-  DialogContent, DialogActions } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Grid,
+  Typography,
+  Divider,
+  CardContent,
+  Button,
+  Select,
+  MenuItem
+} from "@mui/material";
 import CustomCard from "../CustomCard";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 
-// Importing the Poppins font with weight 300
+// Importing the Poppins font with weight 500
 const poppins = Poppins({
   weight: "500",
   subsets: ['latin']
@@ -15,73 +24,79 @@ const poppins = Poppins({
 
 const CreateProduct = () => {
   const router = useRouter();
-  
+
   const orderlist = () => {
     router.push("/admin/product");
   };
 
-  const [gst, setgst] = useState('');
-
-  const [paymentMode, setPaymentMode] = React.useState("");
-  // Handle change for courseDuration
-  const handlegst = (event) => {
-    setgst(event.target.value);
-  };
- 
-
-  const [productAvailability, setproductAvailability] = useState('');
-  // Handle change for courseDuration
-  const handleproductAvailability = (event) => {
-    setproductAvailability(event.target.value);
-  };
-
-  const [category, setcategory] = useState('');
-  // Handle change for courseDuration
-  const handlecategory = (event) => {
-    setcategory(event.target.value);
-  };
-
-  const [ProductName, setProductName] = useState('');
-  // Handle change for courseDuration
-  const handleProductNameChange = (event) => {
-    setProductName(event.target.value);
-  };
-  const [products, setProducts] = useState([{ productName: '', quantity: 1, price: 0, total: 0 }]);
+  const [gst, setGst] = useState('');
+  const [productAvailability, setProductAvailability] = useState('');
+  const [category, setCategory] = useState('');
+  const [productName, setProductName] = useState('');
+  const [sku, setSku] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [price, setPrice] = useState('');
+  const [hsnCode, setHsnCode] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
   const [discount, setDiscount] = useState(null);
   const [grossAmount, setGrossAmount] = useState(0);
   const [payableAmount, setPayableAmount] = useState(0);
   const [codAmount, setCodAmount] = useState(0);
-  const [paymentType, setPaymentType] = useState('');
 
-  useEffect(() => {
-    // Calculate the gross amount based on the products
-    const totalGross = products.reduce((acc, product) => acc + product.total, 0);
-    setGrossAmount(totalGross);
+  // Function to handle product creation
+  const handleCreateProduct = async () => {
+    const token = await getToken(); // Get token dynamically
 
-    // Calculate payable amount after discount
-    const totalPayable = totalGross - discount;
-    setPayableAmount(totalPayable);
-    setCodAmount(totalPayable); // Assuming COD amount is the same as payable amount
-  }, [products, discount]);
+    const formData = new FormData();
+    formData.append('product_name', productName);
+    formData.append('product_sku', sku);
+    formData.append('product_quantity', quantity);
+    formData.append('product_price', price);
+    formData.append('product_hsn_number', hsnCode);
+    formData.append('product_gst_percent', gst);
+    formData.append('product_description', description);
+    formData.append('product_availability', productAvailability);
+    formData.append('product_status', "0"); // Assuming default status
+    formData.append('category', category);
+    formData.append('product_image', image);
 
-  const handleInputChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedProducts = [...products];
-    updatedProducts[index][name] = value;
-    setProducts(updatedProducts);
+    try {
+      const response = await MainApi.post('/api/product/', formData, {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.status === 201) {
+        alert('Product created successfully!');
+        orderlist(); // Redirect after successful creation
+      }
+    } catch (error) {
+      console.error('Error creating product:', error);
+      alert('An error occurred while creating the product.');
+    }
+  };
+
+  const handleInputChange = (setter) => (event) => {
+    setter(event.target.value);
+  };
+
+  const handleImageUpload = (file) => {
+    setImage(file);
   };
 
   return (
     <Grid container spacing={2} p={3}>
-
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
             <Typography
-              sx={{ 
-                fontSize: "16px", 
-                fontWeight: "600", 
-                fontFamily: poppins.style.fontFamily 
+              sx={{
+                fontSize: "16px",
+                fontWeight: "600",
+                fontFamily: poppins.style.fontFamily
               }}
             >
               Add Product
@@ -91,24 +106,26 @@ const CreateProduct = () => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography sx={{ fontFamily: poppins.style.fontFamily }}>
-                Create Product Form :
+                  Create Product Form :
                 </Typography>
               </Grid>
 
-              {/* Personal Details Fields */}
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="product_name" required>
-                Product Name
+                  Product Name
                 </CustomLabel>
                 <CustomTextField
                   id="product_name"
                   name="product_name"
                   placeholder="e.g. PRO34XP"
                   type="text"
+                  value={productName}
+                  onChange={handleInputChange(setProductName)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="sku" required>
                   SKU
@@ -118,175 +135,184 @@ const CreateProduct = () => {
                   name="sku"
                   placeholder="e.g. SKU98765E22"
                   type="text"
+                  value={sku}
+                  onChange={handleInputChange(setSku)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={3}>
                 <CustomLabel htmlFor="quantity" required>
-                Quantity
+                  Quantity
                 </CustomLabel>
                 <CustomTextField
                   id="quantity"
                   name="quantity"
                   placeholder="e.g. quantity"
                   type="text"
+                  value={quantity}
+                  onChange={handleInputChange(setQuantity)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={3}>
                 <CustomLabel htmlFor="price" required>
-                Price
+                  Price
                 </CustomLabel>
                 <CustomTextField
                   id="price"
                   name="price"
                   placeholder="e.g. price"
                   type="text"
+                  value={price}
+                  onChange={handleInputChange(setPrice)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={3}>
                 <CustomLabel htmlFor="hsn_code" required>
-                Product HSN Code
+                  Product HSN Code
                 </CustomLabel>
                 <CustomTextField
                   id="hsn_code"
                   name="hsn_code"
                   placeholder="e.g. HSN Code"
                   type="text"
+                  value={hsnCode}
+                  onChange={handleInputChange(setHsnCode)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
 
               <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="gst" required>
-              GST (in %)
-              </CustomLabel>
-              <Select
-                labelId="gst"
-                id="gst"
-                name="gst"
-                value={gst}
-                onChange={handlegst}
-                displayEmpty 
-                sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }} 
-                fullWidth>
-                <MenuItem value="" disabled>
-                  Select GST
-                </MenuItem>
-                <MenuItem value={1}>0%</MenuItem>
-                <MenuItem value={2}>5%</MenuItem>
-                <MenuItem value={3}>18%</MenuItem>
-                <MenuItem value={4}>28%</MenuItem>
-              </Select>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="postalcode" required>
+                <CustomLabel htmlFor="gst" required>
+                  GST (in %)
+                </CustomLabel>
+                <Select
+                  labelId="gst"
+                  id="gst"
+                  name="gst"
+                  value={gst}
+                  onChange={handleInputChange(setGst)}
+                  displayEmpty
+                  sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }}
+                  fullWidth
+                >
+                  <MenuItem value="" disabled>
+                    Select GST
+                  </MenuItem>
+                  <MenuItem value="0">0%</MenuItem>
+                  <MenuItem value="5">5%</MenuItem>
+                  <MenuItem value="18">18%</MenuItem>
+                  <MenuItem value="28">28%</MenuItem>
+
+                </Select>
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="images" required>
                   Images
                 </CustomLabel>
                 <CustomTextField
-                id="images"
-                name="images"
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleImageUpload(e.target.files[0])} // Handle image upload
-                required
-                fullWidth
-              />
+                  id="images"
+                  name="images"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e.target.files[0])}
+                  required
+                  fullWidth
+                />
               </Grid>
+
               <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="course-order" required>
-              Category
-              </CustomLabel>
-              <Select
-                labelId="category"
-                id="category"
-                name="category"
-                value={category}
-                onChange={handlecategory}
-                displayEmpty // This makes the empty string display as the placeholder
-                sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }} // Set minHeight
-                fullWidth>
-                <MenuItem value="" disabled>
-                  Select Category
-                </MenuItem>
-                <MenuItem value={1}>Weight Gain</MenuItem>
-                <MenuItem value={2}>Weight Loss</MenuItem>
-                <MenuItem value={2}> Women's Wellness</MenuItem>
-                <MenuItem value={2}>Man Wellness</MenuItem>
-                <MenuItem value={2}>Diabetes Cure</MenuItem>               
-              </Select>
-             </Grid>
-             <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="course-order" required>
-              Availability
-              </CustomLabel>
-              <Select
-                labelId="productAvailability"
-                id="productAvailability"
-                name="productAvailability"
-                value={productAvailability}
-                onChange={handleproductAvailability}
-                displayEmpty 
-                sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }}
-                fullWidth>
-                <MenuItem value="" disabled>
-                Availability
-                </MenuItem>
-                <MenuItem value={1}>In Stock</MenuItem>
-                <MenuItem value={2}>Out Off Stock</MenuItem>                
-              </Select>
-             </Grid>
-             
+                <CustomLabel htmlFor="category" required>
+                  Category
+                </CustomLabel>
+                <Select
+                  labelId="category"
+                  id="category"
+                  name="category"
+                  value={category}
+                  onChange={handleInputChange(setCategory)}
+                  displayEmpty
+                  sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }}
+                  fullWidth
+                >
+                  <MenuItem value="" disabled>
+                    Select Category
+                  </MenuItem>
+                  <MenuItem value={1}>Weight Gain</MenuItem>
+                  <MenuItem value={2}>Weight Loss</MenuItem>
+                  <MenuItem value={3}>Women's Wellness</MenuItem>
+                  <MenuItem value={4}>Man Wellness</MenuItem>
+                  <MenuItem value={5}>Diabetes Cure</MenuItem>
+                </Select>
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="productAvailability" required>
+                  Availability
+                </CustomLabel>
+                <Select
+                  labelId="productAvailability"
+                  id="productAvailability"
+                  name="productAvailability"
+                  value={productAvailability}
+                  onChange={handleInputChange(setProductAvailability)}
+                  displayEmpty
+                  sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }}
+                  fullWidth
+                >
+                  <MenuItem value="" disabled>
+                    Select Availability
+                  </MenuItem>
+                  <MenuItem value={1}>Yes</MenuItem>
+                  <MenuItem value={2}>No</MenuItem>
+                </Select>
+              </Grid>
+
               <Grid item xs={12}>
-                <CustomLabel htmlFor="description" required>
-                Description
+                <CustomLabel htmlFor="product_description" required>
+                  Description
                 </CustomLabel>
                 <CustomTextField
-                  id="description"
-                  name="description"
-                  placeholder="e.g. Description"
+                  id="product_description"
+                  name="product_description"
+                  placeholder="e.g. Product Description"
                   type="text"
+                  value={description}
+                  onChange={handleInputChange(setDescription)}
                   fullWidth
-                  multiline
-                  rows={4} 
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
-      </Grid>
-            <Grid
-              item
-              sx={{
-                marginTop: 5,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                onClick={orderlist}
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                  fontFamily: poppins.style.fontFamily
-                }}
-              >
-                Create Product
-              </Button>
+
+              <Grid item xs={12} mt={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    fontFamily: 'Poppins, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: '500',
+                    textTransform: 'capitalize',
+                    borderRadius: '6px'
+                  }}
+                  onClick={handleCreateProduct}
+                >
+                  Create Product
+                </Button>
+              </Grid>
             </Grid>
           </CardContent>
         </CustomCard>
       </Grid>
-
     </Grid>
   );
 };
