@@ -410,8 +410,7 @@ const Sidebar = ({ isOpen, type }) => {
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Schedule Order" />
-              </ListItem>
-             
+              </ListItem>          
              
             </List>
           </Collapse>
@@ -428,11 +427,11 @@ const Sidebar = ({ isOpen, type }) => {
           isOpen={isOpen}
           name="Invoice Management"
           icon={<Receipt />}
-          active={currentPath === '/admin/invoce-managementt'}
-          onClick={() => handleItemClick('/admin/invoce-managementt')}
+          active={currentPath === '/admin/invoce-management'}
+          onClick={() => handleItemClick('/admin/invoce-management')}
         ></HoverableNavItem>)}
         
-{type === "admin" && (
+         {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name={
