@@ -1,7 +1,11 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
+import { usePermissions } from '@/contexts/PermissionsContext';
 
 const ProfileHeader = () => {
+
+  const { fetchPermissions, permissionsData } = usePermissions();
+
   return (
     <Grid container justifyContent="space-between" alignItems="center">
       <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
@@ -19,7 +23,7 @@ const ProfileHeader = () => {
         <Grid container direction="column" spacing={0.5}>
           <Grid item>
             <Typography fontSize="14px" color="black">
-              Full Name
+            {permissionsData?.user?.username}
             </Typography>
           </Grid>
           <Grid item>
