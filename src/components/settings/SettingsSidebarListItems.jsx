@@ -16,7 +16,9 @@ import FinanceSettings from "./FinanceSettings";
 import SocialLoginSettings from "./SocialLoginSettings";
 import ThemeSettings from "./ThemeSettings";
 import DatabaseBackupSettings from "./DatabaseBackupSettings";
-
+import LocalShippingIcon from '@mui/icons-material/Map';
+import PhoneIcon from '@mui/icons-material/Phone';
+import ShippingIcon from '@mui/icons-material/LocalShipping';
 import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PaymentIcon from "@mui/icons-material/Payment";
@@ -26,6 +28,9 @@ import ColorLensIcon from "@mui/icons-material/ColorLens";
 import BackupIcon from "@mui/icons-material/Backup";
 import SearchIcon from "@mui/icons-material/Search";
 import RolesAndPermissions from "./RolesAndPermissions";
+import CourierServiceList from "../courierservice/CourierServiceList";
+import TelephonicChannelsList from "../telephonicchannels/TelephonicChannelsList";
+import ShipmentChannelsList from "../shipmentchannels/ShipmentChannelsList";
 
 const poppins = Poppins({
   weight: "300",
@@ -45,6 +50,9 @@ const superAdminMenuItems = [
 
 const adminMenuItems = [
   { text: "Admin Settings", icon: <SettingsIcon /> },
+  { text: "Courier Service", icon: <ShippingIcon /> },
+  { text: "Telephonic Channels", icon: <PhoneIcon /> },
+  { text: "Shipment Channels", icon: <LocalShippingIcon /> },
 ];
 
 const SettingsSidebarListItems = ({type}) => {
@@ -213,6 +221,9 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "superadmin" && (selectedItem === "Theme Settings" && <ThemeSettings />)}
           {type == "superadmin" && (selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />)}
           {type == "admin" && (selectedItem === "Admin Settings" && <h1>Admin Settings</h1>)}
+          {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
+          {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
+          {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}
         </Box>
       </Grid>
     </Grid>

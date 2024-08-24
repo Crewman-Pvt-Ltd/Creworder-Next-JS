@@ -29,7 +29,6 @@ import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-import CallIcon from "@mui/icons-material/Call";
 import { DateRangePicker } from "@nextui-org/date-picker";
 
 const poppins = Poppins({
