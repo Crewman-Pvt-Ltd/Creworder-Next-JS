@@ -10,7 +10,7 @@ const Index = () => {
 
 
   return (
-    <Layout type="superadmin">
+    <Layout>
      <NoticeList />
     </Layout>
   );
