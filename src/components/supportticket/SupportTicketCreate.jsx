@@ -2,58 +2,79 @@ import React, { useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
+import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
+import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
+import { getToken } from "@/utils/getToken";
 import {
   Typography,
   Button,
   Grid,
   Select,
+  MenuItem,
   TextField,
   CardContent,
-  MenuItem,
   Divider,
 } from "@mui/material";
 import { useRouter } from "next/router";
-
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById("preview").src = e.target.result;
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
+import MainApi from "@/api-manage/MainApi";
 
 const SupportTicketCreate = () => {
   const router = useRouter();
+  const { data: companiesData, isLoading: companiesLoading, error: companiesError } = useGetAllCompanies();
+  const { data: usersData, isLoading: usersLoading, error: usersError } = useGetAllUsers();
+  const token = getToken();
+  const [formData, setFormData] = useState({
+    company: "",
+    subject: "",
+    description: "",
+    type: "",
+    priority: "",
+    agent: "",
+  });
 
-  const handleSubmit = () => {
-    router.push("/superadmin/supportticket");
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById("preview").src = e.target.result;
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+      setFormData((prev) => ({ ...prev, attachment: file }));
+    }
   };
-  const [companyname, setcompanyname] = useState("");
 
-  const handlecompanyname = (event) => {
-    setcompanyname(event.target.value);
-  };
-  const [agent, setagent] = useState("");
-
-  const handleagent = (event) => {
-    setagent(event.target.value);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const [priority, setpriority] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const handlepriority = (event) => {
-    setpriority(event.target.value);
-  };
+    const form = new FormData();
+    Object.keys(formData).forEach(key => {
+        form.append(key, formData[key]);
+    });
 
-  const [type, settype] = useState("");
+  
+      const response = await MainApi.post("/api/support-tickets/", formData, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
 
-  const handletype = (event) => {
-    settype(event.target.value);
-  };
+      if (response.status === 201) {
+        router.push("/superadmin/supportticket");
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    
+};
+
+
   return (
+    
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <CustomCard>
@@ -71,16 +92,16 @@ const SupportTicketCreate = () => {
                 flexDirection: { xs: "column", sm: "row" },
               }}
             >
-               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="Company Name" required>
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="company" required>
                   Company Name
                 </CustomLabel>
                 <Select
-                  labelId="Company Name"
-                  id="companyname"
-                  name="companyname"
-                  value={companyname}
-                  onChange={handlecompanyname}
+                  labelId="company"
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
                   displayEmpty
                   sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
@@ -88,21 +109,30 @@ const SupportTicketCreate = () => {
                   <MenuItem value="" disabled>
                     Select Company
                   </MenuItem>
-                  <MenuItem value={1}>Company 1</MenuItem>
-                  <MenuItem value={2}>Company 2</MenuItem>
-                  <MenuItem value={3}>Company 2</MenuItem>
-                  <MenuItem value={4}>Company 4</MenuItem>
+                  {companiesLoading ? (
+                    <MenuItem disabled>Loading...</MenuItem>
+                  ) : companiesError ? (
+                    <MenuItem disabled>Error fetching companies</MenuItem>
+                  ) : (
+                    companiesData?.results.map((company) => (
+                      <MenuItem key={company.id} value={company.id}>
+                        {company.name}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </Grid>
               <Grid item xs={12} sm={8}>
-                <CustomLabel htmlFor="ticketsubject" required>
+                <CustomLabel htmlFor="subject" required>
                   Ticket Subject
                 </CustomLabel>
                 <CustomTextField
-                  id="ticketsubject"
-                  name="ticketsubject"
+                  id="subject"
+                  name="subject"
                   type="text"
-                  placeholder="e.g. test@creworder.com"
+                  placeholder="e.g. Login Issue"
+                  value={formData.subject}
+                  onChange={handleInputChange}
                   required
                   fullWidth
                 />
@@ -125,28 +155,31 @@ const SupportTicketCreate = () => {
                 <TextField
                   id="description"
                   name="description"
-                  placeholder="e.g. creworder"
+                  placeholder="e.g. Cannot log in with the provided credentials"
                   type="text"
+                  value={formData.description}
+                  onChange={handleInputChange}
                   required
                   fullWidth
                   multiline
                   rows={4}
                 />
               </Grid>
-              <Grid item xs={6}sm={2} md={4}>
-                <Typography variant="subtitle1" htmlFor="adminProfile">
+              <Grid item xs={6} sm={4}>
+                <Typography variant="subtitle1" htmlFor="attachment">
                   Upload Attachment
                 </Typography>
                 <div className="custom-file">
                   <input
                     type="file"
                     className="custom-file-input"
-                    id="adminProfile"
-                    name="profileImage"
+                    id="attachment"
+                    name="attachment"
                     onChange={handleFileChange}
                     accept=".jpg,.jpeg,.png"
                   />
                 </div>
+                <img id="preview" alt="Preview" style={{ marginTop: "10px", maxWidth: "100%" }} />
               </Grid>
             </Grid>
 
@@ -160,15 +193,15 @@ const SupportTicketCreate = () => {
               }}
             >
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="Agent" required>
+                <CustomLabel htmlFor="agent" required>
                   Agent
                 </CustomLabel>
                 <Select
-                  labelId="Agent"
+                  labelId="agent"
                   id="agent"
                   name="agent"
-                  value={agent}
-                  onChange={handleagent}
+                  value={formData.agent}
+                  onChange={handleInputChange}
                   displayEmpty
                   sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
@@ -176,22 +209,29 @@ const SupportTicketCreate = () => {
                   <MenuItem value="" disabled>
                     Select Agent
                   </MenuItem>
-                  <MenuItem value={1}>Agent 1</MenuItem>
-                  <MenuItem value={2}>Agent 2</MenuItem>
-                  <MenuItem value={3}>Agent 3</MenuItem>
-                  
+                  {usersLoading ? (
+                    <MenuItem disabled>Loading...</MenuItem>
+                  ) : usersError ? (
+                    <MenuItem disabled>Error fetching users</MenuItem>
+                  ) : (
+                    usersData?.results.map((user) => (
+                      <MenuItem key={user.id} value={user.id}>
+                        {user.username}
+                      </MenuItem>
+                    ))
+                  )}
                 </Select>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="Priority" required>
+                <CustomLabel htmlFor="priority" required>
                   Priority
                 </CustomLabel>
                 <Select
-                  labelId="Priority"
+                  labelId="priority"
                   id="priority"
                   name="priority"
-                  value={priority}
-                  onChange={handlepriority}
+                  value={formData.priority}
+                  onChange={handleInputChange}
                   displayEmpty
                   sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
@@ -199,22 +239,22 @@ const SupportTicketCreate = () => {
                   <MenuItem value="" disabled>
                     Select Priority
                   </MenuItem>
-                  <MenuItem value={1}>Low</MenuItem>
-                  <MenuItem value={2}>Medium</MenuItem>
-                  <MenuItem value={3}>High</MenuItem>
-                  <MenuItem value={4}>Urgent</MenuItem>
+                  <MenuItem value="urgent">Urgent</MenuItem>
+                  <MenuItem value="high">High</MenuItem>
+                  <MenuItem value="low">Low</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
                 </Select>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="Type" required>
+                <CustomLabel htmlFor="type" required>
                   Type
                 </CustomLabel>
                 <Select
-                  labelId="Type"
+                  labelId="type"
                   id="type"
                   name="type"
-                  value={type}
-                  onChange={handletype}
+                  value={formData.type}
+                  onChange={handleInputChange}
                   displayEmpty
                   sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
@@ -222,10 +262,9 @@ const SupportTicketCreate = () => {
                   <MenuItem value="" disabled>
                     Select Type
                   </MenuItem>
-                  <MenuItem value={1}>Question</MenuItem>
-                  <MenuItem value={2}>Problem</MenuItem>
-                  <MenuItem value={3}>General Query</MenuItem>
-                  
+                  <MenuItem value="ques">Question</MenuItem>
+                  <MenuItem value="problem">Problem</MenuItem>
+                  <MenuItem value="gen_query">General Query</MenuItem>
                 </Select>
               </Grid>
             </Grid>
