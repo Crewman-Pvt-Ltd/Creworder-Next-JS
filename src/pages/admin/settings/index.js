@@ -10,17 +10,17 @@ const Index = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!permissionLoading && permissionsData?.role !== "superadmin") {
+    if (!permissionLoading && permissionsData?.role !== "admin") {
       router.push("/login");
     }
   }, [permissionLoading, permissionsData, router]);
 
   if (permissionLoading) return <Loader />;
 
-  if (permissionsData?.role === "superadmin") {
+  if (permissionsData?.role === "admin") {
     return (
-      <Layout type="superadmin">
-        <SettingsSidebar type="superadmin"/>
+      <Layout type="admin">
+        <SettingsSidebar type="admin"/>
       </Layout>
     );
   }

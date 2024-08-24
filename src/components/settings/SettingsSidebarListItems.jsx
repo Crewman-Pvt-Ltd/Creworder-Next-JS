@@ -32,7 +32,7 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
-const menuItems = [
+const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
   { text: "Payment Credentials", icon: <PaymentIcon /> },
@@ -43,8 +43,13 @@ const menuItems = [
   { text: "Roles & Permissions", icon: <BackupIcon /> },
 ];
 
-const SettingsSidebarListItems = () => {
-  const [selectedItem, setSelectedItem] = useState("App Settings");
+const adminMenuItems = [
+  { text: "Admin Settings", icon: <SettingsIcon /> },
+];
+
+const SettingsSidebarListItems = ({type}) => {
+  const defaultState = type == "superadmin" ? "App Settings" : "Admin Settings";
+  const [selectedItem, setSelectedItem] = useState(defaultState);
 
   const handleItemClick = (item) => {
     setSelectedItem(item.text);
@@ -107,7 +112,47 @@ const SettingsSidebarListItems = () => {
           }}
         >
           <List>
-            {menuItems.map((item, index) => (
+            {type == "superadmin" && superAdminMenuItems.map((item, index) => (
+              <ListItem
+                button
+                key={index}
+                onClick={() => handleItemClick(item)}
+                sx={{
+                  borderRadius: 1,
+                  mb: 1,
+                  transition: "all 0.3s ease",
+                  backgroundColor:
+                    selectedItem === item.text ? "#d7defabf" : "transparent",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                    transform: "translateX(5px)",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                  },
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: "auto",
+                      color: "#405189",
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    sx={{
+                      fontFamily: poppins.style.fontFamily,
+                      color: "#405189",
+                      fontWeight: 500,
+                      letterSpacing: "0.5px",
+                      transition: "color 0.3s ease",
+                    }}
+                  />
+                </Box>
+              </ListItem>
+            ))}
+            {type == "admin" && adminMenuItems.map((item, index) => (
               <ListItem
                 button
                 key={index}
@@ -160,14 +205,14 @@ const SettingsSidebarListItems = () => {
         }}
       >
         <Box p={2}>
-          {selectedItem === "App Settings" && <AppSettings />}
-          {selectedItem === "Notification Settings" && <NotificationSettings />}
-          {selectedItem === "Payment Credentials" && <PaymentCredentials />}
-          {selectedItem === "Finance Settings" && <FinanceSettings />}
-          {selectedItem === "Social Login Settings" && <SocialLoginSettings />}
-          {selectedItem === "Theme Settings" && <ThemeSettings />}
-          {selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />}
-          {selectedItem === "Roles & Permissions" && <RolesAndPermissions />}
+          {type == "superadmin" && (selectedItem === "App Settings" && <AppSettings />)}
+          {type == "superadmin" && (selectedItem === "Notification Settings" && <NotificationSettings />)}
+          {type == "superadmin" && (selectedItem === "Payment Credentials" && <PaymentCredentials />)}
+          {type == "superadmin" && (selectedItem === "Finance Settings" && <FinanceSettings />)}
+          {type == "superadmin" && (selectedItem === "Social Login Settings" && <SocialLoginSettings />)}
+          {type == "superadmin" && (selectedItem === "Theme Settings" && <ThemeSettings />)}
+          {type == "superadmin" && (selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />)}
+          {type == "admin" && (selectedItem === "Admin Settings" && <h1>Admin Settings</h1>)}
         </Box>
       </Grid>
     </Grid>

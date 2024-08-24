@@ -1,10 +1,10 @@
 import React from 'react'
 import SettingsSidebarListItems from './SettingsSidebarListItems'
 
-const SettingsSidebar = () => {
+const SettingsSidebar = ({type}) => {
   return (
     <div>
-      <SettingsSidebarListItems />
+      <SettingsSidebarListItems type={type}/>
     </div>
   )
 }
