@@ -70,7 +70,7 @@ const CompanyList = () => {
 
       if (response.status === 204) {
         console.log("Company deleted successfully");
-        refetch(); // Refetch the companies to update the list
+        refetch(); 
       } else {
         console.error("Failed to delete the company");
       }

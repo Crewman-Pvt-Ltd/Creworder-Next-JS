@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import CustomCard from "../CustomCard";
+import useGetAllSupportTickets from "@/api-manage/react-query/useGetAllSupportTickets";
 import {
   Grid,
   Typography,
   Button,
-  Box,
   IconButton,
   CardContent,
   TableContainer,
@@ -15,37 +15,20 @@ import {
   TableBody,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import Edit from "@mui/icons-material/Edit";
-import Delete from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility"; 
 import { useRouter } from "next/router";
 
-const initialData = [
-  {
-    id: 1,
-    ticket: "TKT-20240605-9",
-    ticketsubject: "Company A",
-    requestername: "Test 1",
-    requestedon: "15 Jun, 2024",
-  },
-  {
-    id: 2,
-    ticket: "TKT-3456705-9",
-    ticketsubject: "Company B",
-    requestername: "Test 2",
-    requestedon: "20 Jun, 2024",
-  },
-];
-
 const SupportTicketList = () => {
-  const [data, setData] = useState(initialData);
   const router = useRouter();
+  const { data, refetch } = useGetAllSupportTickets();
 
-  const handleEdit = () => {
-    router.push("/superadmin/supportticket/editticket");
+  const handleEdit = (row) => {
+    router.push(`/superadmin/supportticket/editticket/${row.id}`);
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete", id);
+  const handleView = (row) => {
+    router.push(`/superadmin/supportticket/viewticket/${row.id}`);
   };
 
   const handleCreateTicket = () => {
@@ -134,33 +117,37 @@ const SupportTicketList = () => {
                     <HeaderCell>ID</HeaderCell>
                     <HeaderCell>Ticket #</HeaderCell>
                     <HeaderCell>Ticket Subject</HeaderCell>
-                    <HeaderCell>Requester Name</HeaderCell>
-                    <HeaderCell>Requested On</HeaderCell>
+                    <HeaderCell>Description</HeaderCell>
+                    <HeaderCell>Type</HeaderCell>
+                    <HeaderCell>Priority</HeaderCell>
+                    <HeaderCell>Agent</HeaderCell>
                     <HeaderCell>Action</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map((row, index) => (
+                  {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
-                      <DataCell>{index + 1}</DataCell>
-                      <DataCell>{row.ticket}</DataCell>
-                      <DataCell>{row.ticketsubject}</DataCell>
-                      <DataCell>{row.requestername}</DataCell>
-                      <DataCell>{row.requestedon}</DataCell>
+                      <DataCell>{row.id}</DataCell>
+                      <DataCell>{row.ticketNumber || "N/A"}</DataCell> 
+                      <DataCell>{row.subject}</DataCell>
+                      <DataCell>{row.description}</DataCell>
+                      <DataCell>{row.type}</DataCell>
+                      <DataCell>{row.priority}</DataCell>
+                      <DataCell>{row.agent?.username || "N/A"}</DataCell> {/* Adjust as needed */}
                       <TableCell>
+                        <IconButton
+                          onClick={() => handleView(row)}
+                          aria-label="view"
+                          sx={{ color: "#708090" }}
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
                         <IconButton
                           onClick={() => handleEdit(row)}
                           aria-label="edit"
                           sx={{ color: "green" }}
                         >
-                          <Edit />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleDelete(row.id)}
-                          aria-label="delete"
-                          sx={{ color: "red" }}
-                        >
-                          <Delete />
+                          <EditIcon />
                         </IconButton>
                       </TableCell>
                     </TableRow>

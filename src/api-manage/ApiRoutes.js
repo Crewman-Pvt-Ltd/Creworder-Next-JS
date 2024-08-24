@@ -8,4 +8,6 @@ export const users = '/api/users/';
 export const get_notices = '/api/notices/';
 export const get_branches = '/api/branches/';
 export const self_signup = '/api/self-signup/';
+export const support_tickets = '/api/support-tickets/';
+export const form_enquiries = '/api/form-enquiries/';
 export const baseApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL+"/api/";

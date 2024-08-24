@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
 import {
   Grid,
   CardContent,
@@ -31,19 +32,9 @@ import {
 
 const UserList = () => {
     const router = useRouter();
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      userId: "1234",
-      username: "John Doe",
-      phone: "123-456-7890",
-      email: "john.doe@example.com",
-      gender: "Male",
-      role: "Admin",
-      status: "Approved",
-    },
-  ]);
-
+ 
+    const { data, refetch } = useGetAllUsers();
+  // console.log("Users", data);
   const [open, setOpen] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
 
@@ -168,25 +159,25 @@ const UserList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {users.map((user, index) => (
-                    <TableRow key={user.id}>
+                {data?.results.map((row, index) =>(
+                    <TableRow key={row.id}>
                       <DataCell>{index + 1}</DataCell>
-                      <DataCell>{user.userId}</DataCell>
-                      <DataCell>{user.username}</DataCell>
-                      <DataCell>{user.phone}</DataCell>
-                      <DataCell>{user.email}</DataCell>
-                      <DataCell>{user.gender}</DataCell>
-                      <DataCell>{user.role}</DataCell>
-                      <DataCell>{user.status}</DataCell>
+                      <DataCell>{row.id}</DataCell>
+                      <DataCell>{row?.username}</DataCell>
+                      <DataCell>{row?.profile?.contact_no}</DataCell>
+                      <DataCell>{row?.email}</DataCell>
+                      <DataCell>{row?.profile?.gender}</DataCell>
+                      <DataCell>{row?.role?.role}</DataCell>
+                      <DataCell>{row?.profile?.status}</DataCell>
                       <TableCell>
                         <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
                           <EditIcon />
                         </IconButton>
-                        {user.status === "Approved" ? (
+                        {row.status === "Approved" ? (
                           <IconButton
                             aria-label="suspend"
                             onClick={() =>
-                              handleToggleStatus(user.id, "Suspended")
+                              handleToggleStatus(row.id, "Suspended")
                             }
                             sx={{ color: "#DC3545" }}
                           >
@@ -196,7 +187,7 @@ const UserList = () => {
                           <IconButton
                             aria-label="activate"
                             onClick={() =>
-                              handleToggleStatus(user.id, "Approved")
+                              handleToggleStatus(row.id, "Approved")
                             }
                             sx={{ color: "#28A745" }}
                           >
@@ -217,7 +208,7 @@ const UserList = () => {
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => handleOpenDialog(user.id)}
+                          onClick={() => handleOpenDialog(row.id)}
                           sx={{ color: "#FF0000" }}
                         >
                           <DeleteIcon />

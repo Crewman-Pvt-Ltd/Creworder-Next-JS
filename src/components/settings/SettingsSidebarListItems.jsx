@@ -25,6 +25,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import BackupIcon from "@mui/icons-material/Backup";
 import SearchIcon from "@mui/icons-material/Search";
+import RolesAndPermissions from "./RolesAndPermissions";
 
 const poppins = Poppins({
   weight: "300",
@@ -39,7 +40,7 @@ const menuItems = [
   { text: "Social Login Settings", icon: <LockIcon /> },
   { text: "Theme Settings", icon: <ColorLensIcon /> },
   { text: "Database Backup Settings", icon: <BackupIcon /> },
-  
+  { text: "Roles & Permissions", icon: <BackupIcon /> },
 ];
 
 const SettingsSidebarListItems = () => {
@@ -166,6 +167,7 @@ const SettingsSidebarListItems = () => {
           {selectedItem === "Social Login Settings" && <SocialLoginSettings />}
           {selectedItem === "Theme Settings" && <ThemeSettings />}
           {selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />}
+          {selectedItem === "Roles & Permissions" && <RolesAndPermissions />}
         </Box>
       </Grid>
     </Grid>
