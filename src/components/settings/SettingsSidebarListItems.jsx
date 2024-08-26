@@ -8,6 +8,7 @@ import {
   Grid,
   Box,
 } from "@mui/material";
+// import RolesAndPermissions from "./RolesAndPermissions";
 import { Poppins } from "next/font/google";
 import AppSettings from "./AppSettings";
 import NotificationSettings from "./NotificationSettings";
@@ -45,7 +46,7 @@ const superAdminMenuItems = [
   { text: "Social Login Settings", icon: <LockIcon /> },
   { text: "Theme Settings", icon: <ColorLensIcon /> },
   { text: "Database Backup Settings", icon: <BackupIcon /> },
-  { text: "Roles & Permissions", icon: <BackupIcon /> },
+  ,
 ];
 
 const adminMenuItems = [
@@ -54,7 +55,9 @@ const adminMenuItems = [
   { text: "Telephonic Channels", icon: <PhoneIcon /> },
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
 ];
-
+const commonMenuItems = [
+  { text: "Roles & Permissions", icon: <BackupIcon /> },
+];
 const SettingsSidebarListItems = ({type}) => {
   const defaultState = type == "superadmin" ? "App Settings" : "Admin Settings";
   const [selectedItem, setSelectedItem] = useState(defaultState);
@@ -62,7 +65,7 @@ const SettingsSidebarListItems = ({type}) => {
   const handleItemClick = (item) => {
     setSelectedItem(item.text);
   };
-
+  const userType = 'superadmin'; 
   return (
     <Grid container spacing={1}>
       <Grid
@@ -200,6 +203,46 @@ const SettingsSidebarListItems = ({type}) => {
                 </Box>
               </ListItem>
             ))}
+             {commonMenuItems.map((item, index) => (
+              <ListItem
+                button
+                key={index}
+                onClick={() => handleItemClick(item)}
+                sx={{
+                  borderRadius: 1,
+                  mb: 1,
+                  transition: "all 0.3s ease",
+                  backgroundColor:
+                    selectedItem === item.text ? "#d7defabf" : "transparent",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                    transform: "translateX(5px)",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                  },
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: "auto",
+                      color: "#405189",
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    sx={{
+                      fontFamily: poppins.style.fontFamily,
+                      color: "#405189",
+                      fontWeight: 500,
+                      letterSpacing: "0.5px",
+                      transition: "color 0.3s ease",
+                    }}
+                  />
+                </Box>
+              </ListItem>
+            ))}
           </List>
         </Box>
       </Grid>
@@ -224,6 +267,7 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
           {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
           {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}
+         { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
         </Box>
       </Grid>
     </Grid>

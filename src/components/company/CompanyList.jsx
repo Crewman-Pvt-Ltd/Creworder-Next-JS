@@ -228,13 +228,13 @@ const CompanyList = () => {
                         >
                           <Edit />
                         </IconButton>
-                        <IconButton
+                        {/* <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
                           sx={{ color: "red" }}
                         >
                           <Delete />
-                        </IconButton>
+                        </IconButton> */}
                         <IconButton
                           onClick={() => handleStatusToggle(row.id)}
                           aria-label={
