@@ -301,7 +301,7 @@ const CreatePackage = () => {
                   </Grid>
                   <Grid item xs={12} md={12}>
                     <Grid container spacing={2} mt={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={4}>
                         <CustomLabel htmlFor="monthlyplanprice" required>
                           Monthly Plan Price
                         </CustomLabel>
@@ -316,12 +316,27 @@ const CreatePackage = () => {
                           onChange={handleInputChange}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <CustomLabel htmlFor="annualplanprice" required>
-                          Annual Plan Price
+                      <Grid item xs={12} sm={4}>
+                        <CustomLabel htmlFor="quarterlyplanprice" required>
+                          Quarterly Plan Price
                         </CustomLabel>
                         <CustomTextField
-                          id="annualplanprice"
+                          id="quarterlyplanprice"
+                          name="quarterly_price"
+                          type="number"
+                          placeholder=""
+                          required
+                          fullWidth
+                          value={formState.quarterly_price}
+                          onChange={handleInputChange}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <CustomLabel htmlFor="annualprice" required>
+                          Anually Plan Price
+                        </CustomLabel>
+                        <CustomTextField
+                          id="annualprice"
                           name="annual_price"
                           type="number"
                           placeholder=""

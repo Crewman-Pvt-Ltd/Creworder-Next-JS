@@ -2,20 +2,28 @@ import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
+import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
+
 import {
   Typography,
   Button,
   Grid,
   CardContent,
   Divider,
- 
+  Select,
+  MenuItem,
+  CustomSelect,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
+
 const CreateCompanyLayout = () => {
-
-
+  const {
+    data,
+    isLoading: packageLoading,
+    error: packageError,
+  } = useGetAllPackages();
   const token = getToken();
   const [formData, setFormData] = useState({
     name: "",
@@ -46,18 +54,14 @@ const CreateCompanyLayout = () => {
   const handleInputChange = (e, index = null, field = null) => {
     const { name, value } = e.target;
 
-   
-    
- 
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-      setFormErrors({
-        ...formErrors,
-        [name]: !value ? "This field is required" : "",
-      });
-    
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    setFormErrors({
+      ...formErrors,
+      [name]: !value ? "This field is required" : "",
+    });
   };
 
   const handleFileChange = (event) => {
@@ -238,37 +242,67 @@ const CreateCompanyLayout = () => {
               </Typography>
               <Grid container spacing={2} sx={{ mt: 3 }}>
                 <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="package_name" required>
+                  <CustomLabel htmlFor="name" required>
                     Package Name
                   </CustomLabel>
-                  <CustomTextField
-                    id="package_name"
-                    name="package_name"
-                    type="text"
+                  <Select
+                    id="name"
+                    name="name"
                     placeholder="e.g. Premium"
                     fullWidth
-                    value={formData.package_name}
+                    value={formData.name}
                     onChange={handleInputChange}
-                    error={!!formErrors.package_name}
-                    helperText={formErrors.package_name}
-                  />
+                    error={!!formErrors.name}
+                    sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                    displayEmpty
+                  >
+                    <MenuItem value="" disabled>
+                      Select Package
+                    </MenuItem>
+                    {packageLoading ? (
+                      <MenuItem disabled>Loading...</MenuItem>
+                    ) : packageError ? (
+                      <MenuItem disabled>Error fetching packages</MenuItem>
+                    ) : (
+                      data.results.map((packageItem) => (
+                        <MenuItem key={packageItem.id} value={packageItem.id}>
+                          {packageItem.name}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                  {formErrors.name && (
+                    <FormHelperText error>{formErrors.name}</FormHelperText>
+                  )}
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="payment_mode" required>
                     Payment Mode
                   </CustomLabel>
-                  <CustomTextField
+                  <Select
                     id="payment_mode"
                     name="payment_mode"
-                    type="text"
-                    placeholder="e.g. month/year"
-                    fullWidth
                     value={formData.payment_mode}
                     onChange={handleInputChange}
+                    fullWidth
                     error={!!formErrors.payment_mode}
-                    helperText={formErrors.payment_mode}
-                  />
+                    sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                    displayEmpty
+                  >
+                    <MenuItem value="" disabled>
+                      Select Payment Mode
+                    </MenuItem>
+                    <MenuItem value="month">Monthly</MenuItem>
+                    <MenuItem value="quarter">Quarterly</MenuItem>
+                    <MenuItem value="half">Anually</MenuItem>
+                  </Select>
+                  {formErrors.payment_mode && (
+                    <FormHelperText error>
+                      {formErrors.payment_mode}
+                    </FormHelperText>
+                  )}
                 </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="amount" required>
                     Amount
@@ -302,7 +336,7 @@ const CreateCompanyLayout = () => {
                     error={!!formErrors.paymentDate}
                     helperText={formErrors.paymentDate}
                     InputProps={{ readOnly: true }}
-                    inputProps={{ readOnly: true }} 
+                    inputProps={{ readOnly: true }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
