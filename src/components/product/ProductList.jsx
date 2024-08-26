@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Grid,
   Typography,
@@ -9,30 +10,52 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
   Box,
   TableFooter,
   TablePagination
 } from "@mui/material";
+import {
+  Visibility,
+  Edit,
+  Delete,
+  CheckCircle,
+  Cancel,
+} from "@mui/icons-material";
 import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
+import useGetAllProduct from "@/api-manage/react-query/useGetAllProduct";
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 
 const ProductList = () => {
   const router = useRouter();
+
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const { data, refetch } = useGetAllProduct();
+
   
   const createOrder = () => {
     router.push("/admin/product/createproduct");
   };
   
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
+  const handleEdit = (row) => {
+    router.push(`/admin/product/editproduct?id=${row.id}`);
+  };
+
   const rows = [
     {
-      id: 1,
-      product_id: "PRXTW987",
-      product_name: "Slim Fit Combo",
-      status: "Pending",
-      created_at: "2024-08-01",
-      action: "Edit"
+      
     },
+    
     // Add more rows as needed
   ];
 
@@ -96,14 +119,22 @@ const ProductList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                {data?.results?.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.id}.</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_id}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_name}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.status}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.created_at}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.action}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_status === 1 ? "Active" : "Inactive"}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDate(row.product_created)}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                      <IconButton
+                          onClick={() => handleEdit(row)}
+                          aria-label="edit"
+                          sx={{ color: "#001F3F" }}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
