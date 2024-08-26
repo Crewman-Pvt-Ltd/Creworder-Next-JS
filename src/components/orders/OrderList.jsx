@@ -289,7 +289,7 @@ const OrderList = () => {
                   Select Team Lead
                 </MenuItem>
                 <MenuItem value={2}>TL</MenuItem>
-                <MenuItem value={2}>Omni</MenuItem>
+                <MenuItem value={3}>Omni</MenuItem>
               </Select>
             </Grid>
 

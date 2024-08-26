@@ -4,6 +4,8 @@ import { Collapse, List, ListItem, ListItemText, Box, Typography, useMediaQuery,
 import { useRouter } from 'next/router';
 import DashboardIcon from '@mui/icons-material/home';
 import ReceiptIcon from '@mui/icons-material/ShoppingCart';
+import GroupIcon from '@mui/icons-material/Group';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PackageIcon from '@mui/icons-material/LocalOffer';
 import CompanyIcon from '@mui/icons-material/Business';
 import BusinessIcon from '@mui/icons-material/Store';
@@ -99,6 +101,17 @@ const Sidebar = ({ isOpen, type }) => {
   const handleNDRClick = () => {
     setIsNDROpen(!isNDROpen);
   };
+
+  const [isCallOpen, setIsCallOpen] = useState(false);
+  const handleCallClick = () => {
+    setIsCallOpen(!isCallOpen);
+  };
+
+  const [isLeadsOpen, setIsLeadsOpen] = useState(false);
+  const handleLeadsClick = () => {
+    setIsLeadsOpen(!isLeadsOpen);
+  };
+
   const currentPath = router.pathname;
 
   return (
@@ -306,35 +319,152 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick("/followup")}
         ></HoverableNavItem>
 
-        {/* {type == "admin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
-            name="Courier Service"
-            icon={<LocalShippingIcon />}
-            active={currentPath === "/admin/courier-service"}
-            onClick={() => handleItemClick("/admin/courier-service")}
-          ></HoverableNavItem>
-        )}
+       
+              {type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name="Invoice Management"
+          icon={<Receipt />}
+          active={currentPath === '/admin/invoce-management'}
+          onClick={() => handleItemClick('/admin/invoce-management')}
+        ></HoverableNavItem>)}
 
-        {type == "admin" && (
+
+       {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="Telephonic Channels"
+            name={
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+              >
+                <span>Call Details</span>
+                <IconButton
+                  size="small"
+                  onClick={handleCallClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "100px",
+                  }}
+                >
+                  {isCallOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
+            }
             icon={<PhoneIcon />}
-            active={currentPath === "/admin/telephonic-channels"}
-            onClick={() => handleItemClick("/admin/telephonic-channels")}
-          ></HoverableNavItem>
+            active={currentPath.startsWith("/order")}
+            onClick={handleCallClick}
+          >
+            <Collapse in={isCallOpen}>
+              <List component="div" disablePadding>
+                <ListItem   
+                 button
+                 onClick={() => handleItemClick('/admin/call-recording')}
+                 sx={{ pl: 4 }} 
+                >
+                  <ListItemText primary="Call Recording" />
+                </ListItem>
+               
+              </List>
+            </Collapse>
+          </HoverableNavItem>
         )}
 
-        {type == "admin" && (
+
+
+
+       {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="Shipment Channels"
-            icon={<ShippingIcon />}
-            active={currentPath === "/admin/shipment-channels"}
-            onClick={() => handleItemClick("/admin/shipment-channels")}
-          ></HoverableNavItem>
-        )} */}
+            name={
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+              >
+                <span>Leads</span>
+                <IconButton
+                  size="small"
+                  onClick={handleLeadsClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "115px",
+                  }}
+                >
+                  {isLeadsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
+            }
+            icon={<GroupIcon />}
+            active={currentPath.startsWith("/order")}
+            onClick={handleLeadsClick}
+          >
+            <Collapse in={isLeadsOpen}>
+              <List component="div" disablePadding>
+                <ListItem  
+                 button
+                 onClick={() => handleItemClick('/admin/leads/add-leads')}               
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Add Leads" />
+                </ListItem>
+                <ListItem 
+                  button
+                  onClick={() => handleItemClick('/admin/leads')}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="All Leads" />
+                </ListItem>
+              </List>
+            </Collapse>
+          </HoverableNavItem>
+        )}
+        {type === "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name={
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+              >
+                <span>NDR</span>
+                <IconButton
+                  size="small"
+                  onClick={handleNDRClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "115px",
+                  }}
+                >
+                  {isNDROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
+            }
+            icon={<LocationOnIcon />}
+            active={currentPath.startsWith("/order")}
+            onClick={handleNDRClick}
+          >
+            <Collapse in={isNDROpen}>
+              <List component="div" disablePadding>
+                <ListItem                 
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="EDD" />
+                </ListItem>
+                <ListItem                 
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="OFD" />
+                </ListItem>
+
+              </List>
+            </Collapse>
+          </HoverableNavItem>
+        )}
 
         {type == "admin" && (
           <Typography
@@ -378,7 +508,7 @@ const Sidebar = ({ isOpen, type }) => {
                 onClick={handleOrderClick}
                 sx={{
                   color: "white",
-                  marginLeft: "100px",
+                  marginLeft: "110px",
                 }}
               >
                 {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -439,62 +569,7 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick('/superadmin/form-enquiry')}
         ></HoverableNavItem>)}
 
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Invoice Management"
-          icon={<Receipt />}
-          active={currentPath === '/admin/invoce-management'}
-          onClick={() => handleItemClick('/admin/invoce-management')}
-        ></HoverableNavItem>)}
-
-        {type === "admin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
-            name={
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
-              >
-                <span>NDR</span>
-                <IconButton
-                  size="small"
-                  onClick={handleNDRClick}
-                  sx={{
-                    color: "white",
-                    marginLeft: "100px",
-                  }}
-                >
-                  {isNDROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                </IconButton>
-              </Box>
-            }
-            icon={<LocalMallIcon />}
-            active={currentPath.startsWith("/order")}
-            onClick={handleNDRClick}
-          >
-            <Collapse in={isNDROpen}>
-              <List component="div" disablePadding>
-                <ListItem
-                  button
-                  onClick={() => handleItemClick("/admin/orders")}
-                  sx={{ pl: 4 }}
-                >
-                  <ListItemText primary="EDD" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => handleItemClick("/admin/orders/repeatorder")}
-                  sx={{ pl: 4 }}
-                >
-                  <ListItemText primary="OFD" />
-                </ListItem>
-
-              </List>
-            </Collapse>
-          </HoverableNavItem>
-        )}
+  
       </Box>
     </Box>
   );
