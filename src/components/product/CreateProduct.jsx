@@ -289,6 +289,8 @@ const CreateProduct = () => {
                   value={description}
                   onChange={handleInputChange(setDescription)}
                   fullWidth
+                  multiline
+                  rows={4}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>

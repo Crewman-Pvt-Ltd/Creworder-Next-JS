@@ -11,3 +11,6 @@ body{
 .dropdown{
   padding: '8px 12px' !important;
 }
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0);
+}
