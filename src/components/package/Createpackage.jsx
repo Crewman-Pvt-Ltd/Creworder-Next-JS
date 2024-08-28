@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
-
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
+import { usePermissions } from "@/contexts/PermissionsContext";
 import {
   Typography,
   Button,
   Grid,
-  Card,
   CardContent,
   Divider,
   Box,
@@ -57,19 +58,19 @@ const modules = [
 ];
 
 const CreatePackage = () => {
+  const { permissionsData } = usePermissions();
   const router = useRouter();
-
-
+  const token = getToken();
   const [formState, setFormState] = useState({
     name: "",
     type: "",
     max_admin: "",
-    setupfee: "",
+    setup_fees: "",
     max_employees: "",
     monthly_price: "",
     annual_price: "",
     description: "",
-    created_by: "",
+    created_by: permissionsData.user.id,
     checkedModules: [],
   });
 
@@ -96,18 +97,27 @@ const CreatePackage = () => {
   };
 
   const handlePlanChange = (event) => {
-    setFormState(prevState => ({ ...prevState, type: event.target.value }));
+    setFormState((prevState) => ({ ...prevState, type: event.target.value }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      await createPackage({
-        ...formState,
-        modules: formState.checkedModules,
-      });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    Object.keys(formState).forEach((key) => {
+      form.append(key, formState[key]);
+    });
+
+    const response = await MainApi.post("/api/packages/", formState, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    if (response.status === 201) {
       router.push("/superadmin/package");
-    } catch (err) {
-      console.error("Failed to create package:", err);
+    } else {
+      throw new Error("Unexpected response from server");
     }
   };
 
@@ -145,8 +155,10 @@ const CreatePackage = () => {
                         display: "flex",
                         alignItems: "center",
                         marginRight: 2,
-                        bgcolor: formState.type === "free" ? "#e3f2fd" : "transparent",
-                        borderColor: formState.type === "free" ? "#2196f3" : "#ccc",
+                        bgcolor:
+                          formState.type === "free" ? "#e3f2fd" : "transparent",
+                        borderColor:
+                          formState.type === "free" ? "#2196f3" : "#ccc",
                       }}
                     >
                       <FormControlLabel
@@ -177,8 +189,10 @@ const CreatePackage = () => {
                         padding: "3px 5px",
                         display: "flex",
                         alignItems: "center",
-                        bgcolor: formState.type === "paid" ? "#e3f2fd" : "transparent",
-                        borderColor: formState.type === "paid" ? "#2196f3" : "#ccc",
+                        bgcolor:
+                          formState.type === "paid" ? "#e3f2fd" : "transparent",
+                        borderColor:
+                          formState.type === "paid" ? "#2196f3" : "#ccc",
                       }}
                     >
                       <FormControlLabel
@@ -242,12 +256,12 @@ const CreatePackage = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="maxAdmin" required>
+                    <CustomLabel htmlFor="max_admin" required>
                       Max Admin
                     </CustomLabel>
                     <CustomTextField
-                      id="maxAdmin"
-                      name="maxAdmin"
+                      id="max_admin"
+                      name="max_admin"
                       type="number"
                       placeholder="e.g. 100"
                       required
@@ -261,28 +275,26 @@ const CreatePackage = () => {
                       Max Employees
                     </CustomLabel>
                     <CustomTextField
-                      id="maxEmployees"
-                      name="maxEmployees"
+                      id="max_employees"
+                      name="max_employees"
                       type="number"
                       placeholder="e.g. 100"
-                      required
                       fullWidth
                       value={formState.max_employees}
                       onChange={handleInputChange}
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="setupFee" required>
-                      Setup Fee
+                    <CustomLabel htmlFor="setup_fees" required>
+                      Setup Fees
                     </CustomLabel>
                     <CustomTextField
-                      id="setupFee"
-                      name="setupFee"
+                      id="setup_fees"
+                      name="setup_fees"
                       type="number"
-                      placeholder="e.g. 100"
-                      required
+                      placeholder="e.g. 500"
                       fullWidth
-                      value={formState.setupfee}
+                      value={formState.setup_fees}
                       onChange={handleInputChange}
                     />
                   </Grid>
@@ -376,7 +388,11 @@ const CreatePackage = () => {
                 </FormGroup>
               </Grid>
 
-             <Grid container spacing={2} sx={{ width: '900px', margin:"20px" }}>
+              <Grid
+                container
+                spacing={2}
+                sx={{ width: "900px", margin: "20px" }}
+              >
                 {modules.map((module, index) => (
                   <Grid item xs={12} sm={6} md={2} key={index}>
                     <FormControlLabel
@@ -402,7 +418,8 @@ const CreatePackage = () => {
                 id="description"
                 name="description"
                 placeholder="e.g. description"
-                type="text"
+                multiline 
+                // rows={2} 
                 required
                 fullWidth
                 value={formState.description}
@@ -430,12 +447,10 @@ const CreatePackage = () => {
                   },
                 }}
                 onClick={handleSubmit}
-           
               >
-             Submit
+                Submit
               </Button>
             </Grid>
-           
           </CardContent>
         </CustomCard>
       </Grid>

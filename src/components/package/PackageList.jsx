@@ -16,32 +16,26 @@ import {
   IconButton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import {
-
-  Edit,
- 
-} from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
+import { Poppins } from "next/font/google";
 
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 
 const PackageList = () => {
-
-
   const { data } = useGetAllPackages();
-
-
-
   const router = useRouter();
 
-  const handleEdit = () => {
-    router.push("/superadmin/package/editpackage");
+  const handleEdit = (row) => {
+    router.push(`/superadmin/package/editpackage?id=${row.id}`);
   };
 
   const handleCreatePackage = () => {
     router.push("/superadmin/package/createpackage");
   };
-
- 
 
   const HeaderCell = (props) => (
     <TableCell
@@ -51,6 +45,7 @@ const PackageList = () => {
         fontWeight: "500",
         textTransform: "capitalize",
         color: "gray",
+        fontFamily: poppins.style.fontFamily, // Apply Poppins font
       }}
       {...props}
     />
@@ -64,6 +59,7 @@ const PackageList = () => {
         whiteSpace: "nowrap",
         fontWeight: "500",
         textTransform: "capitalize",
+        fontFamily: poppins.style.fontFamily, // Apply Poppins font
       }}
       {...props}
     />
@@ -71,8 +67,8 @@ const PackageList = () => {
 
   return (
     <Grid container sx={{ padding: 3 }}>
-    <Grid item xs={12}>
-    <Grid container sx={{ marginBottom: "10px" }}>
+      <Grid item xs={12}>
+        <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
             <CustomCard padding="13px">
               <Grid
@@ -89,6 +85,7 @@ const PackageList = () => {
                       textTransform: "capitalize",
                       color: "black",
                       marginLeft: "30px",
+                      fontFamily: poppins.style.fontFamily,
                     }}
                   >
                     Package List
@@ -109,6 +106,7 @@ const PackageList = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: 1,
+                      fontFamily: poppins.style.fontFamily,
                     }}
                   >
                     <AddIcon sx={{ fontSize: 15 }} />
@@ -119,66 +117,54 @@ const PackageList = () => {
             </CustomCard>
           </Grid>
         </Grid>
-  
-      <CustomCard sx={{ marginTop: 3 }}>
-        <CardContent>
-          <Typography
-            sx={{
-              fontWeight: "600",
-              fontSize: "1rem",
-              whiteSpace: "nowrap",
-              textTransform: "capitalize",
-              color: "black",
-            }}
-          >
-            Package List
-          </Typography>
-          <Divider sx={{ my: 2 }} />
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <HeaderCell>ID</HeaderCell>
-                  <HeaderCell>Name</HeaderCell>
-                  <HeaderCell>Monthly Price</HeaderCell>
-                  <HeaderCell>Annual Price</HeaderCell>
-                  <HeaderCell>Max Employees</HeaderCell>
-                  <HeaderCell>Module in Package</HeaderCell>
-                  <HeaderCell>Action</HeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data?.results.map((row, index) => (
-                  <TableRow key={row.id}>
-                    <DataCell>{index+1}</DataCell>
-                    <DataCell>{row.name}</DataCell>
-                    <DataCell>{row.monthly_price}</DataCell>
-                    <DataCell>{row.annual_price}</DataCell>
-                    <DataCell>{row.max_employees}</DataCell>
-                    <DataCell>
-                      {row?.modules?.map((module, index) => (
-                        <div key={index}>{module}</div>
-                      ))}
-                    </DataCell>
-                    <TableCell>
-                      <IconButton
-                        onClick={() => handleEdit(row)}
-                        aria-label="edit"
-                        sx={{ color: "green" }}
-                      >
-                        <Edit />
-                      </IconButton>
-                    </TableCell>
+
+        <CustomCard sx={{ marginTop: 3 }}>
+          <CardContent>
+           
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <HeaderCell>ID</HeaderCell>
+                    <HeaderCell>Name</HeaderCell>
+                    <HeaderCell>Monthly Price</HeaderCell>
+                    <HeaderCell>Annual Price</HeaderCell>
+                    <HeaderCell>Max Employees</HeaderCell>
+                    <HeaderCell>Module in Package</HeaderCell>
+                    <HeaderCell>Action</HeaderCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-      </CustomCard>
+                </TableHead>
+                <TableBody>
+                  {data?.results.map((row, index) => (
+                    <TableRow key={row.id}>
+                      <DataCell>{index + 1}</DataCell>
+                      <DataCell>{row.name}</DataCell>
+                      <DataCell>{row.monthly_price}</DataCell>
+                      <DataCell>{row.annual_price}</DataCell>
+                      <DataCell>{row.max_employees}</DataCell>
+                      <DataCell>
+                        {row?.modules?.map((module, idx) => (
+                          <div key={idx}>{module}</div>
+                        ))}
+                      </DataCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() => handleEdit(row)}
+                          aria-label="edit"
+                          sx={{ color: "green" }}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </CustomCard>
+      </Grid>
     </Grid>
-  </Grid>
-  
   );
 };
 
