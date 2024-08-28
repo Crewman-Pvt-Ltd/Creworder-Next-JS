@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
-import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
-
 import {
   Typography,
   Button,
@@ -12,18 +10,18 @@ import {
   Divider,
   Select,
   MenuItem,
-  CustomSelect,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
-
+import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
 const CreateCompanyLayout = () => {
   const {
     data,
     isLoading: packageLoading,
     error: packageError,
   } = useGetAllPackages();
+
   const token = getToken();
   const [formData, setFormData] = useState({
     name: "",
@@ -31,7 +29,7 @@ const CreateCompanyLayout = () => {
     company_phone: "",
     company_website: "",
     company_address: "",
-    package_name: "",
+    package: "",
     payment_mode: "",
     amount: "",
     paymentDate: "",
@@ -41,6 +39,8 @@ const CreateCompanyLayout = () => {
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [packages, setPackages] = useState({});
+  const [packageAmount, setAmount] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -51,18 +51,64 @@ const CreateCompanyLayout = () => {
     }));
   }, []);
 
-  const handleInputChange = (e, index = null, field = null) => {
-    const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    setFormErrors({
-      ...formErrors,
-      [name]: !value ? "This field is required" : "",
-    });
-  };
+    const handlePackageChange = (e) => {
+      const {value} = e.target;
+      data?.results.forEach(element => {
+        if(element.id == value){
+          setPackages(element);
+          setFormData({
+            ...formData,
+            package: element.id,
+          });
+        }
+      });
+    }
+
+    const handlePaymentMode = (e) => {
+      const {value} = e.target;
+      let frequency;
+      if (value == "month"){
+        frequency = "monthly_price"
+      }
+      else if (value == "quarter"){
+        frequency = "quarterly_price"
+      }
+      else if (value == "half"){
+        frequency = "annual_price"
+      }
+      const amt = packages[frequency];
+      setAmount(amt);
+      setFormData({
+        ...formData,
+        payment_mode: value,
+      });
+    }
+
+
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+  
+      // Check for payment mode selection to auto-fetch the corresponding amount
+      if (name === "payment_mode") {
+        const amount = packageAmount; 
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+          amount: amount
+        }));
+      } else {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+  
+      setFormErrors({
+        ...formErrors,
+        [name]: !value ? "This field is required" : "",
+      });
+    };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -78,7 +124,7 @@ const CreateCompanyLayout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const errors = Object.keys(formData).reduce((acc, key) => {
+    /* const errors = Object.keys(formData).reduce((acc, key) => {
       if (!formData[key]) acc[key] = "This field is required";
       return acc;
     }, {});
@@ -86,7 +132,7 @@ const CreateCompanyLayout = () => {
     if (Object.keys(errors).length) {
       setFormErrors(errors);
       return;
-    }
+    } */
 
     try {
       const response = await MainApi.post("/api/companies/", formData, {
@@ -242,19 +288,13 @@ const CreateCompanyLayout = () => {
               </Typography>
               <Grid container spacing={2} sx={{ mt: 3 }}>
                 <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="name" required>
+                  <CustomLabel htmlFor="package" required>
                     Package Name
                   </CustomLabel>
-                  <Select
-                    id="name"
-                    name="name"
-                    placeholder="e.g. Premium"
-                    fullWidth
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    error={!!formErrors.name}
-                    sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                    displayEmpty
+                  <Select fullWidth
+                  name="package"
+                   sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                   onChange={handlePackageChange}
                   >
                     <MenuItem value="" disabled>
                       Select Package
@@ -271,9 +311,6 @@ const CreateCompanyLayout = () => {
                       ))
                     )}
                   </Select>
-                  {formErrors.name && (
-                    <FormHelperText error>{formErrors.name}</FormHelperText>
-                  )}
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="payment_mode" required>
@@ -282,27 +319,19 @@ const CreateCompanyLayout = () => {
                   <Select
                     id="payment_mode"
                     name="payment_mode"
-                    value={formData.payment_mode}
-                    onChange={handleInputChange}
                     fullWidth
-                    error={!!formErrors.payment_mode}
                     sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                    displayEmpty
+                    value={formData.payment_mode}
+                    onChange={handlePaymentMode}
                   >
                     <MenuItem value="" disabled>
                       Select Payment Mode
                     </MenuItem>
                     <MenuItem value="month">Monthly</MenuItem>
                     <MenuItem value="quarter">Quarterly</MenuItem>
-                    <MenuItem value="half">Anually</MenuItem>
+                    <MenuItem value="half">Annually</MenuItem>
                   </Select>
-                  {formErrors.payment_mode && (
-                    <FormHelperText error>
-                      {formErrors.payment_mode}
-                    </FormHelperText>
-                  )}
                 </Grid>
-
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="amount" required>
                     Amount
@@ -313,10 +342,9 @@ const CreateCompanyLayout = () => {
                     type="number"
                     placeholder="e.g. 500"
                     fullWidth
-                    value={formData.amount}
-                    onChange={handleInputChange}
-                    error={!!formErrors.amount}
-                    helperText={formErrors.amount}
+                    readOnly
+                    value={packageAmount}
+                    onChange={handlePackageChange}
                   />
                 </Grid>
               </Grid>

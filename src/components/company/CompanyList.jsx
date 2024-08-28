@@ -109,6 +109,11 @@ const CompanyList = () => {
     />
   );
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
   const DataCell = (props) => (
     <TableCell
       sx={{
@@ -182,10 +187,9 @@ const CompanyList = () => {
                   <TableRow>
                     <HeaderCell>ID</HeaderCell>
                     <HeaderCell>Company Name</HeaderCell>
-                    <HeaderCell>Package</HeaderCell>
+                    <HeaderCell>Package Name</HeaderCell>
                     <HeaderCell>Details</HeaderCell>
-                    <HeaderCell>Last Activity</HeaderCell>
-                    <HeaderCell>Date</HeaderCell>
+                    <HeaderCell>Created Date</HeaderCell>
                     <HeaderCell>Action</HeaderCell>
                   </TableRow>
                 </TableHead>
@@ -211,8 +215,7 @@ const CompanyList = () => {
                           Total Users: {row.totalUsers}
                         </Typography>
                       </DataCell>
-                      <DataCell>{row.lastActivity}</DataCell>
-                      <DataCell>{row.date}</DataCell>
+                      <DataCell>{formatDate(row.created_at)}</DataCell>
                       <TableCell>
                         <IconButton
                           onClick={() => handleView(row)}

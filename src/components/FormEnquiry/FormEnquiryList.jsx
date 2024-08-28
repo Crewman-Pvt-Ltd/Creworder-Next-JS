@@ -17,22 +17,15 @@ import {
   TablePagination,
   FormControl,
 } from "@mui/material";
-import CustomLabel from "../CustomLabel";
-import CustomTextField from "../CustomTextField";
 import CustomCard from "../CustomCard";
-import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-import { DateRangePicker } from "@nextui-org/date-picker";
-
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
 const FormEnquiryList = () => {
   const router = useRouter();
-
-  
   const rows = [
     {
       id: 1,    
@@ -68,9 +61,7 @@ const FormEnquiryList = () => {
             </Grid>          
           </Grid>
         </CustomCard>
-      </Grid>
-
-      
+      </Grid>     
 
       <Grid item xs={12}>
         <CustomCard>

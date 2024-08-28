@@ -26,13 +26,8 @@ import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import CustomCard from "../CustomCard";
-import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-// import { DemoItem } from "@mui/x-date-pickers/internals/demo";
-/* import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateRangePicker } from "@mui/x-date-pickers/DateRangePicker"; */
 import { DateRangePicker } from "@nextui-org/date-picker";
 
 const poppins = Poppins({

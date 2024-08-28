@@ -93,12 +93,11 @@ const CallRecordingList = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
+            <Grid item xs={12} sm={5} style={{ backgroundColor: "#fff" }}>
               <CustomLabel htmlFor="dateRange">
                 Date Range
               </CustomLabel>
               <DateRangePicker 
-                label="Stay duration" 
                 visibleMonths={1} 
                 style={{
             
@@ -111,7 +110,7 @@ const CallRecordingList = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <Button
                 sx={{
                   marginTop: "24px",
