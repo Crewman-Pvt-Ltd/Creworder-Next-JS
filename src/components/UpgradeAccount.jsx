@@ -2,13 +2,21 @@ import React from "react";
 import CustomCard from "./CustomCard";
 import { Grid, Typography, Button } from "@mui/material";
 import { Poppins } from "next/font/google";
-
+import { useRouter } from "next/router";
 const poppins = Poppins({
   weight: "300",
   subsets: ["latin"],
 });
 
+
 const UpgradeAccount = () => {
+
+  const router = useRouter();
+  const plansandpricing = () => {
+    router.push("/admin/plansandpricing")
+  }
+
+
   return (
     <CustomCard>
       <Grid container>
@@ -66,6 +74,7 @@ const UpgradeAccount = () => {
             </Grid>
             <Grid item>
               <Button
+              onClick={plansandpricing}
                 sx={{
                   backgroundColor: "#0ab39c",
                   fontSize: "13px",

@@ -1,60 +1,97 @@
-// src/components/LoginPage.js
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import creworderLogo from "../images/crewordernewlogo.png";
+import bgimage from "../images/backgroundloginimage.png";
+import { Poppins } from "next/font/google"; // Importing the Poppins font
 
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const LoginPage = ({ children }) => {
   return (
     <Box
+    className={poppins.className}
       sx={{
         display: "flex",
-        flexDirection: "row",
-        minHeight: "100vh",
-        backgroundColor: "#f3f3f9",
-        overflow: "hidden", // Ensure no overflow issues
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        overflow: "hidden",
+        position: "relative",
       }}
     >
       <Box
+       className={poppins.className}
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "50vh",
+          backgroundImage: `url(${bgimage.src})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          zIndex: -1,
+        }}
+      />
+
+      <Box
+       className={poppins.className}
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "50vh",
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          zIndex: 0,
+        }}
+      />
+
+      <Box
+       className={poppins.className}
         sx={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          width: { xs: "100%", md: "30%" }, // Responsive width
+          alignItems: "center",
+          width: { xs: "100%", md: "30%" },
           backgroundColor: "#ffffff",
           padding: 3,
-          boxShadow: 3,
           borderRadius: 1,
+          // boxShadow: 3,
+          zIndex: 1,
         }}
       >
         <Image
           src={creworderLogo}
           alt="Creworder Logo"
-          width={370}
-          height={100} // Ensure the height is appropriate for your design
+          width={140}
+          height={100}
         />
-        <Typography mt={2} gutterBottom color="#a6a6a6">
-          Please Signin to continue.
+        <Typography mt={2} gutterBottom color="#a6a6a6" fontSize="14px" className={poppins.className}>
+          Please Sign in to continue.
         </Typography>
         {children}
       </Box>
-     
-      <Box
+
+      <Typography
         sx={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundImage: 'url("https://affiman.com/login/resources/assets/img/login.png")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          margin:8,
-        //   width: { xs: "100%", md: "70%" }, 
-        }}
+          marginTop: 2,
+          fontSize: "13px",
+          color:"#303030",
+        }} className={poppins.className}
       >
- 
-      </Box>
+        Don't have an account?
+        <span style={{ color: "#405189", cursor: "pointer" }} className={poppins.className}>
+       
+          <b>Signup</b>
+        </span>
+      </Typography>
     </Box>
   );
 };
