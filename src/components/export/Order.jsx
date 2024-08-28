@@ -17,12 +17,9 @@ import {
   TableFooter,
   TablePagination,
   FormControl,
+  FormLabel, RadioGroup, FormControlLabel, Radio, selectedType,
 } from "@mui/material";
-import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-} from "@mui/icons-material";
-import CallIcon from "@mui/icons-material/Call";
+
 import CustomLabel from "../CustomLabel";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
@@ -33,37 +30,40 @@ const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
-const ScheduleOrder = () => {
+const Order = () => {
   const router = useRouter();
-
-  const createOrder = () => {
-    router.push("/admin/orders/createorders");
+  const [status, setstatus] = useState("");
+  // Handle change for courseDuration
+  const handlestatus = (event) => {
+    setstatus(event.target.value);
   };
-  
+  const [selectedType, setSelectedType] = useState("createDate");
+  const handleTypeChange = (event) => {
+    setSelectedType(event.target.value);
+  };
+
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value);
+  };
   const rows = [
     {
       id: 1,
-      order_id: "PRXTW987",
-      name: "Shivam",
-      city: "Noida",
-      product: "Weight loss",
-      amount: "2024",
-      agent: "Vikash",
-      status: "Pending",
-      payment_mode: "COD",
-      order_date: "2024-08-01",
-      remark:
-        "You can override the style of the component.",
-      action: "Edit",
+      customer_name: "Rahul",
+      customer_phone: "9876543210",
+      remainder_date: "2024-12-01", 
+      description: "Lorem Ipsum has been the industry's standard",
+      agent: "testUser",
+      created_date: "2024-08-01",   
+      
     },
   ];
 
   return (
     <Grid container spacing={2} p={3}>
+      
       <Grid item xs={12}>
         <CustomCard padding="13px">
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
+        <Grid item>
               <Typography
                 sx={{
                   fontWeight: "600",
@@ -74,30 +74,33 @@ const ScheduleOrder = () => {
                   marginLeft: "30px",
                 }}
               >
-                Schedule Orders
+               Export Order
               </Typography>
-            </Grid>
-           
-          </Grid>
-        </CustomCard>
-      </Grid>
-
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
+            </Grid><br></br>
+            <Grid container spacing={1} justifyContent="space-between" alignItems="center">          
+        </Grid>
           <Grid
             container
             spacing={1}
             justifyContent="space-between"
             alignItems="center"
-            >           
-            <Grid item xs={12} sm={6} style={{ backgroundColor: "#fff" }}>
+          >                    
+          </Grid>
+          <Grid item xs={12}>
+        <CustomCard padding="13px">        
+          <Grid
+            container
+            spacing={1}
+            justifyContent="space-between"
+            alignItems="center"
+          >           
+            <Grid item xs={12} sm={5} style={{ backgroundColor: "#fff" }}>
               <CustomLabel htmlFor="dateRange" required>
                 Date Range
               </CustomLabel>
-              <DateRangePicker 
-                label="Stay duration" 
+              <DateRangePicker                 
                 visibleMonths={2} 
-                style={{            
+                style={{
                   backgroundColor: '#fff',
                 }}
                 popoverProps={{
@@ -107,7 +110,48 @@ const ScheduleOrder = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4 }>
+              <CustomLabel htmlFor="status" required>
+                Order Status
+              </CustomLabel>
+              <Select
+                labelId="status"
+                id="status"
+                name="status"
+                value={status}
+                onChange={handlestatus}
+                displayEmpty
+                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                fullWidth
+              >
+                <MenuItem value="" disabled>
+                  Select Status
+                </MenuItem>
+                <MenuItem value={1}>Pending</MenuItem>
+                <MenuItem value={2}>Accepted</MenuItem>
+                <MenuItem value={3}>Rejected</MenuItem>
+                <MenuItem value={4}>Delevered</MenuItem>
+                <MenuItem value={5}>RTO</MenuItem>
+              </Select>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+            <Grid component="fieldset">
+            <CustomLabel htmlFor="dateRange" required>
+                Select Type
+              </CustomLabel>
+              <RadioGroup              
+                aria-label="select-type"
+                name="selectType"
+                value={selectedType}
+                onChange={handleTypeChange}
+                row // Makes the radio buttons appear in a row
+              >
+                <FormControlLabel value="createDate" control={<Radio />} label="Via Create Date" />
+                <FormControlLabel value="updateDate" control={<Radio />} label="Via Update Date" />
+              </RadioGroup>
+            </Grid>
+          </Grid>
+            <Grid item xs={12} sm={3}>
               <Button
                 sx={{
                   marginTop: "24px",
@@ -122,10 +166,29 @@ const ScheduleOrder = () => {
                   fontFamily: poppins.style.fontFamily,
                 }}
               >
-                View Accepted Orders
+                View
               </Button>
-            </Grid>
+              <Button
+                sx={{
+                  marginLeft: "20px",
+                  marginTop: "24px",
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  backgroundColor: "#405189",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#334a6c",
+                  },
+                  fontFamily: poppins.style.fontFamily,
+                }}
+              >
+                Export
+              </Button>
+            </Grid>           
           </Grid>
+        </CustomCard>
+      </Grid>
         </CustomCard>
       </Grid>
 
@@ -147,29 +210,23 @@ const ScheduleOrder = () => {
                   <TableRow>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>Sr.</TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order ID
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Customer Name
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>City</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Product</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Agent</TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order Status
+                    Customer Phone
+                    </TableCell> 
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      Remainder Date
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Payment Mode
+                      Description
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order Date
+                      Agent
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Remark</TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      C.C Call
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Action</TableCell>
+                      Created
+                    </TableCell> 
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -179,51 +236,24 @@ const ScheduleOrder = () => {
                         {row.id}.
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_id}
+                        {row.customer_name}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.name}
+                        {row.customer_phone}
+                      </TableCell>  
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        {row.remainder_date}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.city}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.product}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.amount}
-                      </TableCell>
+                        {row.description}
+                      </TableCell> 
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.agent}
-                      </TableCell>
+                      </TableCell>                     
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.status}
+                        {row.created_date}
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.payment_mode}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_date}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.remark}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <IconButton aria-label="call" sx={{ color: "green" }}>
-                          <CallIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          sx={{ color: "#FF0000" }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
+                     
                     </TableRow>
                   ))}
                 </TableBody>
@@ -249,4 +279,4 @@ const ScheduleOrder = () => {
   );
 };
 
-export default ScheduleOrder;
+export default Order;

@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { Grid, Typography, IconButton } from "@mui/material";
 import { Download as DownloadIcon, Height, Margin } from "@mui/icons-material";
-import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
-import { useRouter } from "next/router";
-import { getToken } from "@/utils/getToken";
-import MainApi from "@/api-manage/MainApi";
 import {  
   Button, 
   Box,
@@ -36,10 +31,10 @@ const AddLeads = () => {
               <Typography
                 sx={{
                   fontWeight: "500",
-                  fontSize: "20px",
+                  fontSize: "18px",
                   whiteSpace: "nowrap",
                   textTransform: "capitalize",
-                  color: "black",
+                  color: "#818181",
                   marginLeft: "30px",
                   display: "flex",
                   alignItems: "center",
@@ -50,16 +45,19 @@ const AddLeads = () => {
               <Typography
                 sx={{
                   fontWeight: "600",
-                  fontSize: "20px",
+                  fontSize: "18px",
                   whiteSpace: "nowrap",
                   textTransform: "capitalize",
                   color: "blue",
                   marginLeft: "30px",
                 }}
+                component="a"
+                  href="https://www.cmu.edu/blackboard/files/evaluate/tests-example.xls"
+                  download
               >
                 <IconButton
                   component="a"
-                  href="/path/to/sample.xlsx" // Replace with the path to your file
+                  href="https://www.cmu.edu/blackboard/files/evaluate/tests-example.xls"
                   download
                   sx={{
                     marginLeft: "10px",
@@ -89,10 +87,10 @@ const AddLeads = () => {
                 <Typography
                   sx={{
                     fontWeight: "500",
-                    fontSize: "20px",
+                    fontSize: "16px",
                     whiteSpace: "nowrap",
                     textTransform: "capitalize",
-                    color: "black",
+                    color: "#818181",
                     marginLeft: "30px",
                   }}
                 >
@@ -119,10 +117,9 @@ const AddLeads = () => {
                       type="file"
                       hidden
                       accept=".csv"
-                      onChange={(e) => console.log(e.target.files[0])} // You can handle file upload here
+                      onChange={(e) => console.log(e.target.files[0])}
                     />
-                  </Button>
-                 
+                  </Button>                 
                 </Box>
               </CustomCard>
           </Grid>
@@ -131,5 +128,4 @@ const AddLeads = () => {
     </Grid>
   );
 };
-
 export default AddLeads;

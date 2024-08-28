@@ -3,6 +3,7 @@ import Navitem from './Navitem';
 import { Collapse, List, ListItem, ListItemText, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 import DashboardIcon from '@mui/icons-material/home';
+import { Download as DownloadIcon, Height, Margin } from "@mui/icons-material";
 import ReceiptIcon from '@mui/icons-material/ShoppingCart';
 import GroupIcon from '@mui/icons-material/Group';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -148,9 +149,12 @@ const Sidebar = ({ isOpen, type }) => {
       >
         <Image
           src={creworderLogo}
+          style={{ cursor: "pointer" }}
           alt="Creworder Logo"
           width={isOpen ? 150 : 40}
           height={isOpen ? 50 : 20}
+          active={currentPath === "/dashboard"}
+          onClick={() => handleItemClick("/dashboard")}
         />
         {!isOpen && !isMobile && (
           <Box
@@ -372,6 +376,57 @@ const Sidebar = ({ isOpen, type }) => {
         )}
 
 
+       {type === "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name={
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+              >
+                <span>Export</span>
+                <IconButton
+                  size="small"
+                  onClick={handleLeadsClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "105px",
+                  }}
+                >
+                  {isLeadsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </Box>
+            }
+            icon={<DownloadIcon />}
+            active={currentPath.startsWith("/order")}
+            onClick={handleLeadsClick}
+          >
+            <Collapse in={isLeadsOpen}>
+              <List component="div" disablePadding>
+                <ListItem  
+                 button
+                 onClick={() => handleItemClick('/admin/export/order')}               
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Export Order" />
+                </ListItem>
+                <ListItem 
+                  button
+                  onClick={() => handleItemClick('/admin/export/follow-up')}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Export Follow Up" />
+                </ListItem>
+              </List>
+            </Collapse>
+          </HoverableNavItem>
+        )} 
+
+
+
+
 
 
        {type === "admin" && (
@@ -390,7 +445,7 @@ const Sidebar = ({ isOpen, type }) => {
                   onClick={handleLeadsClick}
                   sx={{
                     color: "white",
-                    marginLeft: "115px",
+                    marginLeft: "105px",
                   }}
                 >
                   {isLeadsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -459,6 +514,11 @@ const Sidebar = ({ isOpen, type }) => {
                   sx={{ pl: 4 }}
                 >
                   <ListItemText primary="OFD" />
+                </ListItem>
+                <ListItem                 
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="RTO" />
                 </ListItem>
 
               </List>

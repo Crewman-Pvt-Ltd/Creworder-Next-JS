@@ -338,7 +338,7 @@ const OrderList = () => {
               <CustomLabel htmlFor="dateRange">Date Range</CustomLabel>
               <DateRangePicker
                 label="Stay duration"
-                visibleMonths={2}
+                visibleMonths={1}
                 style={{
                   backgroundColor: "#fff",
                 }}

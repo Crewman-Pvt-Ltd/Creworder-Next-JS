@@ -18,28 +18,31 @@ import {
   TablePagination,
   FormControl,
 } from "@mui/material";
-import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-} from "@mui/icons-material";
+import CustomLabel from "../CustomLabel";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
+import { DateRangePicker } from "@nextui-org/date-picker";
+
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
-const List = () => {
+const FollowUp = () => {
   const router = useRouter();
-
+  const [status, setstatus] = useState("");
+  // Handle change for courseDuration
+  const handlestatus = (event) => {
+    setstatus(event.target.value);
+  };
   const rows = [
     {
       id: 1,
       customer_name: "Rahul",
       customer_phone: "9876543210",
-      username: "testUser",
-      remark: "Lorem Ipsum has been the industry's standard dummy text ever since.",
-      status: "Pending",
+      remainder_date: "2024-12-01", 
+      description: "Lorem Ipsum has been the industry's standard",
+      agent: "testUser",
       created_date: "2024-08-01",   
       
     },
@@ -61,9 +64,9 @@ const List = () => {
                   marginLeft: "30px",
                 }}
               >
-               All Leads
+               Export FollowUp
               </Typography>
-            </Grid><br />
+            </Grid><br></br>
           <Grid
             container
             spacing={1}
@@ -71,6 +74,94 @@ const List = () => {
             alignItems="center"
           >                    
           </Grid>
+          <Grid item xs={12}>
+        <CustomCard padding="13px">
+        
+          <Grid
+            container
+            spacing={1}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+           
+            <Grid item xs={12} sm={5} style={{ backgroundColor: "#fff" }}>
+              <CustomLabel htmlFor="dateRange" required>
+                Date Range
+              </CustomLabel>
+              <DateRangePicker                 
+                visibleMonths={2} 
+                style={{
+                  backgroundColor: '#fff',
+                }}
+                popoverProps={{
+                  style: {
+                    backgroundColor: '#fff', 
+                  },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4 }>
+              <CustomLabel htmlFor="status" required>
+                Order Status
+              </CustomLabel>
+              <Select
+                labelId="status"
+                id="status"
+                name="status"
+                value={status}
+                onChange={handlestatus}
+                displayEmpty
+                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                fullWidth
+              >
+                <MenuItem value="" disabled>
+                  Select Status
+                </MenuItem>
+                <MenuItem value={1}>Pending</MenuItem>
+                <MenuItem value={2}>Accepted</MenuItem>
+                <MenuItem value={3}>Rejected</MenuItem>
+                <MenuItem value={4}>Delevered</MenuItem>
+                <MenuItem value={5}>RTO</MenuItem>
+              </Select>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Button
+                sx={{
+                  marginTop: "24px",
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  backgroundColor: "#405189",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#334a6c",
+                  },
+                  fontFamily: poppins.style.fontFamily,
+                }}
+              >
+                View
+              </Button>
+              <Button
+                sx={{
+                  marginLeft: "20px",
+                  marginTop: "24px",
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  backgroundColor: "#405189",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#334a6c",
+                  },
+                  fontFamily: poppins.style.fontFamily,
+                }}
+              >
+                Export
+              </Button>
+            </Grid>           
+          </Grid>
+        </CustomCard>
+      </Grid>
         </CustomCard>
       </Grid>
 
@@ -96,19 +187,19 @@ const List = () => {
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                     Customer Phone
-                    </TableCell>                   
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>User Name</TableCell>
-                   
+                    </TableCell> 
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Remark
+                      Remainder Date
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Status
+                      Description
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Date
-                    </TableCell>                   
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Action</TableCell>
+                      Agent
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      Created
+                    </TableCell> 
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -122,30 +213,20 @@ const List = () => {
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.customer_phone}
-                      </TableCell>                     
+                      </TableCell>  
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.username}
-                      </TableCell>   
+                        {row.remainder_date}
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.remark}
+                        {row.description}
                       </TableCell> 
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.status}
+                        {row.agent}
                       </TableCell>                     
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.created_date}
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          sx={{ color: "#FF0000" }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
+                     
                     </TableRow>
                   ))}
                 </TableBody>
@@ -171,4 +252,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default FollowUp;
