@@ -12,4 +12,5 @@ export const support_tickets = '/api/support-tickets/';
 export const form_enquiries = '/api/form-enquiries/';
 export const get_category = '/api/category/';
 export const get_product = '/api/products/';
+export const get_modules = '/api/modules/';
 export const baseApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL+"/api/";

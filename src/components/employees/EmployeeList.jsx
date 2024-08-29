@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
+import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 import {
   Grid,
   Typography,
@@ -21,29 +24,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const initialData = [
   {
-    id: 1,
-    name: "Rahul Sir",
-    email: "admin1@gmail.com",
-    profileimage:
-      "https://static.vecteezy.com/system/resources/thumbnails/021/353/308/small_2x/user-icon-for-website-and-mobile-apps-png.png",
-  },
-  {
-    id: 2,
-    name: "Admin 2",
-    email: "admin2@gmail.com",
-    profileimage:
-      "https://static.vecteezy.com/system/resources/thumbnails/021/353/308/small_2x/user-icon-for-website-and-mobile-apps-png.png",
-  },
+   },
 ];
 
 const EmployeeList = () => {
-  const [data, setData] = useState(initialData);
-const router = useRouter();
-
-  const handleEdit = () => {
-    router.push("/superadmin/employees/editemployee");
+  const router = useRouter();
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const { data, refetch } = useGetAllEmployees();
+  const handleEdit = (row) => {
+    router.push(`/superadmin/employees/editemployee?id=${row.id}`);
   };
-
   const handleCreatePackage = () => {
     router.push("/superadmin/employees/createemployee");
   };
@@ -143,17 +135,15 @@ const router = useRouter();
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {data.map((row, index) => (
+                      {data?.results?.map((row, index) => (
                         <TableRow key={row.id}>
                           <DataCell>{index + 1}</DataCell>
-                          <DataCell>{row.name}</DataCell>
+                          <DataCell>{row.first_name} {row.last_name}</DataCell>
                           <DataCell>{row.email}</DataCell>
                           <DataCell>
-                            <img
-                              src={row.profileimage}
-                              alt={row.name}
-                              style={{ width: 70, borderRadius:"10px" }}
-                            />
+                            <img src={row.profile_image}
+                              height={100}
+                              width={100}/>
                           </DataCell>
                           <TableCell>
                             <IconButton
