@@ -208,11 +208,11 @@ const CompanyList = () => {
                             fontWeight: "500",
                           }}
                         >
-                          Register Date: {row.registerDate}
+                          Register Date: {formatDate(row.created_at)}
+                          {/* <br />
+                          Employees: {row.employees} */}
                           <br />
-                          Employees: {row.employees}
-                          <br />
-                          Total Users: {row.totalUsers}
+                          Total Users: {row.total_user_count}
                         </Typography>
                       </DataCell>
                       <DataCell>{formatDate(row.created_at)}</DataCell>

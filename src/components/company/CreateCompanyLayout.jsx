@@ -34,7 +34,7 @@ const CreateCompanyLayout = () => {
     amount: "",
     paymentDate: "",
     nextPaymentDate: "",
-    first_name: "",
+    username: "",
     email: "",
   });
 
@@ -312,6 +312,8 @@ const CreateCompanyLayout = () => {
                     )}
                   </Select>
                 </Grid>
+
+                
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="payment_mode" required>
                     Payment Mode
@@ -332,6 +334,9 @@ const CreateCompanyLayout = () => {
                     <MenuItem value="half">Annually</MenuItem>
                   </Select>
                 </Grid>
+
+
+
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="amount" required>
                     Amount
@@ -345,6 +350,7 @@ const CreateCompanyLayout = () => {
                     readOnly
                     value={packageAmount}
                     onChange={handlePackageChange}
+                    inputProps={{ readOnly: true }}
                   />
                 </Grid>
               </Grid>
@@ -363,7 +369,6 @@ const CreateCompanyLayout = () => {
                     onChange={handleInputChange}
                     error={!!formErrors.paymentDate}
                     helperText={formErrors.paymentDate}
-                    InputProps={{ readOnly: true }}
                     inputProps={{ readOnly: true }}
                   />
                 </Grid>
@@ -392,23 +397,23 @@ const CreateCompanyLayout = () => {
                 Contact Person Details
               </Typography>
               <Grid container spacing={2} sx={{ mt: 3 }}>
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="first_name" required>
-                    First Name
+                <Grid item xs={12} sm={4}>
+                  <CustomLabel htmlFor="username" required>
+                    User Name
                   </CustomLabel>
                   <CustomTextField
-                    id="first_name"
-                    name="first_name"
+                    id="username"
+                    name="username"
                     type="text"
                     placeholder="e.g. John"
                     fullWidth
-                    value={formData.first_name}
+                    value={formData.username}
                     onChange={handleInputChange}
-                    error={!!formErrors.first_name}
-                    helperText={formErrors.first_name}
+                    error={!!formErrors.username}
+                    helperText={formErrors.username}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="email" required>
                     Email
                   </CustomLabel>
@@ -422,6 +427,22 @@ const CreateCompanyLayout = () => {
                     onChange={handleInputChange}
                     error={!!formErrors.email}
                     helperText={formErrors.email}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <CustomLabel htmlFor="contact" required>
+                    Contact No.
+                  </CustomLabel>
+                  <CustomTextField
+                    id="contact"
+                    name="contact"
+                    type="contact"
+                    placeholder="e.g. +91-9800 XXXXX2"
+                    fullWidth
+                    value={formData.contact}
+                    onChange={handleInputChange}
+                    error={!!formErrors.contact}
+                    helperText={formErrors.contact}
                   />
                 </Grid>
               </Grid>
