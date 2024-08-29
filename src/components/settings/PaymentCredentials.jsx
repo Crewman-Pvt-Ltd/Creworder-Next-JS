@@ -18,7 +18,11 @@ import {
   Box,
 } from "@mui/material";
 import CustomLabel from "../CustomLabel";
-
+import { Poppins } from "next/font/google";
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const commonFormControlStyles = {
   height: "40px",
 };
@@ -47,10 +51,10 @@ const PaymentCredentials = () => {
     <CustomCard>
       <CardContent>
         <Tabs value={activeTab} onChange={handleTabChange}>
-          <Tab label="PayPal" />
-          <Tab label="Strip" />
-          <Tab label="RazorPay" />
-          <Tab label="PhonePay" />
+          <Tab className={poppins.className} label="PayPal" />
+          <Tab className={poppins.className} label="Strip" />
+          <Tab className={poppins.className} label="RazorPay" />
+          <Tab className={poppins.className} label="PhonePay" />
         </Tabs>
         <Divider sx={{ my: 2 }} />
 
@@ -120,7 +124,9 @@ const PaymentCredentials = () => {
               <Grid item xs={12} sm={12} md={12}>
                 <Grid conatiner>
                   <Grid item xs={12} sm={12} md={12}>
-                    <Typography>Webhook URL</Typography>
+                    <Typography sx={{
+                      fontSize:"14px",
+                    }} className={poppins.className} >Webhook URL</Typography>
                   </Grid>
                   <Grid
                     item
@@ -132,9 +138,9 @@ const PaymentCredentials = () => {
                     <Typography
                       sx={{
                         color: "gray",
-                        fontSize: "15px",
+                        fontSize: "13px",
                         mt: 2,
-                      }}
+                      }}  className={poppins.className} 
                     >
                       https://creworder/save-paypal-webhook/e5c824d3541859914fb2cf18c6db4c92
                     </Typography>
@@ -147,7 +153,7 @@ const PaymentCredentials = () => {
                         "&:hover": {
                           bgcolor: "lightblue",
                         },
-                      }}
+                      }}  className={poppins.className} 
                     >
                       Copy
                     </Button>
@@ -157,8 +163,8 @@ const PaymentCredentials = () => {
                       sx={{
                         color: "#405189",
                         mt: 2,
-                        fontSize: "15px",
-                      }}
+                        fontSize: "13px",
+                      }}  className={poppins.className} 
                     >
                       (Add this webhook url on your paypal app settings.)
                     </Typography>
@@ -179,7 +185,7 @@ const PaymentCredentials = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }}  className={poppins.className} 
                 >
                   Save
                 </Button>
@@ -191,7 +197,7 @@ const PaymentCredentials = () => {
                       backgroundColor: "#405189",
                     },
                     marginLeft: "5px",
-                  }}
+                  }}  className={poppins.className} 
                 >
                   Send Test Mail
                 </Button>
@@ -210,6 +216,7 @@ const PaymentCredentials = () => {
                       checked={isChecked}
                       onChange={handleChange}
                       color="primary"
+                      
                     />
                   }
                 />
@@ -273,7 +280,9 @@ const PaymentCredentials = () => {
               <Grid item xs={12} sm={12} md={12}>
                 <Grid conatiner>
                   <Grid item xs={12} sm={12} md={12}>
-                    <Typography>Webhook URL</Typography>
+                    <Typography sx={{
+                      fontSize:"14px",
+                    }} className={poppins.className} >Webhook URL</Typography>
                   </Grid>
                   <Grid
                     item
@@ -285,9 +294,10 @@ const PaymentCredentials = () => {
                     <Typography
                       sx={{
                         color: "gray",
-                        fontSize: "15px",
+                        fontSize: "13px",
                         mt: 2,
-                      }}
+                        
+                      }}  className={poppins.className} 
                     >
                       https://creworder/save-paypal-webhook/e5c824d3541859914fb2cf18c6db4c92
                     </Typography>
@@ -300,7 +310,7 @@ const PaymentCredentials = () => {
                         "&:hover": {
                           bgcolor: "lightblue",
                         },
-                      }}
+                      }}  className={poppins.className} 
                     >
                       Copy
                     </Button>
@@ -311,7 +321,7 @@ const PaymentCredentials = () => {
                         color: "gray",
                         mt: 2,
                         fontSize: "11px",
-                      }}
+                      }}  className={poppins.className} 
                     >
                       Visit Generate Add endpoint as above url and enter the webhook key generated
                       Select event invoice.payment_failed, invoice.payment_succeeded , payment_intent.succeeded and payment_intent.payment_failed while creating webhook.
@@ -333,7 +343,7 @@ const PaymentCredentials = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }}  className={poppins.className} 
                 >
                   Save
                 </Button>
@@ -345,7 +355,7 @@ const PaymentCredentials = () => {
                       backgroundColor: "#405189",
                     },
                     marginLeft: "5px",
-                  }}
+                  }}  className={poppins.className} 
                 >
                   Send Test Mail
                 </Button>
@@ -364,6 +374,7 @@ const PaymentCredentials = () => {
                       checked={isChecked}
                       onChange={handleChange}
                       color="primary"
+                      
                     />
                   }
                 />
@@ -428,7 +439,7 @@ const PaymentCredentials = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }}  className={poppins.className} 
                 >
                   Save
                 </Button>
@@ -440,7 +451,7 @@ const PaymentCredentials = () => {
                       backgroundColor: "#405189",
                     },
                     marginLeft: "5px",
-                  }}
+                  }}  className={poppins.className} 
                 >
                   Send Test Mail
                 </Button>

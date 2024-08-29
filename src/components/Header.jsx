@@ -9,16 +9,17 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Image from "next/image";
-import creworderIcon from "../images/crewordericon.png"; 
+import creworderIcon from "../images/crewordericon.png";
 import ProfileHeader from "./ProfileHeader";
 import SearchBar from "./SearchBar";
 import { logout } from "@/utils/auth";
 import { useRouter } from "next/router";
+import RechargeWallet from "./recharge-wallet/RechargeWallet";
 
 const Header = ({ onMenuClick }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
-  const isMobile = useMediaQuery("(max-width:600px)"); 
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -68,24 +69,45 @@ const Header = ({ onMenuClick }) => {
               sx={{ marginRight: 2 }}
             />
           )}
-          <IconButton color="black" onClick={onMenuClick} sx={{ marginRight: 2 }}>
+          <IconButton
+            color="black"
+            onClick={onMenuClick}
+            sx={{ marginRight: 2 }}
+          >
             <MenuIcon />
           </IconButton>
           <SearchBar />
         </Grid>
-        <Grid item xs={6} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              color: "black",
-              cursor: "pointer",
-              marginRight: '30px',
-            }}
-            onClick={handleMenuOpen}
-          >
-            <ProfileHeader />
-          </Box>
+        <Grid
+          item
+          xs={6}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Grid container spacing={2} sx={{ alignItems: "center" }}>
+            <Grid item xs={4} sm={4} md={4}>
+              <RechargeWallet />
+            </Grid>
+            <Grid item xs={4} sm={4} md={4}>Branch Switcher</Grid>
+            <Grid item xs={4} sm={4} md={4}>
+              <Grid
+                container
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "black",
+                  cursor: "pointer",
+                  marginRight: "30px",
+                }}
+                onClick={handleMenuOpen}
+              >
+                <ProfileHeader />
+              </Grid>
+            </Grid>
+          </Grid>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}

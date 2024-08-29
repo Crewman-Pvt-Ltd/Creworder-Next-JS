@@ -19,7 +19,11 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import UploadFileIcon from "@mui/icons-material/CloudUpload";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
-
+import { Poppins } from "next/font/google";
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const sampleImages = [
   "https://demo-saas.worksuite.biz/img/invoice-template/1.png",
   "https://demo-saas.worksuite.biz/img/invoice-template/2.png",
@@ -40,7 +44,7 @@ const FinanceSettings = () => {
   return (
     <CustomCard>
       <CardContent>
-        <Typography variant="h5">Finance Settings</Typography>
+        <Typography variant="h6"  className={poppins.className}>Finance Settings</Typography>
         <Divider sx={{ my: 2 }} />
 
         <Grid container spacing={2}>
@@ -51,8 +55,9 @@ const FinanceSettings = () => {
               borderRadius="4px"
               p={2}
               textAlign="center"
+              
             >
-              <Typography variant="body1">
+              <Typography  className={poppins.className}variant="body1">
                 Invoice Logo
                 <Tooltip title="Upload your invoice logo here">
                   <IconButton>
@@ -71,7 +76,7 @@ const FinanceSettings = () => {
                 sx={{ cursor: 'pointer' }}
               >
                 <UploadFileIcon fontSize="large" />
-                <Typography variant="body2">Choose a file</Typography>
+                <Typography className={poppins.className} variant="body2">Choose a file</Typography>
               </Box>
             </Box>
           </Grid>
@@ -83,7 +88,7 @@ const FinanceSettings = () => {
               p={2}
               textAlign="center"
             >
-              <Typography variant="body1">
+              <Typography  className={poppins.className}variant="body1">
                 Authorised Signatory Signature
                 <Tooltip title="Upload the authorised signatory's signature here">
                   <IconButton>
@@ -102,13 +107,13 @@ const FinanceSettings = () => {
                 sx={{ cursor: 'pointer' }}
               >
                 <UploadFileIcon fontSize="large" />
-                <Typography variant="body2">Choose a file</Typography>
+                <Typography  className={poppins.className} variant="body2">Choose a file</Typography>
               </Box>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
-              <Typography variant="body1" gutterBottom>
+              <Typography className={poppins.className} variant="body1" gutterBottom>
                 Language
               </Typography>
               <Select
@@ -118,9 +123,9 @@ const FinanceSettings = () => {
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
-                <MenuItem value="English">English</MenuItem>
-                <MenuItem value="Spanish">Spanish</MenuItem>
-                <MenuItem value="French">French</MenuItem>
+                <MenuItem className={poppins.className} value="English">English</MenuItem>
+                <MenuItem className={poppins.className} value="Spanish">Spanish</MenuItem>
+                <MenuItem className={poppins.className} value="French">French</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -131,11 +136,12 @@ const FinanceSettings = () => {
                   checked={showSignature}
                   onChange={(e) => setShowSignature(e.target.checked)}
                   name="showSignature"
+                  
                 />
               }
               label={
                 <Box display="flex" alignItems="center">
-                  <Typography>Show Authorised Signatory</Typography>
+                  <Typography  className={poppins.className}>Show Authorised Signatory</Typography>
                   <Tooltip title="Toggle to display the authorised signatory's signature">
                     <IconButton>
                       <HelpOutlineIcon fontSize="small" />
@@ -148,7 +154,9 @@ const FinanceSettings = () => {
         </Grid>
 
         <Grid item xs={12} mt={4}>
-          <Typography variant="h6" gutterBottom>
+          <Typography className={poppins.className} sx={{
+            fontSize:"18px",
+          }}>
             Template
           </Typography>
           <Grid container spacing={1}>
@@ -181,7 +189,7 @@ const FinanceSettings = () => {
 
         <Grid container spacing={2} mt={4}>
           <Grid item xs={12} sm={4}>
-            <CustomLabel htmlFor="billingname" required>
+            <CustomLabel className={poppins.className} htmlFor="billingname" required>
               Billing Name
             </CustomLabel>
             <CustomTextField
@@ -193,7 +201,7 @@ const FinanceSettings = () => {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <CustomLabel htmlFor="taxname" required>
+            <CustomLabel className={poppins.className} htmlFor="taxname" required>
              Tax Name
             </CustomLabel>
             <CustomTextField
@@ -205,7 +213,7 @@ const FinanceSettings = () => {
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <CustomLabel htmlFor="taxid" required>
+            <CustomLabel className={poppins.className} htmlFor="taxid" required>
             Tax ID
             </CustomLabel>
             <CustomTextField
@@ -217,7 +225,7 @@ const FinanceSettings = () => {
             />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <CustomLabel htmlFor="billingaddress" required>
+            <CustomLabel className={poppins.className}htmlFor="billingaddress" required>
          Billing Address
             </CustomLabel>
             <CustomTextField
@@ -229,7 +237,7 @@ const FinanceSettings = () => {
             />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <CustomLabel htmlFor="tandc" required>
+            <CustomLabel className={poppins.className} htmlFor="tandc" required>
        Terms and Conditions
             </CustomLabel>
             <CustomTextField
@@ -250,7 +258,7 @@ const FinanceSettings = () => {
               "&:hover": {
                 backgroundColor: "#405189",
               },
-            }}
+            }} className={poppins.className}
           >
             Save
           </Button>

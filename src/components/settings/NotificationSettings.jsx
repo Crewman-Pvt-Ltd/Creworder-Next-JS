@@ -17,7 +17,11 @@ import {
   Box,
 } from "@mui/material";
 import CustomLabel from "../CustomLabel";
-
+import { Poppins } from "next/font/google";
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const commonFormControlStyles = {
   height: "40px",
 };
@@ -41,9 +45,9 @@ const NotificationSettings = () => {
     <CustomCard>
       <CardContent>
         <Tabs value={activeTab} onChange={handleTabChange}>
-          <Tab label="Email" />
-          <Tab label="Push Notification" />
-          <Tab label="Pusher" />
+          <Tab className={poppins.className} label="Email" />
+          <Tab className={poppins.className} label="Push Notification" />
+          <Tab className={poppins.className} label="Pusher" />
         </Tabs>
         <Divider sx={{ my: 2 }} />
 
@@ -184,7 +188,7 @@ const NotificationSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }} className={poppins.className} 
                 >
                   Save
                 </Button>
@@ -196,7 +200,7 @@ const NotificationSettings = () => {
                       backgroundColor: "#405189",
                     },
                     marginLeft: "5px",
-                  }}
+                  }} className={poppins.className} 
                 >
                   Send Test Mail
                 </Button>
@@ -248,7 +252,7 @@ const NotificationSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }} className={poppins.className} 
                 >
                   Save
                 </Button>
@@ -362,7 +366,7 @@ const NotificationSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }} className={poppins.className} 
                 >
                   Save
                 </Button>

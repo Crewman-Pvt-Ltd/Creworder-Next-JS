@@ -414,9 +414,9 @@ const EditCompany = () => {
             </Typography>
 
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4} md={4}>
                 <CustomLabel htmlFor="username" required>
-                  First Name
+                 Username
                 </CustomLabel>
                 <CustomTextField
                   id="username"
@@ -430,7 +430,7 @@ const EditCompany = () => {
                   helperText={formErrors.username}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4} md={4}>
                 <CustomLabel htmlFor="email" required>
                   Email
                 </CustomLabel>
@@ -444,6 +444,22 @@ const EditCompany = () => {
                   onChange={handleInputChange}
                   error={!!formErrors.email}
                   helperText={formErrors.email}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4} md={4}>
+                <CustomLabel htmlFor="contact" required>
+                Contact No.
+                </CustomLabel>
+                <CustomTextField
+                  id="contact"
+                  name="contact"
+                  type="contact"
+                  placeholder=""
+                  fullWidth
+                  value={formData.contact}
+                  onChange={handleInputChange}
+                  error={!!formErrors.contact}
+                  helperText={formErrors.contact}
                 />
               </Grid>
             </Grid>

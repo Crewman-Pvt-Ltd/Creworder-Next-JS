@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CustomCard from "../CustomCard";
 import CustomTextField from "../CustomTextField";
+import { Poppins } from "next/font/google";
 import {
   Typography,
   Divider,
@@ -18,7 +19,10 @@ import {
   Box,
 } from "@mui/material";
 import CustomLabel from "../CustomLabel";
-
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const commonFormControlStyles = {
   height: "40px",
 };
@@ -53,9 +57,9 @@ const AppSettings = () => {
     <CustomCard>
       <CardContent>
         <Tabs value={activeTab} onChange={handleTabChange}>
-          <Tab label="App Settings" />
-          <Tab label="File Settings" />
-          <Tab label="Google Map Settings" />
+          <Tab className={poppins.className} label="App Settings" />
+          <Tab className={poppins.className} label="File Settings" />
+          <Tab className={poppins.className} label="Google Map Settings" />
         </Tabs>
         <Divider sx={{ my: 2 }} />
 
@@ -194,7 +198,7 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography sx={smallLabelStyles}>App Debug</Typography>
+                        <Typography className={poppins.className} sx={smallLabelStyles}>App Debug</Typography>
                       }
                       sx={checkboxStyles}
                     />
@@ -203,7 +207,7 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography sx={smallLabelStyles}>
+                        <Typography  className={poppins.className} sx={smallLabelStyles}>
                           App Update
                         </Typography>
                       }
@@ -214,7 +218,7 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography sx={smallLabelStyles}>
+                        <Typography  className={poppins.className} sx={smallLabelStyles}>
                           Enable Cache
                         </Typography>
                       }
@@ -225,7 +229,7 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography sx={smallLabelStyles}>
+                        <Typography className={poppins.className} sx={smallLabelStyles}>
                           Company Need Approval
                         </Typography>
                       }
@@ -236,7 +240,7 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography sx={smallLabelStyles}>
+                        <Typography className={poppins.className} sx={smallLabelStyles}>
                           On Email Verification
                         </Typography>
                       }
@@ -248,8 +252,8 @@ const AppSettings = () => {
                   <Grid
                     item
                     xs={12}
-                    sm={3}
-                    md={3}
+                    sm={12}
+                    md={12}
                     container
                     alignItems="center"
                   >
@@ -263,7 +267,7 @@ const AppSettings = () => {
                       }
                     />
 
-                    <Typography>Maintainance Mode</Typography>
+                    <Typography  className={poppins.className} >Maintainance Mode</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -282,7 +286,7 @@ const AppSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }} className={poppins.className}
                 >
                   Save
                 </Button>
@@ -295,7 +299,7 @@ const AppSettings = () => {
           <Box>
             <Grid container spacing={6}>
               <Grid item xs={12} sm={4} md={6}>
-                <CustomLabel htmlFor="maxfiesize" required>
+                <CustomLabel className={poppins.className} htmlFor="maxfiesize" required>
                   Max File Size Upload
                 </CustomLabel>
                 <CustomTextField
@@ -308,7 +312,7 @@ const AppSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="maxnumfileupload" required>
+                <CustomLabel className={poppins.className} htmlFor="maxnumfileupload" required>
                   Max Number of File For Upload
                 </CustomLabel>
                 <CustomTextField
@@ -321,7 +325,7 @@ const AppSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="maxnumfileupload" required>
+                <CustomLabel className={poppins.className} htmlFor="maxnumfileupload" required>
                   Max Number of File For Upload
                 </CustomLabel>
                 <CustomTextField
@@ -347,7 +351,7 @@ const AppSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }} className={poppins.className}
                 >
                   Save
                 </Button>
@@ -388,7 +392,7 @@ const AppSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }}
+                  }} className={poppins.className}
                 >
                   Save
                 </Button>
