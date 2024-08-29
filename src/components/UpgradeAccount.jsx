@@ -13,7 +13,7 @@ const UpgradeAccount = () => {
 
   const router = useRouter();
   const plansandpricing = () => {
-    router.push("/admin/plansandpricing")
+    router.push("/admin/plans-pricing")
   }
 
 

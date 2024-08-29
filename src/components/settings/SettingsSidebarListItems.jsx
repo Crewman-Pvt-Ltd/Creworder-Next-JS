@@ -32,6 +32,7 @@ import RolesAndPermissions from "./RolesAndPermissions";
 import CourierServiceList from "../courierservice/CourierServiceList";
 import TelephonicChannelsList from "../telephonicchannels/TelephonicChannelsList";
 import ShipmentChannelsList from "../shipmentchannels/ShipmentChannelsList";
+import AdminSettings from "./AdminSettings";
 
 const poppins = Poppins({
   weight: "300",
@@ -263,7 +264,7 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "superadmin" && (selectedItem === "Social Login Settings" && <SocialLoginSettings />)}
           {type == "superadmin" && (selectedItem === "Theme Settings" && <ThemeSettings />)}
           {type == "superadmin" && (selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />)}
-          {type == "admin" && (selectedItem === "Admin Settings" && <h1>Admin Settings</h1>)}
+          {type == "admin" && (selectedItem === "Admin Settings" && <AdminSettings /> )}
           {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
           {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
           {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}

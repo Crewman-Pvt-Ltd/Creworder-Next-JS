@@ -8,7 +8,7 @@ import ReferalInvite from "../ReferalInvite";
 import ChartThree from "../ChartThree";
 import UpgradeAccount from "../UpgradeAccount";
 import ScheduleOrderChart from "../ScheduleOrderChart";
-
+import Checklist from "../Checklist";
 import { DateRangePicker } from "@nextui-org/date-picker";
 
 const AdminDashboard = () => {
@@ -42,7 +42,10 @@ const AdminDashboard = () => {
         padding: 2,
       }}
     >
-      <Grid item>
+      <Grid item xs={12} sm={12} md={12}>
+<Checklist />
+      </Grid>
+      <Grid item xs={12} sm={12} md={12}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12}>
             <Grid container spacing={2}>
