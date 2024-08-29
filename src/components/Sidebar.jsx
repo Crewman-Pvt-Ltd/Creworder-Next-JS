@@ -216,6 +216,16 @@ const Sidebar = ({ isOpen, type }) => {
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
+            name="Module"
+            icon={<PackageIcon />}
+            active={currentPath === "/superadmin/module"}
+            onClick={() => handleItemClick("/superadmin/module")}
+          />
+        )}
+
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
             name="Package"
             icon={<PackageIcon />}
             active={currentPath === "/superadmin/package"}
@@ -343,7 +353,7 @@ const Sidebar = ({ isOpen, type }) => {
                 alignItems="center"
                 width="100%"
               >
-                <span>Call Details</span>
+                <span>Call Analysis</span>
                 <IconButton
                   size="small"
                   onClick={handleCallClick}
@@ -368,6 +378,16 @@ const Sidebar = ({ isOpen, type }) => {
                  sx={{ pl: 4 }} 
                 >
                   <ListItemText primary="Call Recording" />
+                </ListItem>
+               
+              </List>
+              <List component="div" disablePadding>
+                <ListItem   
+                 button
+                // onClick={() => handleItemClick('/admin/call-recording')}
+                 sx={{ pl: 4 }} 
+                >
+                  <ListItemText primary="QC Recording" />
                 </ListItem>
                
               </List>
