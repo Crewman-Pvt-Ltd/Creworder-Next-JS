@@ -237,12 +237,7 @@ const EditEmployee = () => {
                   />
                 </Grid>              
               </Grid>
-
-
-
-
-             
-              <Grid container>
+        <Grid container>
       {/* Other components/content above */}
       <Grid item xs={12}>
         <Divider sx={{ marginBottom: 2 }} />

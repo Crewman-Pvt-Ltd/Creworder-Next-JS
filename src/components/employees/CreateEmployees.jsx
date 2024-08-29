@@ -86,7 +86,7 @@ const CreateEmployees = ({role}) => {
         });
 
         if (response.status === 201) {
-          router.push("/superadmin/company");
+          router.push("/superadmin/employees");
         } else {
           throw new Error("Unexpected response from server");
         }
