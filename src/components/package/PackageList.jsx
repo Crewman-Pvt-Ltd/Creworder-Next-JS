@@ -44,8 +44,8 @@ const PackageList = () => {
         whiteSpace: "nowrap",
         fontWeight: "500",
         textTransform: "capitalize",
-        color: "gray",
-        fontFamily: poppins.style.fontFamily, // Apply Poppins font
+        color: "black",
+        fontFamily: poppins.style.fontFamily, 
       }}
       {...props}
     />
@@ -59,7 +59,7 @@ const PackageList = () => {
         whiteSpace: "nowrap",
         fontWeight: "500",
         textTransform: "capitalize",
-        fontFamily: poppins.style.fontFamily, // Apply Poppins font
+        fontFamily: poppins.style.fontFamily, 
       }}
       {...props}
     />
@@ -130,7 +130,7 @@ const PackageList = () => {
                     <HeaderCell>Monthly Price</HeaderCell>
                     <HeaderCell>Annual Price</HeaderCell>
                     <HeaderCell>Max Employees</HeaderCell>
-                    <HeaderCell>Module in Package</HeaderCell>
+                    {/* <HeaderCell>Module in Package</HeaderCell> */}
                     <HeaderCell>Action</HeaderCell>
                   </TableRow>
                 </TableHead>
@@ -142,11 +142,11 @@ const PackageList = () => {
                       <DataCell>{row.monthly_price}</DataCell>
                       <DataCell>{row.annual_price}</DataCell>
                       <DataCell>{row.max_employees}</DataCell>
-                      <DataCell>
+                      {/* <DataCell>
                         {row?.modules?.map((module, idx) => (
                           <div key={idx}>{module}</div>
                         ))}
-                      </DataCell>
+                      </DataCell> */}
                       <TableCell>
                         <IconButton
                           onClick={() => handleEdit(row)}

@@ -47,7 +47,7 @@ const LoginPage = ({ children }) => {
           left: 0,
           width: "100%",
           height: "50vh",
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backgroundColor: "rgba(64, 81, 137, 0.7)", 
           zIndex: 0,
         }}
       />
