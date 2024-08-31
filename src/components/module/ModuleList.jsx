@@ -37,14 +37,6 @@ const ModuleList = () => {
     router.push("/superadmin/module/createmodule");
   };
 
-  const handleView = (notice) => {
-    setViewModule(notice);
-  };
-
-  const handleEdit = (id) => {
-    router.push(`/module/editmodule?id=${id}`);
-  };
-
   const handleDeleteClick = (id) => {
     setModuleToDelete(id);
     setOpen(true);
@@ -79,10 +71,6 @@ const ModuleList = () => {
   const handleDeleteCancel = () => {
     setOpen(false);
     setModuleToDelete(null);
-  };
-
-  const handleViewClose = () => {
-    setViewModule(null);
   };
 
   const HeaderCell = (props) => (

@@ -15,6 +15,7 @@ import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ChatIcon from '@mui/icons-material/Chat';
 import Image from 'next/image';
+import AppsIcon from '@mui/icons-material/Apps';
 import creworderLogo from '../images/creworderlogo.png';
 import creworderIcon from '../images/crewordericon.png';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -217,7 +218,7 @@ const Sidebar = ({ isOpen, type }) => {
           <HoverableNavItem
             isOpen={isOpen}
             name="Module"
-            icon={<PackageIcon />}
+            icon={<AppsIcon />}
             active={currentPath === "/superadmin/module"}
             onClick={() => handleItemClick("/superadmin/module")}
           />
