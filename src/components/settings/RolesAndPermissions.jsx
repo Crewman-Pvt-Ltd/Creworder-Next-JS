@@ -53,6 +53,8 @@ const RolesAndPermissions = () => {
         { label: "Dashboard", index: 1 },
         { label: "Settings", index: 2 },
         { label: "Product", index: 3 },
+        { label: "Order Status", index: 4 },
+      
       ]
     : []; // Handle other roles or cases if needed
 
