@@ -5,466 +5,397 @@ import {
   Button,
   Table,
   TableBody,
-  MenuItem,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
   Paper,
-  Select,
   Box,
+  Card,
+  CardContent,
+  CardActions,
+  CardMedia,
   IconButton,
-  TableFooter,
-  TablePagination,
+  Avatar,
+  Tabs,
+  Tab,
+  Divider,
   FormControl,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
+  Switch,
 } from "@mui/material";
 import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-} from "@mui/icons-material";
-import CallIcon from "@mui/icons-material/Call";
-import CustomLabel from "../CustomLabel";
-import CustomTextField from "../CustomTextField";
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import RoomIcon from "@mui/icons-material/Room";
+import CancelIcon from "@mui/icons-material/Cancel";
+import LockIcon from "@mui/icons-material/Lock";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import GiftIcon from "@mui/icons-material/CardGiftcard";
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import { Edit as EditIcon, Delete as DeleteIcon, Star as StarIcon } from "@mui/icons-material";
 import CustomCard from "../CustomCard";
-import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-import { DateRangePicker } from "@nextui-org/date-picker";
-
+import CustomTextField from "../CustomTextField";
+import CustomLabel from "../CustomLabel";
+import creworder from '../../images/crewordericon.png';
+import Image from 'next/image';
 const poppins = Poppins({
-  weight: "500",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
+const steps = [
+  {
+    icon: <LockIcon />,
+    status: "Order Placed",
+    date: "Wed, 15 Dec 2021",
+    description: [
+      "An order has been placed.",
+      "Wed, 15 Dec 2021 - 05:34PM",
+      "Seller has processed your order.",
+      "Thu, 16 Dec 2021 - 5:48AM",
+    ],
+  },
+  {
+    icon: <GiftIcon />,
+    status: "Packed",
+    date: "Thu, 16 Dec 2021",
+    description: [
+      "Your item has been picked up by courier partner",
+      "Fri, 17 Dec 2021 - 9:45AM",
+    ],
+  },
+  {
+    icon: <LocalShippingIcon />,
+    status: "Shipping",
+    date: "Thu, 16 Dec 2021",
+    description: [
+      "RQK Logistics - MFDS1400457854",
+      "Your item has been shipped.",
+      "Sat, 18 Dec 2021 - 4:54PM",
+    ],
+  },
+  {
+    icon: <LocalShippingIcon />,
+    status: "Out For Delivery",
+    date: "",
+    description: [],
+  },
+  {
+    icon: <CheckCircleIcon />,
+    status: "Delivered",
+    date: "",
+    description: [],
+  },
+];
+const commonFormControlStyles = {
+  height: "40px",
+};
+
+const commonSelectStyles = {
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+};
+
+const checkboxStyles = {
+  display: "flex",
+  alignItems: "center",
+};
+
+const smallLabelStyles = {
+  fontSize: "13px",
+};
+
 const OrderDetails = () => {
-  const router = useRouter();
+  const [activeTab, setActiveTab] = useState(0);
+  const [isChecked, setIsChecked] = useState(false);
 
-  const createOrder = () => {
-    router.push("/admin/orders/createorders");
-  };
-  const [state, setstate] = useState("");
-  // Handle change for courseDuration
-  const handlestate = (event) => {
-    setstate(event.target.value);
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
   };
 
-  const [product, setproduct] = useState("");
-  // Handle change for courseDuration
-  const handleproduct = (event) => {
-    setproduct(event.target.value);
+  const handleChange = (event) => {
+    setIsChecked(event.target.checked);
   };
-
-  const [payment, setpayment] = useState("");
-  // Handle change for courseDuration
-  const handlepayment = (event) => {
-    setpayment(event.target.value);
-  };
-
-  const [agent, setagent] = useState("");
-  // Handle change for courseDuration
-  const handleagent = (event) => {
-    setagent(event.target.value);
-  };
-
-  const [agentname, setagentname] = useState("");
-  // Handle change for courseDuration
-  const handleagentname = (event) => {
-    setagentname(event.target.value);
-  };
-
-  const [teamlead, setteamlead] = useState("");
-  // Handle change for courseDuration
-  const handleteamlead = (event) => {
-    setteamlead(event.target.value);
-  };
-
-  const [status, setstatus] = useState("");
-  // Handle change for courseDuration
-  const handlestatus = (event) => {
-    setstatus(event.target.value);
-  };
-
-  const [dateRange, setDateRange] = useState([null, null]);
 
   const rows = [
     {
       id: 1,
-      order_id: "PRXTW987",
-      name: "Shivam",
-      city: "Noida",
-      product: "Weight loss",
-      amount: "2024",
-      agent: "Vikash",
-      status: "Pending",
-      payment_mode: "COD",
-      order_date: "2024-08-01",
-      remark:
-        "You can override the style of the component using one of these customization options.",
-      action: "Edit",
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQdzWpCsFqgOHSDYUpICzuwGVDe6TDeDF-PQ&s', // replace with your image paths
+      name: "Sweatshirt for Men (Pink)",
+      color: "Pink",
+      size: "M",
+      itemPrice: "$119.99",
+      quantity: 2,
+      rating: 5,
+      totalAmount: "$239.98",
+    },
+    {
+      id: 2,
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQdzWpCsFqgOHSDYUpICzuwGVDe6TDeDF-PQ&s', // replace with your image paths
+      name: "Noise NoiseFit Endure Smart Watch",
+      color: "Black",
+      size: "32.5mm",
+      itemPrice: "$94.99",
+      quantity: 1,
+      rating: 5,
+      totalAmount: "$94.99",
+    },
+    {
+      id: 3,
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQdzWpCsFqgOHSDYUpICzuwGVDe6TDeDF-PQ&s', // replace with your image paths
+      name: "350 ml Glass Grocery Container",
+      color: "White",
+      size: "350 ml",
+      itemPrice: "$24.99",
+      quantity: 1,
+      rating: 4,
+      totalAmount: "$24.99",
     },
   ];
 
   return (
-    <Grid container spacing={2} p={3}>
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-              <Typography
-                sx={{
-                  fontWeight: "600",
-                  fontSize: "20px",
-                  whiteSpace: "nowrap",
-                  textTransform: "capitalize",
-                  color: "black",
-                  marginLeft: "30px",
-                }}
-              >
-                Order Details
-              </Typography>
-            </Grid>            
-          </Grid>
-        </CustomCard>
+    <Grid container spacing={2} p={3}>     
+      <Grid item xs={12} md={3} sm={3}>   
+        <Card sx={{ mb: 2 }}>
+          <CardContent>           
+          <Image 
+            src={creworder}
+            alt="creworder"            
+            />                 
+          <Typography variant="h6" fontWeight="bold">UserName</Typography>
+            <Typography variant="body2">RQK Logistics</Typography>
+            <Typography variant="body2">ID: MFDS1400457854</Typography>
+            <Typography variant="body2">Payment Mode: Debit Card</Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="small">Track Order</Button>
+          </CardActions>
+        </Card>
       </Grid>
 
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
-          <Grid
-            container
-            spacing={1}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="order_id" required>
-                Order Id.
-              </CustomLabel>
-              <CustomTextField
-                id="order_id"
-                name="order_id"
-                placeholder="e.g. PRO34XP"
-                type="text"
-                fullWidth
-                sx={{ fontFamily: poppins.style.fontFamily }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="awb_no" required>
-                AWB No.
-              </CustomLabel>
-              <CustomTextField
-                id="awb_no"
-                name="awb_no"
-                placeholder="e.g. AWBNo987"
-                type="text"
-                fullWidth
-                sx={{ fontFamily: poppins.style.fontFamily }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="phone" required>
-                Phone No.
-              </CustomLabel>
-              <CustomTextField
-                id="phone"
-                name="phone"
-                placeholder="e.g. 9876543221"
-                type="text"
-                fullWidth
-                sx={{ fontFamily: poppins.style.fontFamily }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="product" required>
-                Product Name
-              </CustomLabel>
-              <Select
-                labelId="product"
-                id="product"
-                name="product"
-                value={product}
-                onChange={handleproduct}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Product
-                </MenuItem>
-                <MenuItem value={1}>Kidney Detox</MenuItem>
-                <MenuItem value={2}>Weight Loss</MenuItem>
-                <MenuItem value={3}>Weight Gain</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="payment" required>
-                Payment Type
-              </CustomLabel>
-              <Select
-                labelId="payment"
-                id="payment"
-                name="payment"
-                value={payment}
-                onChange={handlepayment}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Payment
-                </MenuItem>
-                <MenuItem value={1}>COD</MenuItem>
-                <MenuItem value={2}>Prepaid</MenuItem>
-                <MenuItem value={3}>Parttial</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Status" required>
-                Agent Status
-              </CustomLabel>
-              <Select
-                labelId="Agent Status"
-                id="agent"
-                name="agent"
-                value={agent}
-                onChange={handleagent}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Agent
-                </MenuItem>
-                <MenuItem value={1}>Suspended</MenuItem>
-                <MenuItem value={2}>InActive</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Name" required>
-                Agent Name
-              </CustomLabel>
-              <Select
-                labelId="Agent Name"
-                id="agentname"
-                name="agentname"
-                value={agentname}
-                onChange={handleagentname}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Agent Name
-                </MenuItem>
-                <MenuItem value={1}>Admin</MenuItem>
-                <MenuItem value={2}>TL</MenuItem>
-                <MenuItem value={2}>Omni</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Team Lead" required>
-                Team Lead
-              </CustomLabel>
-              <Select
-                labelId="Team Lead"
-                id="teamlead"
-                name="teamlead"
-                value={teamlead}
-                onChange={handleteamlead}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Team Lead
-                </MenuItem>
-                <MenuItem value={2}>TL</MenuItem>
-                <MenuItem value={2}>Omni</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="state" required>
-                State
-              </CustomLabel>
-              <Select
-                labelId="state"
-                id="state"
-                name="state"
-                value={state}
-                onChange={handlestate}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select State
-                </MenuItem>
-                <MenuItem value={1}>Delhi</MenuItem>
-                <MenuItem value={2}>Uttar Pradesh</MenuItem>
-                <MenuItem value={3}>West Bengal</MenuItem>
-              </Select>
-            </Grid>
-           
-            <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
-              <CustomLabel htmlFor="dateRange" required>
-                Date Range
-              </CustomLabel>
-              <DateRangePicker 
-                label="Stay duration" 
-                visibleMonths={2} 
-                style={{
-            
-                  backgroundColor: '#fff',
-                }}
-                popoverProps={{
-                  style: {
-                    backgroundColor: '#fff', 
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Button
-                sx={{
-                  marginTop: "24px",
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                  fontFamily: poppins.style.fontFamily,
-                }}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </Grid>
-        </CustomCard>
-      </Grid>
-
-      <Grid item xs={12}>
-        <CustomCard>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateRows: "auto 1fr auto",
-              maxHeight: "400px",
-            }}
-          >
-            <TableContainer
-              component={Paper}
-              sx={{ overflowY: "auto", maxHeight: "340px" }}
-            >
+      <Grid item xs={9} md={9} sm={9}>
+      <CustomCard>
+        <CardContent>
+          <Tabs value={activeTab} onChange={handleTabChange}>
+            <Tab icon={<LocalMallIcon/>} style={{display:"flex"}} className={poppins.className} label="Product Information" />
+            <Tab icon={<LocalMallIcon/>} className={poppins.className} label="Customer Information" />
+            <Tab icon={<LocalMallIcon/>} className={poppins.className} label="Order Status Tracking" />
+            <Tab icon={<LocalMallIcon/>} className={poppins.className} label="Order Payment Status" />
+          </Tabs>
+          <Divider sx={{ my: 2 }} />
+          {activeTab === 0 && (
+            <Box>
+              <Grid container spacing={2}>
+            <Grid item xs={12}>
+            <Typography variant="h6" fontWeight="bold">Order Summary</Typography>
+            <TableContainer  sx={{ maxHeight: 900}} >
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Sr.</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order ID
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Customer Name
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>City</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Product</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Agent</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order Status
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Payment Mode
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order Date
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Remark</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      C.C Call
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Action</TableCell>
+                    <TableCell>Image</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Color</TableCell>
+                    <TableCell>Size</TableCell>
+                    <TableCell>Item Price</TableCell>
+                    <TableCell>Quantity</TableCell>
+                    <TableCell>Total Amount</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rows.map((row) => (
                     <TableRow key={row.id}>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.id}.
+                      <TableCell>
+                        <CardMedia
+                          component="img"
+                          image={row.image}
+                          alt={row.name}
+                          sx={{ width: 60, height: 60 }}
+                        />
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_id}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.name}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.city}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.product}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.amount}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.agent}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.status}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.payment_mode}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_date}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.remark}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <IconButton aria-label="call" sx={{ color: "green" }}>
-                          <CallIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          sx={{ color: "#FF0000" }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
+                      <TableCell>{row.name}</TableCell>
+                      <TableCell>{row.color}</TableCell>
+                      <TableCell>{row.size}</TableCell>
+                      <TableCell>{row.itemPrice}</TableCell>
+                      <TableCell>{row.quantity}</TableCell>                     
+                      <TableCell>{row.totalAmount}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            </TableContainer>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50]}
-                  colSpan={12}
-                  count={rows.length}
-                  rowsPerPage={10}
-                  page={0}
-                  onPageChange={() => {}}
-                  onRowsPerPageChange={() => {}}
-                />
-              </TableRow>
-            </TableFooter>
+              <Grid container justifyContent="flex-end">
+                  <Grid item xs={6}>
+                    <Box p={2} bgcolor="background.paper" borderRadius={1}>
+                      <Grid container justifyContent="space-between" mb={1}>
+                        <Typography>Sub Total :</Typography>
+                        <Typography style={{marginRight: 35}}>$359.96</Typography>
+                      </Grid>
+                      <Grid container justifyContent="space-between" mb={1}>
+                        <Typography>
+                          Discount <span style={{ color: "blue" }}>(VELZON15)</span> :
+                        </Typography>
+                        <Typography style={{marginRight: 35}}>-$53.99</Typography>
+                      </Grid>
+                      <Grid container justifyContent="space-between" mb={1}>
+                        <Typography>Shipping Charge :</Typography>
+                        <Typography style={{marginRight: 35}}>$65.00</Typography>
+                      </Grid>
+                      <Grid container justifyContent="space-between" mb={1}>
+                        <Typography>Estimated Tax :</Typography>
+                        <Typography style={{marginRight: 35}}>$44.99</Typography>
+                      </Grid>
+                      <Grid container justifyContent="space-between" fontWeight="bold">
+                        <Typography>Total (USD) :</Typography>
+                        <Typography style={{marginRight: 35}}>$415.96</Typography>
+                      </Grid>
+                    </Box>
+                  </Grid>
+                </Grid>
+                </TableContainer>
+                </Grid>
+              </Grid>
           </Box>
-        </CustomCard>
+          )}
+          {activeTab === 1 && (
+            <Grid container spacing={2}>  
+              <Grid item md={6} >   
+              <Card sx={{ mb: 2 }}>
+                <CardContent>   
+                <Typography variant="h6" fontWeight="bold">Personal Information</Typography>
+                  <Typography variant="body2" padding={1}><b>Name:</b> Rahul Kumar</Typography> 
+                  <Typography variant="body2" padding={1}><b>Father's Name:</b> </Typography>
+                  <Typography variant="body2"padding={1}><b>Alternate Contact:</b> +91- 9876543210</Typography>
+                  <Typography variant="body2"padding={1}><b>Email:</b> rahul.kumar@crewman.in</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item md={6}>   
+              <Card sx={{ mb: 2 }}>
+                <CardContent>  
+                <Typography variant="h6" fontWeight="bold">Address Information</Typography>
+                <Typography variant="body2" padding={1}><b>Address:</b> Sector 63, Noida</Typography>
+                <Typography variant="body2" padding={1}><b>PostalCode:</b> 201304</Typography>
+                <Typography variant="body2" padding={1}><b>City:</b> Noida</Typography>
+                <Typography variant="body2" padding={1}><b>State:</b> Uttar Pradesh</Typography>
+                <Typography variant="body2" padding={1}><b>Country:</b> India</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+           </Grid>
+          )}
+
+          {activeTab === 2 && (
+            <Box>
+              <Grid container spacing={2} sx={{ padding: 2 }}>
+          <Grid
+            item
+            xs={12}
+            container
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography
+              sx={{
+                fontSize: "15px",
+                color: "#495057",
+                fontWeight: "600",
+              }}
+              className={poppins.className}
+            >
+              Order Status
+            </Typography>
+            <div>
+              <Button
+                className={poppins.className}
+                startIcon={<RoomIcon />}
+                sx={{
+                  marginRight: 1,
+                  fontSize: "11px",
+                  backgroundColor: "#dff0fa",
+                }}
+              >
+                Change Address
+              </Button>
+              <Button
+                className={poppins.className}
+                color="error"
+                startIcon={<CancelIcon />}
+                sx={{
+                  fontSize: "11px",
+                  backgroundColor: "#fde8e4",
+                }}
+              >
+                Cancel Order
+              </Button>
+            </div>
+          </Grid>
+
+        <Grid item xs={12}>
+          <List>
+            {steps.map((step, index) => (
+              <ListItem key={index} alignItems="flex-start">
+                <ListItemIcon sx={{ color: "#00A884" }}>
+                  {step.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography
+                    variant="body1"
+                    fontWeight="bold"
+                    sx={{ fontSize: "15px", color: "#495057" }}
+                    className={poppins.className}
+                  >
+                    {step.status}
+                    {step.date && (
+                      <Box component="span" sx={{ fontWeight:"500", fontSize: "13px", color: "gray", marginLeft: 1 }}>
+                        - {step.date}
+                      </Box>
+                    )}
+                  </Typography>
+                  }
+                  secondary={step.description.map((text, idx) => (
+                    <Typography variant="body2" color="textSecondary" key={idx}>
+                      {text}
+                    </Typography>
+                  ))}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Grid>
+      </Grid>
+            </Box>
+          )}
+
+
+
+{activeTab === 3 && (
+            <Box>
+             <Grid container spacing={2}>  
+              <Grid item md={6} >   
+              <Card sx={{ mb: 2 }}>
+                <CardContent>   
+                <Typography variant="h6" fontWeight="bold">Payment Information</Typography>
+                  <Typography variant="body2" padding={1}><b>Name:</b> Rahul Kumar</Typography> 
+                  <Typography variant="body2" padding={1}><b>Father's Name:</b> </Typography>
+                  <Typography variant="body2"padding={1}><b>Alternate Contact:</b> +91- 9876543210</Typography>
+                  <Typography variant="body2"padding={1}><b>Email:</b> rahul.kumar@crewman.in</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            </Grid>
+            </Box>
+          )}
+        </CardContent>
+      </CustomCard>
       </Grid>
     </Grid>
   );

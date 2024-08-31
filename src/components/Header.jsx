@@ -89,7 +89,7 @@ const Header = ({ onMenuClick }) => {
         >
           <Grid container spacing={2} sx={{ alignItems: "center" }}>
             <Grid item xs={4} sm={4} md={4}>
-              <RechargeWallet />
+              <RechargeWallet /> Wallet Recharge
             </Grid>
             <Grid item xs={4} sm={4} md={4}>Branch Switcher</Grid>
             <Grid item xs={4} sm={4} md={4}>
