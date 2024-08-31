@@ -4,6 +4,7 @@ import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
+import useGetAllModules from "@/api-manage/react-query/useGetAllModules";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import {
   Typography,
@@ -60,6 +61,7 @@ const modules = [
 const CreatePackage = () => {
   const { permissionsData } = usePermissions();
   const router = useRouter();
+  const { data: modulesData, refetch } = useGetAllModules();
   const token = getToken();
   const [formState, setFormState] = useState({
     name: "",
@@ -67,11 +69,11 @@ const CreatePackage = () => {
     max_admin: "",
     setup_fees: "",
     max_employees: "",
-    monthly_price: "",
-    annual_price: "",
+    monthly_price: 0,
+    annual_price: 0,
     description: "",
     created_by: permissionsData.user.id,
-    checkedModules: [],
+    modules: [],
   });
 
   const handleInputChange = (e) => {
@@ -80,13 +82,14 @@ const CreatePackage = () => {
   };
 
   const handleCheckboxChange = (event) => {
-    const name = event.target.name;
+    const name = event.target.value;
     setFormState((prevState) => ({
       ...prevState,
-      checkedModules: prevState.checkedModules.includes(name)
-        ? prevState.checkedModules.filter((item) => item !== name)
-        : [...prevState.checkedModules, name],
+      modules: prevState.modules.includes(name)
+        ? prevState.modules.filter((item) => item !== name)
+        : [...prevState.modules, name],
     }));
+    console.log("Form State", formState);
   };
 
   const handleSelectAll = (event) => {
@@ -379,7 +382,7 @@ const CreatePackage = () => {
                       <Checkbox
                         onChange={handleSelectAll}
                         checked={
-                          formState.checkedModules.length === modules.length
+                          formState.modules.length === modules.length
                         }
                       />
                     }
@@ -392,19 +395,10 @@ const CreatePackage = () => {
                 container
                 spacing={2}
                 sx={{ width: "900px", margin: "20px" }}
-              >
-                {modules.map((module, index) => (
+                    >
+                   {modulesData?.results.map((row, index) => (
                   <Grid item xs={12} sm={6} md={2} key={index}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name={module}
-                          checked={formState.checkedModules.includes(module)}
-                          onChange={handleCheckboxChange}
-                        />
-                      }
-                      label={module}
-                    />
+                    <FormControlLabel control={<Checkbox />} label={row?.name} onChange={handleCheckboxChange} value={row?.id}/>
                   </Grid>
                 ))}
               </Grid>
@@ -418,8 +412,8 @@ const CreatePackage = () => {
                 id="description"
                 name="description"
                 placeholder="e.g. description"
-                multiline 
-                // rows={2} 
+                multiline
+                // rows={2}
                 required
                 fullWidth
                 value={formState.description}

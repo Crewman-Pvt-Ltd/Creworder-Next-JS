@@ -39,11 +39,6 @@ const CreateProduct = () => {
   const [hsnCode, setHsnCode] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
-  const [discount, setDiscount] = useState(null);
-  const [grossAmount, setGrossAmount] = useState(0);
-  const [payableAmount, setPayableAmount] = useState(0);
-  const [codAmount, setCodAmount] = useState(0);
-
   // Function to handle product creation
   const handleCreateProduct = async () => {
     const token = await getToken(); // Get token dynamically

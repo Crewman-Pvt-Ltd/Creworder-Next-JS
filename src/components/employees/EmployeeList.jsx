@@ -128,6 +128,7 @@ const EmployeeList = () => {
                     <TableHead>
                       <TableRow>
                         <HeaderCell>ID</HeaderCell>
+                        <HeaderCell>UserName</HeaderCell>
                         <HeaderCell>Name</HeaderCell>
                         <HeaderCell>Email</HeaderCell>
                         <HeaderCell>Profile Image</HeaderCell>
@@ -138,10 +139,11 @@ const EmployeeList = () => {
                       {data?.results?.map((row, index) => (
                         <TableRow key={row.id}>
                           <DataCell>{index + 1}</DataCell>
+                          <DataCell>{row.username}</DataCell>
                           <DataCell>{row.first_name} {row.last_name}</DataCell>
-                          <DataCell>{row.email}</DataCell>
+                          <DataCell>{row.email}</DataCell>                          
                           <DataCell>
-                            <img src={row.profile_image}
+                            <img src={row?.profile?.profile_image}
                               height={100}
                               width={100}/>
                           </DataCell>

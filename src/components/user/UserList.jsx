@@ -17,6 +17,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Tooltip,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
@@ -31,13 +32,11 @@ import {
 } from "@mui/icons-material";
 
 const UserList = () => {
-    const router = useRouter();
- 
-    const { data, refetch } = useGetAllUsers();
-  // console.log("Users", data);
+  const router = useRouter();
+
+  const { data, refetch } = useGetAllUsers();
   const [open, setOpen] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
-
   const handleCreateUser = () => {
     router.push("user/createuser");
   };
@@ -159,60 +158,83 @@ const UserList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {data?.results.map((row, index) =>(
+                  {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
                       <DataCell>{index + 1}</DataCell>
-                      <DataCell>{row.id}</DataCell>
+                      <DataCell>{row?.profile?.employee_id}</DataCell>
                       <DataCell>{row?.username}</DataCell>
                       <DataCell>{row?.profile?.contact_no}</DataCell>
-                      <DataCell>{row?.email}</DataCell>
-                      <DataCell>{row?.profile?.gender}</DataCell>
+                      <DataCell>{row?.email}</DataCell>                      
+                      <DataCell>{row?.profile?.gender === "m" ? "Male" : row?.profile?.gender === "f" ? "Female"
+                            : "Other"}
+                      </DataCell>
                       <DataCell>{row?.role?.role}</DataCell>
-                      <DataCell>{row?.profile?.status}</DataCell>
+                      <DataCell>
+                        {row?.profile?.status == true ? "Active" : "Inactive"}
+                      </DataCell>
                       <TableCell>
-                        <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon />
-                        </IconButton>
+                        <Tooltip title="Edit">
+                          <IconButton
+                            aria-label="edit"
+                            sx={{ color: "#007BFF" }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+
                         {row.status === "Approved" ? (
-                          <IconButton
-                            aria-label="suspend"
-                            onClick={() =>
-                              handleToggleStatus(row.id, "Suspended")
-                            }
-                            sx={{ color: "#DC3545" }}
-                          >
-                            <CancelIcon />
-                          </IconButton>
+                          <Tooltip title="Suspend">
+                            <IconButton
+                              aria-label="suspend"
+                              onClick={() =>
+                                handleToggleStatus(row.id, "Suspended")
+                              }
+                              sx={{ color: "#DC3545" }}
+                            >
+                              <CancelIcon />
+                            </IconButton>
+                          </Tooltip>
                         ) : (
-                          <IconButton
-                            aria-label="activate"
-                            onClick={() =>
-                              handleToggleStatus(row.id, "Approved")
-                            }
-                            sx={{ color: "#28A745" }}
-                          >
-                            <CheckCircleIcon />
-                          </IconButton>
+                          <Tooltip title="Activate">
+                            <IconButton
+                              aria-label="activate"
+                              onClick={() =>
+                                handleToggleStatus(row.id, "Approved")
+                              }
+                              sx={{ color: "#28A745" }}
+                            >
+                              <CheckCircleIcon />
+                            </IconButton>
+                          </Tooltip>
                         )}
-                        <IconButton
-                          aria-label="change password"
-                          sx={{ color: "blue" }}
-                        >
-                          <LockOpenIcon sx={{ marginRight: "8px" }} />
-                        </IconButton>
-                        <IconButton
-                          aria-label="force logout"
-                          sx={{ color: "#FF0000" }}
-                        >
-                          <LogoutIcon sx={{ marginRight: "8px" }} />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => handleOpenDialog(row.id)}
-                          sx={{ color: "#FF0000" }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+
+                        <Tooltip title="Change Password">
+                          <IconButton
+                            aria-label="change password"
+                            sx={{ color: "blue" }}
+                          >
+                            <LockOpenIcon sx={{ marginRight: "8px" }} />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Force Logout">
+                          <IconButton
+                            aria-label="force logout"
+                            sx={{ color: "#FF0000" }}
+                          >
+                            <LogoutIcon sx={{ marginRight: "8px" }} />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Delete">
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => handleOpenDialog(row.id)}
+                            sx={{ color: "#FF0000" }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}

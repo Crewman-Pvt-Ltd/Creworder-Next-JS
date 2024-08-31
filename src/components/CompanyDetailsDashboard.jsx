@@ -43,11 +43,11 @@ const configuration = {
   newlyRegistered: {
     title: "Newly Registered Companies",
     headers: ["#", "Company Name", "Packages", "Date"],
-    mapRow: ({ id, company_image, name, packages, created_at }, index) => ({
+    mapRow: ({ id, company_image, name, package_name, created_at }, index) => ({
       id,
       name,
       company_image,
-      packages: packages || "N/A",
+      packages: package_name || "N/A",
       date: created_at ? new Date(created_at).toLocaleDateString() : "N/A",
     }),
   },
@@ -66,22 +66,22 @@ const configuration = {
   recentExpired: {
     title: "Recent Licence Expired Companies",
     headers: ["#", "Name", "Packages", "Expiry Date"],
-    mapRow: ({ id, company_image, name, packages, expiryDate }) => ({
+    mapRow: ({ id, company_image, name, package_name, expiryDate }) => ({
       id,
       company_image,
       name,
-      packages: packages || "N/A",
+      packages: package_name || "N/A",
       expiryDate: expiryDate || "N/A",
     }),
   },
   recentPaid: {
     title: "Recent Paid Subscriptions",
     headers: ["#", "Name", "Packages", "Payment Date"],
-    mapRow: ({ id, company_image, name, packages, paymentDate }) => ({
+    mapRow: ({ id, company_image, name, package_name, paymentDate }) => ({
       id,
       company_image,
       name,
-      packages: packages || "N/A",
+      packages: package_name || "N/A",
       paymentDate: paymentDate || "N/A",
     }),
   },

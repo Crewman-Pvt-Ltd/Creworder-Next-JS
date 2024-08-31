@@ -119,6 +119,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -131,6 +132,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -143,6 +145,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -155,6 +158,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -165,6 +169,7 @@ const RolesAndPermissions = () => {
                           size="small"
                           sx={{ minWidth: 120 }}
                         >
+                          
                           <MenuItem value="All">Allow</MenuItem>
                           <MenuItem value="Owned">None</MenuItem>
                         </Select>
@@ -204,6 +209,7 @@ const RolesAndPermissions = () => {
                         <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -212,6 +218,7 @@ const RolesAndPermissions = () => {
                         <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -249,6 +256,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -290,6 +298,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -301,6 +310,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -312,6 +322,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -323,6 +334,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -360,6 +372,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -371,6 +384,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -382,6 +396,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -393,6 +408,7 @@ const RolesAndPermissions = () => {
                         >
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
+                          <MenuItem value="none">None</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>

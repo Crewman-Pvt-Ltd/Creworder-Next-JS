@@ -22,12 +22,10 @@ import {
   Delete as DeleteIcon,
   Edit as EditIcon,
 } from "@mui/icons-material";
-import Link from 'next/link';
 import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import CustomCard from "../CustomCard";
-import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import { DateRangePicker } from "@nextui-org/date-picker";
@@ -36,7 +34,7 @@ const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
-const OrderList = () => {
+const OrderDetails = () => {
   const router = useRouter();
 
   const createOrder = () => {
@@ -120,30 +118,9 @@ const OrderList = () => {
                   marginLeft: "30px",
                 }}
               >
-                Order List
+                Order Details
               </Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={createOrder}
-                sx={{
-                  padding: "8px",
-                  fontSize: "14px",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                  borderRadius: "30px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <AddIcon sx={{ fontSize: 15 }} />
-                Add Order
-              </Button>
-            </Grid>
+            </Grid>            
           </Grid>
         </CustomCard>
       </Grid>
@@ -157,7 +134,9 @@ const OrderList = () => {
             alignItems="center"
           >
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="order_id">Order Id.</CustomLabel>
+              <CustomLabel htmlFor="order_id" required>
+                Order Id.
+              </CustomLabel>
               <CustomTextField
                 id="order_id"
                 name="order_id"
@@ -169,7 +148,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="awb_no">AWB No.</CustomLabel>
+              <CustomLabel htmlFor="awb_no" required>
+                AWB No.
+              </CustomLabel>
               <CustomTextField
                 id="awb_no"
                 name="awb_no"
@@ -180,7 +161,9 @@ const OrderList = () => {
               />
             </Grid>
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="phone">Phone No.</CustomLabel>
+              <CustomLabel htmlFor="phone" required>
+                Phone No.
+              </CustomLabel>
               <CustomTextField
                 id="phone"
                 name="phone"
@@ -192,7 +175,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="product">Product Name</CustomLabel>
+              <CustomLabel htmlFor="product" required>
+                Product Name
+              </CustomLabel>
               <Select
                 labelId="product"
                 id="product"
@@ -213,7 +198,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="payment">Payment Type</CustomLabel>
+              <CustomLabel htmlFor="payment" required>
+                Payment Type
+              </CustomLabel>
               <Select
                 labelId="payment"
                 id="payment"
@@ -234,7 +221,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Status">Agent Status</CustomLabel>
+              <CustomLabel htmlFor="Agent Status" required>
+                Agent Status
+              </CustomLabel>
               <Select
                 labelId="Agent Status"
                 id="agent"
@@ -254,7 +243,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Name">Agent Name</CustomLabel>
+              <CustomLabel htmlFor="Agent Name" required>
+                Agent Name
+              </CustomLabel>
               <Select
                 labelId="Agent Name"
                 id="agentname"
@@ -275,7 +266,9 @@ const OrderList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Team Lead">Team Lead</CustomLabel>
+              <CustomLabel htmlFor="Team Lead" required>
+                Team Lead
+              </CustomLabel>
               <Select
                 labelId="Team Lead"
                 id="teamlead"
@@ -290,12 +283,14 @@ const OrderList = () => {
                   Select Team Lead
                 </MenuItem>
                 <MenuItem value={2}>TL</MenuItem>
-                <MenuItem value={3}>Omni</MenuItem>
+                <MenuItem value={2}>Omni</MenuItem>
               </Select>
             </Grid>
 
             <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="state">State</CustomLabel>
+              <CustomLabel htmlFor="state" required>
+                State
+              </CustomLabel>
               <Select
                 labelId="state"
                 id="state"
@@ -314,37 +309,21 @@ const OrderList = () => {
                 <MenuItem value={3}>West Bengal</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="Order Status">Order Status</CustomLabel>
-              <Select
-                labelId="Order Status"
-                id="status"
-                name="status"
-                value={status}
-                onChange={handlestatus}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Order Status
-                </MenuItem>
-                <MenuItem value={1}>Suspended</MenuItem>
-                <MenuItem value={2}>Active</MenuItem>
-                <MenuItem value={3}>InActive</MenuItem>
-                <MenuItem value={4}>Delete</MenuItem>
-              </Select>
-            </Grid>
+           
             <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
-              <CustomLabel htmlFor="dateRange">Date Range</CustomLabel>
-              <DateRangePicker
-                visibleMonths={1}
+              <CustomLabel htmlFor="dateRange" required>
+                Date Range
+              </CustomLabel>
+              <DateRangePicker 
+                label="Stay duration" 
+                visibleMonths={2} 
                 style={{
-                  backgroundColor: "#fff",
+            
+                  backgroundColor: '#fff',
                 }}
                 popoverProps={{
                   style: {
-                    backgroundColor: "#fff",
+                    backgroundColor: '#fff', 
                   },
                 }}
               />
@@ -421,9 +400,7 @@ const OrderList = () => {
                         {row.id}.
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <Link href={`/admin/orders/order-details/`}>
-                          {row.order_id}
-                        </Link>
+                        {row.order_id}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.name}
@@ -493,4 +470,4 @@ const OrderList = () => {
   );
 };
 
-export default OrderList;
+export default OrderDetails;

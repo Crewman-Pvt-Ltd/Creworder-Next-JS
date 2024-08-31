@@ -15,7 +15,7 @@ const AddLeads = () => {
       <Grid item xs={12} sm={12} md={12}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={6}>
-          <CustomCard padding="13px">
+          <CustomCard padding="27px">
               <Typography
                 sx={{
                   fontWeight: "600",
@@ -70,8 +70,9 @@ const AddLeads = () => {
               </Typography>
             </CustomCard>
           </Grid>
-          <Grid item xs={12} sm={6} md={6}>
-          <CustomCard padding="13px">
+
+          <Grid item xs={12} sm={6} md={6} >
+          <CustomCard padding="20px">
                 <Typography
                   sx={{
                     fontWeight: "600",

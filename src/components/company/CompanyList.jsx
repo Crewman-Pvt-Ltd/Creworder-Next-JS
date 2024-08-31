@@ -198,7 +198,7 @@ const CompanyList = () => {
                     <TableRow key={row.id}>
                       <DataCell>{index + 1}</DataCell>
                       <DataCell>{row.name}</DataCell>
-                      <DataCell>{row.package}</DataCell>
+                      <DataCell>{row.package_name}</DataCell>
                       <DataCell>
                         <Typography
                           sx={{

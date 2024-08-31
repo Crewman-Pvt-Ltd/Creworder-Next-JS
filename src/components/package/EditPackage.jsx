@@ -4,6 +4,7 @@ import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
+import useGetAllModules from "@/api-manage/react-query/useGetAllModules";
 import { usePermissions } from "@/contexts/PermissionsContext";
 
 import {
@@ -65,6 +66,7 @@ const EditPackage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = router.query;
+  const { data: modulesData, refetch } = useGetAllModules();
   const [formState, setFormState] = useState({
     name: "",
     type: "",
@@ -75,7 +77,7 @@ const EditPackage = () => {
     annual_price: "",
     description: "",
     created_by: permissionsData?.user?.id || "",
-    checkedModules: [],
+    modules: [], // Ensure this is initialized as an array
   });
 
   const handleInputChange = (e) => {
@@ -84,19 +86,19 @@ const EditPackage = () => {
   };
 
   const handleCheckboxChange = (event) => {
-    const name = event.target.name;
+    const moduleId = event.target.value;
     setFormState((prevState) => ({
       ...prevState,
-      checkedModules: prevState.checkedModules.includes(name)
-        ? prevState.checkedModules.filter((item) => item !== name)
-        : [...prevState.checkedModules, name],
+      modules: prevState.modules.includes(moduleId)
+        ? prevState.modules.filter((item) => item !== moduleId)
+        : [...prevState.modules, moduleId],
     }));
   };
 
   const handleSelectAll = (event) => {
     setFormState((prevState) => ({
       ...prevState,
-      checkedModules: event.target.checked ? modules : [],
+      modules: event.target.checked ? modulesData.results.map((module) => module.id) : [],
     }));
   };
 
@@ -150,7 +152,7 @@ const EditPackage = () => {
             setFormState((prevState) => ({
               ...prevState,
               ...response.data,
-              checkedModules: response.data.checkedModules || [],
+              modules: response.data.modules || [], // Ensure modules are set correctly
             }));
           } else {
             console.error("Failed to fetch the package");
@@ -309,8 +311,8 @@ const EditPackage = () => {
                     <CustomTextField
                       id="max_admin"
                       name="max_admin"
+                      placeholder="e.g. 2"
                       type="number"
-                      placeholder="e.g. 100"
                       required
                       fullWidth
                       value={formState.max_admin}
@@ -318,14 +320,14 @@ const EditPackage = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="maxEmployees" required>
+                    <CustomLabel htmlFor="max_employees" required>
                       Max Employees
                     </CustomLabel>
                     <CustomTextField
                       id="max_employees"
                       name="max_employees"
+                      placeholder="e.g. 30"
                       type="number"
-                      placeholder="e.g. 100"
                       required
                       fullWidth
                       value={formState.max_employees}
@@ -339,48 +341,38 @@ const EditPackage = () => {
                     <CustomTextField
                       id="setup_fees"
                       name="setup_fees"
+                      placeholder="e.g. 99"
                       type="number"
-                      placeholder="e.g. 500"
                       required
                       fullWidth
                       value={formState.setup_fees}
                       onChange={handleInputChange}
                     />
                   </Grid>
-                </Grid>
-                <Grid
-                  container
-                  spacing={2}
-                  sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
-                    marginTop: 2,
-                  }}
-                >
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={3}>
                     <CustomLabel htmlFor="monthly_price" required>
                       Monthly Price
                     </CustomLabel>
                     <CustomTextField
                       id="monthly_price"
                       name="monthly_price"
+                      placeholder="e.g. 99"
                       type="number"
-                      placeholder="e.g. 100"
                       required
                       fullWidth
                       value={formState.monthly_price}
                       onChange={handleInputChange}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={3}>
                     <CustomLabel htmlFor="annual_price" required>
                       Annual Price
                     </CustomLabel>
                     <CustomTextField
                       id="annual_price"
                       name="annual_price"
+                      placeholder="e.g. 99"
                       type="number"
-                      placeholder="e.g. 1000"
                       required
                       fullWidth
                       value={formState.annual_price}
@@ -388,71 +380,64 @@ const EditPackage = () => {
                     />
                   </Grid>
                 </Grid>
-                <Grid item xs={12} mt={2}>
-                  <CustomLabel htmlFor="description" required>
-                    Description
-                  </CustomLabel>
-                  <CustomTextField
-                    id="description"
-                    name="description"
-                    type="text"
-                    placeholder="e.g. Description of the package"
-                    multiline
-                    rows={4}
-                    required
-                    fullWidth
-                    value={formState.description}
-                    onChange={handleInputChange}
-                  />
-                </Grid>
               </Grid>
             </Grid>
 
             <Divider sx={{ my: 2 }} />
 
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{ mt: 2 }}>
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom>
-                  Select Modules for this package
-                </Typography>
+                <Typography sx={{ fontSize: "15px" }}>Select Modules</Typography>
               </Grid>
-
               <Grid item xs={12}>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={handleSelectAll}
-                        checked={
-                          formState.checkedModules.length === modules.length
-                        }
-                      />
-                    }
-                    label="Select All"
-                  />
-                </FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={handleSelectAll}
+                      checked={formState.modules.length === modulesData?.results.length}
+                      indeterminate={
+                        formState.modules.length > 0 &&
+                        formState.modules.length < modulesData?.results.length
+                      }
+                    />
+                  }
+                  label="Select All"
+                />
               </Grid>
-
-              <Grid
-                container
-                spacing={2}
-                sx={{ width: "900px", margin: "20px" }}
-              >
-                {modules.map((module, index) => (
-                  <Grid item xs={12} sm={6} md={2} key={index}>
+              <Grid item xs={12}>
+                <FormGroup row>
+                  {modulesData?.results.map((module, index) => (
                     <FormControlLabel
+                      key={module.id}
                       control={
                         <Checkbox
-                          name={module}
-                          checked={formState.checkedModules.includes(module)}
+                          checked={formState.modules.includes(module.id)}
                           onChange={handleCheckboxChange}
+                          value={module.id}
                         />
                       }
-                      label={module}
+                      label={module.name}
                     />
-                  </Grid>
-                ))}
+                  ))}
+                </FormGroup>
               </Grid>
+            </Grid>
+
+            <Divider sx={{ my: 2 }} />
+
+            <Grid item xs={12} mt={2}>
+              <CustomLabel htmlFor="description">Description</CustomLabel>
+              <CustomTextField
+                id="description"
+                name="description"
+                placeholder="e.g. description"
+                type="text"
+                fullWidth
+                multiline
+                rows={4}
+                value={formState.description}
+                onChange={handleInputChange}
+              />
             </Grid>
 
             <Divider sx={{ my: 2 }} />
@@ -463,19 +448,13 @@ const EditPackage = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
+                  sx={{ float: "right" }}
                   onClick={handleSubmit}
-                  disabled={loading}
                 >
-                  {loading ? "Updating..." : "Update Package"}
+                  Save
                 </Button>
               </Grid>
             </Grid>
-
-            {error && (
-              <Typography color="error" mt={2}>
-                {error}
-              </Typography>
-            )}
           </CardContent>
         </CustomCard>
       </Grid>
