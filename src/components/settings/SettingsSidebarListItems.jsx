@@ -35,12 +35,18 @@ import ShipmentChannelsList from "../shipmentchannels/ShipmentChannelsList";
 import AdminSettings from "./AdminSettings";
 import MaintainanceMode from "./MaintainanceMode";
 import EmailSettings from "./EmailSettings";
-
+import EInvoiceSettings from "./EInvoiceSettings";
+import OrderStatus from "./OrderStatus";
+import LeadStatus from "./LeadStatus";
+import AssignmentIcon from '@mui/icons-material/Assignment'; // Example new icon for Order Status
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import EmailIcon from '@mui/icons-material/Email';
 const poppins = Poppins({
   weight: "300",
   subsets: ["latin"],
 });
-
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import IPAccess from "./IPAccess";
 const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
@@ -59,10 +65,14 @@ const adminMenuItems = [
   { text: "Courier Service", icon: <ShippingIcon /> },
   { text: "Telephonic Channels", icon: <PhoneIcon /> },
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
-  { text: "Email Settings", icon: <BackupIcon /> },
+  { text: "Email Settings", icon: <EmailIcon /> },
+  { text: "Order Status", icon: <AssignmentIcon /> },
+  { text: "Lead Status", icon: <PeopleAltIcon /> },
+  { text: "IP Access", icon: <PeopleAltIcon /> },
 ];
 const commonMenuItems = [
   { text: "Roles & Permissions", icon: <BackupIcon /> },
+  { text: "E-Invoice Settings", icon: <ReceiptIcon /> },
   
 ];
 const SettingsSidebarListItems = ({type}) => {
@@ -275,8 +285,12 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
           {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
           {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}
+          {type == "admin" && (selectedItem === "Order Status" &&  <OrderStatus />)}
+          {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)}
          { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
+         { selectedItem === "E-Invoice Settings" &&  <EInvoiceSettings />}
          {type == "admin" && (selectedItem === "Email Settings" &&  <EmailSettings />)}
+         {type == "admin" && (selectedItem === "IP Access" &&  <IPAccess />)}
         </Box>
       </Grid>
     </Grid>
