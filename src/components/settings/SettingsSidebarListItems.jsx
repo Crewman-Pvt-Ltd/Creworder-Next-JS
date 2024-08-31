@@ -8,7 +8,7 @@ import {
   Grid,
   Box,
 } from "@mui/material";
-// import RolesAndPermissions from "./RolesAndPermissions";
+
 import { Poppins } from "next/font/google";
 import AppSettings from "./AppSettings";
 import NotificationSettings from "./NotificationSettings";
@@ -33,6 +33,8 @@ import CourierServiceList from "../courierservice/CourierServiceList";
 import TelephonicChannelsList from "../telephonicchannels/TelephonicChannelsList";
 import ShipmentChannelsList from "../shipmentchannels/ShipmentChannelsList";
 import AdminSettings from "./AdminSettings";
+import MaintainanceMode from "./MaintainanceMode";
+import EmailSettings from "./EmailSettings";
 
 const poppins = Poppins({
   weight: "300",
@@ -47,6 +49,8 @@ const superAdminMenuItems = [
   { text: "Social Login Settings", icon: <LockIcon /> },
   { text: "Theme Settings", icon: <ColorLensIcon /> },
   { text: "Database Backup Settings", icon: <BackupIcon /> },
+  { text: "Maintainance Mode", icon: <LocalShippingIcon /> },
+
   ,
 ];
 
@@ -55,9 +59,11 @@ const adminMenuItems = [
   { text: "Courier Service", icon: <ShippingIcon /> },
   { text: "Telephonic Channels", icon: <PhoneIcon /> },
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
+  { text: "Email Settings", icon: <BackupIcon /> },
 ];
 const commonMenuItems = [
   { text: "Roles & Permissions", icon: <BackupIcon /> },
+  
 ];
 const SettingsSidebarListItems = ({type}) => {
   const defaultState = type == "superadmin" ? "App Settings" : "Admin Settings";
@@ -264,11 +270,13 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "superadmin" && (selectedItem === "Social Login Settings" && <SocialLoginSettings />)}
           {type == "superadmin" && (selectedItem === "Theme Settings" && <ThemeSettings />)}
           {type == "superadmin" && (selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />)}
+          {type == "superadmin" && (selectedItem === "Maintainance Mode" && <MaintainanceMode />)}
           {type == "admin" && (selectedItem === "Admin Settings" && <AdminSettings /> )}
           {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
           {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
           {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}
          { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
+         {type == "admin" && (selectedItem === "Email Settings" &&  <EmailSettings />)}
         </Box>
       </Grid>
     </Grid>
