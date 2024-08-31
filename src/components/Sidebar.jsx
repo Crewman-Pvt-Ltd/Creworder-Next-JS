@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import DashboardIcon from '@mui/icons-material/home';
 import { Download as DownloadIcon, Height, Margin } from "@mui/icons-material";
 import ReceiptIcon from '@mui/icons-material/ShoppingCart';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import GroupIcon from '@mui/icons-material/Group';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PackageIcon from '@mui/icons-material/LocalOffer';
@@ -189,9 +190,9 @@ const Sidebar = ({ isOpen, type }) => {
         <HoverableNavItem
           isOpen={isOpen}
           name="Get Started"
-          icon={<DashboardIcon />}
-          active={currentPath === "/dashboard"}
-          onClick={() => handleItemClick("/dashboard")}
+          icon={<RocketLaunchIcon />}
+          active={currentPath === "/admin/get-started"}
+          onClick={() => handleItemClick("/admin/get-started")}
         />
         <HoverableNavItem
           isOpen={isOpen}
@@ -355,11 +356,12 @@ const Sidebar = ({ isOpen, type }) => {
           <HoverableNavItem
             isOpen={isOpen}
             name={
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
+              <span
+              style={{display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%" }}
+                
               >
                 <span>Call Analysis</span>
                 <IconButton
@@ -372,7 +374,7 @@ const Sidebar = ({ isOpen, type }) => {
                 >
                   {isCallOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
-              </Box>
+              </span>
             }
             icon={<PhoneIcon />}
             active={currentPath.startsWith("/order")}
@@ -408,11 +410,14 @@ const Sidebar = ({ isOpen, type }) => {
           <HoverableNavItem
             isOpen={isOpen}
             name={
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
+              <span
+              style={{ 
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%"
+              }}
+                
               >
                 <span>Export</span>
                 <IconButton
@@ -425,7 +430,7 @@ const Sidebar = ({ isOpen, type }) => {
                 >
                   {isLeadsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
-              </Box>
+              </span>
             }
             icon={<DownloadIcon />}
             active={currentPath.startsWith("/order")}
@@ -461,11 +466,14 @@ const Sidebar = ({ isOpen, type }) => {
           <HoverableNavItem
             isOpen={isOpen}
             name={
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
+              <span
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%"
+              }}
+                
               >
                 <span>Leads</span>
                 <IconButton
@@ -478,10 +486,10 @@ const Sidebar = ({ isOpen, type }) => {
                 >
                   {isLeadsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
-              </Box>
+              </span>
             }
             icon={<GroupIcon />}
-            active={currentPath.startsWith("/order")}
+            active={currentPath.startsWith("/leads")}
             onClick={handleLeadsClick}
           >
             <Collapse in={isLeadsOpen}>
@@ -508,11 +516,13 @@ const Sidebar = ({ isOpen, type }) => {
           <HoverableNavItem
             isOpen={isOpen}
             name={
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
+              <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%"
+                  }}
               >
                 <span>NDR</span>
                 <IconButton
@@ -525,7 +535,7 @@ const Sidebar = ({ isOpen, type }) => {
                 >
                   {isNDROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
-              </Box>
+              </span>
             }
             icon={<LocationOnIcon />}
             active={currentPath.startsWith("/order")}
@@ -584,11 +594,14 @@ const Sidebar = ({ isOpen, type }) => {
         {type == "admin" && (<HoverableNavItem
           isOpen={isOpen}
           name={
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              width="100%"
+            <span
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%"
+            }}
+              
             >
               <span>Order</span>
               <IconButton
@@ -601,7 +614,7 @@ const Sidebar = ({ isOpen, type }) => {
               >
                 {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
-            </Box>
+            </span>
           }
           icon={<LocalMallIcon />}
           active={currentPath.startsWith('/order')}
