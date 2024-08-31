@@ -188,6 +188,13 @@ const Sidebar = ({ isOpen, type }) => {
       >
         <HoverableNavItem
           isOpen={isOpen}
+          name="Get Started"
+          icon={<DashboardIcon />}
+          active={currentPath === "/dashboard"}
+          onClick={() => handleItemClick("/dashboard")}
+        />
+        <HoverableNavItem
+          isOpen={isOpen}
           name="Dashboard"
           icon={<DashboardIcon />}
           active={currentPath === "/dashboard"}

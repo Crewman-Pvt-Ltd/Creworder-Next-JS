@@ -13,11 +13,14 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"; // Import the wallet icon
 import { Poppins } from "next/font/google";
+
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
+
 const RechargeWallet = () => {
   const [open, setOpen] = useState(false);
 
@@ -26,15 +29,15 @@ const RechargeWallet = () => {
 
   return (
     <>
-      <Button
+      <IconButton
         onClick={handleOpen}
         sx={{
           backgroundColor: "#f9f8fe",
           color: "#405189",
         }}
       >
-        Recharge Wallet
-      </Button>
+        <AccountBalanceWalletIcon />
+      </IconButton>
 
       {open && (
         <Box
@@ -57,13 +60,12 @@ const RechargeWallet = () => {
               padding: 2,
               borderRadius: 2,
               maxWidth: 500,
-            
               boxShadow: 24,
               position: "relative",
             }}
           >
             <Grid container direction="column" spacing={2}>
-              <Grid item >
+              <Grid item>
                 <Grid
                   container
                   justifyContent="space-between"
@@ -93,9 +95,7 @@ const RechargeWallet = () => {
                 </Typography>
               </Grid>
 
-              <Grid item sx={{
-                backgroundColor:"#f2f8ff",
-              }}>
+              <Grid item sx={{ backgroundColor: "#f2f8ff" }}>
                 <Typography
                   className={poppins.className}
                   fontWeight="500"
@@ -106,7 +106,6 @@ const RechargeWallet = () => {
                 <TextField
                   fullWidth
                   placeholder="Enter Amount"
-                  
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">₹</InputAdornment>
@@ -117,8 +116,8 @@ const RechargeWallet = () => {
                   }}
                   sx={{
                     "& .MuiInputBase-input": {
-                      height: "25px", 
-                      padding: "8px", 
+                      height: "25px",
+                      padding: "8px",
                     },
                     "& .MuiFormHelperText-root": {
                       fontSize: "10px",
@@ -126,14 +125,14 @@ const RechargeWallet = () => {
                   }}
                 />
                 <Typography variant="caption" color="textSecondary">
-                Min value:₹500 & Max value: ₹50,00,000
+                  Min value: ₹500 & Max value: ₹50,00,000
                 </Typography>
               </Grid>
 
               <Grid item>
-                <Typography   className={poppins.className}
-                  fontWeight="400"
-                  fontSize="12px">Or Select From Below</Typography>
+                <Typography className={poppins.className} fontWeight="400" fontSize="12px">
+                  Or Select From Below
+                </Typography>
                 <RadioGroup row aria-label="amount" name="amount-group">
                   {[500, 1000, 2500, 5000, 10000].map((value) => (
                     <FormControlLabel
@@ -147,21 +146,15 @@ const RechargeWallet = () => {
               </Grid>
 
               <Grid item>
-                <Typography   
-                 className={poppins.className}
-                  fontWeight="400"
-                  fontSize="12px">
-                Have a Coupon
+                <Typography className={poppins.className} fontWeight="400" fontSize="12px">
+                  Have a Coupon
                 </Typography>
                 <TextField
-                 
                   fullWidth
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Typography>
-                            Apply
-                        </Typography>
+                        <Typography>Apply</Typography>
                       </InputAdornment>
                     ),
                   }}
@@ -169,32 +162,43 @@ const RechargeWallet = () => {
                 <Button
                   variant="text"
                   className={poppins.className}
-                  
-                  sx={{ fontSize:"12px", textAlign: "right", display: "block", mt: 1 }}
+                  sx={{ fontSize: "12px", textAlign: "right", display: "block", mt: 1 }}
                 >
                   View Available Coupons
                 </Button>
               </Grid>
 
-              <Grid item sx={{ backgroundColor:"#f6f6f6"}}>
+              <Grid item sx={{ backgroundColor: "#f6f6f6" }}>
                 <Divider />
                 <Grid container justifyContent="space-between" sx={{ mt: 2 }}>
-                  <Typography className={poppins.className} fontSize="13px" variant="body2">Recharge Amount</Typography>
+                  <Typography className={poppins.className} fontSize="13px" variant="body2">
+                    Recharge Amount
+                  </Typography>
                   <Typography variant="body2">₹0</Typography>
                 </Grid>
                 <Grid container justifyContent="space-between">
-                  <Typography className={poppins.className} fontSize="13px"  variant="body2">Coupon Code Amount</Typography>
-                  <Typography className={poppins.className} fontSize="13px"  variant="body2">₹0</Typography>
+                  <Typography className={poppins.className} fontSize="13px" variant="body2">
+                    Coupon Code Amount
+                  </Typography>
+                  <Typography className={poppins.className} fontSize="13px" variant="body2">
+                    ₹0
+                  </Typography>
                 </Grid>
                 <Grid container justifyContent="space-between">
-                  <Typography className={poppins.className} fontSize="13px"  variant="body2">
+                  <Typography className={poppins.className} fontSize="13px" variant="body2">
                     Total Amount to be credited
                   </Typography>
-                  <Typography className={poppins.className} fontSize="13px"  variant="body2">₹0</Typography>
+                  <Typography className={poppins.className} fontSize="13px" variant="body2">
+                    ₹0
+                  </Typography>
                 </Grid>
                 <Grid container justifyContent="space-between" sx={{ mt: 2 }}>
-                  <Typography className={poppins.className} fontSize="13px" variant="subtitle1">Payable Amount</Typography>
-                  <Typography className={poppins.className} fonAtSize="13px" variant="subtitle1">₹0</Typography>
+                  <Typography className={poppins.className} fontSize="13px" variant="subtitle1">
+                    Payable Amount
+                  </Typography>
+                  <Typography className={poppins.className} fontSize="13px" variant="subtitle1">
+                    ₹0
+                  </Typography>
                 </Grid>
               </Grid>
 
@@ -204,7 +208,7 @@ const RechargeWallet = () => {
                   color="primary"
                   fullWidth
                   sx={{ mt: 2 }}
-                  disabled 
+                  disabled
                 >
                   Continue to Payment
                 </Button>
