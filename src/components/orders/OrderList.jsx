@@ -422,7 +422,7 @@ const OrderList = () => {
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         <Link href={`/admin/orders/order-details/`}>
-                          {row.order_id}
+                          <b>{row.order_id}</b>
                         </Link>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
@@ -473,19 +473,7 @@ const OrderList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50]}
-                  colSpan={12}
-                  count={rows.length}
-                  rowsPerPage={10}
-                  page={0}
-                  onPageChange={() => {}}
-                  onRowsPerPageChange={() => {}}
-                />
-              </TableRow>
-            </TableFooter>
+            
           </Box>
         </CustomCard>
       </Grid>

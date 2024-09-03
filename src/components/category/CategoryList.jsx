@@ -35,7 +35,7 @@ const CategoryList = () => {
   const handleEdit = (id) => {
     router.push(`/admin/category/edit-category?id=${id}`);
   };
-
+  const BASE_URL = "http://127.0.0.1:8000";
   const handleCreateCategory = () => {
     router.push("/admin/category/create-category");
   };
@@ -165,6 +165,7 @@ const CategoryList = () => {
                       <HeaderCell>ID</HeaderCell>
                       <HeaderCell>Category Name</HeaderCell>
                       <HeaderCell>Status</HeaderCell>
+                      <HeaderCell>Images</HeaderCell>
                       <HeaderCell>Created At</HeaderCell>
                       <HeaderCell>Updated At</HeaderCell>
                       <HeaderCell>Action</HeaderCell>
@@ -176,14 +177,21 @@ const CategoryList = () => {
                         <DataCell>{index + 1}.</DataCell>
                         <DataCell>{row.name}</DataCell>
                         <DataCell>{row.status === 1 ? "Active" : "Inactive"}</DataCell>
+                        <DataCell>
+                        <img
+                            src={`${BASE_URL}${row.image}`} 
+                            alt={row.name}
+                            height={100}
+                            width={100}
+                          />
+                        </DataCell>
                         <DataCell>{formatDate(row.created_at)}</DataCell>
                         <DataCell>{formatDate(row.updated_at)}</DataCell>
                         <TableCell>
                           <IconButton
                             onClick={() => handleEdit(row.id)}
                             aria-label="edit"
-                            sx={{ color: "green" }}
-                           >
+                            sx={{ color: "green" }}>
                             <EditIcon sx={{ color: "green" }} />
                           </IconButton>
                           <IconButton sx={{ color: "red" }}>

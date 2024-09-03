@@ -22,6 +22,7 @@ import {
   CheckCircle,
   Cancel,
 } from "@mui/icons-material";
+import Link from 'next/link';
 import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
@@ -122,7 +123,7 @@ const ProductList = () => {
                 {data?.results?.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.id}.</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_id}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}> <b><Link href={`/admin/product/product-details/`}>{row.product_id}</Link></b></TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_name}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_status === 1 ? "Active" : "Inactive"}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDate(row.product_created)}</TableCell>
@@ -140,19 +141,6 @@ const ProductList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50]}
-                  colSpan={12}
-                  count={rows.length}
-                  rowsPerPage={10}
-                  page={0}
-                  onPageChange={() => {}}
-                  onRowsPerPageChange={() => {}}
-                />
-              </TableRow>
-            </TableFooter>
           </Box>
         </CustomCard>
       </Grid>

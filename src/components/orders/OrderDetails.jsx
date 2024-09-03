@@ -26,6 +26,12 @@ import {
   FormControlLabel,
   Checkbox,
   Switch,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent,
+  StepConnector,
+  Icon,
 } from "@mui/material";
 import {
   List,
@@ -40,19 +46,23 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import GiftIcon from "@mui/icons-material/CardGiftcard";
 import LocalMallIcon from '@mui/icons-material/LocalMall';
-import { Edit as EditIcon, Delete as DeleteIcon, Star as StarIcon } from "@mui/icons-material";
+import { Edit as EditIcon, Delete as DeleteIcon, Star as StarIcon, Padding, Margin } from "@mui/icons-material";
 import CustomCard from "../CustomCard";
 import { Poppins } from "next/font/google";
 import CustomTextField from "../CustomTextField";
 import CustomLabel from "../CustomLabel";
+import CreateIcon from '@mui/icons-material/Create';
 import creworder from '../../images/crewordericon.png';
 import Image from 'next/image';
+import { px } from "framer-motion";
+import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
+
 const steps = [
-  {
+  {   
     icon: <LockIcon />,
     status: "Order Placed",
     date: "Wed, 15 Dec 2021",
@@ -95,41 +105,19 @@ const steps = [
     description: [],
   },
 ];
-const commonFormControlStyles = {
-  height: "40px",
-};
 
-const commonSelectStyles = {
-  height: "100%",
-  display: "flex",
-  alignItems: "center",
-};
-
-const checkboxStyles = {
-  display: "flex",
-  alignItems: "center",
-};
-
-const smallLabelStyles = {
-  fontSize: "13px",
-};
 
 const OrderDetails = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
-
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
-  };
-
-  const handleChange = (event) => {
-    setIsChecked(event.target.checked);
   };
 
   const rows = [
     {
       id: 1,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQdzWpCsFqgOHSDYUpICzuwGVDe6TDeDF-PQ&s', // replace with your image paths
+      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
       name: "Sweatshirt for Men (Pink)",
       color: "Pink",
       size: "M",
@@ -140,7 +128,7 @@ const OrderDetails = () => {
     },
     {
       id: 2,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQdzWpCsFqgOHSDYUpICzuwGVDe6TDeDF-PQ&s', // replace with your image paths
+      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
       name: "Noise NoiseFit Endure Smart Watch",
       color: "Black",
       size: "32.5mm",
@@ -151,7 +139,7 @@ const OrderDetails = () => {
     },
     {
       id: 3,
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQdzWpCsFqgOHSDYUpICzuwGVDe6TDeDF-PQ&s', // replace with your image paths
+      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
       name: "350 ml Glass Grocery Container",
       color: "White",
       size: "350 ml",
@@ -164,20 +152,56 @@ const OrderDetails = () => {
 
   return (
     <Grid container spacing={2} p={3}>     
-      <Grid item xs={12} md={3} sm={3}>   
+      <Grid item xs={12} md={3} sm={3}>  
         <Card sx={{ mb: 2 }}>
           <CardContent>           
           <Image 
             src={creworder}
             alt="creworder"            
             />                 
-          <Typography variant="h6" fontWeight="bold">UserName</Typography>
-            <Typography variant="body2">RQK Logistics</Typography>
-            <Typography variant="body2">ID: MFDS1400457854</Typography>
-            <Typography variant="body2">Payment Mode: Debit Card</Typography>
+             <Typography variant="h6" fontWeight="bold">Personal Information</Typography>
+             <Typography variant="body2" padding={1}><b>Name:</b> Rahul Kumar</Typography> 
+             <Typography variant="body2" padding={1}><b>Father's Name:</b> </Typography>
+             <Typography variant="body2" padding={1}><b> Contact:</b> +91- 9876543210</Typography>
+             <Typography variant="body2" padding={1}><b>Email:</b> rahul.kumar@crewman.in</Typography>
           </CardContent>
           <CardActions>
-            <Button size="small">Track Order</Button>
+          <div>
+              <Button
+                className={poppins.className}
+                startIcon={<RoomIcon />}
+                sx={{
+                  marginRight: 1,
+                  fontSize: "11px",
+                  backgroundColor: "#dff0fa",
+                }}
+              >
+               NDR
+              </Button>
+              <Button
+                className={poppins.className}
+                color="error"
+                startIcon={<CancelIcon />}
+                sx={{
+                  marginRight: 1,
+                  fontSize: "11px",
+                  backgroundColor: "#fde8e4",
+                }}
+              >
+                Account
+              </Button>
+              <Button
+                className={poppins.className}
+                startIcon={<CreateIcon />}
+                sx={{
+                  
+                  fontSize: "11px",
+                  backgroundColor: "#dff0fa",
+                }}
+              >
+               Edit
+              </Button>
+            </div>
           </CardActions>
         </Card>
       </Grid>
@@ -187,8 +211,8 @@ const OrderDetails = () => {
         <CardContent>
           <Tabs value={activeTab} onChange={handleTabChange}>
             <Tab icon={<LocalMallIcon/>} style={{display:"flex"}} className={poppins.className} label="Product Information" />
-            <Tab icon={<LocalMallIcon/>} className={poppins.className} label="Customer Information" />
-            <Tab icon={<LocalMallIcon/>} className={poppins.className} label="Order Status Tracking" />
+            <Tab icon={<DirectionsRunIcon/>} className={poppins.className} label="Customer Information" />
+            <Tab icon={<LocalShippingIcon/>} className={poppins.className} label="Order Status Tracking" />
             <Tab icon={<LocalMallIcon/>} className={poppins.className} label="Order Payment Status" />
           </Tabs>
           <Divider sx={{ my: 2 }} />
@@ -218,7 +242,7 @@ const OrderDetails = () => {
                           component="img"
                           image={row.image}
                           alt={row.name}
-                          sx={{ width: 60, height: 60 }}
+                          sx={{ width: 100, height: 100 }}
                         />
                       </TableCell>
                       <TableCell>{row.name}</TableCell>
@@ -240,7 +264,7 @@ const OrderDetails = () => {
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>
-                          Discount <span style={{ color: "blue" }}>(VELZON15)</span> :
+                          Discount :
                         </Typography>
                         <Typography style={{marginRight: 35}}>-$53.99</Typography>
                       </Grid>
@@ -285,7 +309,6 @@ const OrderDetails = () => {
                 <Typography variant="body2" padding={1}><b>PostalCode:</b> 201304</Typography>
                 <Typography variant="body2" padding={1}><b>City:</b> Noida</Typography>
                 <Typography variant="body2" padding={1}><b>State:</b> Uttar Pradesh</Typography>
-                <Typography variant="body2" padding={1}><b>Country:</b> India</Typography>
                 </CardContent>
               </Card>
             </Grid>
@@ -293,103 +316,119 @@ const OrderDetails = () => {
           )}
 
           {activeTab === 2 && (
-            <Box>
-              <Grid container spacing={2} sx={{ padding: 2 }}>
-          <Grid
-            item
-            xs={12}
-            container
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography
-              sx={{
-                fontSize: "15px",
-                color: "#495057",
-                fontWeight: "600",
-              }}
-              className={poppins.className}
-            >
-              Order Status
-            </Typography>
-            <div>
-              <Button
-                className={poppins.className}
-                startIcon={<RoomIcon />}
-                sx={{
-                  marginRight: 1,
-                  fontSize: "11px",
-                  backgroundColor: "#dff0fa",
-                }}
-              >
-                Change Address
-              </Button>
-              <Button
-                className={poppins.className}
-                color="error"
-                startIcon={<CancelIcon />}
-                sx={{
-                  fontSize: "11px",
-                  backgroundColor: "#fde8e4",
-                }}
-              >
-                Cancel Order
-              </Button>
-            </div>
-          </Grid>
-
-        <Grid item xs={12}>
-          <List>
-            {steps.map((step, index) => (
-              <ListItem key={index} alignItems="flex-start">
-                <ListItemIcon sx={{ color: "#00A884" }}>
-                  {step.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={
-                    <Typography
-                    variant="body1"
-                    fontWeight="bold"
-                    sx={{ fontSize: "15px", color: "#495057" }}
-                    className={poppins.className}
-                  >
-                    {step.status}
-                    {step.date && (
-                      <Box component="span" sx={{ fontWeight:"500", fontSize: "13px", color: "gray", marginLeft: 1 }}>
-                        - {step.date}
-                      </Box>
-                    )}
-                  </Typography>
-                  }
-                  secondary={step.description.map((text, idx) => (
-                    <Typography variant="body2" color="textSecondary" key={idx}>
-                      {text}
-                    </Typography>
-                  ))}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Grid>
-      </Grid>
-            </Box>
+             <Box>
+             <Grid container spacing={2} sx={{ padding: 2 }}>
+               <Grid
+                 item
+                 xs={12}
+                 container
+                 justifyContent="space-between"
+                 alignItems="center"
+               >
+                 <Typography
+                   sx={{
+                     fontSize: "15px",
+                     color: "#495057",
+                     fontWeight: "600",
+                   }}
+                 >
+                   Order Status
+                 </Typography>               
+               </Grid>
+     
+               <Grid item xs={12}>
+                 <Stepper
+                   activeStep={steps.length}
+                   orientation="vertical"
+                   connector={<StepConnector sx={{ borderLeft: "2px solid #00A884", minHeight: "30px" }} />}
+                 >
+                   {steps.map((step, index) => (
+                     <Step key={index} active>
+                       <StepLabel
+                         StepIconComponent={() => (
+                           <Icon sx={{ color: "#00A884"}} >{step.icon}</Icon>
+                         )}
+                       >
+                         <Typography
+                           variant="body1"
+                           fontWeight="bold"
+                           sx={{ fontSize: "15px", color: "#495057" }}
+                         >
+                           {step.status}
+                           {step.date && (
+                             <Box
+                               component="span"
+                               sx={{
+                                 fontWeight: "500",
+                                 fontSize: "13px",
+                                 color: "gray",
+                                 marginLeft: 1,
+                               }}
+                             >
+                               - {step.date}
+                             </Box>
+                           )}
+                         </Typography>
+                       </StepLabel>
+                       <StepContent>
+                         {step.description.map((text, idx) => (
+                           <Typography
+                             variant="body2"
+                             color="textSecondary"
+                             key={idx}
+                           >
+                             {text}
+                           </Typography>
+                         ))}
+                       </StepContent>
+                     </Step>
+                   ))}
+                 </Stepper>
+               </Grid>
+             </Grid>
+           </Box>
           )}
 
-
-
-{activeTab === 3 && (
+         {activeTab === 3 && (
             <Box>
              <Grid container spacing={2}>  
               <Grid item md={6} >   
-              <Card sx={{ mb: 2 }}>
-                <CardContent>   
-                <Typography variant="h6" fontWeight="bold">Payment Information</Typography>
-                  <Typography variant="body2" padding={1}><b>Name:</b> Rahul Kumar</Typography> 
-                  <Typography variant="body2" padding={1}><b>Father's Name:</b> </Typography>
-                  <Typography variant="body2"padding={1}><b>Alternate Contact:</b> +91- 9876543210</Typography>
-                  <Typography variant="body2"padding={1}><b>Email:</b> rahul.kumar@crewman.in</Typography>
-                </CardContent>
-              </Card>
+              <Card sx={{ mb: 2, border: '1px solid #ffc107', position: 'relative' }}>
+              {/* Payment Status Label */}
+              <Box 
+                sx={{ 
+                  marginTop: '15px',
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  backgroundColor: '#ffc107', 
+                  color: '#000', 
+                  padding: '4px 8px', 
+                  borderTopLeftRadius: '4px', 
+                  borderBottomRightRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 'bold'
+                }}
+              >
+                PAYMENT PENDING
+              </Box>              
+              <CardContent>
+                {/* Date */}
+                <Typography sx={{ fontSize: '16px', fontWeight: 'bold', mb: 1, marginTop: '30px' }}>
+                  2024-08-31 16:37:27
+                </Typography>
+
+                {/* Marked By */}
+                <Typography sx={{ fontSize: '14px', color: '#6c757d', mb: 0.5 }}>
+                  <strong>Marked By:</strong> Ajay
+                </Typography>
+
+                {/* Remark */}
+                <Typography sx={{ fontSize: '14px', color: '#6c757d' }}>
+                  <strong>Remark:</strong>
+                </Typography>
+              </CardContent>
+            </Card>
             </Grid>
             </Grid>
             </Box>
