@@ -40,10 +40,12 @@ const InvoiceManagementList = () => {
   const [rowData, setRowData] = useState([]);
 
   const handleRedirect = (orderId) => {
-    router.push(`/admin/invoce-management/${orderId}`);
+    router.push(`/admin/invoce-management/${order_id}`);
   };
 
-  
+  const createOrder = () => {
+    router.push("/admin/orders/createorders");
+  };
   const [state, setstate] = useState("");
   // Handle change for courseDuration
   const handlestate = (event) => {
@@ -86,8 +88,6 @@ const InvoiceManagementList = () => {
     setstatus(event.target.value);
   };
 
-<<<<<<< Updated upstream
-=======
   const [dateRange, setDateRange] = useState([null, null]);
 
   const getOrders = async () => {
@@ -114,7 +114,6 @@ const InvoiceManagementList = () => {
       console.error("Error fetching orders:", error);
     }
   };
->>>>>>> Stashed changes
   const rows = [
     {
       id: 1,
@@ -333,22 +332,12 @@ const InvoiceManagementList = () => {
               </Select>
             </Grid>
             <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
-<<<<<<< Updated upstream
-              <CustomLabel htmlFor="dateRange">
-                Date Range
-              </CustomLabel>
-              <DateRangePicker 
-                visibleMonths={2} 
-                style={{                          
-                  backgroundColor: '#fff',
-=======
               <CustomLabel htmlFor="dateRange">Date Range</CustomLabel>
               <DateRangePicker
                 label="Stay duration"
                 visibleMonths={2}
                 style={{
                   backgroundColor: "#fff",
->>>>>>> Stashed changes
                 }}
                 popoverProps={{
                   style: {
@@ -419,14 +408,9 @@ const InvoiceManagementList = () => {
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Customer Name
-<<<<<<< Updated upstream
-                    </TableCell>                   
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>                   
-=======
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>
 
->>>>>>> Stashed changes
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Order Status
                     </TableCell>
@@ -474,7 +458,8 @@ const InvoiceManagementList = () => {
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          sx={{ color: "#FF0000" }}>
+                          sx={{ color: "#FF0000" }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -483,7 +468,19 @@ const InvoiceManagementList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-           
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 50]}
+                  colSpan={12}
+                  count={rows.length}
+                  rowsPerPage={10}
+                  page={0}
+                  onPageChange={() => {}}
+                  onRowsPerPageChange={() => {}}
+                />
+              </TableRow>
+            </TableFooter>
           </Box>
         </CustomCard>
       </Grid>
