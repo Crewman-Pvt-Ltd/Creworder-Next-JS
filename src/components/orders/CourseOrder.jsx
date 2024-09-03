@@ -449,20 +449,7 @@ const CourseOrder = () => {
                   ))}
                 </TableBody>
               </Table>
-            </TableContainer>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50]}
-                  colSpan={12}
-                  count={rows.length}
-                  rowsPerPage={10}
-                  page={0}
-                  onPageChange={() => {}}
-                  onRowsPerPageChange={() => {}}
-                />
-              </TableRow>
-            </TableFooter>
+            </TableContainer>           
           </Box>
         </CustomCard>
       </Grid>

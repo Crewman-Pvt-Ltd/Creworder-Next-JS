@@ -37,9 +37,7 @@ const poppins = Poppins({
 const InvoiceManagementList = () => {
   const router = useRouter();
 
-  const createOrder = () => {
-    router.push("/admin/orders/createorders");
-  };
+  
   const [state, setstate] = useState("");
   // Handle change for courseDuration
   const handlestate = (event) => {
@@ -82,8 +80,6 @@ const InvoiceManagementList = () => {
     setstatus(event.target.value);
   };
 
-  const [dateRange, setDateRange] = useState([null, null]);
-
   const rows = [
     {
       id: 1,
@@ -99,8 +95,6 @@ const InvoiceManagementList = () => {
 
   return (
     <Grid container spacing={2} p={3}>
-      
-
       <Grid item xs={12}>
         <CustomCard padding="13px">
         <Grid item>
@@ -327,10 +321,8 @@ const InvoiceManagementList = () => {
                 Date Range
               </CustomLabel>
               <DateRangePicker 
-                label="Stay duration" 
                 visibleMonths={2} 
-                style={{
-            
+                style={{                          
                   backgroundColor: '#fff',
                 }}
                 popoverProps={{
@@ -402,8 +394,7 @@ const InvoiceManagementList = () => {
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Customer Name
                     </TableCell>                   
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>
-                   
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>                   
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Order Status
                     </TableCell>
@@ -448,8 +439,7 @@ const InvoiceManagementList = () => {
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          sx={{ color: "#FF0000" }}
-                        >
+                          sx={{ color: "#FF0000" }}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -458,19 +448,7 @@ const InvoiceManagementList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50]}
-                  colSpan={12}
-                  count={rows.length}
-                  rowsPerPage={10}
-                  page={0}
-                  onPageChange={() => {}}
-                  onRowsPerPageChange={() => {}}
-                />
-              </TableRow>
-            </TableFooter>
+           
           </Box>
         </CustomCard>
       </Grid>

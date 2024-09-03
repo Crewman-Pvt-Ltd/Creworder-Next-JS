@@ -11,6 +11,17 @@ const SuperAdminDashboard = () => {
     "suspendedCompanies",
     "totalPackages",
   ];
+
+  const currentHour = new Date().getHours();
+  let greeting;
+  if (currentHour < 12) {
+    greeting = "Good Morning";
+  } else if (currentHour < 18) {
+    greeting = "Good Afternoon";
+  } else {
+    greeting = "Good Evening";
+  }
+
   return (
     <Grid
       container
@@ -21,15 +32,15 @@ const SuperAdminDashboard = () => {
       }}
     >
       <Grid item>
-        <Typography
-          sx={{
-            fontSize: "16px",
+      <Typography
+            sx={{
+            fontSize: "20px",
             fontWeight: "600",
             margin: 0,
             color: "#495057",
-          }}
-        >
-          Welcome..., Superadmin!
+            }}
+            >
+          {greeting}, Superadmin!
         </Typography>
         <Typography
           sx={{

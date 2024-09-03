@@ -32,6 +32,17 @@ const AdminDashboard = () => {
     },
   });
 
+  const currentHour = new Date().getHours();
+  let greeting;
+  if (currentHour < 12) {
+    greeting = "Good Morning";
+  } else if (currentHour < 18) {
+    greeting = "Good Afternoon";
+  } else {
+    greeting = "Good Evening";
+  }
+
+
   const typetiles = ["Running", "intransit", "Accepted", "noresponse"];
   return (
     <Grid
@@ -49,13 +60,13 @@ const AdminDashboard = () => {
               <Grid item xs={12} sm={12} md={7} >
                 <Typography
                   sx={{
-                    fontSize: "16px",
+                    fontSize: "20px",
                     fontWeight: "600",
                     margin: 0,
                     color: "#495057",
                   }}
                 >
-                  Welcome..., Admin!
+                  {greeting}, Admin!
                 </Typography>
                 <Typography
                   sx={{
@@ -68,12 +79,11 @@ const AdminDashboard = () => {
                   Here's what's happening with your store today.
                 </Typography>
               </Grid>
+              
               <Grid item xs={12} sm={10} md={5}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={8} style={{ backgroundColor: "#fff",marginTop:"10px", }}>
-                  
-                    <DateRangePicker
-                    
+                <Grid container spacing={2}>                  
+                  <Grid item xs={12} sm={6} md={9}>                  
+                    <DateRangePicker                    
                       visibleMonths={2}
                       style={{
                         backgroundColor: "#fff",
@@ -86,7 +96,7 @@ const AdminDashboard = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
+                  <Grid item xs={12} sm={6} md={3}>
                     <LightButton variant="contained" sx={{
                       padding:"10px",
                     }}>ClockIn</LightButton>

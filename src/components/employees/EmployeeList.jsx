@@ -151,15 +151,13 @@ const EmployeeList = () => {
                             <IconButton
                               onClick={() => handleEdit(row)}
                               aria-label="edit"
-                              sx={{ color: "green" }}
-                            >
+                              sx={{ color: "green" }}>
                               <EditIcon />
                             </IconButton>
                             <IconButton
                               onClick={() => handleDelete(row.id)}
                               aria-label="delete"
-                              sx={{ color: "red" }}
-                            >
+                              sx={{ color: "red" }}>
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>

@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
-
+import useGetAllCategories from "@/api-manage/react-query/useGetAllCategories";
 // Importing the Poppins font with weight 500
 const poppins = Poppins({
   weight: "500",
@@ -39,6 +39,7 @@ const CreateProduct = () => {
   const [hsnCode, setHsnCode] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const { data, refetch } = useGetAllCategories();
   // Function to handle product creation
   const handleCreateProduct = async () => {
     const token = await getToken(); // Get token dynamically
@@ -206,7 +207,6 @@ const CreateProduct = () => {
                   <MenuItem value="5">5%</MenuItem>
                   <MenuItem value="18">18%</MenuItem>
                   <MenuItem value="28">28%</MenuItem>
-
                 </Select>
               </Grid>
 
@@ -242,11 +242,10 @@ const CreateProduct = () => {
                   <MenuItem value="" disabled>
                     Select Category
                   </MenuItem>
-                  <MenuItem value={1}>Weight Gain</MenuItem>
-                  <MenuItem value={2}>Weight Loss</MenuItem>
-                  <MenuItem value={3}>Women's Wellness</MenuItem>
-                  <MenuItem value={4}>Man Wellness</MenuItem>
-                  <MenuItem value={5}>Diabetes Cure</MenuItem>
+                  {data?.Data?.map((row, index) => (
+                  <MenuItem key={row.id} value={row.id}>{row.name}</MenuItem>
+                ))}
+                  
                 </Select>
               </Grid>
 

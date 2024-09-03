@@ -351,6 +351,7 @@ const CreateCompanyLayout = () => {
                     value={packageAmount}
                     onChange={handlePackageChange}
                     inputProps={{ readOnly: true }}
+                    style={{backgroundColor: '#eeeeee'}}
                   />
                 </Grid>
               </Grid>
@@ -370,6 +371,7 @@ const CreateCompanyLayout = () => {
                     error={!!formErrors.paymentDate}
                     helperText={formErrors.paymentDate}
                     inputProps={{ readOnly: true }}
+                    style={{backgroundColor: '#eeeeee'}}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>

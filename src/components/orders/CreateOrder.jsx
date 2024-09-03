@@ -291,6 +291,8 @@ const CreateOrder = () => {
                   placeholder="e.g. city"
                   type="text"
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  style={{backgroundColor: '#eeeeee'}}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -304,6 +306,8 @@ const CreateOrder = () => {
                   placeholder="e.g. state"
                   type="text"
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  style={{backgroundColor: '#eeeeee'}}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -317,6 +321,8 @@ const CreateOrder = () => {
                   placeholder="e.g. country"
                   type="text"
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  style={{backgroundColor: '#eeeeee'}}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -383,6 +389,8 @@ const CreateOrder = () => {
                            placeholder="e.g. price"
                            type="number"
                            fullWidth
+                           inputProps={{ readOnly: true }}
+                           style={{backgroundColor: '#eeeeee'}}
                            sx={{ fontFamily: 'Poppins, sans-serif' }}
                          />
                        </Grid>
@@ -398,6 +406,8 @@ const CreateOrder = () => {
                            placeholder="e.g. total"
                            type="number"
                            fullWidth
+                           inputProps={{ readOnly: true }}
+                           style={{backgroundColor: '#eeeeee'}}
                            sx={{ fontFamily: 'Poppins, sans-serif' }}
                          />
                        </Grid>
@@ -467,7 +477,8 @@ const CreateOrder = () => {
                   type="text"
                   fullWidth
                   sx={{ fontFamily: 'Poppins, sans-serif' }}
-                  InputProps={{ readOnly: true }}
+                  inputProps={{ readOnly: true }}
+                  style={{backgroundColor: '#eeeeee'}}
                 />
               </Grid>
             </Grid>
@@ -504,7 +515,8 @@ const CreateOrder = () => {
                   type="text"
                   fullWidth
                   sx={{ fontFamily: 'Poppins, sans-serif' }}
-                  InputProps={{ readOnly: true }}
+                  inputProps={{ readOnly: true }}
+                  style={{backgroundColor: '#eeeeee'}}
                 />
               </Grid>
             </Grid>
@@ -525,8 +537,7 @@ const CreateOrder = () => {
                   onChange={handlePaymentTypeChange}
                   displayEmpty
                   sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }}
-                  fullWidth
-                >
+                  fullWidth>
                   <MenuItem value="" disabled>Select Payment</MenuItem>
                   <MenuItem value="COD">COD Payment</MenuItem>
                   <MenuItem value="Partial">Partial Payment</MenuItem>
@@ -557,9 +568,6 @@ const CreateOrder = () => {
         </Grid>
       </Grid>
       </Grid>
-
-            
-
             <Grid
               item
               sx={{
