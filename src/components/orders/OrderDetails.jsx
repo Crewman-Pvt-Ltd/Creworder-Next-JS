@@ -118,35 +118,35 @@ const OrderDetails = () => {
     {
       id: 1,
       image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
-      name: "Sweatshirt for Men (Pink)",
+      name: "Gummsi Gummies",
       color: "Pink",
       size: "M",
-      itemPrice: "$119.99",
+      itemPrice: "₹119.99",
       quantity: 2,
       rating: 5,
-      totalAmount: "$239.98",
+      totalAmount: "₹239.98",
     },
     {
       id: 2,
       image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
-      name: "Noise NoiseFit Endure Smart Watch",
+      name: "Gummsi Gummies ",
       color: "Black",
       size: "32.5mm",
-      itemPrice: "$94.99",
+      itemPrice: "₹94.99",
       quantity: 1,
       rating: 5,
-      totalAmount: "$94.99",
+      totalAmount: "₹94.99",
     },
     {
       id: 3,
       image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
-      name: "350 ml Glass Grocery Container",
+      name: "Sleep Easy Gummies",
       color: "White",
       size: "350 ml",
-      itemPrice: "$24.99",
+      itemPrice: "₹24.99",
       quantity: 1,
       rating: 4,
-      totalAmount: "$24.99",
+      totalAmount: "₹24.99",
     },
   ];
 
@@ -260,25 +260,26 @@ const OrderDetails = () => {
                     <Box p={2} bgcolor="background.paper" borderRadius={1}>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Sub Total :</Typography>
-                        <Typography style={{marginRight: 35}}>$359.96</Typography>
+                        <Typography style={{marginRight: 35}}>₹359.96</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>
                           Discount :
                         </Typography>
-                        <Typography style={{marginRight: 35}}>-$53.99</Typography>
+                        <Typography style={{marginRight: 35}}>-₹53.99</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Shipping Charge :</Typography>
-                        <Typography style={{marginRight: 35}}>$65.00</Typography>
+                        <Typography style={{marginRight: 35}}>₹65.00</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Estimated Tax :</Typography>
-                        <Typography style={{marginRight: 35}}>$44.99</Typography>
+                        <Typography style={{marginRight: 35}}>₹44.99</Typography>
                       </Grid>
+                      <Divider sx={{ my: 2 }} />
                       <Grid container justifyContent="space-between" fontWeight="bold">
                         <Typography>Total (USD) :</Typography>
-                        <Typography style={{marginRight: 35}}>$415.96</Typography>
+                        <Typography style={{marginRight: 35}}>₹415.96</Typography>
                       </Grid>
                     </Box>
                   </Grid>
