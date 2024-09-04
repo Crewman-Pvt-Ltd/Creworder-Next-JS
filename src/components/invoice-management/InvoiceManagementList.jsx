@@ -18,10 +18,7 @@ import {
   TablePagination,
   FormControl,
 } from "@mui/material";
-import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-} from "@mui/icons-material";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
@@ -29,15 +26,26 @@ import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import { DateRangePicker } from "@nextui-org/date-picker";
+import { baseApiUrl } from "@/api-manage/ApiRoutes";
+import { getToken } from "@/utils/getToken";
+import axios from "axios";
 
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
 const InvoiceManagementList = () => {
+  const token = getToken();
   const router = useRouter();
+  const [rowData, setRowData] = useState([]);
 
-  
+  const handleRedirect = (orderId) => {
+    router.push(`/admin/invoce-management/${order_id}`);
+  };
+
+  const createOrder = () => {
+    router.push("/admin/orders/createorders");
+  };
   const [state, setstate] = useState("");
   // Handle change for courseDuration
   const handlestate = (event) => {
@@ -80,6 +88,32 @@ const InvoiceManagementList = () => {
     setstatus(event.target.value);
   };
 
+  const [dateRange, setDateRange] = useState([null, null]);
+
+  const getOrders = async () => {
+    try {
+      let data = JSON.stringify({
+        data_range: "08/01/2024 - 09/28/2024",
+        date_type: "created_at",
+        status: 0,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${baseApiUrl}export-order/`,
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      const response = await axios.request(config);
+      setRowData(response.data.Data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
   const rows = [
     {
       id: 1,
@@ -88,7 +122,7 @@ const InvoiceManagementList = () => {
       amount: "10,000",
       status: "Pending",
       payment_mode: "COD",
-      order_date: "2024-08-01",    
+      order_date: "2024-08-01",
       action: "Edit",
     },
   ];
@@ -97,20 +131,21 @@ const InvoiceManagementList = () => {
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
         <CustomCard padding="13px">
-        <Grid item>
-              <Typography
-                sx={{
-                  fontWeight: "600",
-                  fontSize: "20px",
-                  whiteSpace: "nowrap",
-                  textTransform: "capitalize",
-                  color: "black",
-                  marginLeft: "30px",
-                }}
-              >
-               Total Order
-              </Typography>
-            </Grid><br></br>
+          <Grid item>
+            <Typography
+              sx={{
+                fontWeight: "600",
+                fontSize: "20px",
+                whiteSpace: "nowrap",
+                textTransform: "capitalize",
+                color: "black",
+                marginLeft: "30px",
+              }}
+            >
+              Total Order
+            </Typography>
+          </Grid>
+          <br></br>
           <Grid
             container
             spacing={1}
@@ -118,9 +153,7 @@ const InvoiceManagementList = () => {
             alignItems="center"
           >
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="order_id" >
-                Order Id.
-              </CustomLabel>
+              <CustomLabel htmlFor="order_id">Order Id.</CustomLabel>
               <CustomTextField
                 id="order_id"
                 name="order_id"
@@ -132,9 +165,7 @@ const InvoiceManagementList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="awb_no">
-                AWB No.
-              </CustomLabel>
+              <CustomLabel htmlFor="awb_no">AWB No.</CustomLabel>
               <CustomTextField
                 id="awb_no"
                 name="awb_no"
@@ -145,9 +176,7 @@ const InvoiceManagementList = () => {
               />
             </Grid>
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="phone" >
-                Phone No.
-              </CustomLabel>
+              <CustomLabel htmlFor="phone">Phone No.</CustomLabel>
               <CustomTextField
                 id="phone"
                 name="phone"
@@ -159,9 +188,7 @@ const InvoiceManagementList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="product" >
-                Product Name
-              </CustomLabel>
+              <CustomLabel htmlFor="product">Product Name</CustomLabel>
               <Select
                 labelId="product"
                 id="product"
@@ -182,9 +209,7 @@ const InvoiceManagementList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="payment" >
-                Payment Type
-              </CustomLabel>
+              <CustomLabel htmlFor="payment">Payment Type</CustomLabel>
               <Select
                 labelId="payment"
                 id="payment"
@@ -205,9 +230,7 @@ const InvoiceManagementList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Status" >
-                Agent Status
-              </CustomLabel>
+              <CustomLabel htmlFor="Agent Status">Agent Status</CustomLabel>
               <Select
                 labelId="Agent Status"
                 id="agent"
@@ -227,9 +250,7 @@ const InvoiceManagementList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Name" >
-                Agent Name
-              </CustomLabel>
+              <CustomLabel htmlFor="Agent Name">Agent Name</CustomLabel>
               <Select
                 labelId="Agent Name"
                 id="agentname"
@@ -250,9 +271,7 @@ const InvoiceManagementList = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Team Lead" >
-                Team Lead
-              </CustomLabel>
+              <CustomLabel htmlFor="Team Lead">Team Lead</CustomLabel>
               <Select
                 labelId="Team Lead"
                 id="teamlead"
@@ -272,9 +291,7 @@ const InvoiceManagementList = () => {
             </Grid>
 
             <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="state" >
-                State
-              </CustomLabel>
+              <CustomLabel htmlFor="state">State</CustomLabel>
               <Select
                 labelId="state"
                 id="state"
@@ -294,9 +311,7 @@ const InvoiceManagementList = () => {
               </Select>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="Order Status">
-                Order Status
-              </CustomLabel>
+              <CustomLabel htmlFor="Order Status">Order Status</CustomLabel>
               <Select
                 labelId="Order Status"
                 id="status"
@@ -317,23 +332,23 @@ const InvoiceManagementList = () => {
               </Select>
             </Grid>
             <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
-              <CustomLabel htmlFor="dateRange">
-                Date Range
-              </CustomLabel>
-              <DateRangePicker 
-                visibleMonths={2} 
-                style={{                          
-                  backgroundColor: '#fff',
+              <CustomLabel htmlFor="dateRange">Date Range</CustomLabel>
+              <DateRangePicker
+                label="Stay duration"
+                visibleMonths={2}
+                style={{
+                  backgroundColor: "#fff",
                 }}
                 popoverProps={{
                   style: {
-                    backgroundColor: '#fff', 
+                    backgroundColor: "#fff",
                   },
                 }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
               <Button
+                onClick={getOrders}
                 sx={{
                   marginTop: "24px",
                   padding: "8px 16px",
@@ -366,7 +381,7 @@ const InvoiceManagementList = () => {
               >
                 Export
               </Button>
-            </Grid>           
+            </Grid>
           </Grid>
         </CustomCard>
       </Grid>
@@ -393,8 +408,9 @@ const InvoiceManagementList = () => {
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Customer Name
-                    </TableCell>                   
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>                   
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>
+
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Order Status
                     </TableCell>
@@ -403,27 +419,30 @@ const InvoiceManagementList = () => {
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Order Date
-                    </TableCell>                   
+                    </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                  {rowData.map((row) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.id}.
+                        {row.id}
+                      </TableCell>
+                      <TableCell
+                        sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                        onClick={() => handleRedirect(row.order_id)}
+                      >
+                        {row.order_id}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.invoice_id}
+                        {row.customer_name}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.name}
-                      </TableCell>                     
+                        {row.total_amount}
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.amount}
-                      </TableCell>                     
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.status}
+                        {row.order_status_title}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.payment_mode}
@@ -439,7 +458,8 @@ const InvoiceManagementList = () => {
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          sx={{ color: "#FF0000" }}>
+                          sx={{ color: "#FF0000" }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -448,7 +468,19 @@ const InvoiceManagementList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-           
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 50]}
+                  colSpan={12}
+                  count={rows.length}
+                  rowsPerPage={10}
+                  page={0}
+                  onPageChange={() => {}}
+                  onRowsPerPageChange={() => {}}
+                />
+              </TableRow>
+            </TableFooter>
           </Box>
         </CustomCard>
       </Grid>
