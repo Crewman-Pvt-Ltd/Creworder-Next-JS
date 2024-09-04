@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Typography,
@@ -6,192 +6,290 @@ import {
   Box,
   Card,
   CardContent,
-  CardActions,
   Tabs,
   Tab,
   Divider,
+  Avatar,
 } from "@mui/material";
-import CancelIcon from "@mui/icons-material/Cancel";
-import LockIcon from "@mui/icons-material/Lock";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import GiftIcon from "@mui/icons-material/CardGiftcard";
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import CustomCard from "../CustomCard";
-import { Poppins } from "next/font/google";
-import CreateIcon from '@mui/icons-material/Create';
-import creworder from '../../images/product-521132.webp';
-import Image from 'next/image';
-const poppins = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
+import Image from "next/image";
+import Rating from "@mui/material/Rating";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EventIcon from '@mui/icons-material/Event';
+import gummsi from "../../images/product-521132.webp";
+import gummsi2 from "../../images/61fnbgodePL.jpg";
 
 const ProductDetails = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const [isChecked, setIsChecked] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
+  const [rating, setRating] = useState(4.5); // Example rating value
+
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
+
+  const images = [gummsi, gummsi2, gummsi]; // Replace with actual image sources
+
+  // Auto-carousel for images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveImage((prevActiveImage) => (prevActiveImage + 1) % images.length);
+    }, 3000); // Change image every 3 seconds
+    return () => clearInterval(interval);
+  }, [images.length]);
+
   return (
-    <Grid container spacing={2} p={3}>     
-      <Grid item xs={12} md={3} sm={3}>  
-        <Card sx={{ mb: 2 }}>
-          <CardContent>           
-          <Image 
-            src={creworder}
-            alt="product"            
-            />                 
-             <Typography variant="h6" fontWeight="bold">Product Information</Typography>
-             <Typography variant="body2" padding={1}><b>Product ID:</b> PR19YL67</Typography> 
-             <Typography variant="body2" padding={1}><b>Product Name:</b> Gummsi Gummies</Typography> 
-             <Typography variant="body2" padding={1}><b>Category Name:</b> </Typography>
-             <Typography variant="body2" padding={1}><b> Status:</b> Active</Typography>
-          </CardContent>
-          <CardActions>
-          <div>
-             
-              <Button
-                className={poppins.className}
-                color="error"
-                startIcon={<CancelIcon />}
+    <Grid container spacing={2} p={3}>
+      {/* Left Section: Product Image and Thumbnails */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ mb: 2, p: 2 }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <ArrowBackIosNewIcon
+              onClick={() =>
+                setActiveImage((activeImage - 1 + images.length) % images.length)
+              }
+              sx={{ cursor: "pointer" }}
+            />
+            <Image src={images[activeImage]} alt="product" layout="responsive" />
+            <ArrowForwardIosIcon
+              onClick={() => setActiveImage((activeImage + 1) % images.length)}
+              sx={{ cursor: "pointer" }}
+            />
+          </Box>
+          <Box display="flex" justifyContent="center" mt={2}>
+            {/* Thumbnail Images */}
+            {images.map((img, index) => (
+              <Avatar
+                key={index}
+                src={img.src}
+                alt="thumbnail"
+                variant="square"
                 sx={{
-                  marginRight: 1,
-                  fontSize: "11px",
-                  backgroundColor: "#fde8e4",
+                  width: 50,
+                  height: 50,
+                  mx: 0.5,
+                  border:
+                    index === activeImage ? "2px solid #000" : "1px solid #ccc",
+                  cursor: "pointer",
                 }}
-              >
-                Action
-              </Button>
-              <Button
-                className={poppins.className}
-                startIcon={<CreateIcon />}
-                sx={{
-                  
-                  fontSize: "11px",
-                  backgroundColor: "#dff0fa",
-                }}
-              >
-               Edit
-              </Button>
-            </div>
-          </CardActions>
+                onClick={() => setActiveImage(index)}
+              />
+            ))}
+          </Box>
         </Card>
       </Grid>
 
-      <Grid item xs={9} md={9} sm={9}>
-  <CustomCard>
-    <CardContent>
-      <Tabs value={activeTab} onChange={handleTabChange}>
-        <Tab
-          icon={<LocalMallIcon />}
-          style={{ display: 'flex' }}
-          className={poppins.className}
-          label="Product Information"
-        />
-      </Tabs>
-      <Divider sx={{ my: 2 }} />
-      {activeTab === 0 && (
-        <Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h6" fontWeight="bold">
-                Product Details
+      {/* Right Section: Product Details */}
+      <Grid item xs={12} md={8}>
+        <Card>
+          <CardContent>
+            {/* Product Header */}
+            <Typography variant="h5" fontWeight="bold">
+              Gummsi Gummies
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary">
+              Regulate Sleep Cycle | Promotes Relaxation
+            </Typography>
+            <Box display="flex" alignItems="center" mt={1}>
+              <Rating value={rating} precision={0.1} readOnly />
+              <Typography variant="body2" ml={1}>
+                (5.50k Customer Review)
               </Typography>
-              <Grid container spacing={2}>
-                {/* SKU Card */}
-                <Grid item xs={12} sm={3}>
-                  <Card sx={{ bgcolor: '#f3e5f5', p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      SFC-WL
-                    </Typography>
-                    <Typography variant="subtitle2">SKU</Typography>
-                  </Card>
-                </Grid>
-                {/* Price Card */}
-                <Grid item xs={12} sm={3}>
-                  <Card sx={{ bgcolor: '#e0f7fa', p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      ₹ 4499
-                    </Typography>
-                    <Typography variant="subtitle2">Price</Typography>
-                  </Card>
-                </Grid>
-                {/* Quantity Card */}
-                <Grid item xs={12} sm={3}>
-                  <Card sx={{ bgcolor: '#fce4ec', p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      500
-                    </Typography>
-                    <Typography variant="subtitle2">Quantity</Typography>
-                  </Card>
-                </Grid>
-                {/* GST Card */}
-                <Grid item xs={12} sm={3}>
-                  <Card sx={{ bgcolor: '#fce4ec', p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      0%
-                    </Typography>
-                    <Typography variant="subtitle2">GST</Typography>
-                  </Card>
-                </Grid>
-                {/* Available Card */}
-                <Grid item xs={12} sm={4}>
-                  <Card sx={{ bgcolor: '#e0f7fa', p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      In Stock
-                    </Typography>
-                    <Typography variant="subtitle2">Available</Typography>
-                  </Card>
-                </Grid>
-                {/* Created At Card */}
-                <Grid item xs={12} sm={4}>
-                  <Card sx={{ bgcolor: '#fce4ec', p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      2023-06-10
-                    </Typography>
-                    <Typography variant="subtitle2">Created At</Typography>
-                  </Card>
-                </Grid>
-                {/* Updated At Card */}
-                <Grid item xs={12} sm={4}>
-                  <Card sx={{ bgcolor: '#e1bee7', p: 2, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight="bold">
-                      2024-06-19
-                    </Typography>
-                    <Typography variant="subtitle2">Updated At</Typography>
-                  </Card>
-                </Grid>
+            </Box>
+            <Divider sx={{ my: 2 }} />
+
+            {/* Pricing and Stock Information with Icons */}
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Box display="flex" alignItems="center">
+                      <ShoppingCartIcon sx={{ mr: 1 }} />
+                      <Typography variant="h6" fontWeight="bold">
+                      SKU:
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1">SFC-WL</Typography>
+                  </CardContent>
+                </Card>
               </Grid>
-              {/* Descriptions Section */}
-              <Box mt={3}>
-                <Typography variant="h6" fontWeight="bold">
-                  Descriptions
-                </Typography>
-                <Divider sx={{ my: 1 }} />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    display: '-webkit-box',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: 4, // Limits the text to 4 lines
-                    lineHeight: '1.5em', // Adjust line height as needed
-                    maxHeight: '6em' // 4 lines * 1.5em line height
-                  }}
-                >
-                  Slim Fit Combo. This combo includes a variety of slim fit options designed to provide a comfortable and stylish look for any occasion. Featuring high-quality materials and a modern cut, each piece in this combo is crafted to enhance your silhouette while providing ease of movement. Ideal for both casual and formal settings, this slim fit combo is perfect for those who appreciate versatile and chic fashion choices. 
-                </Typography>
+              <Grid item xs={12} sm={4}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Box display="flex" alignItems="center">
+                      <PriceCheckIcon sx={{ mr: 1 }} />
+                      <Typography variant="h6" fontWeight="bold">
+                        Price:
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1">₹120.40</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Box display="flex" alignItems="center">
+                      <Inventory2Icon sx={{ mr: 1 }} />
+                      <Typography variant="h6" fontWeight="bold">
+                      Quantity:
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1">500</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+             
+              <Grid item xs={12} sm={4}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Box display="flex" alignItems="center">
+                      <AttachMoneyIcon sx={{ mr: 1 }} />
+                      <Typography variant="h6" fontWeight="bold">
+                      GST:
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1">0%</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Box display="flex" alignItems="center">
+                      <CheckCircleIcon sx={{ mr: 1 }} />
+                      <Typography variant="h6" fontWeight="bold">
+                      In Stock:
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1">Available</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Box display="flex" alignItems="center">
+                      <EventIcon sx={{ mr: 1 }} />
+                      <Typography variant="h6" fontWeight="bold">
+                        Created Date:
+                      </Typography>
+                    </Box>
+                    <Typography variant="body1">03 Aaugust 2024</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              
+            </Grid>
+
+            {/* Size and Color Options */}
+            <Box mt={2}>
+              <Typography variant="h6" fontWeight="bold">
+                Sizes:
+              </Typography>
+              <Box display="flex" mt={1}>
+                {["S", "M", "L", "XL"].map((size) => (
+                  <Button
+                    key={size}
+                    variant="outlined"
+                    sx={{ mr: 1, textTransform: "none" }}
+                  >
+                    {size}
+                  </Button>
+                ))}
               </Box>
+            </Box>
+
+            <Box mt={2}>
+              <Typography variant="h6" fontWeight="bold">
+                Colors:
+              </Typography>
+              <Box display="flex" mt={1}>
+                {["#000", "#f00", "#0f0", "#00f", "#ff0", "#f0f", "#0ff"].map(
+                  (color) => (
+                    <Box
+                      key={color}
+                      sx={{
+                        width: 24,
+                        height: 24,
+                        backgroundColor: color,
+                        borderRadius: "50%",
+                        border: "1px solid #ccc",
+                        mr: 1,
+                        cursor: "pointer",
+                      }}
+                    ></Box>
+                  )
+                )}
+              </Box>
+            </Box>
+
+            {/* Product Description */}
+            <Box mt={3}>
+              <Typography variant="h6" fontWeight="bold">
+                Description:
+              </Typography>
+              <Typography variant="body2" color="text.secondary" style={{fontsize: '20px'}}>
+                Tommy Hilfiger men striped pink sweatshirt. Crafted with cotton.
+                Material composition is 100% organic cotton. This is one of the
+                world's leading designer lifestyle brands and is internationally
+                recognized for celebrating the essence of classic American cool
+                style, featuring preppy with a twist designs.
+              </Typography>
+            </Box>
+
+            {/* Specification and Reviews Tabs */}
+            <Tabs value={activeTab} onChange={handleTabChange} sx={{ mt: 3 }}>
+            <b><Tab label="Specification" /></b>
+            <b><Tab label="Details" /></b>
+            </Tabs>
+            <Divider sx={{ my: 2 }} />
+
+            {/* Specification Content */}
+            {activeTab === 0 && (
+               <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Typography variant="body2">
+                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                <b>Category:</b> T-Shirt
+              </Typography>
+              <Typography variant="body2">
+                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                <b>Brand:</b> Tommy Hilfiger
+              </Typography>
+              <Typography variant="body2">
+                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                <b>Color:</b> Blue
+              </Typography>
+              <Typography variant="body2">
+                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                <b>Material:</b> Cotton
+              </Typography>
+              <Typography variant="body2">
+                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                <b>Weight:</b> 140 Gram
+              </Typography>
             </Grid>
           </Grid>
         </Box>
-      )}
-    </CardContent>
-  </CustomCard>
-</Grid>
-
+            )}
+            {activeTab === 1 && (
+              <Box>
+                <Typography variant="body2">
+                  {/* Add more detailed product information here */}
+                  This is the details section.
+                </Typography>
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+      </Grid>
     </Grid>
   );
 };

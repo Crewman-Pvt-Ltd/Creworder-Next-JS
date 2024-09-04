@@ -16,7 +16,7 @@ import {
 const EditCategory = () => {
   const router = useRouter();
   const { id } = router.query; 
-
+  const BASE_URL = "http://127.0.0.1:8000";
   const [formData, setFormData] = useState({
     category_name: "",
     images: "", 
@@ -170,7 +170,11 @@ const EditCategory = () => {
                 </CustomLabel>
                 {formData?.images && (
                   <div style={{ marginBottom: "10px" }}>
-                    <img src={formData?.images} alt="Preview" style={{ width: "100%", maxHeight: "200px" }} />
+                    <img 
+                      src={`${BASE_URL}${formData.images}`} 
+                      alt="Preview" 
+                      style={{ width: "30%", maxHeight: "200px" }} 
+                    />
                   </div>
                 )}
                 <CustomTextField

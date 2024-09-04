@@ -128,7 +128,7 @@ const SupportTicketList = () => {
                   {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
                       <DataCell>{row.id}</DataCell>
-                      <DataCell>{row.ticketNumber || "N/A"}</DataCell> 
+                      <DataCell>{row.ticket_id}</DataCell> 
                       <DataCell>{row.subject}</DataCell>
                       <DataCell>{row.description}</DataCell>
                       <DataCell>{row.type}</DataCell>
