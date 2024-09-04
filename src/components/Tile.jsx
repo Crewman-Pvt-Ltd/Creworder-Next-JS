@@ -18,8 +18,8 @@ import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
 const Tile = ({ type, height, padding }) => {
   const { data: companiesData } = useGetAllCompanies();
   const { data: packagesData } = useGetAllPackages();
-  console.log("Fetched companies data:", companiesData);
-  console.log("Fetched packages data:", packagesData);
+ /*  console.log("Fetched companies data:", companiesData);
+  console.log("Fetched packages data:", packagesData); */
 
   let title = "";
   let count = 0;

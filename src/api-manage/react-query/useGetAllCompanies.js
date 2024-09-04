@@ -4,10 +4,10 @@ import { get_companies } from "../ApiRoutes";
 import { getToken } from "@/utils/getToken";
 
 
-const getCompanies = async () => {
+const getCompanies = async (url = get_companies) => {
   const token = getToken();
   const { data } = await MainApi.get(
-    get_companies,
+    url,
     {
       headers: {
         Authorization: `Token ${token}`,
@@ -17,8 +17,8 @@ const getCompanies = async () => {
   return data;
 };
 
-export default function useGetAllCompanies() {
-  return useQuery(["companies"], () => getCompanies(), {
+export default function useGetAllCompanies(url) {
+  return useQuery(["companies", url], () => getCompanies(url), {
     cacheTime: 300000,
   });
 }
