@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CustomCard from "./CustomCard";
 import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
 import useGetAllPackages from "@/api-manage/react-query/useGetAllPackages";
@@ -11,6 +11,8 @@ const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
   subsets: ["latin"],
 });
+import { get_packages } from "@/api-manage/ApiRoutes";
+import { get_companies } from "@/api-manage/ApiRoutes";
 
 const HeaderCell = (props) => (
   <TableCell
@@ -98,23 +100,18 @@ const configuration = {
 };
 
 const CompanyDetailsdashboard = ({ type }) => {
-  const [url, setUrl] = useState(null);
-  const [currentstate, setCurrentState] = useState(null);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const [previousPageUrl, setPreviousPageUrl] = useState(null);
+  const [packageUrl, setPackageUrl] = useState(get_packages);
+  const [companyUrl, setCompanyUrl] = useState(get_companies);
   const [page, setPage] = useState(0);
-  const rowsPerPage = 10; 
+  const [rowsPerPage] = useState(10);
 
-  const { data, isLoading, isError, refetch } = type === "packageCompanyCount"
-    ? useGetAllPackages(url)
-    : useGetAllCompanies(url);
+  const { data: packageData, isLoading: isPackageLoading, isError: isPackageError } = useGetAllPackages(packageUrl);
+  const { data: companyData, isLoading: isCompanyLoading, isError: isCompanyError } = useGetAllCompanies(companyUrl);
 
-  useEffect(() => {
-    if (data) {
-      setNextPageUrl(data.next);
-      setPreviousPageUrl(data.previous);
-    }
-  }, [data]);
+  const data = type === "packageCompanyCount" ? packageData : companyData;
+  const isLoading = type === "packageCompanyCount" ? isPackageLoading : isCompanyLoading;
+  const isError = type === "packageCompanyCount" ? isPackageError : isCompanyError;
+  const setUrl = type === "packageCompanyCount" ? setPackageUrl : setCompanyUrl;
 
   const { title, headers, mapRow } = configuration[type] || {};
   if (!title) return null;
@@ -122,19 +119,16 @@ const CompanyDetailsdashboard = ({ type }) => {
   const rows = data?.results.map(mapRow) || [];
 
   const handleChangePage = (event, newPage) => {
-    if (newPage > page) {
-      setUrl(nextPageUrl);
-    } else {
-      setUrl(previousPageUrl);
+    if (newPage > page && data.next) {
+      setUrl(data.next);
+    } else if (newPage < page && data.previous) {
+      setUrl(data.previous);
     }
     setPage(newPage);
-    refetch();
   };
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error loading data</Typography>;
-
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <CustomCard>
@@ -153,7 +147,7 @@ const CompanyDetailsdashboard = ({ type }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+            {rows.map((row, index) => (
               <TableRow key={row.id}>
                 <DataCell>{page * rowsPerPage + index + 1}</DataCell>
                 <DataCell>
@@ -164,21 +158,10 @@ const CompanyDetailsdashboard = ({ type }) => {
                     </Typography>
                   </Box>
                 </DataCell>
-                <DataCell>{row.packages || row.totalUsers || row.totalCompanies || "N/A"}</DataCell>
-                {type === "newlyRegistered" && <DataCell>{row.date}</DataCell>}
-                {type === "mostUsers" && <>
-                  <DataCell>{row.employees || "N/A"}</DataCell>
-                  <DataCell>{row.clients || "N/A"}</DataCell>
-                </>}
-                {type === "recentExpired" && <DataCell>{row.expiryDate || "N/A"}</DataCell>}
-                {type === "recentPaid" && <DataCell>{row.paymentDate || "N/A"}</DataCell>}
+                <DataCell>{row.package_name || row.total_user_count || "N/A"}</DataCell>
               </TableRow>
             ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 63 * emptyRows }}>
-                <TableCell colSpan={headers.length} />
-              </TableRow>
-            )}
+       
           </TableBody>
         </Table>
         <TablePagination
@@ -188,8 +171,6 @@ const CompanyDetailsdashboard = ({ type }) => {
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
-          nextPageUrl={nextPageUrl}
-          previousPageUrl={previousPageUrl}
         />
       </Box>
     </CustomCard>
