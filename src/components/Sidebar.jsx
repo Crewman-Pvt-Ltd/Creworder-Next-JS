@@ -297,6 +297,105 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/admin/settings")}
           ></HoverableNavItem>
         )}
+
+{type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name={
+            <span
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%"
+            }}
+              
+            >
+              <span>HR</span>
+              <IconButton
+                size="small"
+                onClick={handleOrderClick}
+                sx={{
+                  color: "white",
+                  marginLeft: "110px",
+                }}
+              >
+                {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </span>
+          }
+          icon={<LocalMallIcon />}
+          active={currentPath.startsWith('/order')}
+          onClick={handleOrderClick}
+        >
+          <Collapse in={isOrderOpen}>
+            <List component="div" disablePadding>
+            <ListItem
+                button
+                onClick={() => handleItemClick('/admin/hr-employees')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Employees" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/leaves')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Leaves" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/shift-roster')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Shift Roster" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/schedule-order')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Attendance" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/course')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Holiday" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/designation')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Designation" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/department')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Department" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/appreciation')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Appreciation" />
+              </ListItem>
+            
+              
+              
+             
+             
+
+            </List>
+          </Collapse>
+        </HoverableNavItem>)}
+
+
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
