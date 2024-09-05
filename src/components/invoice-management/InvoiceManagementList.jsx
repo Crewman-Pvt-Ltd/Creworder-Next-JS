@@ -40,7 +40,7 @@ const InvoiceManagementList = () => {
   const [rowData, setRowData] = useState([]);
 
   const handleRedirect = (orderId) => {
-    router.push(`/admin/invoce-management/${order_id}`);
+    router.push(`/admin/invoce-management/${orderId}`);
   };
 
   const createOrder = () => {
