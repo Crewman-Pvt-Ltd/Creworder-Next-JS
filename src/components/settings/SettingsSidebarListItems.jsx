@@ -36,6 +36,7 @@ import AdminSettings from "./AdminSettings";
 import MaintainanceMode from "./MaintainanceMode";
 import EmailSettings from "./EmailSettings";
 import EInvoiceSettings from "./EInvoiceSettings";
+import PickupPoint from "./PickupPoint";
 import OrderStatus from "./OrderStatus";
 import LeadStatus from "./LeadStatus";
 import AssignmentIcon from '@mui/icons-material/Assignment'; // Example new icon for Order Status
@@ -69,6 +70,7 @@ const adminMenuItems = [
   { text: "Order Status", icon: <AssignmentIcon /> },
   { text: "Lead Status", icon: <PeopleAltIcon /> },
   { text: "IP Access", icon: <PeopleAltIcon /> },
+  { text: "Pickup Point", icon: <PeopleAltIcon /> },
 ];
 const commonMenuItems = [
   { text: "Roles & Permissions", icon: <BackupIcon /> },
@@ -289,6 +291,8 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)}
          { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
          { selectedItem === "E-Invoice Settings" &&  <EInvoiceSettings />}
+
+         {type == "admin" && (selectedItem === "Pickup Point" &&  <PickupPoint />)}
          {type == "admin" && (selectedItem === "Email Settings" &&  <EmailSettings />)}
          {type == "admin" && (selectedItem === "IP Access" &&  <IPAccess />)}
         </Box>

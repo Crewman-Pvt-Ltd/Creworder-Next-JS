@@ -31,6 +31,9 @@ const CreateEmployees = ({role}) => {
   });
 
   const [errors, setErrors] = useState({});
+  const handleproduct = (event) => {
+    setproduct(event.target.value);
+  };
 
   const token = getToken();
   const router = useRouter();

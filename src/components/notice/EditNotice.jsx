@@ -8,7 +8,7 @@ import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/mater
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 
-const EditNotice = () => {
+  const EditNotice = () => {
   const router = useRouter();
   const { id } = router.query;
   const [notice, setNotice] = useState({ title: "", description: "" });
@@ -57,9 +57,7 @@ const EditNotice = () => {
       if (!token) {
         throw new Error("No authentication token found.");
       }
-
       console.log("Updating notice with data:", notice);
-
       const response = await MainApi.put(`/api/notices/${id}/`, notice, {
         headers: {
           Authorization: `Token ${token}`,
@@ -69,7 +67,7 @@ const EditNotice = () => {
 
       if (response.status === 200) {
         console.log("Notice updated successfully");
-        router.push("/superadmin/notice-board");
+        router.push("/notice-board");
       } else {
         console.error("Failed to update the notice");
         setError("Failed to update the notice");

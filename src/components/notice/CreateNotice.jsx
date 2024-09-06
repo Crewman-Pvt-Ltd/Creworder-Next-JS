@@ -4,22 +4,42 @@ import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
-import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
+import useGetNoticeUsers from "@/api-manage/react-query/useGetNoticeUsers";
+import {
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Divider,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
+import { usePermissions } from "@/contexts/PermissionsContext";
 
 const CreateNotice = () => {
   const router = useRouter();
-
+  const token = getToken();
+  const { permissionsData } = usePermissions();
   const [formData, setFormData] = useState({
+    created_by: permissionsData.user.id,
     title: "",
     description: "",
-    user: 1,
+    users: [],
+    
   });
   const [errors, setErrors] = useState({});
+  
+  const {
+    data: usersData,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useGetNoticeUsers();
 
   const validateForm = () => {
     let formErrors = {};
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if (!formData[key] || (Array.isArray(formData[key]) && formData[key].length === 0)) {
         formErrors[key] = "This field is required";
       }
     });
@@ -27,46 +47,44 @@ const CreateNotice = () => {
     return Object.keys(formErrors).length === 0;
   };
 
-  const handleInputChange = (field, value) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-    if (value) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [field]: "",
-      }));
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = async () => {
-    if (validateForm()) {
-      try {
-        const token = getToken();
-        if (!token) {
-          throw new Error("No authentication token found.");
-        }
+ 
+  const handleCheckboxChange = (event) => {
+    const userId = event.target.value;
+    setFormData((prevState) => ({
+      ...prevState,
+      users: prevState.users.includes(userId)
+        ? prevState.users.filter((id) => id !== userId)
+        : [...prevState.users, userId],
+    }));
+    console.log("Form State", formData);
+  };
 
-        const form = new FormData();
-        Object.keys(formData).forEach((key) => {
-          form.append(key, formData[key]);
-        });
 
-        const response = await MainApi.post("/api/notices/", form, {
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (response.status === 201) {
-          router.push("/superadmin/notice-board");
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error.response?.data || error.message);
-      }
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
+    });
+
+    const response = await MainApi.post("/api/notices/", formData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    if (response.status === 201) {
+      router.push("/notice-board");
+    } else {
+      throw new Error("Unexpected response from server");
     }
+   
   };
 
   return (
@@ -89,7 +107,7 @@ const CreateNotice = () => {
                 marginTop: 2,
               }}
             >
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <CustomLabel htmlFor="title" required>
                   Title
                 </CustomLabel>
@@ -99,12 +117,29 @@ const CreateNotice = () => {
                   placeholder="title"
                   type="text"
                   value={formData.title}
-                  onChange={(e) => handleInputChange("title", e.target.value)}
+                  onChange={handleInputChange}
                   error={!!errors.title}
                   helperText={errors.title}
                   required
                   fullWidth
                 />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <CustomLabel htmlFor="users" required>
+                  Users
+                </CustomLabel>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{ width: "900px", margin: "20px" }}
+                >
+                  {usersData?.results.map((row, index) => (
+                  <Grid item xs={12} sm={6} md={2} key={index}>
+                    <FormControlLabel control={<Checkbox />} label={row?.username} onChange={handleCheckboxChange} value={row?.id}/>
+                  </Grid>
+                ))}
+                </Grid>
               </Grid>
             </Grid>
 
@@ -126,7 +161,7 @@ const CreateNotice = () => {
                   name="description"
                   type="text"
                   value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="Full Description"
                   error={!!errors.description}
                   helperText={errors.description}

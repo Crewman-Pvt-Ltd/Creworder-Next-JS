@@ -125,7 +125,7 @@ const CreateProduct = () => {
                   onChange={handleInputChange(setProductName)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
-                />
+                /> 
               </Grid>
 
               <Grid item xs={12}>
