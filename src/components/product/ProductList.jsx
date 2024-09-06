@@ -12,17 +12,11 @@ import {
   Paper,
   IconButton,
   Box,
-  TableFooter,
-  TablePagination
 } from "@mui/material";
 import {
-  Visibility,
   Edit,
-  Delete,
-  CheckCircle,
-  Cancel,
 } from "@mui/icons-material";
-import Link from 'next/link';
+import { Link } from '@mui/material';
 import CustomCard from "../CustomCard";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/router";
@@ -52,13 +46,9 @@ const ProductList = () => {
     router.push(`/admin/product/editproduct?id=${row.id}`);
   };
 
-  const rows = [
-    {
-      
-    },
-    
-    // Add more rows as needed
-  ];
+  const handleProductDetails = (row) => {
+    router.push(`/admin/product/product-details?${row.product_id}`);
+  };
 
   return (
     <Grid container spacing={2} p={3}>
@@ -123,7 +113,13 @@ const ProductList = () => {
                 {data?.results?.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.id}.</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}> <b><Link href={`/admin/product/product-details/`}>{row.product_id}</Link></b></TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                      <b>
+                        <Link component="button" onClick={() => handleProductDetails(row)}>
+                          {row.product_id}
+                        </Link>
+                      </b>
+                    </TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_name}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.product_status === 1 ? "Active" : "Inactive"}</TableCell>
                       <TableCell sx={{ whiteSpace: 'nowrap' }}>{formatDate(row.product_created)}</TableCell>

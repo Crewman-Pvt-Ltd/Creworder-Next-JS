@@ -89,7 +89,7 @@ const CreateModule = () => {
                 marginTop: 2,
               }}
             >
-              <Grid item xs={12}>
+              <Grid item xs={4}>
                 <CustomLabel htmlFor="name" required>
                   Name
                 </CustomLabel>
@@ -106,18 +106,8 @@ const CreateModule = () => {
                   fullWidth
                 />
               </Grid>
-            </Grid>
 
-            <Grid
-              item
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-                marginTop: 2,
-              }}
-            >
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={8} sm={8}>
                 <CustomLabel htmlFor="description" required>
                   Description
                 </CustomLabel>
@@ -133,7 +123,7 @@ const CreateModule = () => {
                   required
                   fullWidth
                   multiline
-                  rows={4}
+                  rows={1}
                 />
               </Grid>
             </Grid>

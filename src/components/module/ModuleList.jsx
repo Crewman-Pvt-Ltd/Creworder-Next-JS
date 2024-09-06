@@ -33,6 +33,10 @@ const ModuleList = () => {
   const [moduleToDelete, setModuleToDelete] = useState(null);
   const [viewModule, setViewModule] = useState(null);
 
+  const handleEdit = (id) => {
+    router.push(`/superadmin/module/editmodule?id=${id}`);
+  };
+
   const handleCreateModule = () => {
     router.push("/superadmin/module/createmodule");
   };
@@ -179,13 +183,13 @@ const ModuleList = () => {
                        
                         <TableCell>
                           
-                          {/* <IconButton
+                          <IconButton
                             onClick={() => handleEdit(row.id)}
                             aria-label="edit"
                             sx={{ color: "green" }}
                           >
                             <Edit />
-                          </IconButton> */}
+                          </IconButton>
                           <IconButton
                             onClick={() => handleDeleteClick(row.id)}
                             aria-label="delete"

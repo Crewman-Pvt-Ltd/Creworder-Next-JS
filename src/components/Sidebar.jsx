@@ -85,7 +85,6 @@ const Sidebar = ({ isOpen, type }) => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   if (isMobile) {
     return null;
   }
@@ -624,7 +623,7 @@ const Sidebar = ({ isOpen, type }) => {
                     width: "100%"
                   }}
               >
-                <span>NDR</span>
+                <span>Shipment</span>
                 <IconButton
                   size="small"
                   onClick={handleNDRClick}
@@ -643,6 +642,11 @@ const Sidebar = ({ isOpen, type }) => {
           >
             <Collapse in={isNDROpen}>
               <List component="div" disablePadding>
+              <ListItem                 
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="NDR" />
+                </ListItem>
                 <ListItem                 
                   sx={{ pl: 4 }}
                 >
@@ -651,12 +655,16 @@ const Sidebar = ({ isOpen, type }) => {
                 <ListItem                 
                   sx={{ pl: 4 }}
                 >
-                  <ListItemText primary="OFD" />
+                  <ListItemText primary="OFD Counter" />
                 </ListItem>
                 <ListItem                 
                   sx={{ pl: 4 }}
                 >
                   <ListItemText primary="RTO" />
+                </ListItem>
+                <ListItem                 
+                  sx={{ pl: 4 }}>
+                  <ListItemText primary="Manifesto" />
                 </ListItem>
 
               </List>

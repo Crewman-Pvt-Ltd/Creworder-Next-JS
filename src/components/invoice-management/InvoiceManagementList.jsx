@@ -334,7 +334,6 @@ const InvoiceManagementList = () => {
             <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
               <CustomLabel htmlFor="dateRange">Date Range</CustomLabel>
               <DateRangePicker
-                label="Stay duration"
                 visibleMonths={2}
                 style={{
                   backgroundColor: "#fff",
@@ -468,19 +467,7 @@ const InvoiceManagementList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50]}
-                  colSpan={12}
-                  count={rows.length}
-                  rowsPerPage={10}
-                  page={0}
-                  onPageChange={() => {}}
-                  onRowsPerPageChange={() => {}}
-                />
-              </TableRow>
-            </TableFooter>
+           
           </Box>
         </CustomCard>
       </Grid>

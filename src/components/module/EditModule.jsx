@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import dynamic from "next/dynamic";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 
-const EditNotice = () => {
+const EditModule = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [notice, setNotice] = useState({ title: "", description: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [initialData, setInitialData] = useState({
+    name: "",
+    description: "",
+  });
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+  });
 
   useEffect(() => {
     if (id) {
-      const fetchNotice = async () => {
+      const fetchModule = async () => {
         try {
           setLoading(true);
           const token = getToken();
@@ -25,27 +31,35 @@ const EditNotice = () => {
             throw new Error("No authentication token found.");
           }
 
-          const response = await MainApi.get(`/api/notices/${id}`, {
+          const response = await MainApi.get(`/api/modules/${id}`, {
             headers: {
               Authorization: `Token ${token}`,
             },
           });
 
           if (response.status === 200) {
-            setNotice(response.data);
+            // Populate initialData and formData with fetched data
+            setInitialData({
+              name: response.data.name || "",
+              description: response.data.description || "",
+            });
+            setFormData({
+              name: response.data.name || "",
+              description: response.data.description || "",
+            });
           } else {
-            console.error("Failed to fetch the notice");
-            setError("Failed to fetch the notice");
+            console.error("Failed to fetch the module");
+            setError("Failed to fetch the module");
           }
         } catch (error) {
-          console.error("An error occurred while fetching the notice:", error);
-          setError("An error occurred while fetching the notice");
+          console.error("An error occurred while fetching the module:", error);
+          setError("An error occurred while fetching the module");
         } finally {
           setLoading(false);
         }
       };
 
-      fetchNotice();
+      fetchModule();
     }
   }, [id]);
 
@@ -58,25 +72,31 @@ const EditNotice = () => {
         throw new Error("No authentication token found.");
       }
 
-      console.log("Updating notice with data:", notice);
+      // Create a payload with only the fields that have changed
+      const updatedFields = {};
+      for (const key in formData) {
+        if (formData[key] !== initialData[key]) {
+          updatedFields[key] = formData[key];
+        }
+      }
 
-      const response = await MainApi.put(`/api/notices/${id}/`, notice, {
+      const response = await MainApi.patch(`/api/modules/${id}/`, updatedFields, {
         headers: {
           Authorization: `Token ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       if (response.status === 200) {
-        console.log("Notice updated successfully");
-        router.push("/superadmin/notice-board");
+        console.log("Module updated successfully");
+        router.push("/superadmin/module");
       } else {
-        console.error("Failed to update the notice");
-        setError("Failed to update the notice");
+        console.error("Failed to update the module");
+        setError("Failed to update the module");
       }
     } catch (error) {
-      console.error("An error occurred while updating the notice:", error);
-      setError("An error occurred while updating the notice");
+      console.error("An error occurred while updating the module:", error);
+      setError("An error occurred while updating the module");
     }
   };
 
@@ -95,41 +115,42 @@ const EditNotice = () => {
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Edit Notice
+                Edit Module
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleFormSubmit}>
               <Grid item sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, marginTop: 2 }}>
-                <Grid item xs={12}>
-                  <CustomLabel htmlFor="title" required>
-                    Title
+                <Grid item xs={4}>
+                  <CustomLabel htmlFor="name" required>
+                    Module Name
                   </CustomLabel>
                   <CustomTextField
-                    id="title"
-                    name="title"
-                    placeholder="Title"
+                    id="name"
+                    name="name"
+                    placeholder="Module Name"
                     type="text"
                     required
                     fullWidth
-                    value={notice.title}
-                    onChange={(e) => setNotice({ ...notice, title: e.target.value })}
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </Grid>
-              </Grid>
-
-              <Grid item sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, marginTop: 2 }}>
-                <Grid item xs={12}>
+                <Grid item xs={8}>
                   <CustomLabel htmlFor="description" required>
                     Description
                   </CustomLabel>
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={notice.description}
-                    onChange={(event, editor) => {
-                      const data = editor.getData();
-                      setNotice((prevNotice) => ({ ...prevNotice, description: data }));
-                    }}
+                  <CustomTextField
+                    id="description"
+                    name="description"
+                    placeholder="Module Description"
+                    type="text"
+                    required
+                    fullWidth
+                    multiline
+                    row={2}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
                 </Grid>
               </Grid>
@@ -159,4 +180,4 @@ const EditNotice = () => {
   );
 };
 
-export default EditNotice;
+export default EditModule;

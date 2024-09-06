@@ -33,7 +33,6 @@ import {
 
 const UserList = () => {
   const router = useRouter();
-
   const { data, refetch } = useGetAllUsers();
   const [open, setOpen] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);

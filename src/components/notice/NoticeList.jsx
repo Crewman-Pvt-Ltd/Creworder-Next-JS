@@ -124,6 +124,10 @@ const NoticeList = () => {
     return date.toLocaleDateString();
   };
 
+  function removeHtmlTags(str) {
+    return str.replace(/<[^>]*>/g, '');
+  }
+
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
@@ -184,10 +188,8 @@ const NoticeList = () => {
                       <TableRow key={index + 1}>
                         <DataCell>{index + 1}</DataCell>
                         <DataCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>{truncateDescription(row.title)}</DataCell>
-                        <DataCell
-                          sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}
-                        >
-                          {truncateDescription(row.description)}
+                        <DataCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>
+                          {truncateDescription(removeHtmlTags(row.description))}
                         </DataCell>
                         <DataCell>{formatDate(row.created_at)}</DataCell>
                         <TableCell>
