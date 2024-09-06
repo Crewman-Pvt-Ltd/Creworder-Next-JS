@@ -35,7 +35,7 @@ const CategoryList = () => {
   const handleEdit = (id) => {
     router.push(`/admin/category/edit-category?id=${id}`);
   };
-  const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const handleCreateCategory = () => {
     router.push("/admin/category/create-category");
   };

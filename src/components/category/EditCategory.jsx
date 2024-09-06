@@ -3,6 +3,7 @@ import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
+
 import MainApi from "@/api-manage/MainApi";
 import {
   Typography,
@@ -13,10 +14,10 @@ import {
   Divider,
 } from "@mui/material";
 
-const EditCategory = () => {
+  const EditCategory = () => {
   const router = useRouter();
   const { id } = router.query; 
-  const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [formData, setFormData] = useState({
     category_name: "",
     images: "", 

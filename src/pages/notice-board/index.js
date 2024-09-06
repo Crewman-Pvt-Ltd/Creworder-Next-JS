@@ -1,19 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 import NoticeList from "@/components/notice/NoticeList";
 import Layout from "@/components/Layout";
-
-import {
- 
-} from "@mui/material";
+import { usePermissions } from "@/contexts/PermissionsContext";
+import Loader from "@/components/Loader";
 
 const Index = () => {
+  const { permissionsData, permissionLoading } = usePermissions();
 
+  if (permissionLoading) return <Loader />;
 
-  return (
-    <Layout>
-     <NoticeList />
-    </Layout>
-  );
+  const router = useRouter();
+  const userRole = permissionsData?.role;
+
+  useEffect(() => {
+    if (!permissionLoading && !permissionsData?.role) {
+      router.push("/login");
+    }
+  }, [permissionLoading, permissionsData, router]);
+
+  if (permissionsData?.role) {
+    return (
+      <Layout type={userRole}>
+        <NoticeList />
+      </Layout>
+    );
+  }
 };
 
 export default Index;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
 import { useRouter } from "next/router";
+
 import {
   Grid,
   Card,
@@ -25,6 +26,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Visibility, Edit, Delete } from "@mui/icons-material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
+import CustomCard from "../CustomCard";
 
 const BranchList = () => {
   const router = useRouter();
@@ -122,7 +124,7 @@ const BranchList = () => {
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
-        <Card>
+        <CustomCard>
           <CardContent>
             <Grid container alignItems="center" justifyContent="space-between">
               <Typography
@@ -201,7 +203,7 @@ const BranchList = () => {
               </Table>
             </TableContainer>
           </CardContent>
-        </Card>
+        </CustomCard>
       </Grid>
 
       <Dialog open={open} onClose={handleDeleteCancel}>

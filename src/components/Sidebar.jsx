@@ -85,7 +85,6 @@ const Sidebar = ({ isOpen, type }) => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
   if (isMobile) {
     return null;
   }
@@ -297,6 +296,105 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/admin/settings")}
           ></HoverableNavItem>
         )}
+
+{type == "admin" && (<HoverableNavItem
+          isOpen={isOpen}
+          name={
+            <span
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%"
+            }}
+              
+            >
+              <span>HR</span>
+              <IconButton
+                size="small"
+                onClick={handleOrderClick}
+                sx={{
+                  color: "white",
+                  marginLeft: "110px",
+                }}
+              >
+                {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </span>
+          }
+          icon={<LocalMallIcon />}
+          active={currentPath.startsWith('/order')}
+          onClick={handleOrderClick}
+        >
+          <Collapse in={isOrderOpen}>
+            <List component="div" disablePadding>
+            <ListItem
+                button
+                onClick={() => handleItemClick('/admin/hr-employees')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Employees" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/leaves')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Leaves" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/shift-roster')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Shift Roster" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/schedule-order')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Attendance" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/orders/course')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Holiday" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/designation')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Designation" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/department')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Department" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/admin/appreciation')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Appreciation" />
+              </ListItem>
+            
+              
+              
+             
+             
+
+            </List>
+          </Collapse>
+        </HoverableNavItem>)}
+
+
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -525,7 +623,7 @@ const Sidebar = ({ isOpen, type }) => {
                     width: "100%"
                   }}
               >
-                <span>NDR</span>
+                <span>Shipment</span>
                 <IconButton
                   size="small"
                   onClick={handleNDRClick}
@@ -544,6 +642,11 @@ const Sidebar = ({ isOpen, type }) => {
           >
             <Collapse in={isNDROpen}>
               <List component="div" disablePadding>
+              <ListItem                 
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="NDR" />
+                </ListItem>
                 <ListItem                 
                   sx={{ pl: 4 }}
                 >
@@ -552,12 +655,16 @@ const Sidebar = ({ isOpen, type }) => {
                 <ListItem                 
                   sx={{ pl: 4 }}
                 >
-                  <ListItemText primary="OFD" />
+                  <ListItemText primary="OFD Counter" />
                 </ListItem>
                 <ListItem                 
                   sx={{ pl: 4 }}
                 >
                   <ListItemText primary="RTO" />
+                </ListItem>
+                <ListItem                 
+                  sx={{ pl: 4 }}>
+                  <ListItemText primary="Manifesto" />
                 </ListItem>
 
               </List>
