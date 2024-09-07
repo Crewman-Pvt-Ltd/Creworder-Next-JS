@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
@@ -21,15 +21,23 @@ import {
   RadioGroup,
   FormLabel,
   FormControlLabel,
+  Tooltip,
+  List,
+  ListItem,
+  ListItemText
 } from "@mui/material";
+import { get_username_suggestions } from "@/api-manage/ApiRoutes";
 
 const CreateAgent = () => {
   const { data: branchData, refetch: branchRefetch } = useGetAllBranches();
-  const { data: departmentData, refetch: departmentRefetch } = useGetAllDepartments();
-  const { data: designationData, refetch: designationRefetch } = useGetAllDesignations();
+  const { data: departmentData, refetch: departmentRefetch } =
+    useGetAllDepartments();
+  const { data: designationData, refetch: designationRefetch } =
+    useGetAllDesignations();
   const { data: usersData, refetch: usersRefetch } = useGetAllUsers();
   const [formData, setFormData] = useState({
     username: "",
+    password: "",
     first_name: "",
     last_name: "",
     email: "",
@@ -44,22 +52,63 @@ const CreateAgent = () => {
     designation: "Select Designation",
     reportingto: "Select Reporting To",
     branch: "Select Branch",
-
     team: "Select Team",
     manager: "Select Manager",
     employeeType: "Employee Type",
     loginAllowed: "no",
-   role:"admin",
+    role: "admin",
   });
 
   const [errors, setErrors] = useState({});
+  const [initialRun, setInitialRun] = useState(true);
+  const [suggestions, setSuggestions] = useState([]);
   const router = useRouter();
   const { permissionsData } = usePermissions();
-
 
   const handleRadioChange = (event) => {
     setFormData({ ...formData, loginAllowed: event.target.value });
   };
+
+  const handleSuggestionClick = (suggestion) => {
+    setFormData((prevData) => ({ ...prevData, username: suggestion }));
+    setSuggestions([]);
+  };
+
+
+  const getSuggestions = async () => {
+    const token = getToken();
+    try {
+      const response = await MainApi.post(
+        get_username_suggestions,
+        {
+          firstname: formData.first_name,
+          lastname: formData.last_name,
+          date_of_birth: formData.dob,
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+      setSuggestions(response.data.results);
+      console.log("Suggestions:", response.data.results);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      initialRun &&
+      formData.first_name &&
+      formData.last_name &&
+      formData.dob
+    ) {
+      getSuggestions();
+      setInitialRun(false); // Prevent further auto-triggering after the initial run
+    }
+  }, [formData.first_name, formData.last_name, formData.dob]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -81,10 +130,17 @@ const CreateAgent = () => {
       "role",
       "team",
       "employeeType",
+      "username",
+      "password",
     ];
 
     requiredFields.forEach((field) => {
-      if (!formData[field] || formData[field] === "Select Gender" || formData[field] === "Select Marital Status" || formData[field] === "Employee Type") {
+      if (
+        !formData[field] ||
+        formData[field] === "Select Gender" ||
+        formData[field] === "Select Marital Status" ||
+        formData[field] === "Employee Type"
+      ) {
         newErrors[field] = "This field is required";
       }
     });
@@ -96,34 +152,37 @@ const CreateAgent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     const token = getToken();
     try {
-      const response = await MainApi.post("/api/users/", {
-        ...formData,
-        profile: {
-          gender: formData.gender,
-          contact_no: formData.contact_number,
-          marital_status: formData.maritalStatus,
-          date_of_joining: formData.doj,
-          address: formData.address,
-          professional_email: formData.professionalemail,
-          date_of_birth: formData.dob,
-          reporting: formData.reportingto,
-          branch: formData.branch,
-          company: permissionsData.user.profile.company,
+      const response = await MainApi.post(
+        "/api/users/",
+        {
+          ...formData,
+          profile: {
+            gender: formData.gender,
+            contact_no: formData.contact_number,
+            marital_status: formData.maritalStatus,
+            date_of_joining: formData.doj,
+            address: formData.address,
+            professional_email: formData.professionalemail,
+            date_of_birth: formData.dob,
+            reporting: formData.reportingto,
+            branch: formData.branch,
+            company: permissionsData.user.profile.company,
+          },
+          role: {
+            role: formData.role,
+          },
         },
-        role: {
-          role: formData.role,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
         }
-      }, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      );
 
       if (response.status === 201) {
-        router.push("/users");
+        router.push("/ admin/agent");
       } else {
         throw new Error("Unexpected response from server");
       }
@@ -155,22 +214,6 @@ const CreateAgent = () => {
                     Personal Info.
                   </Typography>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                <CustomLabel htmlFor="username" required>
-                  Username:
-                </CustomLabel>
-                <CustomTextField
-                  id="username"
-                  name="username"
-                  type="text"
-                  placeholder="Enter Username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  error={!!errors.username}
-                  helperText={errors.username}
-                  fullWidth
-                />
-              </Grid>
 
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="first_name" required>
@@ -337,7 +380,7 @@ const CreateAgent = () => {
               </Grid>
 
               <Grid container spacing={2} mt={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={8}>
                   <CustomLabel htmlFor="address" required>
                     Address:
                   </CustomLabel>
@@ -356,7 +399,7 @@ const CreateAgent = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="department" required>
                     Department
                   </CustomLabel>
@@ -373,9 +416,9 @@ const CreateAgent = () => {
                     <MenuItem value="Select Department" disabled>
                       Select Department
                     </MenuItem>
-                    {departmentData?.results.map((row, index) =>(
-                    <MenuItem value={row?.id}>{row.name}</MenuItem>
-                  ))}
+                    {departmentData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.name}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -398,9 +441,9 @@ const CreateAgent = () => {
                     <MenuItem value="Select Designation" disabled>
                       Select Designation
                     </MenuItem>
-                    {designationData?.results.map((row, index) =>(
-                    <MenuItem value={row?.id}>{row.name}</MenuItem>
-                  ))}
+                    {designationData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.name}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
 
@@ -421,9 +464,9 @@ const CreateAgent = () => {
                     <MenuItem value="Select Reporting To" disabled>
                       Select Reporting To
                     </MenuItem>
-                    {usersData?.results.map((row, index) =>(
-                    <MenuItem value={row?.id}>{row.username}</MenuItem>
-                  ))}
+                    {usersData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.username}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -446,9 +489,9 @@ const CreateAgent = () => {
                     <MenuItem value="Select Branch" disabled>
                       Select Branch
                     </MenuItem>
-                    {branchData?.results.map((row, index) =>(
-                    <MenuItem value={row?.id}>{row.name}</MenuItem>
-                  ))}
+                    {branchData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.name}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
 
@@ -521,18 +564,74 @@ const CreateAgent = () => {
                     <MenuItem value="Team B">Team B</MenuItem>
                   </CustomTextField>
                 </Grid> */}
-
-               
               </Grid>
 
+              <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                User Details
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+
               <Grid container spacing={2} mt={2}>
-                <Grid item xs={12}>
-                  <FormLabel component="legend">Login Allowed:</FormLabel>
+                <Grid item xs={12} md={4}>
+                  <CustomLabel htmlFor="username" required>
+                    Username:
+                  </CustomLabel>
+
+                  <CustomTextField
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="Enter Username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    error={!!errors.username}
+                    helperText={errors.username}
+                    fullWidth
+                  />
+                  <button onClick={getSuggestions}>Refresh Suggestions</button>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  {suggestions.length > 0 && (
+                    <List>
+                      {suggestions.map((suggestion, index) => (
+                        <ListItem
+                          key={index}
+                          button
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        >
+                          <ListItemText primary={suggestion} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  )}
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <CustomLabel htmlFor="password" required>
+                    Password:
+                  </CustomLabel>
+                  <CustomTextField
+                    id="password"
+                    name="password"
+                    type="text"
+                    placeholder="Enter password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={!!errors.password}
+                    helperText={errors.password}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <FormLabel component="legend">
+                    <b>Login Allowed:</b>
+                  </FormLabel>
                   <RadioGroup
                     aria-label="loginAllowed"
                     name="loginAllowed"
                     value={formData.loginAllowed}
                     onChange={handleRadioChange}
+                    row // Make radio buttons inline
                   >
                     <FormControlLabel
                       value={true}

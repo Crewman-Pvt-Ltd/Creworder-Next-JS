@@ -38,6 +38,12 @@ const AgentList = () => {
   const handleCreateAgent = () => {
     router.push("agent/createagent");
   };
+
+  const handleEdit = (row) => {
+    router.push(`/admin/agent/editagent?id=${row.id}`);
+  };
+
+
   const handleToggleStatus = (userId, newStatus) => {
     setUsers(
       users.map((user) =>
@@ -173,6 +179,7 @@ const AgentList = () => {
                       <TableCell>
                         <Tooltip title="Edit">
                           <IconButton
+                          onClick={() => handleEdit(row)}
                             aria-label="edit"
                             sx={{ color: "#007BFF" }}
                           >
