@@ -179,7 +179,7 @@ const CreateEmployees = ({ role }) => {
                     onChange={handleChange}
                     error={!!errors["profile.gender"]}
                     sx={{ height: 40 }}
-                  >
+                    >
                     <MenuItem value="m">Male</MenuItem>
                     <MenuItem value="f">Female</MenuItem>
                     <MenuItem value="t">Transgender</MenuItem>
