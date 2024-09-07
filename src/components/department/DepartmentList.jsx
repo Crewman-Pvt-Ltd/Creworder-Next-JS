@@ -1,47 +1,53 @@
-import { Grid, Button, CardContent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton } from "@mui/material";
-import React from "react";
-import AddIcon from "@mui/icons-material/Add";
-import Visibility from "@mui/icons-material/Visibility";
-import Edit from "@mui/icons-material/Edit";
-import Delete from "@mui/icons-material/Delete";
-import CustomCard from "../CustomCard";
+import React from 'react';
+import {
+  Grid,
+  Button,
+  CardContent,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import Edit from '@mui/icons-material/Edit';
+import Delete from '@mui/icons-material/Delete';
+import CustomCard from '../CustomCard';
+import useGetAllDepartments from '@/api-manage/react-query/useGetAllDepartments';
 
-const DepartmentList = ( {onAddDepartment} ) => {
- 
-  const rows = [
-    { id: 1, name: "Senior", department: "123 Street" },
-    { id: 2, name: "Junior", department: "456 Avenue" },
- 
-  ];
-
+const DepartmentList = ({ onAddDepartment }) => {
+  const { data, refetch, isLoading, isError } = useGetAllDepartments();
 
   const handleEdit = (id) => {
-  
-    console.log("Edit", id);
+    console.log('Edit', id);
   };
 
   const handleDeleteClick = (id) => {
-  
-    console.log("Delete", id);
+    console.log('Delete', id);
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading departments</div>;
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
-      <Grid item xs={12} sm={12} md={12} sx={{ display: "flex", gap: 2 }}>
+      <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
         <Button
           onClick={onAddDepartment}
           sx={{
-            padding: "8px 16px",
-            fontSize: "14px",
-            backgroundColor: "#405189",
-            color: "white",
-            "&:hover": {
-              backgroundColor: "#334a6c",
+            padding: '8px 16px',
+            fontSize: '14px',
+            backgroundColor: '#405189',
+            color: 'white',
+            '&:hover': {
+              backgroundColor: '#334a6c',
             },
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 1,
-            textTransform: "none",
+            textTransform: 'none',
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
@@ -49,25 +55,25 @@ const DepartmentList = ( {onAddDepartment} ) => {
         </Button>
         <Button
           sx={{
-            padding: "8px 16px",
-            fontSize: "14px",
-            border: "2px solid #405189",
-            color: "#405189",
-            backgroundColor: "white",
-            "&:hover": {
-              backgroundColor: "#f0f0f0",
+            padding: '8px 16px',
+            fontSize: '14px',
+            border: '2px solid #405189',
+            color: '#405189',
+            backgroundColor: 'white',
+            '&:hover': {
+              backgroundColor: '#f0f0f0',
             },
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 1,
-            textTransform: "none",
+            textTransform: 'none',
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
           Export
         </Button>
       </Grid>
-      <Grid item xs={12} sm={12} md={12}>
+      <Grid item xs={12}>
         <CustomCard>
           <CardContent>
             <TableContainer>
@@ -81,24 +87,31 @@ const DepartmentList = ( {onAddDepartment} ) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, index) => (
+                  {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>{row.name}</TableCell>
-                      <TableCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>{row.department}</TableCell>
+                      <TableCell
+                        sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
+                      >
+                        {row.name}
+                      </TableCell>
+                      <TableCell
+                        sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
+                      >
+                        {row.department}
+                      </TableCell>
                       <TableCell>
-                       
                         <IconButton
                           onClick={() => handleEdit(row.id)}
                           aria-label="edit"
-                          sx={{ color: "green" }}
+                          sx={{ color: 'green' }}
                         >
                           <Edit />
                         </IconButton>
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
-                          sx={{ color: "red" }}
+                          sx={{ color: 'red' }}
                         >
                           <Delete />
                         </IconButton>

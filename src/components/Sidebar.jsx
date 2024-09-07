@@ -351,7 +351,7 @@ const Sidebar = ({ isOpen, type }) => {
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/orders/schedule-order')}
+                onClick={() => handleItemClick('/admin/attendance')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Attendance" />

@@ -16,39 +16,16 @@ import {
 import React from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Visibility from "@mui/icons-material/Visibility";
-import Edit from "@mui/icons-material/Edit";
+
 import Delete from "@mui/icons-material/Delete";
 import CustomCard from "../CustomCard";
 import StarIcon from "@mui/icons-material/Star";
-
+import useGetAllAppreciations from "@/api-manage/react-query/useGetAllAppreciation";
 const AppreciationList = ({ onAddAppreciation }) => {
-  const rows = [
-    {
-      id: 1,
-      givento: {
-        name: "Keanu O'Kon",
-        role: "Team Lead",
-        avatar: "https://i.pravatar.cc/300?u=admin@example.com", 
-        itsYou: true,
-      },
-      awardname: "Most Valuable Employee",
-      awardIcon: <StarIcon />, 
-      givenon: "05-02-2024",
-    },
-    {
-      id: 2,
-      givento: {
-        name: "Dr. Raul Feil",
-        role: "Team Lead",
-        avatar: "https://i.pravatar.cc/300?u=pgaylordo100@example.com",
-        itsYou: false,
-      },
-      awardname: "Best Technical Solution",
-      awardIcon: <StarIcon />, 
-      givenon: "05-02-2024",
-    },
-    
-  ];
+  const { data, refetch, isLoading, isError } = useGetAllAppreciations();
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading Appreciations</div>;
+  
 
   const handleEdit = (id) => {
     console.log("Edit", id);
@@ -115,18 +92,18 @@ const AppreciationList = ({ onAddAppreciation }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, index) => (
+                {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
                         <TableCell>{index + 1}</TableCell>
                       <TableCell sx={{ display: "flex", alignItems: "center" }}>
-                        <Avatar src={row.givento.avatar} sx={{ marginRight: 2 }} />
+                        <Avatar src={row.givento?.avatar} sx={{ marginRight: 2 }} />
                         <div>
                           <Typography sx={{
                             fontSize:"14px",
                             color:"black",
                           }}>
-                            {row.givento.name}
-                            {row.givento.itsYou && (
+                            {row.givento?.name}
+                            {row.givento?.itsYou && (
                               <Chip
                                 label="It's you"
                                 size="small"
@@ -138,7 +115,7 @@ const AppreciationList = ({ onAddAppreciation }) => {
                             )}
                           </Typography>
                           <Typography variant="body2" color="textSecondary">
-                            {row.givento.role}
+                            {row.givento?.role}
                           </Typography>
                         </div>
                       </TableCell>
