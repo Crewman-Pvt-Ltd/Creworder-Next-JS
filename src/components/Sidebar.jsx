@@ -205,7 +205,7 @@ const Sidebar = ({ isOpen, type }) => {
         {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="User"
+            name="Agent"
             icon={<PersonIcon />}
             active={currentPath === "/user"}
             onClick={() => handleItemClick("/user")}
@@ -358,7 +358,7 @@ const Sidebar = ({ isOpen, type }) => {
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/orders/course')}
+                onClick={() => handleItemClick('/admin/holiday')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Holiday" />

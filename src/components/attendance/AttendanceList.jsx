@@ -63,10 +63,10 @@ const AttendanceList = ({ onAddAttendance }) => {
       role: "Team Lead",
       isYou: true,
       attendance: [
-        "x",
-        "x",
-        "x",
-        "x",
+        "✔",
+        "✔",
+        "✔",
+        "✔",
         "x",
         "x",
         "-",
@@ -99,12 +99,12 @@ const AttendanceList = ({ onAddAttendance }) => {
       role: "Senior",
       isYou: false,
       attendance: [
-        "x",
-        "x",
-        "x",
-        "x",
-        "x",
-        "x",
+        "✔",
+        "✔",
+        "✔",
+        "✔",
+        "✔",
+        "✔",
         "-",
         "-",
         "-",
@@ -319,7 +319,7 @@ const AttendanceList = ({ onAddAttendance }) => {
         <CardContent>
           <Typography variant="h6">Note:</Typography>
           <Grid container spacing={2} alignItems="center">
-            {/* Icons legend */}
+           
             <Grid item xs={12}>
               <Typography variant="body2">
                 <StarIcon style={{ color: "gold" }} /> Holiday |{" "}
@@ -333,7 +333,7 @@ const AttendanceList = ({ onAddAttendance }) => {
               </Typography>
             </Grid>
 
-            {/* Header Row */}
+          
             <Grid item xs={12}>
               <Grid
                 container
@@ -364,7 +364,7 @@ const AttendanceList = ({ onAddAttendance }) => {
                       variant="body2"
                       align="center"
                     >
-                      {daysOfWeek[index % 7]} {/* Dynamically set the day */}
+                      {daysOfWeek[index % 7]} 
                     </Typography>
                   </Grid>
                 ))}
@@ -376,11 +376,11 @@ const AttendanceList = ({ onAddAttendance }) => {
               </Grid>
             </Grid>
 
-            {/* Employee Rows */}
+           
             {employees.map((employee, empIndex) => (
               <Grid item xs={12} key={empIndex}>
                 <Grid container spacing={0} alignItems="center">
-                  {/* Employee Info */}
+                  
                   <Grid item xs={2}>
                     <Box display="flex" alignItems="center">
                       <Avatar src={employee.image} alt={employee.name} />
@@ -394,7 +394,7 @@ const AttendanceList = ({ onAddAttendance }) => {
                       </Box>
                     </Box>
                   </Grid>
-                  {/* Attendance Data */}
+              
                   {employee.attendance.map((status, index) => (
                     <Grid item xs key={index}>
                       <Typography

@@ -33,7 +33,7 @@ const poppins = Poppins({
 
 const AddAppreciation = ({ onAppreciationList }) => {
   const { data: awardsData, refetch, isLoading, isError } = useGetAllAwards();
-  const { data: givenTo} = useGetAllUsers();
+  const { data: givenTo } = useGetAllUsers();
   const [photo, setPhoto] = useState(null);
   const [summary, setSummary] = useState("");
   const [formData, setFormData] = useState({
@@ -64,7 +64,6 @@ const AddAppreciation = ({ onAppreciationList }) => {
     }
   }, [permissionsData]);
 
-
   const handlePhotoChange = (event) => {
     setPhoto(event.target.files[0]);
   };
@@ -77,7 +76,6 @@ const AddAppreciation = ({ onAppreciationList }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -202,7 +200,6 @@ const AddAppreciation = ({ onAppreciationList }) => {
                           <MenuItem>{user?.username}</MenuItem>
                         ))}
                     </Select>
-                    
                   </Box>
                 </Grid>
 
