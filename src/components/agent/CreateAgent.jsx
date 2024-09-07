@@ -23,7 +23,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-const CreateUser = () => {
+const CreateAgent = () => {
   const { data: branchData, refetch: branchRefetch } = useGetAllBranches();
   const { data: departmentData, refetch: departmentRefetch } = useGetAllDepartments();
   const { data: designationData, refetch: designationRefetch } = useGetAllDesignations();
@@ -145,7 +145,7 @@ const CreateUser = () => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-              Add User
+              Add Agent
             </Typography>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleSubmit}>
@@ -452,6 +452,30 @@ const CreateUser = () => {
                   </CustomTextField>
                 </Grid>
 
+                <Grid item xs={12} sm={6}>
+                  <CustomLabel htmlFor="employeeType" required>
+                    Employee Type
+                  </CustomLabel>
+                  <CustomTextField
+                    id="employeeType"
+                    name="employeeType"
+                    select
+                    fullWidth
+                    value={formData.employeeType}
+                    onChange={handleChange}
+                    error={!!errors.employeeType}
+                    helperText={errors.employeeType}
+                  >
+                    <MenuItem value="Employee Type" disabled>
+                      Employee Type
+                    </MenuItem>
+                    <MenuItem value="full">Full-time</MenuItem>
+                    <MenuItem value="part">Part-time</MenuItem>
+                    <MenuItem value="trainee">Trainee</MenuItem>
+                    <MenuItem value="intern">Internship</MenuItem>
+                  </CustomTextField>
+                </Grid>
+
                 {/* <Grid item xs={12} sm={6}>
                   <CustomLabel htmlFor="role" required>
                     Role
@@ -498,29 +522,7 @@ const CreateUser = () => {
                   </CustomTextField>
                 </Grid> */}
 
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="employeeType" required>
-                    Employee Type
-                  </CustomLabel>
-                  <CustomTextField
-                    id="employeeType"
-                    name="employeeType"
-                    select
-                    fullWidth
-                    value={formData.employeeType}
-                    onChange={handleChange}
-                    error={!!errors.employeeType}
-                    helperText={errors.employeeType}
-                  >
-                    <MenuItem value="Employee Type" disabled>
-                      Employee Type
-                    </MenuItem>
-                    <MenuItem value="full">Full-time</MenuItem>
-                    <MenuItem value="part">Part-time</MenuItem>
-                    <MenuItem value="trainee">Trainee</MenuItem>
-                    <MenuItem value="intern">Internship</MenuItem>
-                  </CustomTextField>
-                </Grid>
+               
               </Grid>
 
               <Grid container spacing={2} mt={2}>
@@ -554,7 +556,7 @@ const CreateUser = () => {
                     color="primary"
                     fullWidth
                   >
-                    Save User
+                    Save Agent
                   </Button>
                 </Grid>
               </Grid>
@@ -566,4 +568,4 @@ const CreateUser = () => {
   );
 };
 
-export default CreateUser;
+export default CreateAgent;

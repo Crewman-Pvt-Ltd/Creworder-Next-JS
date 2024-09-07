@@ -207,8 +207,8 @@ const Sidebar = ({ isOpen, type }) => {
             isOpen={isOpen}
             name="Agent"
             icon={<PersonIcon />}
-            active={currentPath === "/user"}
-            onClick={() => handleItemClick("/user")}
+            active={currentPath === "/admin/agent"}
+            onClick={() => handleItemClick("/admin/agent")}
           />
         )}
 

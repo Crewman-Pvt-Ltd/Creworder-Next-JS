@@ -30,14 +30,13 @@ import {
   LockOpen as LockOpenIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
-
-const UserList = () => {
+const AgentList = () => {
   const router = useRouter();
   const { data, refetch } = useGetAllUsers();
   const [open, setOpen] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
-  const handleCreateUser = () => {
-    router.push("user/createuser");
+  const handleCreateAgent = () => {
+    router.push("agent/createagent");
   };
   const handleToggleStatus = (userId, newStatus) => {
     setUsers(
@@ -109,12 +108,12 @@ const UserList = () => {
                       marginLeft: "30px",
                     }}
                   >
-                    User List
+                    Agent List
                   </Typography>
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={handleCreateUser}
+                    onClick={handleCreateAgent}
                     sx={{
                       padding: "8px",
                       fontSize: "14px",
@@ -130,7 +129,7 @@ const UserList = () => {
                     }}
                   >
                     <AddIcon sx={{ fontSize: 15 }} />
-                    Add User
+                    Add Agent
                   </Button>
                 </Grid>
               </Grid>
@@ -262,4 +261,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default AgentList;

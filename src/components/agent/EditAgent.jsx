@@ -18,7 +18,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-const EditUser = () => {
+const EditAgent = () => {
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
@@ -534,4 +534,4 @@ const EditUser = () => {
   );
 };
 
-export default EditUser;
+export default EditAgent;
