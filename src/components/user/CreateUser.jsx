@@ -5,6 +5,11 @@ import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
+import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
+import useGetAllDepartments from "@/api-manage/react-query/useGetAllDepartments";
+import useGetAllDesignations from "@/api-manage/react-query/useGetAllDesignations";
+import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
+import { usePermissions } from "@/contexts/PermissionsContext";
 import {
   Typography,
   Button,
@@ -18,7 +23,11 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-const EditUser = () => {
+const CreateUser = () => {
+  const { data: branchData, refetch: branchRefetch } = useGetAllBranches();
+  const { data: departmentData, refetch: departmentRefetch } = useGetAllDepartments();
+  const { data: designationData, refetch: designationRefetch } = useGetAllDesignations();
+  const { data: usersData, refetch: usersRefetch } = useGetAllUsers();
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
@@ -35,15 +44,18 @@ const EditUser = () => {
     designation: "Select Designation",
     reportingto: "Select Reporting To",
     branch: "Select Branch",
-    role: "Select Role",
+
     team: "Select Team",
     manager: "Select Manager",
     employeeType: "Employee Type",
     loginAllowed: "no",
+   role:"admin",
   });
 
   const [errors, setErrors] = useState({});
   const router = useRouter();
+  const { permissionsData } = usePermissions();
+
 
   const handleRadioChange = (event) => {
     setFormData({ ...formData, loginAllowed: event.target.value });
@@ -99,6 +111,7 @@ const EditUser = () => {
           date_of_birth: formData.dob,
           reporting: formData.reportingto,
           branch: formData.branch,
+          company: permissionsData.user.profile.company,
         },
         role: {
           role: formData.role,
@@ -110,7 +123,7 @@ const EditUser = () => {
       });
 
       if (response.status === 201) {
-        router.push("/admin/users");
+        router.push("/users");
       } else {
         throw new Error("Unexpected response from server");
       }
@@ -360,9 +373,9 @@ const EditUser = () => {
                     <MenuItem value="Select Department" disabled>
                       Select Department
                     </MenuItem>
-                    <MenuItem value="HR">HR</MenuItem>
-                    <MenuItem value="Engineering">Engineering</MenuItem>
-                    <MenuItem value="Marketing">Marketing</MenuItem>
+                    {departmentData?.results.map((row, index) =>(
+                    <MenuItem value={row?.id}>{row.name}</MenuItem>
+                  ))}
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -385,9 +398,9 @@ const EditUser = () => {
                     <MenuItem value="Select Designation" disabled>
                       Select Designation
                     </MenuItem>
-                    <MenuItem value="Developer">Developer</MenuItem>
-                    <MenuItem value="Manager">Manager</MenuItem>
-                    <MenuItem value="Analyst">Analyst</MenuItem>
+                    {designationData?.results.map((row, index) =>(
+                    <MenuItem value={row?.id}>{row.name}</MenuItem>
+                  ))}
                   </CustomTextField>
                 </Grid>
 
@@ -408,9 +421,9 @@ const EditUser = () => {
                     <MenuItem value="Select Reporting To" disabled>
                       Select Reporting To
                     </MenuItem>
-                    <MenuItem value='1'>Supervisor</MenuItem>
-                    <MenuItem value='2'>Manager</MenuItem>
-                    <MenuItem value='3'>Director</MenuItem>
+                    {usersData?.results.map((row, index) =>(
+                    <MenuItem value={row?.id}>{row.username}</MenuItem>
+                  ))}
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -433,13 +446,13 @@ const EditUser = () => {
                     <MenuItem value="Select Branch" disabled>
                       Select Branch
                     </MenuItem>
-                    <MenuItem value='1'>Head Office</MenuItem>
-                    <MenuItem value='2'>Branch A</MenuItem>
-                    <MenuItem value='3'>Branch B</MenuItem>
+                    {branchData?.results.map((row, index) =>(
+                    <MenuItem value={row?.id}>{row.name}</MenuItem>
+                  ))}
                   </CustomTextField>
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                {/* <Grid item xs={12} sm={6}>
                   <CustomLabel htmlFor="role" required>
                     Role
                   </CustomLabel>
@@ -453,17 +466,17 @@ const EditUser = () => {
                     error={!!errors.role}
                     helperText={errors.role}
                   >
-                    <MenuItem value="Select Role" disabled>
+                    <MenuItem value="Select Group Role" disabled>
                       Select Role
                     </MenuItem>
                     <MenuItem value="admin">Admin</MenuItem>
                     <MenuItem value="User">User</MenuItem>
                   </CustomTextField>
-                </Grid>
+                </Grid> */}
               </Grid>
 
               <Grid container spacing={2} mt={2}>
-                <Grid item xs={12} sm={6}>
+                {/* <Grid item xs={12} sm={6}>
                   <CustomLabel htmlFor="team" required>
                     Team
                   </CustomLabel>
@@ -483,7 +496,7 @@ const EditUser = () => {
                     <MenuItem value="Team A">Team A</MenuItem>
                     <MenuItem value="Team B">Team B</MenuItem>
                   </CustomTextField>
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12} sm={6}>
                   <CustomLabel htmlFor="employeeType" required>
@@ -502,8 +515,10 @@ const EditUser = () => {
                     <MenuItem value="Employee Type" disabled>
                       Employee Type
                     </MenuItem>
-                    <MenuItem value="Full-time">Full-time</MenuItem>
-                    <MenuItem value="Part-time">Part-time</MenuItem>
+                    <MenuItem value="full">Full-time</MenuItem>
+                    <MenuItem value="part">Part-time</MenuItem>
+                    <MenuItem value="trainee">Trainee</MenuItem>
+                    <MenuItem value="intern">Internship</MenuItem>
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -518,12 +533,12 @@ const EditUser = () => {
                     onChange={handleRadioChange}
                   >
                     <FormControlLabel
-                      value="yes"
+                      value={true}
                       control={<Radio />}
                       label="Yes"
                     />
                     <FormControlLabel
-                      value="no"
+                      value={false}
                       control={<Radio />}
                       label="No"
                     />
@@ -551,4 +566,4 @@ const EditUser = () => {
   );
 };
 
-export default EditUser;
+export default CreateUser;
