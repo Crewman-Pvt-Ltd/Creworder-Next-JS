@@ -20,4 +20,5 @@ export const appreciations = '/api/appreciations/';
 export const awards = '/api/awards/';
 export const holidays = '/api/holidays/';
 export const get_notice_users = '/api/specific-users/';
+export const get_username_suggestions = '/api/username-suggestions/';
 export const baseApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL+"/api/";

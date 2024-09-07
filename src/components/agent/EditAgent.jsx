@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
+import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
+import useGetAllDepartments from "@/api-manage/react-query/useGetAllDepartments";
+import useGetAllDesignations from "@/api-manage/react-query/useGetAllDesignations";
+import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
+import { usePermissions } from "@/contexts/PermissionsContext";
 import {
   Typography,
   Button,
@@ -16,111 +21,126 @@ import {
   RadioGroup,
   FormLabel,
   FormControlLabel,
+  Tooltip,
+  List,
+  ListItem,
+  ListItemText
 } from "@mui/material";
+import { get_username_suggestions } from "@/api-manage/ApiRoutes";
 
 const EditAgent = () => {
+  const { data: branchData, refetch: branchRefetch } = useGetAllBranches();
+  const { data: departmentData, refetch: departmentRefetch } =
+    useGetAllDepartments();
+  const { data: designationData, refetch: designationRefetch } =
+    useGetAllDesignations();
+  const { data: usersData, refetch: usersRefetch } = useGetAllUsers();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
+  const { id } = router.query;
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
     last_name: "",
     email: "",
-    dob: "",
-    doj: "",
-    address: "",
-    contact_number: "",
-    professionalemail: "",
-    gender: "Select Gender",
-    maritalStatus: "Select Marital Status",
-    department: "Select Department",
-    designation: "Select Designation",
-    reportingto: "Select Reporting To",
-    branch: "Select Branch",
-    role: "Select Role",
-    team: "Select Team",
-    manager: "Select Manager",
-    employeeType: "Employee Type",
-    loginAllowed: "no",
+    date_joined: "",
+    profile: {
+      gender: "",
+      date_of_joining: "",
+      date_of_birth: "",
+      marital_status: "",
+      contact_no: "",
+    },
+    role: {
+      role: "superadmin"
+    }
   });
 
-  const [errors, setErrors] = useState({});
-  const router = useRouter();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const formData = new FormData();
+      for (const key in employees) {
+        formData.append(key, employees[key]);
+      }
+
+      console.log("Employee Form Data", formData);
+
+      const response = await MainApi.put(`/api/users/${id}/`, formData, {
+        headers: {
+          Authorization: `Token ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200) {
+        console.log("Employees updated successfully");
+        router.push("/admin/employees");
+      } else {
+        console.error("Failed to update the Employees");
+        setError("Failed to update the Employees");
+      }
+    } catch (error) {
+      console.error("An error occurred while updating the Employees:", error);
+      setError("An error occurred while updating the Employees");
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      const fetchEmployee = async () => {
+        try {
+          setLoading(true);
+          const token = getToken();
+          if (!token) {
+            throw new Error("No authentication token found.");
+          }
+
+          const response = await MainApi.get(`/api/users/${id}`, {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          });
+
+          if (response.status === 200) {
+            setEmployees(response.data);
+          } else {
+            console.error("Failed to fetch the Agent");
+            setError("Failed to fetch the Agent");
+          }
+        } catch (error) {
+          console.error(
+            "An error occurred while fetching the Agent:",
+            error
+          );
+          setError("An error occurred while fetching the Agent");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchEmployee();
+    }
+  }, [id]);
+
+
+  const [errors, setErrors] = useState({});
+  const [suggestions, setSuggestions] = useState([]);
   const handleRadioChange = (event) => {
     setFormData({ ...formData, loginAllowed: event.target.value });
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    const requiredFields = [
-      "first_name",
-      "last_name",
-      "dob",
-      "doj",
-      "gender",
-      "maritalStatus",
-      "contact_number",
-      "email",
-      "professionalemail",
-      "address",
-      "department",
-      "designation",
-      "reportingto",
-      "branch",
-      "role",
-      "team",
-      "employeeType",
-    ];
-
-    requiredFields.forEach((field) => {
-      if (!formData[field] || formData[field] === "Select Gender" || formData[field] === "Select Marital Status" || formData[field] === "Employee Type") {
-        newErrors[field] = "This field is required";
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleSuggestionClick = (suggestion) => {
+    setFormData((prevData) => ({ ...prevData, username: suggestion }));
+    setSuggestions([]);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    const token = getToken();
-    try {
-      const response = await MainApi.post("/api/users/", {
-        ...formData,
-        profile: {
-          gender: formData.gender,
-          contact_no: formData.contact_number,
-          marital_status: formData.maritalStatus,
-          date_of_joining: formData.doj,
-          address: formData.address,
-          professional_email: formData.professionalemail,
-          date_of_birth: formData.dob,
-          reporting: formData.reportingto,
-          branch: formData.branch,
-        },
-        role: {
-          role: formData.role,
-        }
-      }, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
-
-      if (response.status === 201) {
-        router.push("/admin/users");
-      } else {
-        throw new Error("Unexpected response from server");
-      }
-    } catch (error) {
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -132,16 +152,16 @@ const EditAgent = () => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
-              Add User
+              Edit Agent
             </Typography>
             <Divider sx={{ my: 2 }} />
-            <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
                     Personal Info.
                   </Typography>
                 </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="first_name" required>
                     First Name:
@@ -209,9 +229,9 @@ const EditAgent = () => {
                     <MenuItem value="Select Gender" disabled>
                       Select Gender
                     </MenuItem>
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                    <MenuItem value="other">Other</MenuItem>
+                    <MenuItem value="m">Male</MenuItem>
+                    <MenuItem value="f">Female</MenuItem>
+                    <MenuItem value="o">Other</MenuItem>
                   </CustomTextField>
                 </Grid>
 
@@ -307,7 +327,7 @@ const EditAgent = () => {
               </Grid>
 
               <Grid container spacing={2} mt={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={8}>
                   <CustomLabel htmlFor="address" required>
                     Address:
                   </CustomLabel>
@@ -326,7 +346,7 @@ const EditAgent = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="department" required>
                     Department
                   </CustomLabel>
@@ -343,9 +363,9 @@ const EditAgent = () => {
                     <MenuItem value="Select Department" disabled>
                       Select Department
                     </MenuItem>
-                    <MenuItem value="HR">HR</MenuItem>
-                    <MenuItem value="Engineering">Engineering</MenuItem>
-                    <MenuItem value="Marketing">Marketing</MenuItem>
+                    {departmentData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.name}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -368,9 +388,9 @@ const EditAgent = () => {
                     <MenuItem value="Select Designation" disabled>
                       Select Designation
                     </MenuItem>
-                    <MenuItem value="Developer">Developer</MenuItem>
-                    <MenuItem value="Manager">Manager</MenuItem>
-                    <MenuItem value="Analyst">Analyst</MenuItem>
+                    {designationData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.name}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
 
@@ -391,9 +411,9 @@ const EditAgent = () => {
                     <MenuItem value="Select Reporting To" disabled>
                       Select Reporting To
                     </MenuItem>
-                    <MenuItem value="Supervisor">Supervisor</MenuItem>
-                    <MenuItem value="Manager">Manager</MenuItem>
-                    <MenuItem value="Director">Director</MenuItem>
+                    {usersData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.username}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
               </Grid>
@@ -416,55 +436,9 @@ const EditAgent = () => {
                     <MenuItem value="Select Branch" disabled>
                       Select Branch
                     </MenuItem>
-                    <MenuItem value="Head Office">Head Office</MenuItem>
-                    <MenuItem value="Branch A">Branch A</MenuItem>
-                    <MenuItem value="Branch B">Branch B</MenuItem>
-                  </CustomTextField>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="role" required>
-                    Role
-                  </CustomLabel>
-                  <CustomTextField
-                    id="role"
-                    name="role"
-                    select
-                    fullWidth
-                    value={formData.role}
-                    onChange={handleChange}
-                    error={!!errors.role}
-                    helperText={errors.role}
-                  >
-                    <MenuItem value="Select Role" disabled>
-                      Select Role
-                    </MenuItem>
-                    <MenuItem value="Admin">Admin</MenuItem>
-                    <MenuItem value="User">User</MenuItem>
-                  </CustomTextField>
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={2} mt={2}>
-                <Grid item xs={12} sm={6}>
-                  <CustomLabel htmlFor="team" required>
-                    Team
-                  </CustomLabel>
-                  <CustomTextField
-                    id="team"
-                    name="team"
-                    select
-                    fullWidth
-                    value={formData.team}
-                    onChange={handleChange}
-                    error={!!errors.team}
-                    helperText={errors.team}
-                  >
-                    <MenuItem value="Select Team" disabled>
-                      Select Team
-                    </MenuItem>
-                    <MenuItem value="Team A">Team A</MenuItem>
-                    <MenuItem value="Team B">Team B</MenuItem>
+                    {branchData?.results.map((row, index) => (
+                      <MenuItem value={row?.id}>{row.name}</MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
 
@@ -485,28 +459,134 @@ const EditAgent = () => {
                     <MenuItem value="Employee Type" disabled>
                       Employee Type
                     </MenuItem>
-                    <MenuItem value="Full-time">Full-time</MenuItem>
-                    <MenuItem value="Part-time">Part-time</MenuItem>
+                    <MenuItem value="full">Full-time</MenuItem>
+                    <MenuItem value="part">Part-time</MenuItem>
+                    <MenuItem value="trainee">Trainee</MenuItem>
+                    <MenuItem value="intern">Internship</MenuItem>
                   </CustomTextField>
                 </Grid>
+
+                {/* <Grid item xs={12} sm={6}>
+                  <CustomLabel htmlFor="role" required>
+                    Role
+                  </CustomLabel>
+                  <CustomTextField
+                    id="role"
+                    name="role"
+                    select
+                    fullWidth
+                    value={formData.role}
+                    onChange={handleChange}
+                    error={!!errors.role}
+                    helperText={errors.role}
+                  >
+                    <MenuItem value="Select Group Role" disabled>
+                      Select Role
+                    </MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                    <MenuItem value="User">User</MenuItem>
+                  </CustomTextField>
+                </Grid> */}
               </Grid>
 
               <Grid container spacing={2} mt={2}>
-                <Grid item xs={12}>
-                  <FormLabel component="legend">Login Allowed:</FormLabel>
+                {/* <Grid item xs={12} sm={6}>
+                  <CustomLabel htmlFor="team" required>
+                    Team
+                  </CustomLabel>
+                  <CustomTextField
+                    id="team"
+                    name="team"
+                    select
+                    fullWidth
+                    value={formData.team}
+                    onChange={handleChange}
+                    error={!!errors.team}
+                    helperText={errors.team}
+                  >
+                    <MenuItem value="Select Team" disabled>
+                      Select Team
+                    </MenuItem>
+                    <MenuItem value="Team A">Team A</MenuItem>
+                    <MenuItem value="Team B">Team B</MenuItem>
+                  </CustomTextField>
+                </Grid> */}
+              </Grid>
+
+              <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                User Details
+              </Typography>
+              <Divider sx={{ my: 2 }} />
+
+              <Grid container spacing={2} mt={2}>
+                <Grid item xs={12} md={4}>
+                  <CustomLabel htmlFor="username" required>
+                    Username:
+                  </CustomLabel>
+
+                  <CustomTextField
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="Enter Username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    error={!!errors.username}
+                    helperText={errors.username}
+                    fullWidth
+                  />
+                
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  {suggestions.length > 0 && (
+                    <List>
+                      {suggestions.map((suggestion, index) => (
+                        <ListItem
+                          key={index}
+                          button
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        >
+                          <ListItemText primary={suggestion} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  )}
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <CustomLabel htmlFor="password" required>
+                    Password:
+                  </CustomLabel>
+                  <CustomTextField
+                    id="password"
+                    name="password"
+                    type="text"
+                    placeholder="Enter password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={!!errors.password}
+                    helperText={errors.password}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <FormLabel component="legend">
+                    <b>Login Allowed:</b>
+                  </FormLabel>
                   <RadioGroup
                     aria-label="loginAllowed"
                     name="loginAllowed"
                     value={formData.loginAllowed}
                     onChange={handleRadioChange}
+                    row // Make radio buttons inline
                   >
                     <FormControlLabel
-                      value="yes"
+                      value={true}
                       control={<Radio />}
                       label="Yes"
                     />
                     <FormControlLabel
-                      value="no"
+                      value={false}
                       control={<Radio />}
                       label="No"
                     />
@@ -515,18 +595,17 @@ const EditAgent = () => {
               </Grid>
 
               <Grid container spacing={2} mt={2}>
-                <Grid item xs={12}>
+                <Grid item xs={4}>
                   <Button
                     type="submit"
                     variant="contained"
                     color="primary"
                     fullWidth
                   >
-                    Save User
+                    Update Agent
                   </Button>
                 </Grid>
               </Grid>
-            </form>
           </CardContent>
         </CustomCard>
       </Grid>
