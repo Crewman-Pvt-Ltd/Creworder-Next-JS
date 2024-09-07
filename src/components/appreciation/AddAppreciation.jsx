@@ -33,7 +33,7 @@ const poppins = Poppins({
 
 const AddAppreciation = ({ onAppreciationList }) => {
   const { data: awardsData, refetch, isLoading, isError } = useGetAllAwards();
-  const { data: givenTo } = useGetAllUsers();
+  const { data: userData, refetch: userRefetch } = useGetAllUsers();
   const [photo, setPhoto] = useState(null);
   const [summary, setSummary] = useState("");
   const [formData, setFormData] = useState({
@@ -41,6 +41,7 @@ const AddAppreciation = ({ onAppreciationList }) => {
     date_given: "",
     branch: "",
     user: "",
+    award_image: "",
   });
   const [award, setAward] = useState({
     title: "",
@@ -52,7 +53,8 @@ const AddAppreciation = ({ onAppreciationList }) => {
   const [awardSummary, setAwardSummary] = useState("");
   const [error, setError] = useState("");
   const [awardTitles, setAwardTitles] = useState([]);
-
+  const [image, setImage] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null); // New state for selected user
   const { permissionsData } = usePermissions();
   const token = getToken();
 
@@ -75,16 +77,42 @@ const AddAppreciation = ({ onAppreciationList }) => {
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "user") {
+      const selected = userData?.results.find((user) => user.id === value);
+      setSelectedUser(selected); // Update selected user
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Create FormData object to handle file uploads
+    const formDataToSubmit = new FormData();
+
+    // Append form fields to FormData
+    Object.keys(formData).forEach((key) => {
+      if (formData[key]) {
+        formDataToSubmit.append(key, formData[key]);
+      }
+    });
+
+    // Append the image file separately if it exists
+    if (photo) {
+      formDataToSubmit.append("award_image", photo);
+    }
+
     try {
-      const response = await MainApi.post("/api/appreciations/", formData, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      const response = await MainApi.post(
+        "/api/appreciations/",
+        formDataToSubmit,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "multipart/form-data", // Ensure the correct content type for file upload
+          },
+        }
+      );
 
       if (response.status === 201) {
         onAppreciationList();
@@ -136,7 +164,9 @@ const AddAppreciation = ({ onAppreciationList }) => {
     setAwardTitle("");
     setAwardSummary("");
   };
-
+  const handleImageUpload = (file) => {
+    setImage(file);
+  };
   if (isLoading) return <CircularProgress />;
   if (isError)
     return <Typography color="error">Error loading awards</Typography>;
@@ -161,16 +191,24 @@ const AddAppreciation = ({ onAppreciationList }) => {
                       id="award"
                       name="award"
                       value={formData.award}
-                      onChange={handleFormChange}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          award: e.target.value,
+                        }))
+                      }
                       fullWidth
                       displayEmpty
                       sx={{ height: "40px" }}
                     >
                       {awardsData &&
-                        awardsData?.results.map((award) => (
-                          <MenuItem>{award?.title}</MenuItem>
+                        awardsData.results.map((award) => (
+                          <MenuItem key={award.id} value={award.id}>
+                            {award.title}
+                          </MenuItem>
                         ))}
                     </Select>
+
                     <Button
                       variant="outlined"
                       onClick={handleOverlayOpen}
@@ -185,19 +223,21 @@ const AddAppreciation = ({ onAppreciationList }) => {
                   <CustomLabel htmlFor="givento" required>
                     Given To
                   </CustomLabel>
-                  <Box display="flex" alignItems="center">
+                  <Box display="flex" flexDirection="column">
                     <Select
                       id="givento"
-                      name="givento"
+                      name="user"
                       value={formData.user}
                       onChange={handleFormChange}
                       fullWidth
                       displayEmpty
                       sx={{ height: "40px" }}
                     >
-                      {givenTo &&
-                        givenTo?.results.map((user) => (
-                          <MenuItem>{user?.username}</MenuItem>
+                      {userData &&
+                        userData?.results.map((user) => (
+                          <MenuItem key={user?.id} value={user?.id}>
+                            {user?.first_name} {user?.last_name}
+                          </MenuItem>
                         ))}
                     </Select>
                   </Box>
@@ -230,29 +270,18 @@ const AddAppreciation = ({ onAppreciationList }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={4}>
-                  <CustomLabel htmlFor="photo" required>
-                    Upload Photo
+                  <CustomLabel htmlFor="images" required>
+                    Images
                   </CustomLabel>
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    height="150px"
-                    border="1px dashed grey"
-                    borderRadius="4px"
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <input
-                      type="file"
-                      id="photo"
-                      onChange={handlePhotoChange}
-                      style={{ display: "none" }}
-                    />
-                    <label htmlFor="photo">
-                      <UploadFileIcon fontSize="large" />
-                      <Typography variant="body2">Choose a file</Typography>
-                    </label>
-                  </Box>
+                  <CustomTextField
+                    id="images"
+                    name="images"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e.target.files[0])}
+                    required
+                    fullWidth
+                  />
                 </Grid>
 
                 <Grid

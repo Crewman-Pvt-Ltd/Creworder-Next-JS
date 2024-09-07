@@ -297,7 +297,7 @@ const Sidebar = ({ isOpen, type }) => {
           ></HoverableNavItem>
         )}
 
-{type == "admin" && (<HoverableNavItem
+ <HoverableNavItem
           isOpen={isOpen}
           name={
             <span
@@ -330,56 +330,56 @@ const Sidebar = ({ isOpen, type }) => {
             <List component="div" disablePadding>
             <ListItem
                 button
-                onClick={() => handleItemClick('/admin/hr-employees')}
+                onClick={() => handleItemClick('/hr/hr-employees')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Employees" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/leaves')}
+                onClick={() => handleItemClick('/hr/leaves')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Leaves" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/shift-roster')}
+                onClick={() => handleItemClick('/hr/shift-roster')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Shift Roster" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/attendance')}
+                onClick={() => handleItemClick('/hr/attendance')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Attendance" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/holiday')}
+                onClick={() => handleItemClick('/hr/holiday')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Holiday" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/designation')}
+                onClick={() => handleItemClick('/hr/designation')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Designation" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/department')}
+                onClick={() => handleItemClick('/hr/department')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Department" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/appreciation')}
+                onClick={() => handleItemClick('/hr/appreciation')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Appreciation" />
@@ -392,7 +392,7 @@ const Sidebar = ({ isOpen, type }) => {
 
             </List>
           </Collapse>
-        </HoverableNavItem>)}
+        </HoverableNavItem>
 
 
         {type == "superadmin" && (
