@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CustomCard from '../CustomCard';
 import {
   CardContent,
@@ -8,13 +8,52 @@ import {
   Button,
 } from '@mui/material';
 import CustomTextField from '../CustomTextField';
-import CustomLabel from '../CustomLabel';   
+import CustomLabel from '../CustomLabel';
+import MainApi from '@/api-manage/MainApi';
+import { useRouter } from 'next/router'; 
+import { getToken } from '@/utils/getToken';
+import { usePermissions } from "@/contexts/PermissionsContext";
 
 const AddDepartment = ({ onDepartmentList }) => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Add logic for form submission if needed
-    onDepartmentList(); // Notify parent component to switch view
+
+  const { permissionsData } = usePermissions();
+  console.log("Permissions Data", permissionsData);
+  const [formData, setFormData] = useState({
+    name: "",
+    branch: permissionsData?.user?.profile?.branch,
+    parent: ""
+  });
+  const router = useRouter(); 
+  const token = getToken(); 
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    console.log("Updated Form Data", formData);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await MainApi.post("/api/departments/", formData, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 201) {
+        onDepartmentList();
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+     
+    }
   };
 
   return (
@@ -23,7 +62,7 @@ const AddDepartment = ({ onDepartmentList }) => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Add Designation
+              Add Department
             </Typography>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleSubmit}>
@@ -39,6 +78,8 @@ const AddDepartment = ({ onDepartmentList }) => {
                     type="text"
                     required
                     fullWidth
+                    value={formData.name}
+                    onChange={handleChange}
                   />
                 </Grid>
 
@@ -48,9 +89,11 @@ const AddDepartment = ({ onDepartmentList }) => {
                   </CustomLabel>
                   <CustomTextField
                     id="parentDepartment"
-                    name="parentDepartment"
+                    name="parent"
                     type="text"
                     fullWidth
+                    value={formData.parent}
+                    onChange={handleChange}
                   />
                 </Grid>
               </Grid>

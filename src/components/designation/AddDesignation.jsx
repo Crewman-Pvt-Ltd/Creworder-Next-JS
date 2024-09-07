@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CustomCard from '../CustomCard';
 import {
   CardContent,
@@ -8,13 +8,52 @@ import {
   Button,
 } from '@mui/material';
 import CustomTextField from '../CustomTextField';
-import CustomLabel from '../CustomLabel';   
+import CustomLabel from '../CustomLabel';
+import MainApi from '@/api-manage/MainApi';
+import { useRouter } from 'next/router'; 
+import { getToken } from '@/utils/getToken';
+import { usePermissions } from "@/contexts/PermissionsContext";
 
 const AddDesignation = ({ onDesignationList }) => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Add logic for form submission if needed
-    onDesignationList(); // Notify parent component to switch view
+
+  const { permissionsData } = usePermissions();
+  console.log("Permissions Data", permissionsData);
+  const [formData, setFormData] = useState({
+    name: "",
+    branch: permissionsData?.user?.profile?.branch,
+    parent: ""
+  });
+  const router = useRouter(); 
+  const token = getToken(); 
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    console.log("Updated Form Data", formData);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await MainApi.post("/api/designations/", formData, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 201) {
+        onDesignationList();
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+     
+    }
   };
 
   return (
@@ -39,18 +78,22 @@ const AddDesignation = ({ onDesignationList }) => {
                     type="text"
                     required
                     fullWidth
+                    value={formData.name}
+                    onChange={handleChange}
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={6}>
-                  <CustomLabel htmlFor="parentdesignation" required>
+                  <CustomLabel htmlFor="parentDesignation" required>
                     Parent Designation
                   </CustomLabel>
                   <CustomTextField
-                    id="parentdesignation"
-                    name="parentdesignation"
+                    id="parentDesignation"
+                    name="parent"
                     type="text"
                     fullWidth
+                    value={formData.parent}
+                    onChange={handleChange}
                   />
                 </Grid>
               </Grid>

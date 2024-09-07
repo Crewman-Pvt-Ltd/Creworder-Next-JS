@@ -1,13 +1,13 @@
 import MainApi from "../MainApi";
 import { useQuery } from "react-query";
-import { users } from "../ApiRoutes";
+import { awards } from "../ApiRoutes";
 import { getToken } from "@/utils/getToken";
 
 
-const getUsers = async () => {
+const getAwards = async (url = awards) => {
   const token = getToken();
   const { data } = await MainApi.get(
-    users,
+    url,
     {
       headers: {
         Authorization: `Token ${token}`,
@@ -17,8 +17,8 @@ const getUsers = async () => {
   return data;
 };
 
-export default function useGetAllUsers() {
-  return useQuery(["users"], () => getUsers(), {
+export default function useGetAllAwards(url) {
+  return useQuery(["awards", url], () => getAwards(url), {
     cacheTime: 300000,
   });
 }

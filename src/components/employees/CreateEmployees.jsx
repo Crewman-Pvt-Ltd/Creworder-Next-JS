@@ -8,7 +8,7 @@ import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 
-const CreateEmployees = ({role}) => {
+const CreateEmployees = ({ role }) => {
   const [formData, setFormData] = useState({
     username: "",
     first_name: "",
@@ -23,11 +23,11 @@ const CreateEmployees = ({role}) => {
       date_of_birth: "",
       marital_status: "",
       contact_no: "",
-      profile_image: null
+      profile_image: null,
     },
     role: {
-      role: role
-    }
+      role: role,
+    },
   });
 
   const [errors, setErrors] = useState({});
@@ -94,7 +94,10 @@ const CreateEmployees = ({role}) => {
           throw new Error("Unexpected response from server");
         }
       } catch (error) {
-        console.error("Error:", error.response ? error.response.data : error.message);
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
       }
     }
   };
@@ -174,14 +177,18 @@ const CreateEmployees = ({role}) => {
                     name="gender"
                     value={formData.profile.gender}
                     onChange={handleChange}
-                    error={!!errors['profile.gender']}
+                    error={!!errors["profile.gender"]}
                     sx={{ height: 40 }}
                   >
                     <MenuItem value="m">Male</MenuItem>
                     <MenuItem value="f">Female</MenuItem>
                     <MenuItem value="t">Transgender</MenuItem>
                   </Select>
-                  {errors['profile.gender'] && <Typography color="error">{errors['profile.gender']}</Typography>}
+                  {errors["profile.gender"] && (
+                    <Typography color="error">
+                      {errors["profile.gender"]}
+                    </Typography>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -196,13 +203,17 @@ const CreateEmployees = ({role}) => {
                     name="marital_status"
                     value={formData.profile.marital_status}
                     onChange={handleChange}
-                    error={!!errors['profile.marital_status']}
+                    error={!!errors["profile.marital_status"]}
                     sx={{ height: 40 }}
                   >
                     <MenuItem value="married">Married</MenuItem>
                     <MenuItem value="unmarried">Unmarried</MenuItem>
                   </Select>
-                  {errors['profile.marital_status'] && <Typography color="error">{errors['profile.marital_status']}</Typography>}
+                  {errors["profile.marital_status"] && (
+                    <Typography color="error">
+                      {errors["profile.marital_status"]}
+                    </Typography>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -216,8 +227,7 @@ const CreateEmployees = ({role}) => {
                   type="date"
                   value={formData.profile.date_of_birth}
                   onChange={handleChange}
-                  error={!!errors['profile.date_of_birth']}
-                 
+                  error={!!errors["profile.date_of_birth"]}
                   fullWidth
                 />
               </Grid>
@@ -235,8 +245,8 @@ const CreateEmployees = ({role}) => {
                   placeholder="(+91)"
                   value={formData.profile.contact_no}
                   onChange={handleChange}
-                  error={!!errors['profile.contact_no']}
-                  helperText={errors['profile.contact_no']}
+                  error={!!errors["profile.contact_no"]}
+                  helperText={errors["profile.contact_no"]}
                   fullWidth
                 />
               </Grid>
@@ -358,8 +368,7 @@ const CreateEmployees = ({role}) => {
                   type="date"
                   value={formData.profile.date_of_joining}
                   onChange={handleChange}
-                  error={!!errors['profile.date_of_joining']}
-               
+                  error={!!errors["profile.date_of_joining"]}
                   fullWidth
                 />
               </Grid>
