@@ -354,6 +354,13 @@ const Sidebar = ({ isOpen, type }) => {
               </ListItem>
               <ListItem
                 button
+                onClick={() => handleItemClick('/hr/shift')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Shift" />
+              </ListItem>
+              <ListItem
+                button
                 onClick={() => handleItemClick('/hr/shift-roster')}
                 sx={{ pl: 4 }}
               >

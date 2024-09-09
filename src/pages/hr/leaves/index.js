@@ -8,19 +8,22 @@ import { useRouter } from "next/router";
 
 const Index = () => {
   const { permissionsData, permissionLoading } = usePermissions();
-
   const router = useRouter();
+  const [showAddLeave, setShowAddLeave] = useState(false);
 
   const userRole = permissionsData?.role;
 
+  // Redirect to login if permissions are not available
   useEffect(() => {
-    if (!permissionLoading && !permissionsData?.role) {
+    if (!permissionLoading && !userRole) {
       router.push("/login");
     }
-  }, [permissionLoading, permissionsData, router]);
+  }, [permissionLoading, userRole, router]);
 
-  if (permissionLoading) return <Loader />;
-  const [showAddLeave, setShowAddLeave] = useState(false);
+  // Loading state while checking permissions
+  if (permissionLoading) {
+    return <Loader />;
+  }
 
   const handleAddLeave = () => {
     setShowAddLeave(true);
@@ -30,25 +33,19 @@ const Index = () => {
     setShowAddLeave(false);
   };
 
-  const handleSubmit = () => {
-   
-    handleShowLeaveList();
-  };
+  if (!userRole) {
+    return null; // or consider redirecting or displaying a message
+  }
 
- 
-  if (userRole) {
-    return (
-      <Layout type={userRole}>
+  return (
+    <Layout type={userRole}>
       {showAddLeave ? (
         <AddLeave onLeaveList={handleShowLeaveList} />
       ) : (
         <LeaveList onAddLeave={handleAddLeave} />
       )}
-     </Layout>
-    );
-  }
-
-  return null;
+    </Layout>
+  );
 };
 
 export default Index;

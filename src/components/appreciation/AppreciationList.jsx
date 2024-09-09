@@ -164,7 +164,7 @@ const AppreciationList = ({ onAddAppreciation }) => {
                               color: "black",
                             }}
                           >
-                            {userIdToNameMap[row.user] || "Unknown User"} {/* Display user name or fallback */}
+                            {userIdToNameMap[row.user] || "Unknown User"} 
                             {row.givento?.itsYou && (
                               <Chip
                                 label="It's you"
