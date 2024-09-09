@@ -15,10 +15,10 @@ import AddIcon from '@mui/icons-material/Add';
 import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import CustomCard from '../CustomCard';
-import useGetAllDesignations from '@/api-manage/react-query/useGetAllDesignations';
+import useGetAllShifts from '@/api-manage/react-query/useGetAllShifts';
 
-const DesignationList = ({ onAddDesignation }) => {
-  const { data, refetch, isLoading, isError } = useGetAllDesignations();
+const ShiftList = ({ onAddShift }) => {
+  const { data, refetch, isLoading, isError } = useGetAllShifts();
 
   const handleEdit = (id) => {
     console.log('Edit', id);
@@ -29,13 +29,13 @@ const DesignationList = ({ onAddDesignation }) => {
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading Designations</div>;
+  if (isError) return <div>Error loading shift</div>;
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
       <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
         <Button
-          onClick={onAddDesignation}
+          onClick={onAddShift}
           sx={{
             padding: '8px 16px',
             fontSize: '14px',
@@ -51,7 +51,7 @@ const DesignationList = ({ onAddDesignation }) => {
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
-          Add Designation
+          Add Shift
         </Button>
         <Button
           sx={{
@@ -73,7 +73,7 @@ const DesignationList = ({ onAddDesignation }) => {
           Export
         </Button>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} sm={12} md={12}>
         <CustomCard>
           <CardContent>
             <TableContainer>
@@ -82,7 +82,8 @@ const DesignationList = ({ onAddDesignation }) => {
                   <TableRow>
                     <TableCell>ID</TableCell>
                     <TableCell>Name</TableCell>
-                    <TableCell>Parent Designation</TableCell>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>End Time</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -98,7 +99,12 @@ const DesignationList = ({ onAddDesignation }) => {
                       <TableCell
                         sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
                       >
-                        {row.Designation}
+                        {row.start_time}
+                      </TableCell>
+                      <TableCell
+                        sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
+                      >
+                        {row.end_time}
                       </TableCell>
                       <TableCell>
                         <IconButton
@@ -128,4 +134,4 @@ const DesignationList = ({ onAddDesignation }) => {
   );
 };
 
-export default DesignationList;
+export default ShiftList;

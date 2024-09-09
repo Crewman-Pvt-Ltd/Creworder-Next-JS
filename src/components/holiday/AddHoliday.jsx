@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import { getToken } from '@/utils/getToken';
 import { usePermissions } from "@/contexts/PermissionsContext";
 
-const AddDepartment = ({ onDepartmentList }) => {
+const AddHoliday = ({ onHolidayList }) => {
 
   const { permissionsData } = usePermissions();
   console.log("Permissions Data", permissionsData);
@@ -39,14 +39,14 @@ const AddDepartment = ({ onDepartmentList }) => {
     e.preventDefault();
 
     try {
-      const response = await MainApi.post("/api/departments/", formData, {
+      const response = await MainApi.post("/api/holidays/", formData, {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
 
       if (response.status === 201) {
-        onDepartmentList();
+        onHolidayList();
       } else {
         throw new Error("Unexpected response from server");
       }
@@ -62,7 +62,7 @@ const AddDepartment = ({ onDepartmentList }) => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Add Department
+              Add Holiday
             </Typography>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleSubmit}>
@@ -84,11 +84,11 @@ const AddDepartment = ({ onDepartmentList }) => {
                 </Grid>
 
                 <Grid item xs={12} sm={6} md={6}>
-                  <CustomLabel htmlFor="parentDepartment" required>
-                    Parent Department
+                  <CustomLabel htmlFor="parentHoliday" required>
+                    Parent Holiday
                   </CustomLabel>
                   <CustomTextField
-                    id="parentDepartment"
+                    id="parentHoliday"
                     name="parent"
                     type="text"
                     fullWidth
@@ -123,4 +123,4 @@ const AddDepartment = ({ onDepartmentList }) => {
   );
 };
 
-export default AddDepartment;
+export default AddHoliday;

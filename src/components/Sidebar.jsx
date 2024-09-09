@@ -96,10 +96,20 @@ const Sidebar = ({ isOpen, type }) => {
   };
 
   const [isOrderOpen, setIsOrderOpen] = useState(false);
-
   const handleOrderClick = () => {
     setIsOrderOpen(!isOrderOpen);
   };
+
+  const [isHROpen, setIsHROpen] = useState(false);
+  const handleHRClick = () => {
+    setIsHROpen(!isHROpen);
+  };
+
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const handleExportClick = () => {
+    setIsExportOpen(!isExportOpen);
+  };
+
   const [isNDROpen, setIsNDROpen] = useState(false);
   const handleNDRClick = () => {
     setIsNDROpen(!isNDROpen);
@@ -205,10 +215,10 @@ const Sidebar = ({ isOpen, type }) => {
         {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="User"
+            name="Agent"
             icon={<PersonIcon />}
-            active={currentPath === "/user"}
-            onClick={() => handleItemClick("/user")}
+            active={currentPath === "/admin/agent"}
+            onClick={() => handleItemClick("/admin/agent")}
           />
         )}
 
@@ -297,7 +307,7 @@ const Sidebar = ({ isOpen, type }) => {
           ></HoverableNavItem>
         )}
 
-{type == "admin" && (<HoverableNavItem
+     <HoverableNavItem
           isOpen={isOpen}
           name={
             <span
@@ -312,74 +322,81 @@ const Sidebar = ({ isOpen, type }) => {
               <span>HR</span>
               <IconButton
                 size="small"
-                onClick={handleOrderClick}
+                onClick={handleHRClick}
                 sx={{
                   color: "white",
-                  marginLeft: "110px",
+                  marginLeft: "70px",
                 }}
               >
-                {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                {isHROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
             </span>
           }
           icon={<LocalMallIcon />}
-          active={currentPath.startsWith('/order')}
-          onClick={handleOrderClick}
+          active={currentPath.startsWith('/hr/hr-employees')}
+          onClick={handleHRClick}
         >
-          <Collapse in={isOrderOpen}>
+          <Collapse in={isHROpen}>
             <List component="div" disablePadding>
             <ListItem
                 button
-                onClick={() => handleItemClick('/admin/hr-employees')}
+                onClick={() => handleItemClick('/hr/employees')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Employees" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/leaves')}
+                onClick={() => handleItemClick('/hr/leaves')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Leaves" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/shift-roster')}
+                onClick={() => handleItemClick('/hr/shift')}
+                sx={{ pl: 4 }}
+              >
+                <ListItemText primary="Shift" />
+              </ListItem>
+              <ListItem
+                button
+                onClick={() => handleItemClick('/hr/shift-roster')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Shift Roster" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/orders/schedule-order')}
+                onClick={() => handleItemClick('/hr/attendance')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Attendance" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/orders/course')}
+                onClick={() => handleItemClick('/hr/holiday')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Holiday" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/designation')}
+                onClick={() => handleItemClick('/hr/designation')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Designation" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/department')}
+                onClick={() => handleItemClick('/hr/department')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Department" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/admin/appreciation')}
+                onClick={() => handleItemClick('/hr/appreciation')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Appreciation" />
@@ -392,7 +409,7 @@ const Sidebar = ({ isOpen, type }) => {
 
             </List>
           </Collapse>
-        </HoverableNavItem>)}
+        </HoverableNavItem>
 
 
         {type == "superadmin" && (
@@ -468,7 +485,7 @@ const Sidebar = ({ isOpen, type }) => {
                   onClick={handleCallClick}
                   sx={{
                     color: "white",
-                    marginLeft: "100px",
+                    marginLeft: "70px",
                   }}
                 >
                   {isCallOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -476,7 +493,7 @@ const Sidebar = ({ isOpen, type }) => {
               </span>
             }
             icon={<PhoneIcon />}
-            active={currentPath.startsWith("/order")}
+            active={currentPath.startsWith("/admin/call-recording")}
             onClick={handleCallClick}
           >
             <Collapse in={isCallOpen}>
@@ -521,21 +538,21 @@ const Sidebar = ({ isOpen, type }) => {
                 <span>Export</span>
                 <IconButton
                   size="small"
-                  onClick={handleLeadsClick}
+                  onClick={handleExportClick}
                   sx={{
                     color: "white",
-                    marginLeft: "105px",
+                    marginLeft: "70px",
                   }}
                 >
-                  {isLeadsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  {isExportOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
               </span>
             }
             icon={<DownloadIcon />}
-            active={currentPath.startsWith("/order")}
-            onClick={handleLeadsClick}
+            active={currentPath.startsWith("/admin/export/order")}
+            onClick={handleExportClick}
           >
-            <Collapse in={isLeadsOpen}>
+            <Collapse in={isExportOpen}>
               <List component="div" disablePadding>
                 <ListItem  
                  button
@@ -556,11 +573,6 @@ const Sidebar = ({ isOpen, type }) => {
           </HoverableNavItem>
         )} 
 
-
-
-
-
-
        {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -580,7 +592,7 @@ const Sidebar = ({ isOpen, type }) => {
                   onClick={handleLeadsClick}
                   sx={{
                     color: "white",
-                    marginLeft: "105px",
+                    marginLeft: "70px",
                   }}
                 >
                   {isLeadsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -629,7 +641,7 @@ const Sidebar = ({ isOpen, type }) => {
                   onClick={handleNDRClick}
                   sx={{
                     color: "white",
-                    marginLeft: "115px",
+                    marginLeft: "70px",
                   }}
                 >
                   {isNDROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -717,7 +729,7 @@ const Sidebar = ({ isOpen, type }) => {
                 onClick={handleOrderClick}
                 sx={{
                   color: "white",
-                  marginLeft: "110px",
+                  marginLeft: "70px",
                 }}
               >
                 {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}

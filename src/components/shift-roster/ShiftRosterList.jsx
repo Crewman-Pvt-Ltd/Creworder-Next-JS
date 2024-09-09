@@ -53,14 +53,14 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
       },
   ];
 
-  const [selectedEmployee, setSelectedEmployee] = useState("");
+  const [selectedBranch, setselectedBranch] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedView, setSelectedView] = useState("");
   const [showOverlay, setShowOverlay] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState(null);
 
-  const handleEmployeeChange = (event) => {
-    setSelectedEmployee(event.target.value);
+  const handleBranchChange = (event) => {
+    setselectedBranch(event.target.value);
   };
 
   const handleDepartmentChange = (event) => {
@@ -104,10 +104,10 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
               alignItems="center"
               gap={2}
             >
-              <Typography sx={{ minWidth: "100px" }}>Employee</Typography>
+              <Typography sx={{ minWidth: "100px" }}>Branch</Typography>
               <Select
-                value={selectedEmployee || ""}
-                onChange={handleEmployeeChange}
+                value={selectedBranch || ""}
+                onChange={handleBranchChange}
                 sx={{
                   minWidth: "130px",
                   height: "30px",
@@ -119,9 +119,9 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
                 <MenuItem value="" disabled>
                   All
                 </MenuItem>
-                <MenuItem value="employee1">Employee 1</MenuItem>
-                <MenuItem value="employee2">Employee 2</MenuItem>
-                <MenuItem value="employee3">Employee 3</MenuItem>
+                <MenuItem value="employee1">Branch 1</MenuItem>
+                <MenuItem value="employee2">Branch 2</MenuItem>
+                <MenuItem value="employee3">Branch 3</MenuItem>
               </Select>
 
               <Typography sx={{ minWidth: "100px" }}>Department</Typography>
@@ -143,7 +143,7 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
                 <MenuItem value="sales">Sales</MenuItem>
                 <MenuItem value="hr">HR</MenuItem>
               </Select>
-
+              <Typography sx={{ minWidth: "100px" }}>Designation</Typography>
               <Select
                 value={selectedView || "weekly"}
                 onChange={handleViewChange}
@@ -389,8 +389,8 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
                 <Box sx={{ mb: 2 }}>
                   <Typography sx={{ mb: 1 }}>Employee Shift</Typography>
                   <Select
-                    value={selectedEmployee || ""}
-                    onChange={handleEmployeeChange}
+                    value={selectedBranch || ""}
+                    onChange={handleBranchChange}
                     sx={{
                       width: "100%",
                       height: "30px",

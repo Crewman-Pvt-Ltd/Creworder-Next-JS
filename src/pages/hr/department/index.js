@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import DepartmentList from '@/components/Department/DepartmentList';
 import AddDepartment from '@/components/Department/AddDepartment';
-
+import { usePermissions } from "@/contexts/PermissionsContext";
+import Loader from "@/components/Loader";
+import { useRouter } from "next/router";
 
 const Index = () => {
+  const { permissionsData, permissionLoading } = usePermissions();
+
+  const router = useRouter();
+
+  const userRole = permissionsData?.role;
+
+  
+  useEffect(() => {
+    if (!permissionLoading && !permissionsData?.role) {
+      router.push("/login");
+    }
+  }, [permissionLoading, permissionsData, router]);
+
+  if (permissionLoading) return <Loader />;
+
   const [showAddDepartment, setShowAddDepartment] = useState(false);
 
   const handleAddDepartment = () => {
@@ -20,15 +37,20 @@ const Index = () => {
     handleShowDepartmentList();
   };
 
-  return (
-    <Layout type="admin">
+  if (userRole) {
+    return (
+      <Layout type={userRole}>
       {showAddDepartment ? (
         <AddDepartment onDepartmentList={handleShowDepartmentList} />
       ) : (
         <DepartmentList onAddDepartment={handleAddDepartment} />
       )}
-    </Layout>
-  );
+      </Layout>
+    );
+  }
+
+
+  return null;
 };
 
 export default Index;

@@ -12,55 +12,89 @@ import {
   Avatar,
   Typography,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Visibility from "@mui/icons-material/Visibility";
-import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 import CustomCard from "../CustomCard";
-import StarIcon from "@mui/icons-material/Star";
+import useGetAllAppreciations from "@/api-manage/react-query/useGetAllAppreciation";
+import useGetAllAwards from "@/api-manage/react-query/useGetAllAwards";
+import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
+import MainApi from "@/api-manage/MainApi"; 
+import { getToken } from "@/utils/getToken"; 
 
 const AppreciationList = ({ onAddAppreciation }) => {
-  const rows = [
-    {
-      id: 1,
-      givento: {
-        name: "Keanu O'Kon",
-        role: "Team Lead",
-        avatar: "https://i.pravatar.cc/300?u=admin@example.com", 
-        itsYou: true,
-      },
-      awardname: "Most Valuable Employee",
-      awardIcon: <StarIcon />, 
-      givenon: "05-02-2024",
-    },
-    {
-      id: 2,
-      givento: {
-        name: "Dr. Raul Feil",
-        role: "Team Lead",
-        avatar: "https://i.pravatar.cc/300?u=pgaylordo100@example.com",
-        itsYou: false,
-      },
-      awardname: "Best Technical Solution",
-      awardIcon: <StarIcon />, 
-      givenon: "05-02-2024",
-    },
-    
-  ];
+  const { data: appreciationData, isLoading: appreciationLoading, isError: appreciationError, refetch } = useGetAllAppreciations();
+  const { data: userData, isLoading: userLoading, isError: userError } = useGetAllUsers();
+  const { data: awardsData, isLoading: awardsLoading, isError: awardsError } = useGetAllAwards();
+  
+  const [open, setOpen] = useState(false); // Initialize dialog state
+  const [appreciationToDelete, setAppreciationToDelete] = useState(null);
+
+  if (appreciationLoading || userLoading || awardsLoading) return <div>Loading...</div>;
+  if (appreciationError || userError || awardsError) return <div>Error loading data</div>;
+
+  // Create a mapping of user IDs to names
+  const userIdToNameMap = userData?.results.reduce((acc, user) => {
+    acc[user.id] = user.first_name; 
+    return acc;
+  }, {});
+
+  // Create a mapping of award IDs to titles
+  const awardIdToTitleMap = awardsData?.results.reduce((acc, award) => {
+    acc[award.id] = award.title; 
+    return acc;
+  }, {});
 
   const handleEdit = (id) => {
     console.log("Edit", id);
   };
 
   const handleDeleteClick = (id) => {
-    console.log("Delete", id);
+    setAppreciationToDelete(id);
+    setOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const response = await MainApi.delete(`/api/appreciations/${appreciationToDelete}`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 204) {
+        console.log("Appreciation deleted successfully");
+        refetch(); 
+      } else {
+        console.error("Failed to delete the appreciation");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the appreciation:", error);
+    }
+    setOpen(false);
+    setAppreciationToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpen(false);
+    setAppreciationToDelete(null);
   };
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
-      <Grid item xs={12} sm={12} md={12} sx={{ display: "flex", gap: 2 }}>
+      <Grid item xs={12} sx={{ display: "flex", gap: 2 }}>
         <Button
           onClick={onAddAppreciation}
           sx={{
@@ -100,14 +134,14 @@ const AppreciationList = ({ onAddAppreciation }) => {
           Export
         </Button>
       </Grid>
-      <Grid item xs={12} sm={12} md={12}>
+      <Grid item xs={12}>
         <CustomCard>
           <CardContent>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
-                  <TableCell>ID</TableCell>
+                    <TableCell>ID</TableCell>
                     <TableCell>Given To</TableCell>
                     <TableCell>Award Name</TableCell>
                     <TableCell>Given On</TableCell>
@@ -115,18 +149,23 @@ const AppreciationList = ({ onAddAppreciation }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, index) => (
+                  {appreciationData?.results.map((row, index) => (
                     <TableRow key={row.id}>
-                        <TableCell>{index + 1}</TableCell>
+                      <TableCell>{index + 1}</TableCell>
                       <TableCell sx={{ display: "flex", alignItems: "center" }}>
-                        <Avatar src={row.givento.avatar} sx={{ marginRight: 2 }} />
+                        <Avatar
+                          src={row.givento?.avatar} 
+                          sx={{ marginRight: 2 }}
+                        />
                         <div>
-                          <Typography sx={{
-                            fontSize:"14px",
-                            color:"black",
-                          }}>
-                            {row.givento.name}
-                            {row.givento.itsYou && (
+                          <Typography
+                            sx={{
+                              fontSize: "14px",
+                              color: "black",
+                            }}
+                          >
+                            {userIdToNameMap[row.user] || "Unknown User"} 
+                            {row.givento?.itsYou && (
                               <Chip
                                 label="It's you"
                                 size="small"
@@ -137,22 +176,19 @@ const AppreciationList = ({ onAddAppreciation }) => {
                               />
                             )}
                           </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {row.givento.role}
-                          </Typography>
                         </div>
                       </TableCell>
                       <TableCell>
                         <Typography
                           sx={{
-                            fontSize:"14px",
-                            color:"black",
+                            fontSize: "14px",
+                            color: "black",
                           }}
                         >
-                          {row.awardIcon} {row.awardname}
+                          {awardIdToTitleMap[row.award] || "Unknown Award"} {/* Display award title or fallback */}
                         </Typography>
                       </TableCell>
-                      <TableCell>{row.givenon}</TableCell>
+                      <TableCell>{row.date_given}</TableCell>
                       <TableCell>
                         <IconButton
                           onClick={() => handleEdit(row.id)}
@@ -177,6 +213,24 @@ const AppreciationList = ({ onAddAppreciation }) => {
           </CardContent>
         </CustomCard>
       </Grid>
+
+      <Dialog open={open} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete Appreciation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this appreciation? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

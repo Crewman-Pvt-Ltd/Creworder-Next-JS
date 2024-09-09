@@ -15,6 +15,7 @@ import SearchBar from "./SearchBar";
 import { logout } from "@/utils/auth";
 import { useRouter } from "next/router";
 import RechargeWallet from "./recharge-wallet/RechargeWallet";
+import BranchSwitcher from "./branchswitcher/BranchSwitcher";
 
 const Header = ({ onMenuClick }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -91,7 +92,7 @@ const Header = ({ onMenuClick }) => {
             <Grid item xs={4} sm={4} md={4}>
               <RechargeWallet /> Wallet Recharge
             </Grid>
-            <Grid item xs={4} sm={4} md={4}>Branch Switcher</Grid>
+            <Grid item xs={4} sm={4} md={4}><BranchSwitcher /></Grid>
             <Grid item xs={4} sm={4} md={4}>
               <Grid
                 container

@@ -14,14 +14,13 @@ import { useRouter } from 'next/router';
 import { getToken } from '@/utils/getToken';
 import { usePermissions } from "@/contexts/PermissionsContext";
 
-const AddDepartment = ({ onDepartmentList }) => {
-
+const AddShift = ({ onShiftList }) => {
   const { permissionsData } = usePermissions();
-  console.log("Permissions Data", permissionsData);
   const [formData, setFormData] = useState({
     name: "",
     branch: permissionsData?.user?.profile?.branch,
-    parent: ""
+    start_time: "",
+    end_time: ""
   });
   const router = useRouter(); 
   const token = getToken(); 
@@ -39,20 +38,19 @@ const AddDepartment = ({ onDepartmentList }) => {
     e.preventDefault();
 
     try {
-      const response = await MainApi.post("/api/departments/", formData, {
+      const response = await MainApi.post("/api/shifts/", formData, {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
 
       if (response.status === 201) {
-        onDepartmentList();
+        onShiftList();
       } else {
         throw new Error("Unexpected response from server");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-     
     }
   };
 
@@ -67,7 +65,7 @@ const AddDepartment = ({ onDepartmentList }) => {
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2} sx={{ marginTop: 2 }}>
-                <Grid item xs={12} sm={6} md={6}>
+                <Grid item xs={12} sm={4} md={4}>
                   <CustomLabel htmlFor="name" required>
                     Name
                   </CustomLabel>
@@ -83,17 +81,43 @@ const AddDepartment = ({ onDepartmentList }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={6}>
-                  <CustomLabel htmlFor="parentDepartment" required>
-                    Parent Department
+                <Grid item xs={12} sm={4} md={4}>
+                  <CustomLabel htmlFor="start_time" required>
+                    Start Time
                   </CustomLabel>
                   <CustomTextField
-                    id="parentDepartment"
-                    name="parent"
-                    type="text"
+                    id="start_time"
+                    name="start_time"
+                    type="time"
                     fullWidth
-                    value={formData.parent}
+                    value={formData.start_time}
                     onChange={handleChange}
+                    InputLabelProps={{
+                      shrink: true, 
+                    }}
+                    inputProps={{
+                      step: 300, 
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={3} md={4}>
+                  <CustomLabel htmlFor="end_time" required>
+                    End Time
+                  </CustomLabel>
+                  <CustomTextField
+                    id="end_time"
+                    name="end_time"
+                    type="time" 
+                    fullWidth
+                    value={formData.end_time}
+                    onChange={handleChange}
+                    InputLabelProps={{
+                      shrink: true, 
+                    }}
+                    inputProps={{
+                      step: 300, 
+                    }}
                   />
                 </Grid>
               </Grid>
@@ -123,4 +147,4 @@ const AddDepartment = ({ onDepartmentList }) => {
   );
 };
 
-export default AddDepartment;
+export default AddShift;
