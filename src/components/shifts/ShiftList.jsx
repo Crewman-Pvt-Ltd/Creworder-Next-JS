@@ -15,10 +15,10 @@ import AddIcon from '@mui/icons-material/Add';
 import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import CustomCard from '../CustomCard';
-import useGetAllDepartments from '@/api-manage/react-query/useGetAllDepartments';
+import useGetAllShifts from '@/api-manage/react-query/useGetAllShifts';
 
-const DepartmentList = ({ onAddDepartment }) => {
-  const { data, refetch, isLoading, isError } = useGetAllDepartments();
+const ShiftList = ({ onAddShift }) => {
+  const { data, refetch, isLoading, isError } = useGetAllShifts();
 
   const handleEdit = (id) => {
     console.log('Edit', id);
@@ -29,13 +29,13 @@ const DepartmentList = ({ onAddDepartment }) => {
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading departments</div>;
+  if (isError) return <div>Error loading shift</div>;
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
       <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
         <Button
-          onClick={onAddDepartment}
+          onClick={onAddShift}
           sx={{
             padding: '8px 16px',
             fontSize: '14px',
@@ -51,7 +51,7 @@ const DepartmentList = ({ onAddDepartment }) => {
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
-          Add Department
+          Add Shift
         </Button>
         <Button
           sx={{
@@ -82,7 +82,8 @@ const DepartmentList = ({ onAddDepartment }) => {
                   <TableRow>
                     <TableCell>ID</TableCell>
                     <TableCell>Name</TableCell>
-                    <TableCell>Parent Department</TableCell>
+                    <TableCell>Start Time</TableCell>
+                    <TableCell>End Time</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -98,7 +99,12 @@ const DepartmentList = ({ onAddDepartment }) => {
                       <TableCell
                         sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
                       >
-                        {row.department}
+                        {row.start_time}
+                      </TableCell>
+                      <TableCell
+                        sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
+                      >
+                        {row.end_time}
                       </TableCell>
                       <TableCell>
                         <IconButton
@@ -128,4 +134,4 @@ const DepartmentList = ({ onAddDepartment }) => {
   );
 };
 
-export default DepartmentList;
+export default ShiftList;
