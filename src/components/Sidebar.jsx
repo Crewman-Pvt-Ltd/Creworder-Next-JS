@@ -340,7 +340,7 @@ const Sidebar = ({ isOpen, type }) => {
             <List component="div" disablePadding>
             <ListItem
                 button
-                onClick={() => handleItemClick('/hr/hr-employees')}
+                onClick={() => handleItemClick('/hr/employees')}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Employees" />
