@@ -18,15 +18,19 @@ import {
 import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Visibility from "@mui/icons-material/Visibility";
+import { useRouter } from "next/router";
+import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
 import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 import CustomCard from "../CustomCard";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 
 const EmployeesList = ({ onAddEmployees }) => {
+  const router = useRouter();
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedView, setSelectedView] = useState("");
+  const { data, refetch } = useGetAllEmployees();
   const handleEmployeeChange = (event) => {
     setSelectedEmployee(event.target.value);
   };
@@ -39,32 +43,9 @@ const EmployeesList = ({ onAddEmployees }) => {
     setSelectedView(event.target.value);
   };
 
-  const rows = [
-    {
-      id: "EMP-12",
-      name: "Della Fisher",
-      role: "Project Manager",
-      email: "sylvester.kihnr10@example.org",
-      userRole: "Employee",
-      reportingTo: "--",
-      status: "Active",
-      avatar: "https://i.pravatar.cc/300?u=admin@example.com",
-    },
-    {
-      id: "EMP-11",
-      name: "Jordan Lemke",
-      role: "Trainee",
-      email: "antoinette35y66@example.org",
-      userRole: "Employee",
-      reportingTo: "--",
-      status: "Active",
-      avatar: "https://i.pravatar.cc/300?u=pgaylordo100@example.com",
-    },
-    // Add more rows as needed
-  ];
 
-  const handleEdit = (id) => {
-    console.log("Edit", id);
+  const handleEdit = (row) => {
+    router.push(`/hr/employees/editemployee?id=${row.id}`);
   };
 
   const handleDeleteClick = (id) => {
@@ -231,51 +212,36 @@ const EmployeesList = ({ onAddEmployees }) => {
                     <TableCell>Employee ID</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Email</TableCell>
-                    <TableCell>User Role</TableCell>
-                    <TableCell>Reporting To</TableCell>
+                    {/* <TableCell>User Role</TableCell> */}
                     <TableCell>Status</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, index) => (
+                {data?.results?.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{row.id}</TableCell>
+                      <TableCell>{row.profile?.employee_id}</TableCell>
                       <TableCell sx={{ display: "flex", alignItems: "center" }}>
-                        <Avatar src={row.avatar} sx={{ marginRight: 2 }} />
+                        <Avatar src={row.profile?.profile_image} sx={{ marginRight: 2 }} />
                         <div>
                           <Typography sx={{ fontSize: "14px", color: "black" }}>
-                            {row.name}
+                            {row.first_name} {row.last_name}
                           </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {row.role}
-                          </Typography>
+                         
                         </div>
                       </TableCell>
                       <TableCell>{row.email}</TableCell>
-                      <TableCell>
-                        <Select value={row.userRole} size="small" fullWidth>
-                          <MenuItem value="Employee">Employee</MenuItem>
-                          <MenuItem value="Manager">Manager</MenuItem>
-                          <MenuItem value="Admin">Admin</MenuItem>
+                      {/* <TableCell>
+                        <Select value={row?.role} size="small" fullWidth>
+                          <MenuItem value="{row?.role?.id}">{row?.role?.role}</MenuItem>
                         </Select>
-                      </TableCell>
-                      <TableCell>
-                        <Select value={row.reportingTo} size="small" fullWidth>
-                          <MenuItem value="--">--</MenuItem>
-                          <MenuItem value="Manager A">Manager A</MenuItem>
-                        </Select>
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell>
                         <Chip
-                          label={row.status}
-                          size="small"
-                          sx={{
-                            backgroundColor:
-                              row.status === "Active" ? "green" : "red",
-                            color: "white",
-                          }}
+                          label={row?.profile?.status == "1" ? "Active" : "Inactive"}
+                          size="large"
+                         
                         />
                       </TableCell>
                       <TableCell>
@@ -286,6 +252,12 @@ const EmployeesList = ({ onAddEmployees }) => {
                         >
                           <Visibility />
                         </IconButton>
+                        <IconButton
+                              onClick={() => handleEdit(row)}
+                              aria-label="edit"
+                              sx={{ color: "green" }}>
+                              <Edit />
+                              </IconButton>
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
