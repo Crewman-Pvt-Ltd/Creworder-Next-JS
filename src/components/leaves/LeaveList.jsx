@@ -10,8 +10,11 @@ import {
   TableRow,
   DialogTitle,
   DialogContent,
+  Select,
+  MenuItem,
   DialogContentText,
   DialogActions,
+  Box,
   Dialog,
   IconButton,
   Avatar,
@@ -20,7 +23,6 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import Visibility from "@mui/icons-material/Visibility";
 import Delete from "@mui/icons-material/Delete";
 import CustomCard from "../CustomCard";
 import useGetAllLeaves from "@/api-manage/react-query/useGetAllLeaves";
@@ -29,14 +31,15 @@ import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 
 const LeaveList = ({ onAddLeave }) => {
-  const { data, isLoading, isError, refetch } = useGetAllLeaves(); // Include refetch to update data after deletion
-  const { data: userData, isLoading: userLoading, isError: userError } = useGetAllUsers();
+  const { data, isLoading, isError, refetch } = useGetAllLeaves();
+  const {
+    data: userData,
+    isLoading: userLoading,
+    isError: userError,
+  } = useGetAllUsers();
   const [open, setOpen] = useState(false);
   const [leavesToDelete, setLeavesToDelete] = useState(null);
-
-  const handleEdit = (id) => {
-    console.log("Edit", id);
-  };
+  const [selectedLeaveId, setSelectedLeaveId] = useState(null);
 
   const handleDeleteClick = (id) => {
     setLeavesToDelete(id);
@@ -74,14 +77,64 @@ const LeaveList = ({ onAddLeave }) => {
     setLeavesToDelete(null);
   };
 
+  // Function to handle the toggle action for approve/disapprove
+  const handleToggleStatus = async (id, newStatus) => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const response = await MainApi.put(
+        `/api/leaves/${id}/leave_action/`,
+        { status: newStatus }, // Payload with the new status
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(`Leave with ID: ${id} has been ${newStatus}`);
+        refetch(); // Refetch data to update the list after status change
+      } else {
+        console.error("Failed to update leave status");
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while updating the leave status:",
+        error
+      );
+    }
+  };
+
+  // Handle status change and update the selected leave ID
+  const handleChange = (event, id) => {
+    const newStatus = event.target.value;
+    setSelectedLeaveId(id);
+    handleToggleStatus(id, newStatus);
+  };
+
   if (isLoading || userLoading) return <div>Loading data, please wait...</div>;
-  if (isError || userError) return <div>Failed to load data. Please try again later.</div>;
+  if (isError || userError)
+    return <div>Failed to load data. Please try again later.</div>;
 
   const userIdToNameMap = userData?.results.reduce((acc, user) => {
     acc[user.id] = user.first_name;
     return acc;
   }, {});
+  const durationChoices = [
+    { value: "full", display_name: "Full Day" },
+    { value: "first", display_name: "First Half" },
+    { value: "second", display_name: "Second Half" },
+  ];
 
+  // Create a map for quick lookup
+  const durationMap = durationChoices.reduce((map, choice) => {
+    map[choice.value] = choice.display_name;
+    return map;
+  }, {});
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
       <Grid item xs={12} sm={12} md={12} sx={{ display: "flex", gap: 2 }}>
@@ -154,10 +207,13 @@ const LeaveList = ({ onAddLeave }) => {
                         </Typography>
                       </TableCell>
                       <TableCell sx={{ color: "gray" }}>{row.date}</TableCell>
+
                       <TableCell>
                         <Typography sx={{ fontSize: "14px", color: "gray" }}>
-                          {row.duration}
-                          {row.duration === "Multiple" && (
+                          {row?.duration === "full" && "Full Day"}
+                          {row?.duration === "first" && "First Half"}
+                          {row?.duration === "second" && "Second Half"}
+                          {row?.duration === "multiple" && (
                             <Chip
                               label={`${row.leaveCount} Leave`}
                               size="small"
@@ -167,24 +223,55 @@ const LeaveList = ({ onAddLeave }) => {
                               }}
                             />
                           )}
+
+                          {/* Fallback content */}
+                          {!["full", "first", "second", "multiple"].includes(
+                            row?.duration?.toLowerCase()
+                          ) && (
+                            <Typography sx={{ fontSize: "14px", color: "red" }}>
+                              Unknown Duration
+                            </Typography>
+                          )}
                         </Typography>
                       </TableCell>
+
                       <TableCell>
-                        <Chip
-                          label={row.status}
-                          size="small"
-                          sx={{
-                            backgroundColor: row.statusColor,
-                            color: "white",
-                          }}
-                        />
+                        <Box display="flex" alignItems="center">
+                          <Select
+                            value={row.status || "pending"}
+                            onChange={(event) => handleChange(event, row.id)}
+                            sx={{
+                              height: 40,
+                              minWidth: 120, // Adjust the width as needed
+                              fontSize: "12px",
+                            }}
+                          >
+                            <MenuItem value="pending">
+                              <Typography sx={{ color: "gray" }}>
+                                Pending
+                              </Typography>
+                            </MenuItem>
+                            <MenuItem value="approved">
+                              <Typography sx={{ color: "green" }}>
+                                Approved
+                              </Typography>
+                            </MenuItem>
+                            <MenuItem value="disapprove">
+                              <Typography sx={{ color: "red" }}>
+                                Disapproved
+                              </Typography>
+                            </MenuItem>
+                          </Select>
+                        </Box>
                       </TableCell>
+
                       <TableCell>
                         <Chip
                           label={row.type}
                           size="small"
                           sx={{
-                            backgroundColor: row.leaveType === "Earned" ? "purple" : "gray",
+                            backgroundColor:
+                              row.leaveType === "Earned" ? "purple" : "gray",
                             color: "white",
                           }}
                         />
@@ -193,13 +280,6 @@ const LeaveList = ({ onAddLeave }) => {
                         {row.paid ? "Yes" : "No"}
                       </TableCell>
                       <TableCell>
-                        {/* <IconButton
-                          onClick={() => handleEdit(row.id)}
-                          aria-label="edit"
-                          sx={{ color: "#405189" }}
-                        >
-                          <Visibility />
-                        </IconButton> */}
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
