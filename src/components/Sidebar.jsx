@@ -215,16 +215,6 @@ const Sidebar = ({ isOpen, type }) => {
         {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="Agent"
-            icon={<PersonIcon />}
-            active={currentPath === "/admin/agent"}
-            onClick={() => handleItemClick("/admin/agent")}
-          />
-        )}
-
-        {type == "admin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
             name="Branch"
             icon={<AccountTreeIcon />}
             active={currentPath === "/admin/branch"}

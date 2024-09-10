@@ -23,12 +23,19 @@ import CustomCard from "../CustomCard";
 import { Poppins } from "next/font/google";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
+import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
+import useGetAllShifts from '@/api-manage/react-query/useGetAllShifts';
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
 
 const ShiftRosterList = ({ onAddShiftRoster }) => {
+  const { data: userData, refetch: userRefetch } = useGetAllEmployees();
+  const { data: shiftData, refetch: shiftRefetch } =
+  useGetAllShifts();
+
+
   const employees = [
     {
       id: 1,
@@ -272,40 +279,20 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {employees.map((employee) => (
-                    <TableRow key={employee.id}>
+                {userData?.results?.map((row, index) => (
+                    <TableRow key={row.id}>
                       <TableCell>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <Avatar
-                            src={employee.avatar}
-                            sx={{ marginRight: 2 }}
-                          />
-                          <div>
-                            <Typography
-                              sx={{ fontSize: "14px", color: "black" }}
-                            >
-                              {employee.name}
-                              {employee.itsYou && (
-                                <Chip
-                                  label="It's you"
-                                  size="small"
-                                  sx={{
-                                    marginLeft: 1,
-                                    backgroundColor: "#e0e0e0",
-                                  }}
-                                />
-                              )}
-                            </Typography>
-                            <Typography variant="body2" color="textSecondary">
-                              {employee.role}
-                            </Typography>
-                          </div>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>                      
+                        <Avatar src={row.profile?.profile_image} sx={{ marginRight: 2 }} />
+                          <Typography sx={{ fontSize: "14px", color: "black" }}>
+                            {row.first_name} {row.last_name}
+                          </Typography>  
                         </Box>
                       </TableCell>
                       {daysOfWeek.map((_, index) => (
                         <TableCell key={index} align="center">
                           <IconButton
-                            onClick={() => handleOpenOverlay(employee)}
+                            onClick={() => handleOpenOverlay(row)}
                             sx={{
                               border: "1px solid #ddd",
                               borderRadius: "4px",
@@ -393,16 +380,17 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
                     onChange={handleBranchChange}
                     sx={{
                       width: "100%",
-                      height: "30px",
+                      height: "50px",
                     }}
                     displayEmpty
                   >
                     <MenuItem value="" disabled>
                       Day Off
                     </MenuItem>
-                    <MenuItem value="employee1">General Shift</MenuItem>
-                    <MenuItem value="employee2">Day Shift</MenuItem>
-                    <MenuItem value="employee3">Night Shift</MenuItem>
+                    {shiftData?.results?.map((row, index) => (
+                    <MenuItem value="{row.id}">{row.name}</MenuItem>
+                  ))}
+                    
                   </Select>
                 </Box>
 
@@ -419,24 +407,6 @@ const ShiftRosterList = ({ onAddShiftRoster }) => {
                    
                     variant="outlined"
                   />
-                </Box>
-
-                <Box sx={{ mb: 2 }}>
-                  <Typography variant="body2" sx={{ mb: 1 }}>
-                    Upload Photo
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    sx={{ textTransform: "none", width: "100%" }}
-                  >
-                    Choose File
-                    <input
-                      type="file"
-                      hidden
-                      // Add any onChange handler here if needed
-                    />
-                  </Button>
                 </Box>
               </>
             )}

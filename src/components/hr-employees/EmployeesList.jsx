@@ -14,9 +14,9 @@ import {
   Select,
   MenuItem,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import React, { useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
 import Visibility from "@mui/icons-material/Visibility";
 import { useRouter } from "next/router";
 import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
@@ -24,7 +24,15 @@ import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 import CustomCard from "../CustomCard";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
-
+import {
+  Add as AddIcon,
+  CheckCircle as CheckCircleIcon,
+  Cancel as CancelIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  LockOpen as LockOpenIcon,
+  Logout as LogoutIcon,
+} from "@mui/icons-material";
 const EmployeesList = ({ onAddEmployees }) => {
   const router = useRouter();
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -54,7 +62,7 @@ const EmployeesList = ({ onAddEmployees }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={12} md={12}>
+      <Grid item xs={12} sm={12} md={12} mt={1} ml={2}>
         <CustomCard>
           <Grid container spacing={2} p={1}>
             <Grid
@@ -224,12 +232,9 @@ const EmployeesList = ({ onAddEmployees }) => {
                       <TableCell>{row.profile?.employee_id}</TableCell>
                       <TableCell sx={{ display: "flex", alignItems: "center" }}>
                         <Avatar src={row.profile?.profile_image} sx={{ marginRight: 2 }} />
-                        <div>
                           <Typography sx={{ fontSize: "14px", color: "black" }}>
                             {row.first_name} {row.last_name}
                           </Typography>
-                         
-                        </div>
                       </TableCell>
                       <TableCell>{row.email}</TableCell>
                       {/* <TableCell>
@@ -245,19 +250,57 @@ const EmployeesList = ({ onAddEmployees }) => {
                         />
                       </TableCell>
                       <TableCell>
-                        <IconButton
-                          onClick={() => handleEdit(row.id)}
-                          aria-label="edit"
-                          sx={{ color: "#405189" }}
-                        >
-                          <Visibility />
-                        </IconButton>
+                      {row.status === "Approved" ? (
+                          <Tooltip title="Suspend">
+                            <IconButton
+                              aria-label="suspend"
+                              onClick={() =>
+                                handleToggleStatus(row.id, "Suspended")
+                              }
+                              sx={{ color: "#DC3545" }}
+                            >
+                              <CancelIcon />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title="Activate">
+                            <IconButton
+                              aria-label="activate"
+                              onClick={() =>
+                                handleToggleStatus(row.id, "Approved")
+                              }
+                              sx={{ color: "#28A745" }}
+                            >
+                              <CheckCircleIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      <Tooltip title="Change Password">
+                          <IconButton
+                            aria-label="change password"
+                            sx={{ color: "blue" }}
+                          >
+                            <LockOpenIcon sx={{ marginRight: "8px" }} />
+                          </IconButton>
+                        </Tooltip>
+
+                        <Tooltip title="Force Logout">
+                          <IconButton
+                            aria-label="force logout"
+                            sx={{ color: "#FF0000" }}
+                          >
+                            <LogoutIcon sx={{ marginRight: "8px" }} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Edit">
                         <IconButton
                               onClick={() => handleEdit(row)}
                               aria-label="edit"
                               sx={{ color: "green" }}>
                               <Edit />
-                              </IconButton>
+                          </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete">
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
@@ -265,7 +308,9 @@ const EmployeesList = ({ onAddEmployees }) => {
                         >
                           <Delete />
                         </IconButton>
-                      </TableCell>
+                        </Tooltip>
+                      </TableCell>   
+
                     </TableRow>
                   ))}
                 </TableBody>
