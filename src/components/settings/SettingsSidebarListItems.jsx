@@ -16,6 +16,7 @@ import PaymentCredentials from "./PaymentCredentials";
 import FinanceSettings from "./FinanceSettings";
 import SocialLoginSettings from "./SocialLoginSettings";
 import ThemeSettings from "./ThemeSettings";
+import Branch from "./Branch";
 import DatabaseBackupSettings from "./DatabaseBackupSettings";
 import LocalShippingIcon from '@mui/icons-material/Map';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -48,6 +49,7 @@ const poppins = Poppins({
 });
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import IPAccess from "./IPAccess";
+import LeadSettings from "./LeadSettings";
 const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
@@ -63,14 +65,17 @@ const superAdminMenuItems = [
 
 const adminMenuItems = [
   { text: "Admin Settings", icon: <SettingsIcon /> },
+  { text: "Branch", icon: <PeopleAltIcon /> },
   { text: "Courier Service", icon: <ShippingIcon /> },
   { text: "Telephonic Channels", icon: <PhoneIcon /> },
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
   { text: "Email Settings", icon: <EmailIcon /> },
   { text: "Order Status", icon: <AssignmentIcon /> },
   { text: "Lead Status", icon: <PeopleAltIcon /> },
+  { text: "Lead Setting", icon: <PeopleAltIcon /> },
   { text: "IP Access", icon: <PeopleAltIcon /> },
   { text: "Pickup Point", icon: <PeopleAltIcon /> },
+  
 ];
 const commonMenuItems = [
   { text: "Roles & Permissions", icon: <BackupIcon /> },
@@ -284,11 +289,13 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "superadmin" && (selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />)}
           {type == "superadmin" && (selectedItem === "Maintainance Mode" && <MaintainanceMode />)}
           {type == "admin" && (selectedItem === "Admin Settings" && <AdminSettings /> )}
+          {type == "admin" && (selectedItem === "Branch" &&  <Branch />)}
           {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
           {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
           {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}
           {type == "admin" && (selectedItem === "Order Status" &&  <OrderStatus />)}
           {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)}
+          {type == "admin" && (selectedItem === "Lead Setting" &&  <LeadSettings />)}
          { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
          { selectedItem === "E-Invoice Settings" &&  <EInvoiceSettings />}
 

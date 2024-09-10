@@ -122,7 +122,7 @@ const BranchList = () => {
   };
 
   return (
-    <Grid container sx={{ padding: 3 }}>
+    <Grid container>
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
