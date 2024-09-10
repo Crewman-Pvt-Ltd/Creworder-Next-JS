@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem, Grid, Box } from '@mui/material';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+
 import useGetAllBranches from '@/api-manage/react-query/useGetAllBranches';
 const branches = ['Branch 1', 'Branch 2', 'Branch 3', 'Branch 4', 'Branch 5', 'Branch 6'];
 
@@ -17,9 +19,7 @@ const BranchSwitcher = () => {
 
   return (
     <>
-      <Button variant="contained" onClick={handleOpenMenu}>
-        Branch
-      </Button>
+      <AccountTreeIcon sx={{marginLeft: 3}}/>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
