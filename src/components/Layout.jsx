@@ -26,7 +26,7 @@ const Layout = ({ children, type }) => {
           flexDirection: "column",
         }}
       >
-        <Header onMenuClick={handleMenuClick} />
+        <Header onMenuClick={handleMenuClick} type={type}/>
         <Box
           sx={{
             flexGrow: 1,           
