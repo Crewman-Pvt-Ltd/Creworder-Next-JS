@@ -10,16 +10,19 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Image from "next/image";
-import ChatIcon from '@mui/icons-material/Chat';  
+import ChatIcon from "@mui/icons-material/Chat";
 import creworderIcon from "../images/crewordericon.png";
 import ProfileHeader from "./ProfileHeader";
+import EditNoteSharpIcon from '@mui/icons-material/EditNoteSharp';
 import SearchBar from "./SearchBar";
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from "@mui/icons-material/Settings";
 import { logout } from "@/utils/auth";
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import SearchIcon from '@mui/icons-material/Search';
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import { useRouter } from "next/router";
 import RechargeWallet from "./recharge-wallet/RechargeWallet";
 import BranchSwitcher from "./branchswitcher/BranchSwitcher";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 
 const Header = ({ onMenuClick, type }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -87,7 +90,8 @@ const Header = ({ onMenuClick, type }) => {
           >
             <MenuIcon />
           </IconButton>
-          <SearchBar />
+          <SearchIcon />
+          <a href="/notepad" style={{ textDecoration: 'none' }}><Tooltip title="Notebad "><EditNoteSharpIcon sx={{marginLeft: 3}} /></Tooltip></a>
         </Grid>
         <Grid
           item
@@ -99,16 +103,46 @@ const Header = ({ onMenuClick, type }) => {
           }}
         >
           <Grid container spacing={2} sx={{ alignItems: "center" }}>
-            <Grid item sm={6} md={6} sx={{marginLeft: 10}} >
-            <a  style={{ textDecoration: 'none' }}> <Tooltip title="Wallet"><RechargeWallet sx={{marginLeft: 3}} /></Tooltip></a>
-            <a href="/chat" style={{ textDecoration: 'none' }}><Tooltip title="Chat"> <ChatIcon sx={{marginLeft: 3}}/></Tooltip></a>
-
-            {type == "admin" && (<a href="/admin/settings" style={{ textDecoration: 'none' }}> <Tooltip title="Settings"> <SettingsIcon sx={{marginLeft: 3}}/></Tooltip></a>)}
-
-            {type == "superadmin" && ( <a href="/superadmin/settings" style={{ textDecoration: 'none' }}> <Tooltip title="Settings"> <SettingsIcon sx={{marginLeft: 3}}/></Tooltip></a>)}
-            {type == "admin" && (<a href="/admin/branch" style={{ textDecoration: 'none' }}><Tooltip title="Branchs "><AccountTreeIcon sx={{marginLeft: 3}} /></Tooltip></a>)}
+            <Grid item sm={6} md={6} sx={{ marginLeft: 10 }}>
+              <a style={{ textDecoration: "none" }}>
+                {" "}
+                <Tooltip title="Wallet">
+                  <RechargeWallet sx={{ marginLeft: 3 }} />
+                </Tooltip>
+              </a>
+              <a href="/chat" style={{ textDecoration: "none" }}>
+                <Tooltip title="Chat">
+                  {" "}
+                  <ChatIcon sx={{ marginLeft: 3 }} />
+                </Tooltip>
+              </a>
+              {type == "admin" && (
+                <a href="/admin/settings" style={{ textDecoration: "none" }}>
+                  {" "}
+                  <Tooltip title="Settings">
+                    {" "}
+                    <SettingsIcon sx={{ marginLeft: 3 }} />
+                  </Tooltip>
+                </a>
+              )}
+              {type == "superadmin" && (
+                <a
+                  href="/superadmin/settings"
+                  style={{ textDecoration: "none" }}
+                >
+                  {" "}
+                  <Tooltip title="Settings">
+                    {" "}
+                    <SettingsIcon sx={{ marginLeft: 3 }} />
+                  </Tooltip>
+                </a>
+              )}
+              <BranchSwitcher />
+              {/* {type == "admin" && (<a href="/admin/branch" style={{ textDecoration: 'none' }}><Tooltip title="Branchs "><AccountTreeIcon sx={{marginLeft: 3}} /></Tooltip></a>)} */}
+              {/* {type == "admin" && (<a href="/notepad" style={{ textDecoration: 'none' }}><Tooltip title="Notebad "><MenuBookIcon sx={{marginLeft: 3}} /></Tooltip></a>)} */}
+             
             </Grid>
-           
+
             <Grid item sm={4} md={4}>
               <Grid
                 container

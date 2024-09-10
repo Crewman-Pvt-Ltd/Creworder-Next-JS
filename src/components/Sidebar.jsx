@@ -212,7 +212,7 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick("/dashboard")}
         />
 
-        {type == "admin" && (
+        {/* {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name="Branch"
@@ -220,7 +220,7 @@ const Sidebar = ({ isOpen, type }) => {
             active={currentPath === "/admin/branch"}
             onClick={() => handleItemClick("/admin/branch")}
           />
-        )}
+        )} */}
 
         {type == "superadmin" && (
           <HoverableNavItem
@@ -252,7 +252,7 @@ const Sidebar = ({ isOpen, type }) => {
           />
         )}
 
-        {type == "superadmin" && (
+        {/* {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name="Employee"
@@ -260,7 +260,7 @@ const Sidebar = ({ isOpen, type }) => {
             active={currentPath === "/superadmin/employees"}
             onClick={() => handleItemClick("/superadmin/employees")}
           />
-        )}
+        )} */}
 
         {type == "superadmin" && (
           <HoverableNavItem
@@ -280,14 +280,14 @@ const Sidebar = ({ isOpen, type }) => {
           onClick={() => handleItemClick("/notice-board")}
         ></HoverableNavItem>
 
-        <HoverableNavItem
+        {/* <HoverableNavItem
           isOpen={isOpen}
           name="Chat"
           icon={<ChatIcon />}
           active={currentPath === "/chat"}
           onClick={() => handleItemClick("/chat")}
-        ></HoverableNavItem>
-         {type == "admin" && (
+        ></HoverableNavItem> */}
+         {/* {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name="Settings"
@@ -295,7 +295,7 @@ const Sidebar = ({ isOpen, type }) => {
             active={currentPath === "/admin/settings"}
             onClick={() => handleItemClick("/admin/settings")}
           ></HoverableNavItem>
-        )}
+        )} */}
 
      <HoverableNavItem
           isOpen={isOpen}
@@ -402,7 +402,7 @@ const Sidebar = ({ isOpen, type }) => {
         </HoverableNavItem>
 
 
-        {type == "superadmin" && (
+        {/* {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name="Settings"
@@ -410,7 +410,7 @@ const Sidebar = ({ isOpen, type }) => {
             active={currentPath === "/superadmin/settings"}
             onClick={() => handleItemClick("/superadmin/settings")}
           ></HoverableNavItem>
-        )}
+        )} */}
 
         {type == "superadmin" && (
           <HoverableNavItem
@@ -432,13 +432,13 @@ const Sidebar = ({ isOpen, type }) => {
           ></HoverableNavItem>
         )}
 
-        <HoverableNavItem
+        {/* <HoverableNavItem
           isOpen={isOpen}
           name="Notepad"
           icon={<MenuBookIcon />}
           active={currentPath === "/notepad"}
           onClick={() => handleItemClick("/notepad")}
-        ></HoverableNavItem>
+        ></HoverableNavItem> */}
 
         <HoverableNavItem
           isOpen={isOpen}
