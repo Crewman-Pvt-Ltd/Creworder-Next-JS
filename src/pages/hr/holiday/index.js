@@ -7,7 +7,7 @@ import Loader from "@/components/Loader";
 import { useRouter } from "next/router";
 const Index = () => {
   const { permissionsData, permissionLoading } = usePermissions();
-
+  const [showAddHoliday, setShowAddHoliday] = useState(false);
   const router = useRouter();
 
   const userRole = permissionsData?.role;
@@ -19,7 +19,7 @@ const Index = () => {
   }, [permissionLoading, permissionsData, router]);
 
   if (permissionLoading) return <Loader />;
-  const [showAddHoliday, setShowAddHoliday] = useState(false);
+
 
   const handleAddHoliday = () => {
     setShowAddHoliday(true);

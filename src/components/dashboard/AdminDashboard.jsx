@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Typography, styled, Button } from "@mui/material";
 import Tile from "../Tile";
 import TopSellers from "../TopSellers";
@@ -12,6 +12,8 @@ import Checklist from "../Checklist";
 import { DateRangePicker } from "@nextui-org/date-picker";
 
 const AdminDashboard = () => {
+  const [dateRange, setDateRange] = useState({ startDate: null, endDate: null }); // State for date range
+
   const tilesTypes = ["Running Order", "Pending", "Repeat Order", "Rejected"];
   const tiles = [
     "Running",
@@ -42,8 +44,13 @@ const AdminDashboard = () => {
     greeting = "Good Evening";
   }
 
-
   const typetiles = ["Running", "intransit", "Accepted", "noresponse"];
+  
+  const handleDateRangeChange = (range) => {
+    setDateRange(range);
+    console.log("Selected Range:", range); // You can handle the date range as needed
+  };
+
   return (
     <Grid
       container
@@ -57,7 +64,7 @@ const AdminDashboard = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={12} md={7} >
+              <Grid item xs={12} sm={12} md={7}>
                 <Typography
                   sx={{
                     fontSize: "20px",
@@ -79,15 +86,17 @@ const AdminDashboard = () => {
                   Here's what's happening with your store today.
                 </Typography>
               </Grid>
-              
+
               <Grid item xs={12} sm={10} md={5}>
-                <Grid container spacing={2}>                  
-                  <Grid item xs={12} sm={6} md={9}>                  
-                    <DateRangePicker                    
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} md={9}>
+                    <DateRangePicker
                       visibleMonths={2}
+                      onChange={handleDateRangeChange}
                       style={{
                         backgroundColor: "#fff",
-                        color:"blue",
+                        color: "blue",
+                       
                       }}
                       popoverProps={{
                         style: {
@@ -97,9 +106,14 @@ const AdminDashboard = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
-                    <LightButton variant="contained" sx={{
-                      padding:"10px",
-                    }}>ClockIn</LightButton>
+                    <LightButton
+                      variant="contained"
+                      sx={{
+                        padding: "10px",
+                      }}
+                    >
+                      ClockIn
+                    </LightButton>
                   </Grid>
                 </Grid>
               </Grid>
@@ -170,4 +184,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
