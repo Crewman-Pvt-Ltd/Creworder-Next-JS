@@ -16,14 +16,14 @@ import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import CustomCard from '../CustomCard';
 import useGetAllShifts from '@/api-manage/react-query/useGetAllShifts';
-
+import { useRouter } from "next/router";
 const ShiftList = ({ onAddShift }) => {
   const { data, refetch, isLoading, isError } = useGetAllShifts();
-
-  const handleEdit = (id) => {
-    console.log('Edit', id);
+  const router = useRouter();
+ 
+  const handleEdit = (row) => {
+    router.push(`/hr/shift/editshift?id=${row.id}`);
   };
-
   const handleDeleteClick = (id) => {
     console.log('Delete', id);
   };
@@ -107,10 +107,12 @@ const ShiftList = ({ onAddShift }) => {
                         {row.end_time}
                       </TableCell>
                       <TableCell>
+                      
+
                         <IconButton
-                          onClick={() => handleEdit(row.id)}
+                          onClick={() => handleEdit(row)}
                           aria-label="edit"
-                          sx={{ color: 'green' }}
+                          sx={{ color: "#001F3F" }}
                         >
                           <Edit />
                         </IconButton>
