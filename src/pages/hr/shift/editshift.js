@@ -1,12 +1,12 @@
 import Layout from '@/components/Layout';
 import EditShift from '@/components/shifts/EditShift';
 import React from 'react';
-const EditShiftPage = () => {
+const editshift = () => {
   return (
-    <Layout>
-      <EditShiftPage />
+    <Layout type="admin">
+      <EditShift />
     </Layout>
   );
 };
 
-export default EditShift;
+export default editshift;
