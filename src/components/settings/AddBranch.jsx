@@ -4,27 +4,22 @@ import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
-import {
-  Typography,
-  Button,
-  Grid,
-  Card,
-  CardContent,
-  Divider,
-} from "@mui/material";
+import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
 import { usePermissions } from "@/contexts/PermissionsContext";
 
-const CreateBranch = () => {
+const AddBranch = () => {
   const router = useRouter();
   const { permissionsData } = usePermissions();
-  console.log("Permission Data", permissionsData);
+console.log("Permission Data", permissionsData);
   const [formData, setFormData] = useState({
     name: "",
     address: "",
     user: 1,
-    company: permissionsData?.user?.profile?.company,
+    company: (permissionsData?.user?.profile?.company), 
   });
   const [errors, setErrors] = useState({});
+
+ 
 
   const validateForm = () => {
     let formErrors = {};
@@ -74,10 +69,7 @@ const CreateBranch = () => {
           router.push("/admin/branch");
         }
       } catch (error) {
-        console.error(
-          "Error submitting form:",
-          error.response?.data || error.message
-        );
+        console.error("Error submitting form:", error.response?.data || error.message);
       }
     }
   };
@@ -182,4 +174,4 @@ const CreateBranch = () => {
   );
 };
 
-export default CreateBranch;
+export default AddBranch;
