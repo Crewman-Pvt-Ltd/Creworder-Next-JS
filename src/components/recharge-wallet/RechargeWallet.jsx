@@ -13,7 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"; // Import the wallet icon
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"; 
 import { Poppins } from "next/font/google";
 
 const poppins = Poppins({
@@ -34,6 +34,11 @@ const RechargeWallet = () => {
         sx={{
           backgroundColor: "#f9f8fe",
           color: "#405189",
+          transition: "background-color 0.3s, color 0.3s", 
+          "&:hover": {
+            backgroundColor: "#405189", 
+            color: "#ffffff", 
+          },
         }}
       >
         <AccountBalanceWalletIcon />

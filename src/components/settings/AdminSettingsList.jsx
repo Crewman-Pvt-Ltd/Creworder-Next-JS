@@ -73,7 +73,7 @@ const AdminSettingsList = ({ onAddAdmin, onEditAdmin }) => {
                     <TableCell>ID</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Email</TableCell>
-                    <TableCell>Profile Image</TableCell>
+                    {/* <TableCell>Profile Image</TableCell> */}
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -83,9 +83,9 @@ const AdminSettingsList = ({ onAddAdmin, onEditAdmin }) => {
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{row.first_name} {row.last_name}</TableCell>
                       <TableCell>{row.email}</TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <img src={row.profile_image} height={100} width={100} />
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell>
                         <IconButton onClick={() => handleEdit(row)} aria-label="edit" sx={{ color: "green" }}>
                           <EditIcon />
