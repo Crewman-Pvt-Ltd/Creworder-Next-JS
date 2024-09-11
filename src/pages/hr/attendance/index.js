@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
-import AttendanceList from '@/components/Attendance/AttendanceList';
-import AddAttendance from '@/components/Attendance/AddAttendance';
+import AttendanceList from '@/components/attendance/AttendanceList';
+import AddAttendance from '@/components/attendance/AddAttendance';
 import { usePermissions } from "@/contexts/PermissionsContext";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/router";
