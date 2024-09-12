@@ -7,7 +7,7 @@ import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/mater
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 
-const EditModule = () => {
+const EditMenu = () => {
   const router = useRouter();
   const { id } = router.query;
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ const EditModule = () => {
             throw new Error("No authentication token found.");
           }
 
-          const response = await MainApi.get(`/api/modules/${id}`, {
+          const response = await MainApi.get(`/api/menu/${id}`, {
             headers: {
               Authorization: `Token ${token}`,
             },
@@ -80,7 +80,7 @@ const EditModule = () => {
         }
       }
 
-      const response = await MainApi.patch(`/api/modules/${id}/`, updatedFields, {
+      const response = await MainApi.patch(`/api/menu/${id}/`, updatedFields, {
         headers: {
           Authorization: `Token ${token}`,
           "Content-Type": "application/json",
@@ -88,15 +88,15 @@ const EditModule = () => {
       });
 
       if (response.status === 200) {
-        console.log("Module updated successfully");
-        router.push("/superadmin/module");
+        console.log("Menu updated successfully");
+        router.push("/superadmin/menu");
       } else {
-        console.error("Failed to update the module");
-        setError("Failed to update the module");
+        console.error("Failed to update the menu");
+        setError("Failed to update the menu");
       }
     } catch (error) {
-      console.error("An error occurred while updating the module:", error);
-      setError("An error occurred while updating the module");
+      console.error("An error occurred while updating the menu:", error);
+      setError("An error occurred while updating the menu");
     }
   };
 
@@ -115,7 +115,7 @@ const EditModule = () => {
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Edit Module
+                Edit Menu
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -180,4 +180,4 @@ const EditModule = () => {
   );
 };
 
-export default EditModule;
+export default EditMenu;

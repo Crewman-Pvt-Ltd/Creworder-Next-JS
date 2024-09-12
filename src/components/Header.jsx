@@ -80,18 +80,56 @@ const Header = ({ onMenuClick, type }) => {
               height={30}
               sx={{ marginRight: 2 }}
             />
-          )}
+          )}<Tooltip title="Menu ">
           <IconButton
             color="black"
             onClick={onMenuClick}
-            sx={{ marginRight: 2 }}
+            sx={{
+              marginRight: 2,
+              backgroundColor: "#f9f8fe",
+              color: "#405189",
+              "&:hover": {
+                backgroundColor: "#405189",
+                color: "#ffffff",
+              },
+            }}
           >
             <MenuIcon />
-          </IconButton>
-          <SearchIcon />
+          </IconButton>   </Tooltip>
+          <Tooltip title="Search ">
+          <SearchIcon
+            sx={{
+              backgroundColor: "#f9f8fe",
+              color: "#405189",
+              borderRadius: "50%",
+              width: 40,
+              height: 40,
+              padding: "8px",
+              transition: "background-color 0.3s, color 0.3s",
+              "&:hover": {
+                backgroundColor: "#405189",
+                color: "#ffffff",
+              },
+            }}
+          />   </Tooltip>
           <a href="/notepad" style={{ textDecoration: "none" }}>
             <Tooltip title="Notebad ">
-              <EditNoteSharpIcon sx={{ marginLeft: 3 }} />
+              <EditNoteSharpIcon
+                sx={{
+                  marginLeft: 1,
+                  backgroundColor: "#f9f8fe",
+                  color: "#405189",
+                  borderRadius: "50%",
+                  width: 40,
+                  height: 40,
+                  padding: "8px",
+                  transition: "background-color 0.3s, color 0.3s",
+                  "&:hover": {
+                    backgroundColor: "#405189",
+                    color: "#ffffff",
+                  },
+                }}
+              />
             </Tooltip>
           </a>
         </Grid>
@@ -214,7 +252,6 @@ const Header = ({ onMenuClick, type }) => {
                   />
                 </Tooltip>
               </a>
-              
             </Grid>
 
             <Grid item sm={4} md={4}>
