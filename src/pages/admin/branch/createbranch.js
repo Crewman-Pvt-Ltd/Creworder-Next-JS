@@ -10,4 +10,4 @@ const createbranch = () => {
   )
 }
 
-export default createbranch
+export default createbranch;

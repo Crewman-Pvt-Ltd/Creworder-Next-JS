@@ -16,12 +16,12 @@ import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import CustomCard from '../CustomCard';
 import useGetAllDesignations from '@/api-manage/react-query/useGetAllDesignations';
-
+import { useRouter } from "next/router";
 const DesignationList = ({ onAddDesignation }) => {
   const { data, refetch, isLoading, isError } = useGetAllDesignations();
-
-  const handleEdit = (id) => {
-    console.log('Edit', id);
+  const router = useRouter();
+  const handleEdit = (row) => {
+    router.push(`/hr/designation/editdesignation?id=${row.id}`);
   };
 
   const handleDeleteClick = (id) => {
@@ -102,7 +102,7 @@ const DesignationList = ({ onAddDesignation }) => {
                       </TableCell>
                       <TableCell>
                         <IconButton
-                          onClick={() => handleEdit(row.id)}
+                          onClick={() => handleEdit(row)}
                           aria-label="edit"
                           sx={{ color: 'green' }}
                         >

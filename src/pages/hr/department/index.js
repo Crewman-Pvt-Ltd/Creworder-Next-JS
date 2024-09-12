@@ -8,11 +8,9 @@ import { useRouter } from "next/router";
 
 const Index = () => {
   const { permissionsData, permissionLoading } = usePermissions();
-
   const router = useRouter();
-
   const userRole = permissionsData?.role;
-
+  const [showAddDepartment, setShowAddDepartment] = useState(false);
   
   useEffect(() => {
     if (!permissionLoading && !permissionsData?.role) {
@@ -22,7 +20,7 @@ const Index = () => {
 
   if (permissionLoading) return <Loader />;
 
-  const [showAddDepartment, setShowAddDepartment] = useState(false);
+  
 
   const handleAddDepartment = () => {
     setShowAddDepartment(true);

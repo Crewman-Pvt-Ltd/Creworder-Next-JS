@@ -17,6 +17,7 @@ import FinanceSettings from "./FinanceSettings";
 import SocialLoginSettings from "./SocialLoginSettings";
 import ThemeSettings from "./ThemeSettings";
 import Branch from "./Branch";
+import BranchList from "./BranchListpage";
 import DatabaseBackupSettings from "./DatabaseBackupSettings";
 import LocalShippingIcon from '@mui/icons-material/Map';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -66,6 +67,7 @@ const superAdminMenuItems = [
 const adminMenuItems = [
   { text: "Admin Settings", icon: <SettingsIcon /> },
   { text: "Branch", icon: <PeopleAltIcon /> },
+  { text: "Branch List", icon: <PeopleAltIcon /> },
   { text: "Courier Service", icon: <ShippingIcon /> },
   { text: "Telephonic Channels", icon: <PhoneIcon /> },
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
@@ -290,6 +292,7 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "superadmin" && (selectedItem === "Maintainance Mode" && <MaintainanceMode />)}
           {type == "admin" && (selectedItem === "Admin Settings" && <AdminSettings /> )}
           {type == "admin" && (selectedItem === "Branch" &&  <Branch />)}
+          {/* {type == "admin" && (selectedItem === "Branch List" &&  <BranchList />)} */}
           {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
           {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
           {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}

@@ -10,7 +10,7 @@ import { usePermissions } from "@/contexts/PermissionsContext";
 const AddBranch = () => {
   const router = useRouter();
   const { permissionsData } = usePermissions();
-console.log("Permission Data", permissionsData);
+  console.log("Permission Data", permissionsData);
   const [formData, setFormData] = useState({
     name: "",
     address: "",

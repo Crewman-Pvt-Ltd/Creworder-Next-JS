@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomCard from '../CustomCard';
 import {
   CardContent,
@@ -13,7 +13,6 @@ import MainApi from '@/api-manage/MainApi';
 import { useRouter } from 'next/router'; 
 import { getToken } from '@/utils/getToken';
 import { usePermissions } from "@/contexts/PermissionsContext";
-
 const EditDepartment = ({ onDepartmentList }) => {
   const { permissionsData } = usePermissions();
   console.log("Permissions Data", permissionsData);
@@ -22,7 +21,9 @@ const EditDepartment = ({ onDepartmentList }) => {
     branch: permissionsData?.user?.profile?.branch,
     parent: ""
   });
+  const [loading, setLoading] = useState(false);
   const router = useRouter(); 
+  const { id } = router.query; // Get the 'id' from the query string
   const token = getToken(); 
 
   const handleChange = (e) => {
@@ -34,26 +35,56 @@ const EditDepartment = ({ onDepartmentList }) => {
     console.log("Updated Form Data", formData);
   };
 
-  const handleSubmit = async (e) => {
+   // Handle form submission to update the shift
+   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await MainApi.post("/api/departments/", formData, {
+      const response = await MainApi.patch(`/api/departments/${id}/`, formData, {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
 
-      if (response.status === 201) {
-        onDepartmentList();
+      if (response.status === 200) {       
+        router.push('/hr/department');
       } else {
-        throw new Error("Unexpected response from server");
+        throw new Error("Error updating Depatment");
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
-     
+      console.error("Error updating Depatment:", error);
     }
   };
+
+ // Fetch the shift data by ID
+ useEffect(() => {
+  if (id) {
+    const fetchShift = async () => {
+      setLoading(true);
+      try {
+        const response = await MainApi.get(`/api/departments/${id}/`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+        if (response.status === 200) {
+          setFormData({
+            name: response.data.name,
+            branch: response.data.branch,
+            start_time: response.data.start_time,
+            end_time: response.data.end_time,
+          });
+        } else {
+          throw new Error("Unexpected response from server");
+        }
+      } catch (error) {
+        console.error("Error fetching shift data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchShift();
+  }
+}, [id, token]);
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
@@ -61,7 +92,7 @@ const EditDepartment = ({ onDepartmentList }) => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Add Department
+              Edit Department
             </Typography>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleSubmit}>

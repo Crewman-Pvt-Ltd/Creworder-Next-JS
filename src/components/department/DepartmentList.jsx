@@ -16,12 +16,13 @@ import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import CustomCard from '../CustomCard';
 import useGetAllDepartments from '@/api-manage/react-query/useGetAllDepartments';
-
+import { useRouter } from "next/router";
 const DepartmentList = ({ onAddDepartment }) => {
   const { data, refetch, isLoading, isError } = useGetAllDepartments();
+  const router = useRouter();
 
-  const handleEdit = (id) => {
-    console.log('Edit', id);
+  const handleEdit = (row) => {
+    router.push(`/hr/department/editdepartment?id=${row.id}`);
   };
 
   const handleDeleteClick = (id) => {
@@ -102,7 +103,7 @@ const DepartmentList = ({ onAddDepartment }) => {
                       </TableCell>
                       <TableCell>
                         <IconButton
-                          onClick={() => handleEdit(row.id)}
+                          onClick={() => handleEdit(row)}
                           aria-label="edit"
                           sx={{ color: 'green' }}
                         >
