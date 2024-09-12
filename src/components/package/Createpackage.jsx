@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import useGetAllModules from "@/api-manage/react-query/useGetAllModules";
+import useGetAllMenu from "@/api-manage/react-query/useGetAllMenu";
+import useGetAllSubmenu from "@/api-manage/react-query/useGetAllSubmenu";
 import { usePermissions } from "@/contexts/PermissionsContext";
+
 import {
   Typography,
   Button,
@@ -59,44 +62,79 @@ const modules = [
 ];
 
 const CreatePackage = () => {
-  const [checkedItems, setCheckedItems] = useState({
-    Home: false,
-    Services: false,
-    Products: false,
-  });
 
-  const [checkedSubmenus, setCheckedSubmenus] = useState({
-    Development: false,
-    DigitalMarketing: false,
-    ERP: false,
-    CRM: false,
-    MLM: false,
-  });
+  const [menus, setMenus] = useState([]);
+  const [submenus, setSubmenus] = useState([]);
+  const [checkedItems, setCheckedItems] = useState({});
+  const [checkedSubmenus, setCheckedSubmenus] = useState({});
+  useEffect(() => {
+    fetchMenus();
+    fetchSubmenus();
+  }, []);
+  const fetchMenus = async () => {
+    try {
+      const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const response = await fetch(`${BASE_URL}/api/menu`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch menu data");
+      }
+
+      const data = await response.json();
+      setMenus(data.results);    
+      const initialCheckedItems = data.results.reduce((acc, menu) => {
+        acc[menu.name] = false;
+        return acc;
+      }, {});
+      setCheckedItems(initialCheckedItems);
+    } catch (error) {
+      console.error("Error fetching menu data:", error);
+    }
+  };
+
+  const fetchSubmenus = async () => {
+    try {
+      const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const response = await fetch(`${BASE_URL}/api/submenu`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch submenu data");
+      }
+
+      const data = await response.json();
+      setSubmenus(data.results);
+
+      // Initialize checkedSubmenus state for submenus
+      const initialCheckedSubmenus = data.results.reduce((acc, submenu) => {
+        acc[submenu.name] = false;
+        return acc;
+      }, {});
+      setCheckedSubmenus(initialCheckedSubmenus);
+    } catch (error) {
+      console.error("Error fetching submenu data:", error);
+    }
+  };
+
+  // Handle change for main menu checkboxes
   const handleMainMenuChange = (event) => {
     const { name, checked } = event.target;
     setCheckedItems((prevState) => ({
       ...prevState,
       [name]: checked,
     }));
-
-    // Reset submenus when main menu is unchecked
-    if (name === 'Services' && !checked) {
-      setCheckedSubmenus({
-        Development: false,
-        DigitalMarketing: false,
-      });
-    }
-
-    if (name === 'Products' && !checked) {
-      setCheckedSubmenus({
-        ERP: false,
-        CRM: false,
-        MLM: false, 
-      });
-    }
   };
 
+  // Handle change for submenu checkboxes
   const handleSubmenuChange = (event) => {
     const { name, checked } = event.target;
     setCheckedSubmenus((prevState) => ({
@@ -105,10 +143,8 @@ const CreatePackage = () => {
     }));
   };
 
-  
 
   const { permissionsData } = usePermissions();
-  const router = useRouter();
   const { data: modulesData, refetch } = useGetAllModules();
   const token = getToken();
   const [formState, setFormState] = useState({
@@ -414,7 +450,7 @@ const CreatePackage = () => {
                 </Grid>
               </>
             )}
-            <Divider sx={{ my: 2 }} />
+            {/* <Divider sx={{ my: 2 }} />
 
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -453,113 +489,53 @@ const CreatePackage = () => {
                   </Grid>
                 ))}
               </Grid>
-            </Grid>
+            </Grid> */}
 
             <Divider sx={{ my: 2 }} />
 
-      {/* Main Menu List */}
-      <ul>
-        <li>
-          <FormControlLabel
-            control={<Checkbox checked={checkedItems.Home} />}
-            label="Home"
-            name="Home"
-            onChange={handleMainMenuChange}
-          />
-        </li>
+            {/* Main Menu List */}
+            <ul>
+              {menus.map((menu) => (
+                <li key={menu.id}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={checkedItems[menu.name] || false} />
+                    }
+                    label={menu.name}
+                    name={menu.name}
+                    onChange={handleMainMenuChange}
+                  />
 
-        <li>
-          <FormControlLabel
-            control={<Checkbox checked={checkedItems.Services} />}
-            label="Services"
-            name="Services"
-            onChange={handleMainMenuChange}
-          />
-
-          {/* Submenu for Services - Conditionally render below Services */}
-          {checkedItems.Services && (
-            <ul style={{ paddingLeft: '40px', listStyleType: 'none' }}>
-              <li>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkedSubmenus.Development}
-                      onChange={handleSubmenuChange}
-                      name="Development"
-                    />
-                  }
-                  label="Development"
-                />
-              </li>
-              <li>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkedSubmenus.DigitalMarketing}
-                      onChange={handleSubmenuChange}
-                      name="DigitalMarketing"
-                    />
-                  }
-                  label="Digital Marketing"
-                />
-              </li>
+                  {/* Submenu for each menu */}
+                  {checkedItems[menu.name] &&
+                    submenus
+                      .filter((submenu) => submenu.menu === menu.id)
+                      .map((submenu) => (
+                        <ul
+                          key={submenu.id}
+                          style={{ paddingLeft: "40px", listStyleType: "none" }}
+                        >
+                          <li>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={
+                                    checkedSubmenus[submenu.name] || false
+                                  }
+                                  onChange={handleSubmenuChange}
+                                  name={submenu.name}
+                                />
+                              }
+                              label={submenu.name}
+                            />
+                          </li>
+                        </ul>
+                      ))}
+                </li>
+              ))}
             </ul>
-          )}
-        </li>
 
-        <li>
-          <FormControlLabel
-            control={<Checkbox checked={checkedItems.Products} />}
-            label="Products"
-            name="Products"
-            onChange={handleMainMenuChange}
-          />
-
-          {/* Submenu for Products - Conditionally render below Products */}
-          {checkedItems.Products && (
-            <ul style={{ paddingLeft: '40px', listStyleType: 'none' }}>
-              <li>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkedSubmenus.ERP}
-                      onChange={handleSubmenuChange}
-                      name="ERP"
-                    />
-                  }
-                  label="ERP"
-                />
-              </li>
-              <li>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkedSubmenus.CRM}
-                      onChange={handleSubmenuChange}
-                      name="CRM"
-                    />
-                  }
-                  label="CRM"
-                />
-              </li>
-              <li>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checkedSubmenus.MLM}
-                      onChange={handleSubmenuChange}
-                      name="MLM"
-                    />
-                  }
-                  label="MLM"
-                />
-              </li>             
-            </ul>
-          )}
-        </li>
-      </ul>
-
-      <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 2 }} />
 
             <Grid item xs={12} sm={12} md={12}>
               <CustomLabel htmlFor="description">Description</CustomLabel>
