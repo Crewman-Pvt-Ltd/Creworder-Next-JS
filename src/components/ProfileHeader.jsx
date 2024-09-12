@@ -1,7 +1,12 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { usePermissions } from '@/contexts/PermissionsContext';
+import { Poppins } from "next/font/google";
 
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const ProfileHeader = () => {
 
   const { fetchPermissions, permissionsData } = usePermissions();
@@ -22,12 +27,12 @@ const ProfileHeader = () => {
         />
         <Grid container direction="column" spacing={0.5}>
           <Grid item>
-            <Typography fontSize="14px" color="black">
+            <Typography className={poppins.className} fontSize="14px" color="black">
             {permissionsData?.user?.username}
             </Typography>
           </Grid>
           <Grid item>
-            <Typography fontSize="12px" color="#9e9b9b">
+            <Typography className={poppins.className} fontSize="12px" color="#9e9b9b">
               Owner & Founder
             </Typography>
           </Grid>

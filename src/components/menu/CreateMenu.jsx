@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
+import React, { useState } from "react";
+import CustomTextField from "@/components/CustomTextField";  
+import CustomLabel from "../customLabel";  
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
-import { Typography, Button, Grid, Card, CardContent, Divider, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Typography, Button, Grid, Card, CardContent, Divider, Select, MenuItem, FormControl } from "@mui/material";
 import { Home, Info, ContactMail, School, Settings } from "@mui/icons-material";
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';  
 import useGetAllMenu from "@/api-manage/react-query/useGetAllMenu";
 import { Poppins } from "next/font/google";
 
@@ -22,33 +23,49 @@ const iconsList = [
   { value: 'settings', label: 'Settings', icon: <Settings /> },
 ];
 
+const submenuiconsList = [
+  { value: 'arrow', icon: <ArrowRightAltIcon /> },
+];
+
 const CreateMenu = () => {
   const router = useRouter();
   const { data: menuData } = useGetAllMenu(); 
   
-  const [menuformData, setMenuFormData] = useState({
+  const [menuFormData, setMenuFormData] = useState({
     name: "",
     icon: "", 
     url: "",
     user: 1,
   });
-  const [submenuformData, setSubmenuFormData] = useState({
+  const [submenuFormData, setSubmenuFormData] = useState({
     name: "",
     menu: "",
     icon: "", 
     url: "",
   });
 
-  const [errors, setErrors] = useState({});
+  const [menuErrors, setMenuErrors] = useState({});
+  const [submenuErrors, setSubmenuErrors] = useState({});
 
-  const validateForm = (data) => {
+  const validateMenuForm = (data) => {
     let formErrors = {};
     Object.keys(data).forEach((key) => {
-      if (!data[key] && key !== 'description') { 
+      if (!data[key]) { 
         formErrors[key] = "This field is required";
       }
     });
-    setErrors(formErrors);
+    setMenuErrors(formErrors);
+    return Object.keys(formErrors).length === 0;
+  };
+
+  const validateSubmenuForm = (data) => {
+    let formErrors = {};
+    Object.keys(data).forEach((key) => {
+      if (!data[key]) { 
+        formErrors[key] = "This field is required";
+      }
+    });
+    setSubmenuErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
@@ -58,22 +75,28 @@ const CreateMenu = () => {
         ...prevState,
         [field]: value,
       }));
+      if (value) {
+        setMenuErrors((prevErrors) => ({
+          ...prevErrors,
+          [field]: "",
+        }));
+      }
     } else if (dataType === 'submenu') {
       setSubmenuFormData((prevState) => ({
         ...prevState,
         [field]: value,
       }));
-    }
-    if (value) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [field]: "",
-      }));
+      if (value) {
+        setSubmenuErrors((prevErrors) => ({
+          ...prevErrors,
+          [field]: "",
+        }));
+      }
     }
   };
 
-  const handleSubmit = async () => {
-    if (validateForm(menuformData)) {
+  const handleMenuSubmit = async () => {
+    if (validateMenuForm(menuFormData)) {
       try {
         const token = getToken();
         if (!token) {
@@ -81,8 +104,8 @@ const CreateMenu = () => {
         }
 
         const form = new FormData();
-        Object.keys(menuformData).forEach((key) => {
-          form.append(key, menuformData[key]);
+        Object.keys(menuFormData).forEach((key) => {
+          form.append(key, menuFormData[key]);
         });
 
         const response = await MainApi.post("/api/menu/", form, {
@@ -96,13 +119,13 @@ const CreateMenu = () => {
           router.push("/superadmin/menu");
         }
       } catch (error) {
-        console.error("Error submitting form:", error.response?.data || error.message);
+        console.error("Error submitting menu form:", error.response?.data || error.message);
       }
     }
   };
 
-  const onHandleSubmit = async () => {
-    if (validateForm(submenuformData)) {
+  const handleSubmenuSubmit = async () => {
+    if (validateSubmenuForm(submenuFormData)) {
       try {
         const token = getToken();
         if (!token) {
@@ -110,8 +133,8 @@ const CreateMenu = () => {
         }
 
         const form = new FormData();
-        Object.keys(submenuformData).forEach((key) => {
-          form.append(key, submenuformData[key]);
+        Object.keys(submenuFormData).forEach((key) => {
+          form.append(key, submenuFormData[key]);
         });
 
         const response = await MainApi.post("/api/submenu/", form, {
@@ -125,7 +148,7 @@ const CreateMenu = () => {
           router.push("/superadmin/menu");
         }
       } catch (error) {
-        console.error("Error submitting form:", error.response?.data || error.message);
+        console.error("Error submitting submenu form:", error.response?.data || error.message);
       }
     }
   };
@@ -151,24 +174,24 @@ const CreateMenu = () => {
                   name="name"
                   placeholder="Name"
                   type="text"
-                  value={menuformData.name}
+                  value={menuFormData.name}
                   onChange={(e) => handleInputChange('menu', "name", e.target.value)}
-                  error={!!errors.name}
-                  helperText={errors.name}
+                  error={!!menuErrors.name}
+                  helperText={menuErrors.name}
                   required
                   fullWidth
                 />
               </Grid>
 
               <Grid item xs={12} sm={3} md={3}>
-                <FormControl fullWidth required error={!!errors.icon}>
+                <FormControl fullWidth required error={!!menuErrors.icon}>
                   <CustomLabel htmlFor="icon" required>
                     Icon
                   </CustomLabel>
                   <Select
                     id="icon"
                     name="icon"
-                    value={menuformData.icon}
+                    value={menuFormData.icon}
                     onChange={(e) => handleInputChange('menu', "icon", e.target.value)}
                     label="Icon"
                     sx={{ height: "40px" }}
@@ -182,7 +205,7 @@ const CreateMenu = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.icon && <Typography color="error">{errors.icon}</Typography>}
+                  {menuErrors.icon && <Typography color="error">{menuErrors.icon}</Typography>}
                 </FormControl>
               </Grid>
 
@@ -194,18 +217,18 @@ const CreateMenu = () => {
                   id="url"
                   name="url"
                   type="text"
-                  value={menuformData.url}
+                  value={menuFormData.url}
                   onChange={(e) => handleInputChange('menu', "url", e.target.value)}
                   placeholder="URL"
-                  error={!!errors.url}
-                  helperText={errors.url}
+                  error={!!menuErrors.url}
+                  helperText={menuErrors.url}
                   required
                   fullWidth
                 />
               </Grid>
             </Grid>
 
-            <Grid item sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
+            <Grid item xs={12} sm={12} md={12} sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
               <Button
                 sx={{
                   padding: "8px 16px",
@@ -217,10 +240,10 @@ const CreateMenu = () => {
                     backgroundColor: "#334a6c",
                   },
                 }}
-                onClick={handleSubmit}
+                onClick={handleMenuSubmit}
                 className={poppins.className}
               >
-                Submit
+                Save
               </Button>
             </Grid>
           </CardContent>
@@ -244,24 +267,24 @@ const CreateMenu = () => {
                   name="submenu"
                   placeholder="Name"
                   type="text"
-                  value={submenuformData.name}
+                  value={submenuFormData.name}
                   onChange={(e) => handleInputChange('submenu', "name", e.target.value)}
-                  error={!!errors.name}
-                  helperText={errors.name}
+                  error={!!submenuErrors.name}
+                  helperText={submenuErrors.name}
                   required
                   fullWidth
                 />
               </Grid>
 
               <Grid item xs={12} sm={3} md={3}>
-                <FormControl fullWidth required error={!!errors.menu}>
+                <FormControl fullWidth required error={!!submenuErrors.menu}>
                   <CustomLabel htmlFor="menu" required>
                     Menu
                   </CustomLabel>
                   <Select
                     id="menu"
                     name="menu"
-                    value={submenuformData.menu}
+                    value={submenuFormData.menu}
                     onChange={(e) => handleInputChange('submenu', "menu", e.target.value)}
                     label="Menu"
                     sx={{ height: "40px" }}
@@ -272,33 +295,33 @@ const CreateMenu = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.menu && <Typography color="error">{errors.menu}</Typography>}
+                  {submenuErrors.menu && <Typography color="error">{submenuErrors.menu}</Typography>}
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={3} md={3}>
-                <FormControl fullWidth required error={!!errors.icon}>
+                <FormControl fullWidth required error={!!submenuErrors.icon}>
                   <CustomLabel htmlFor="icon" required>
                     Icon
                   </CustomLabel>
                   <Select
                     id="icon"
                     name="icon"
-                    value={submenuformData.icon}
+                    value={submenuFormData.icon}
                     onChange={(e) => handleInputChange('submenu', "icon", e.target.value)}
                     label="Icon"
                     sx={{ height: "40px" }}
                   >
-                    {iconsList.map((icon) => (
+                    {submenuiconsList.map((icon) => (
                       <MenuItem key={icon.value} value={icon.value} sx={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           {icon.icon}
-                          <Typography sx={{ ml: 1 }}>{icon.label}</Typography>
+                          
                         </div>
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.icon && <Typography color="error">{errors.icon}</Typography>}
+                  {submenuErrors.icon && <Typography color="error">{submenuErrors.icon}</Typography>}
                 </FormControl>
               </Grid>
 
@@ -310,18 +333,18 @@ const CreateMenu = () => {
                   id="url"
                   name="url"
                   type="text"
-                  value={submenuformData.url}
+                  value={submenuFormData.url}
                   onChange={(e) => handleInputChange('submenu', "url", e.target.value)}
                   placeholder="URL"
-                  error={!!errors.url}
-                  helperText={errors.url}
+                  error={!!submenuErrors.url}
+                  helperText={submenuErrors.url}
                   required
                   fullWidth
                 />
               </Grid>
             </Grid>
 
-            <Grid item sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
+            <Grid item  xs={12} sm={12} md={12} sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
               <Button
                 sx={{
                   padding: "8px 16px",
@@ -333,10 +356,10 @@ const CreateMenu = () => {
                     backgroundColor: "#334a6c",
                   },
                 }}
-                onClick={onHandleSubmit}
+                onClick={handleSubmenuSubmit}
                 className={poppins.className}
               >
-                Submit
+                Save
               </Button>
             </Grid>
           </CardContent>

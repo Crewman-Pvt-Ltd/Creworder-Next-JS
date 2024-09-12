@@ -5,6 +5,12 @@ import CustomCard from "../CustomCard";
 import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
 import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
 import { getToken } from "@/utils/getToken";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 import {
   Typography,
   Button,
@@ -79,7 +85,7 @@ const SupportTicketCreate = () => {
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
-            <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
+            <Typography className={poppins.className} sx={{ fontSize: "16px", fontWeight: "600" }}>
               Add Ticket Details
             </Typography>
             <Divider sx={{ my: 2 }} />
@@ -93,7 +99,7 @@ const SupportTicketCreate = () => {
               }}
             >
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="company" required>
+                <CustomLabel  htmlFor="company" required>
                   Company Name
                 </CustomLabel>
                 <Select
@@ -105,6 +111,7 @@ const SupportTicketCreate = () => {
                   displayEmpty
                   sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
+                  className={poppins.className}
                 >
                   <MenuItem value="" disabled>
                     Select Company
@@ -288,6 +295,7 @@ const SupportTicketCreate = () => {
                   },
                 }}
                 onClick={handleSubmit}
+                className={poppins.className}
               >
                 Submit
               </Button>

@@ -1,13 +1,21 @@
 import React, { useState } from "react";
-import { Button, Menu, MenuItem, Grid, Box } from "@mui/material";
-
+import { Menu, MenuItem, Grid, Box, Typography } from "@mui/material";
 import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance"; // Static icon for all branches
 import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
+import { Poppins } from "next/font/google";
 
-
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const BranchSwitcher = () => {
   const { data, refetch, isLoading, isError } = useGetAllBranches();
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClickIcon = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
@@ -16,6 +24,7 @@ const BranchSwitcher = () => {
   return (
     <>
       <AutoAwesomeMosaicIcon
+        onClick={handleClickIcon}
         sx={{
           marginLeft: 1,
           backgroundColor: "#f9f8fe",
@@ -29,6 +38,7 @@ const BranchSwitcher = () => {
             backgroundColor: "#405189",
             color: "#ffffff",
           },
+          cursor: "pointer", // Add cursor pointer to indicate clickable
         }}
       />
       <Menu
@@ -41,21 +51,28 @@ const BranchSwitcher = () => {
       >
         <Grid container spacing={2} padding={1}>
           {data?.results.map((branch, index) => (
-            <Grid item xs={6} key={index}>
+            <Grid item xs={4} key={index}>
               <MenuItem onClick={handleCloseMenu}>
                 <Box
                   sx={{
                     border: "1px solid #ddd",
                     borderRadius: 1,
                     padding: 2,
-                    height: "50px",
-                    width: "150px",
+                    height: "auto",
+                    width: "120px",
                     textAlign: "center",
                     cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
                     "&:hover": { backgroundColor: "#f0f0f0" },
                   }}
                 >
-                  {branch.name}
+                  {/* Static Icon for Each Branch */}
+                  <AccountBalanceIcon
+                    sx={{ fontSize: 40, color: "#405189", marginBottom: 1 }}
+                  />
+                  <Typography className={poppins.className} variant="body2">{branch.name}</Typography>
                 </Box>
               </MenuItem>
             </Grid>

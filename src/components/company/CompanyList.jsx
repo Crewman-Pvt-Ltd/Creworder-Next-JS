@@ -31,7 +31,12 @@ import {
 } from "@mui/icons-material";
 import MainApi from "@/api-manage/MainApi"; 
 import { getToken } from "@/utils/getToken"; 
+import { Poppins } from "next/font/google";
 
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const CompanyList = () => {
   const { data, refetch } = useGetAllCompanies();
   const router = useRouter();
@@ -99,11 +104,11 @@ const CompanyList = () => {
   const HeaderCell = (props) => (
     <TableCell
       sx={{
-        fontSize: "0.8rem",
+        fontSize: "1rem",
         whiteSpace: "nowrap",
         fontWeight: "500",
         textTransform: "capitalize",
-        color: "gray",
+        // color: "gray",
       }}
       {...props}
     />
@@ -147,7 +152,7 @@ const CompanyList = () => {
                       textTransform: "capitalize",
                       color: "black",
                       marginLeft: "30px",
-                    }}
+                    }}className={poppins.className}
                   >
                     Company List
                   </Typography>
@@ -167,7 +172,7 @@ const CompanyList = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: 1,
-                    }}
+                    }}className={poppins.className}
                   >
                     <AddIcon sx={{ fontSize: 15 }} />
                     Add Company
@@ -185,28 +190,28 @@ const CompanyList = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <HeaderCell>ID</HeaderCell>
-                    <HeaderCell>Company Name</HeaderCell>
-                    <HeaderCell>Package Name</HeaderCell>
-                    <HeaderCell>Details</HeaderCell>
-                    <HeaderCell>Created Date</HeaderCell>
-                    <HeaderCell>Action</HeaderCell>
+                    <HeaderCell className={poppins.className}>ID</HeaderCell>
+                    <HeaderCell className={poppins.className}>Company Name</HeaderCell>
+                    <HeaderCell className={poppins.className}>Package Name</HeaderCell>
+                    <HeaderCell className={poppins.className}>Details</HeaderCell>
+                    <HeaderCell className={poppins.className}>Created Date</HeaderCell>
+                    <HeaderCell className={poppins.className}>Action</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {data?.results.map((row, index) =>(
                     <TableRow key={row.id}>
-                      <DataCell>{index + 1}</DataCell>
-                      <DataCell>{row.name}</DataCell>
-                      <DataCell>{row.package_name}</DataCell>
-                      <DataCell>
+                      <DataCell className={poppins.className}>{index + 1}</DataCell>
+                      <DataCell className={poppins.className}>{row.name}</DataCell>
+                      <DataCell className={poppins.className}>{row.package_name}</DataCell>
+                      <DataCell className={poppins.className}>
                         <Typography
                           sx={{
                             fontSize: "0.875em",
                             color: "black",
                             whiteSpace: "nowrap",
                             fontWeight: "500",
-                          }}
+                          }}className={poppins.className}
                         >
                           Register Date: {formatDate(row.created_at)}
                           {/* <br />
@@ -215,7 +220,7 @@ const CompanyList = () => {
                           Total Users: {row.total_user_count}
                         </Typography>
                       </DataCell>
-                      <DataCell>{formatDate(row.created_at)}</DataCell>
+                      <DataCell className={poppins.className}>{formatDate(row.created_at)}</DataCell>
                       <TableCell>
                         <IconButton
                           onClick={() => handleView(row)}

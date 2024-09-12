@@ -18,7 +18,12 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility"; 
 import { useRouter } from "next/router";
+import { Poppins } from "next/font/google";
 
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const SupportTicketList = () => {
   const router = useRouter();
   const { data, refetch } = useGetAllSupportTickets();
@@ -77,7 +82,7 @@ const SupportTicketList = () => {
                       textTransform: "capitalize",
                       color: "black",
                       marginLeft: "30px",
-                    }}
+                    }}className={poppins.className}
                   >
                     Ticket List
                   </Typography>
@@ -97,7 +102,7 @@ const SupportTicketList = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: 1,
-                    }}
+                    }}className={poppins.className}
                   >
                     <AddIcon sx={{ fontSize: 15 }} />
                     Add Ticket
@@ -112,28 +117,28 @@ const SupportTicketList = () => {
           <CardContent>
             <TableContainer>
               <Table>
-                <TableHead>
+                <TableHead >
                   <TableRow>
-                    <HeaderCell>ID</HeaderCell>
-                    <HeaderCell>Ticket #</HeaderCell>
-                    <HeaderCell>Ticket Subject</HeaderCell>
-                    <HeaderCell>Description</HeaderCell>
-                    <HeaderCell>Type</HeaderCell>
-                    <HeaderCell>Priority</HeaderCell>
-                    <HeaderCell>Agent</HeaderCell>
-                    <HeaderCell>Action</HeaderCell>
+                    <HeaderCell className={poppins.className}>ID</HeaderCell>
+                    <HeaderCell className={poppins.className}>Ticket #</HeaderCell>
+                    <HeaderCell className={poppins.className}>Ticket Subject</HeaderCell>
+                    <HeaderCell className={poppins.className}>Description</HeaderCell>
+                    <HeaderCell className={poppins.className}>Type</HeaderCell>
+                    <HeaderCell className={poppins.className}>Priority</HeaderCell>
+                    <HeaderCell className={poppins.className}>Agent</HeaderCell>
+                    <HeaderCell className={poppins.className}>Action</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
-                      <DataCell>{row.id}</DataCell>
-                      <DataCell>{row.ticket_id}</DataCell> 
-                      <DataCell>{row.subject}</DataCell>
-                      <DataCell>{row.description}</DataCell>
-                      <DataCell>{row.type}</DataCell>
-                      <DataCell>{row.priority}</DataCell>
-                      <DataCell>{row.agent?.username || "N/A"}</DataCell> {/* Adjust as needed */}
+                      <DataCell className={poppins.className}>{row.id}</DataCell>
+                      <DataCell className={poppins.className}>{row.ticket_id}</DataCell> 
+                      <DataCell className={poppins.className}>{row.subject}</DataCell>
+                      <DataCell className={poppins.className}>{row.description}</DataCell>
+                      <DataCell className={poppins.className}>{row.type}</DataCell>
+                      <DataCell className={poppins.className}>{row.priority}</DataCell>
+                      <DataCell className={poppins.className}>{row.agent?.username || "N/A"}</DataCell> {/* Adjust as needed */}
                       <TableCell>
                         <IconButton
                           onClick={() => handleView(row)}

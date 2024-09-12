@@ -15,7 +15,7 @@ const Layout = ({ children, type }) => {
       sx={{
         display: "flex",
         height: "100vh",
-        // overflow: 'hidden',
+      
       }}
     >
       <Sidebar isOpen={isSidebarOpen} type={type}/>
