@@ -66,12 +66,12 @@ const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => 
             position: "fixed",
             left: "70px",
             top: hoveredItemPosition.top + "px",
-            backgroundColor: "#fff",
-            color: "#405189",
+            backgroundColor: "#405189",
+            color: "#fff",
             padding: "8px 7px",
-            borderRadius: "4px",
+            borderRadius: "0px 4px 4px 0px",
             boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
-            zIndex: 1,
+            zIndex: 100,
           }}
         >
           <Typography variant="body2">{name}</Typography>
@@ -196,14 +196,14 @@ const Sidebar = ({ isOpen, type }) => {
           marginTop: "13px",
           color: "#abb9e8",
         }}
-      >
+      > {type == "admin" && (
         <HoverableNavItem
           isOpen={isOpen}
           name="Get Started"
           icon={<RocketLaunchIcon />}
           active={currentPath === "/admin/get-started"}
           onClick={() => handleItemClick("/admin/get-started")}
-        />
+        />    )}
         <HoverableNavItem
           isOpen={isOpen}
           name="Dashboard"
@@ -225,10 +225,10 @@ const Sidebar = ({ isOpen, type }) => {
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="Module"
+            name="Menu"
             icon={<AppsIcon />}
-            active={currentPath === "/superadmin/module"}
-            onClick={() => handleItemClick("/superadmin/module")}
+            active={currentPath === "/superadmin/menu"}
+            onClick={() => handleItemClick("/superadmin/menu")}
           />
         )}
 

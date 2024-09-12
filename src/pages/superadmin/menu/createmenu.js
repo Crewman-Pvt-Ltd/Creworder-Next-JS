@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
-import EditModule from "@/components/module/EditModule";
+
 import Loader from "@/components/Loader";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { useRouter } from "next/router";
+import CreateMenu from "@/components/menu/CreateMenu";
 
-const editmodule = () => {
+const createmenu = () => {
   const { permissionsData, permissionLoading } = usePermissions();
   const router = useRouter();
 
@@ -20,7 +21,7 @@ const editmodule = () => {
   if (permissionsData?.role === "superadmin") {
     return (
       <Layout type="superadmin">
-        <EditModule />
+        <CreateMenu />
       </Layout>
     );
   }
@@ -28,4 +29,4 @@ const editmodule = () => {
   return null;
 };
 
-export default editmodule;
+export default createmenu;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useGetAllModules from "@/api-manage/react-query/useGetAllModules";
+import useGetAllMenu from "@/api-manage/react-query/useGetAllMenu";
 import { useRouter } from "next/router";
 import {
   Grid,
@@ -28,21 +28,22 @@ import { getToken } from "@/utils/getToken";
 
 const ModuleList = () => {
   const router = useRouter();
-  const { data, refetch } = useGetAllModules();
+  const { data, refetch } = useGetAllMenu();
+ 
   const [open, setOpen] = useState(false);
-  const [moduleToDelete, setModuleToDelete] = useState(null);
-  const [viewModule, setViewModule] = useState(null);
+  const [menuToDelete, setMenuToDelete] = useState(null);
+  const [viewMenu, setViewMenu] = useState(null);
 
   const handleEdit = (id) => {
-    router.push(`/superadmin/module/editmodule?id=${id}`);
+    router.push(`/superadmin/menu/editmenu?id=${id}`);
   };
 
   const handleCreateModule = () => {
-    router.push("/superadmin/module/createmodule");
+    router.push("/superadmin/menu/createmenu");
   };
 
   const handleDeleteClick = (id) => {
-    setModuleToDelete(id);
+    setMenuToDelete(id);
     setOpen(true);
   };
 
@@ -53,7 +54,7 @@ const ModuleList = () => {
         throw new Error("No authentication token found.");
       }
 
-      const response = await MainApi.delete(`/api/modules/${moduleToDelete}/`, {
+      const response = await MainApi.delete(`/api/menu/${menuToDelete}/`, {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -61,7 +62,7 @@ const ModuleList = () => {
 
       if (response.status === 204) {
         console.log("Module deleted successfully");
-        refetch(); 
+        refetch();
       } else {
         console.error("Failed to delete the Module");
       }
@@ -69,12 +70,12 @@ const ModuleList = () => {
       console.error("An error occurred while deleting the module:", error);
     }
     setOpen(false);
-    setModuleToDelete(null);
+    setMenuToDelete(null);
   };
 
   const handleDeleteCancel = () => {
     setOpen(false);
-    setModuleToDelete(null);
+    setMenuToDelete(null);
   };
 
   const HeaderCell = (props) => (
@@ -136,7 +137,7 @@ const ModuleList = () => {
                     color: "black",
                   }}
                 >
-                  Module List
+                  Menu List
                 </Typography>
                 <Button
                   onClick={handleCreateModule}
@@ -154,7 +155,7 @@ const ModuleList = () => {
                   }}
                 >
                   <AddIcon sx={{ fontSize: 20 }} />
-                  Create Module
+                  Create Menu
                 </Button>
               </Grid>
             </Grid>
@@ -165,8 +166,9 @@ const ModuleList = () => {
                   <TableHead>
                     <TableRow>
                       <HeaderCell>ID</HeaderCell>
-                      <HeaderCell>Name</HeaderCell>
-                      <HeaderCell>Description</HeaderCell>
+                      <HeaderCell>Menu</HeaderCell>
+                      <HeaderCell>Icon</HeaderCell>
+                      <HeaderCell>URL</HeaderCell>
                       <HeaderCell>Action</HeaderCell>
                     </TableRow>
                   </TableHead>
@@ -174,15 +176,15 @@ const ModuleList = () => {
                     {data?.results.map((row, index) => (
                       <TableRow key={index + 1}>
                         <DataCell>{index + 1}</DataCell>
-                        <DataCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>{truncateDescription(row?.name)}</DataCell>
                         <DataCell
                           sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}
                         >
-                          {truncateDescription(row?.description)}
+                          {truncateDescription(row?.name)}
                         </DataCell>
-                       
+                        <DataCell>{row.icon}</DataCell>
+                        <DataCell>{row.url}</DataCell>
+
                         <TableCell>
-                          
                           <IconButton
                             onClick={() => handleEdit(row.id)}
                             aria-label="edit"
@@ -225,8 +227,6 @@ const ModuleList = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-    
     </Grid>
   );
 };
