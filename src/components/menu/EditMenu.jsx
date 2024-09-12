@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
@@ -14,16 +13,18 @@ const EditMenu = () => {
   const [error, setError] = useState(null);
   const [initialData, setInitialData] = useState({
     name: "",
-    description: "",
+    icon: "", 
+    url: "",
   });
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
+    icon: "", 
+    url: "",
   });
 
   useEffect(() => {
     if (id) {
-      const fetchModule = async () => {
+      const fetchMenu = async () => {
         try {
           setLoading(true);
           const token = getToken();
@@ -38,28 +39,29 @@ const EditMenu = () => {
           });
 
           if (response.status === 200) {
-            // Populate initialData and formData with fetched data
+            const data = response.data;
             setInitialData({
-              name: response.data.name || "",
-              description: response.data.description || "",
+              name: data.name || "",
+              icon: data.icon || "",
+              url: data.url || "",
             });
             setFormData({
-              name: response.data.name || "",
-              description: response.data.description || "",
+              name: data.name || "",
+              icon: data.icon || "",
+              url: data.url || "",
             });
           } else {
-            console.error("Failed to fetch the module");
-            setError("Failed to fetch the module");
+            setError("Failed to fetch the menu");
           }
         } catch (error) {
-          console.error("An error occurred while fetching the module:", error);
-          setError("An error occurred while fetching the module");
+          console.error("An error occurred while fetching the menu:", error);
+          setError("An error occurred while fetching the menu");
         } finally {
           setLoading(false);
         }
       };
 
-      fetchModule();
+      fetchMenu();
     }
   }, [id]);
 
@@ -91,7 +93,6 @@ const EditMenu = () => {
         console.log("Menu updated successfully");
         router.push("/superadmin/menu");
       } else {
-        console.error("Failed to update the menu");
         setError("Failed to update the menu");
       }
     } catch (error) {
@@ -120,15 +121,15 @@ const EditMenu = () => {
             </Grid>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleFormSubmit}>
-              <Grid item sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, marginTop: 2 }}>
-                <Grid item xs={4}>
+              <Grid container spacing={2} sx={{ marginTop: 2 }}>
+                <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="name" required>
-                    Module Name
+                    Menu Name
                   </CustomLabel>
                   <CustomTextField
                     id="name"
                     name="name"
-                    placeholder="Module Name"
+                    placeholder="Menu Name"
                     type="text"
                     required
                     fullWidth
@@ -136,21 +137,36 @@ const EditMenu = () => {
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </Grid>
-                <Grid item xs={8}>
-                  <CustomLabel htmlFor="description" required>
-                    Description
+                <Grid item xs={12} sm={4}>
+                  <CustomLabel htmlFor="icon" required>
+                    Icon
                   </CustomLabel>
                   <CustomTextField
-                    id="description"
-                    name="description"
-                    placeholder="Module Description"
+                    id="icon"
+                    name="icon"
+                    placeholder="Icon"
                     type="text"
                     required
                     fullWidth
-                    multiline
-                    row={2}
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    minRows={2}
+                    value={formData.icon}
+                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <CustomLabel htmlFor="url" required>
+                    URL
+                  </CustomLabel>
+                  <CustomTextField
+                    id="url"
+                    name="url"
+                    placeholder="URL"
+                    type="text"
+                    required
+                    fullWidth
+                    minRows={2}
+                    value={formData.url}
+                    onChange={(e) => setFormData({ ...formData, url: e.target.value })}
                   />
                 </Grid>
               </Grid>

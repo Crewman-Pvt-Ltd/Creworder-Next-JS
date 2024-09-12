@@ -1,43 +1,48 @@
-import React, { useState } from 'react';
-import Navitem from './Navitem';
-import { Collapse, List, ListItem, ListItemText, Box, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useRouter } from 'next/router';
-import DashboardIcon from '@mui/icons-material/Home';
-
-import { Download as DownloadIcon, Height, Margin } from "@mui/icons-material";
-import ReceiptIcon from '@mui/icons-material/ShoppingCart';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import GroupIcon from '@mui/icons-material/Group';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PackageIcon from '@mui/icons-material/LocalOffer';
-import CompanyIcon from '@mui/icons-material/Business';
-import BusinessIcon from '@mui/icons-material/Store';
-import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ChatIcon from '@mui/icons-material/Chat';
-import Image from 'next/image';
-import AppsIcon from '@mui/icons-material/Apps';
-import creworderLogo from '../images/creworderlogo.png';
-import creworderIcon from '../images/crewordericon.png';
-import SettingsIcon from '@mui/icons-material/Settings';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import LocalShippingIcon from '@mui/icons-material/Map';
-import PhoneIcon from '@mui/icons-material/Phone';
-import ShippingIcon from '@mui/icons-material/LocalShipping';
-import PersonIcon from '@mui/icons-material/Person';
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import CategoryIcon from '@mui/icons-material/Widgets';
-import StoreIcon from '@mui/icons-material/Store';
-import EmailIcon from '@mui/icons-material/Email';
-import Receipt from '@mui/icons-material/Receipt';
+import React, { useState } from "react";
+import Navitem from "./Navitem";
+import {
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { Download as DownloadIcon } from "@mui/icons-material";
+import { useRouter } from "next/router";
+import DashboardIcon from "@mui/icons-material/Home";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import Image from "next/image";
+import creworderLogo from "../images/creworderlogo.png";
+import creworderIcon from "../images/crewordericon.png";
+import AppsIcon from "@mui/icons-material/Apps";
+import GroupIcon from "@mui/icons-material/Group";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PackageIcon from "@mui/icons-material/LocalOffer";
+import CompanyIcon from "@mui/icons-material/Business";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import SettingsIcon from "@mui/icons-material/Settings";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import CategoryIcon from "@mui/icons-material/Widgets";
+import StoreIcon from "@mui/icons-material/Store";
+import EmailIcon from "@mui/icons-material/Email";
+import Receipt from "@mui/icons-material/Receipt";
 import IconButton from "@mui/material/IconButton";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
-const HoverableNavItem = ({ isOpen, name, icon, children, onClick, active }) => {
+const HoverableNavItem = ({
+  isOpen,
+  name,
+  icon,
+  children,
+  onClick,
+  active,
+}) => {
   const [hovered, setHovered] = useState(false);
   const [hoveredItemPosition, setHoveredItemPosition] = useState({ top: 0 });
 
@@ -85,6 +90,7 @@ const Sidebar = ({ isOpen, type }) => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   if (isMobile) {
     return null;
   }
@@ -159,16 +165,16 @@ const Sidebar = ({ isOpen, type }) => {
           marginBottom: 2,
         }}
       >
-        <Image
-          src={creworderLogo}
-          style={{ cursor: "pointer" }}
-          alt="Creworder Logo"
-          width={isOpen ? 150 : 40}
-          height={isOpen ? 50 : 20}
-          active={currentPath === "/dashboard"}
-          onClick={() => handleItemClick("/dashboard")}
-        />
-        {!isOpen && !isMobile && (
+        {isOpen ? (
+          <Image
+            src={creworderLogo}
+            style={{ cursor: "pointer" }}
+            alt="Creworder Logo"
+            width={150}
+            height={50}
+            onClick={() => handleItemClick("/dashboard")}
+          />
+        ) : (
           <Box
             sx={{
               display: "flex",
@@ -181,6 +187,8 @@ const Sidebar = ({ isOpen, type }) => {
               alt="Creworder Icon"
               width={30}
               height={30}
+              style={{ cursor: "pointer" }}
+              onClick={() => handleItemClick("/dashboard")}
             />
           </Box>
         )}
@@ -196,14 +204,16 @@ const Sidebar = ({ isOpen, type }) => {
           marginTop: "13px",
           color: "#abb9e8",
         }}
-      > {type == "admin" && (
-        <HoverableNavItem
-          isOpen={isOpen}
-          name="Get Started"
-          icon={<RocketLaunchIcon />}
-          active={currentPath === "/admin/get-started"}
-          onClick={() => handleItemClick("/admin/get-started")}
-        />    )}
+      >
+        {type === "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Get Started"
+            icon={<RocketLaunchIcon />}
+            active={currentPath === "/admin/get-started"}
+            onClick={() => handleItemClick("/admin/get-started")}
+          />
+        )}
         <HoverableNavItem
           isOpen={isOpen}
           name="Dashboard"
@@ -211,17 +221,7 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === "/dashboard"}
           onClick={() => handleItemClick("/dashboard")}
         />
-
-        {/* {type == "admin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
-            name="Branch"
-            icon={<AccountTreeIcon />}
-            active={currentPath === "/admin/branch"}
-            onClick={() => handleItemClick("/admin/branch")}
-          />
-        )} */}
-
+       
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -231,7 +231,6 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/menu")}
           />
         )}
-
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -241,7 +240,6 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/package")}
           />
         )}
-
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -251,17 +249,7 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/company")}
           />
         )}
-
-        {/* {type == "superadmin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
-            name="Employee"
-            icon={<SupervisedUserCircleIcon />}
-            active={currentPath === "/superadmin/employees"}
-            onClick={() => handleItemClick("/superadmin/employees")}
-          />
-        )} */}
-
+       
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -271,7 +259,6 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/supportticket")}
           ></HoverableNavItem>
         )}
-
         <HoverableNavItem
           isOpen={isOpen}
           name="Notice"
@@ -279,35 +266,17 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === "/notice-board"}
           onClick={() => handleItemClick("/notice-board")}
         ></HoverableNavItem>
-
-        {/* <HoverableNavItem
-          isOpen={isOpen}
-          name="Chat"
-          icon={<ChatIcon />}
-          active={currentPath === "/chat"}
-          onClick={() => handleItemClick("/chat")}
-        ></HoverableNavItem> */}
-         {/* {type == "admin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
-            name="Settings"
-            icon={<SettingsIcon />}
-            active={currentPath === "/admin/settings"}
-            onClick={() => handleItemClick("/admin/settings")}
-          ></HoverableNavItem>
-        )} */}
-
-     <HoverableNavItem
+       
+        <HoverableNavItem
           isOpen={isOpen}
           name={
             <span
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%"
-            }}
-              
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              }}
             >
               <span>HR</span>
               <IconButton
@@ -323,95 +292,78 @@ const Sidebar = ({ isOpen, type }) => {
             </span>
           }
           icon={<LocalMallIcon />}
-          active={currentPath.startsWith('/hr/hr-employees')}
+          active={currentPath.startsWith("/hr/hr-employees")}
           onClick={handleHRClick}
         >
           <Collapse in={isHROpen}>
             <List component="div" disablePadding>
-            <ListItem
+              <ListItem
                 button
-                onClick={() => handleItemClick('/hr/employees')}
+                onClick={() => handleItemClick("/hr/employees")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Employees" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/leaves')}
+                onClick={() => handleItemClick("/hr/leaves")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Leaves" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/shift')}
+                onClick={() => handleItemClick("/hr/shift")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Shift" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/shift-roster')}
+                onClick={() => handleItemClick("/hr/shift-roster")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Shift Roster" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/attendance')}
+                onClick={() => handleItemClick("/hr/attendance")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Attendance" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/holiday')}
+                onClick={() => handleItemClick("/hr/holiday")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Holiday" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/designation')}
+                onClick={() => handleItemClick("/hr/designation")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Designation" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/department')}
+                onClick={() => handleItemClick("/hr/department")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Department" />
               </ListItem>
               <ListItem
                 button
-                onClick={() => handleItemClick('/hr/appreciation')}
+                onClick={() => handleItemClick("/hr/appreciation")}
                 sx={{ pl: 4 }}
               >
                 <ListItemText primary="Appreciation" />
               </ListItem>
-            
-              
-              
-             
-             
-
             </List>
           </Collapse>
         </HoverableNavItem>
-
-
-        {/* {type == "superadmin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
-            name="Settings"
-            icon={<SettingsIcon />}
-            active={currentPath === "/superadmin/settings"}
-            onClick={() => handleItemClick("/superadmin/settings")}
-          ></HoverableNavItem>
-        )} */}
-
+     
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -421,7 +373,6 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/landingpage")}
           ></HoverableNavItem>
         )}
-
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -431,15 +382,7 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/stickynote")}
           ></HoverableNavItem>
         )}
-
-        {/* <HoverableNavItem
-          isOpen={isOpen}
-          name="Notepad"
-          icon={<MenuBookIcon />}
-          active={currentPath === "/notepad"}
-          onClick={() => handleItemClick("/notepad")}
-        ></HoverableNavItem> */}
-
+       
         <HoverableNavItem
           isOpen={isOpen}
           name="Follow Up"
@@ -447,27 +390,26 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === "/followup"}
           onClick={() => handleItemClick("/followup")}
         ></HoverableNavItem>
-
-       
-              {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Invoice Management"
-          icon={<Receipt />}
-          active={currentPath === '/admin/invoce-management'}
-          onClick={() => handleItemClick('/admin/invoce-management')}
-        ></HoverableNavItem>)}
-
-
-       {type === "admin" && (
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Invoice Management"
+            icon={<Receipt />}
+            active={currentPath === "/admin/invoce-management"}
+            onClick={() => handleItemClick("/admin/invoce-management")}
+          ></HoverableNavItem>
+        )}
+        {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name={
               <span
-              style={{display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%" }}
-                
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
               >
                 <span>Call Analysis</span>
                 <IconButton
@@ -488,42 +430,37 @@ const Sidebar = ({ isOpen, type }) => {
           >
             <Collapse in={isCallOpen}>
               <List component="div" disablePadding>
-                <ListItem   
-                 button
-                 onClick={() => handleItemClick('/admin/call-recording')}
-                 sx={{ pl: 4 }} 
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/call-recording")}
+                  sx={{ pl: 4 }}
                 >
                   <ListItemText primary="Call Recording" />
                 </ListItem>
-               
               </List>
               <List component="div" disablePadding>
-                <ListItem   
-                 button
-                // onClick={() => handleItemClick('/admin/call-recording')}
-                 sx={{ pl: 4 }} 
+                <ListItem
+                  button
+                  // onClick={() => handleItemClick('/admin/call-recording')}
+                  sx={{ pl: 4 }}
                 >
                   <ListItemText primary="QC Recording" />
                 </ListItem>
-               
               </List>
             </Collapse>
           </HoverableNavItem>
         )}
-
-
-       {type === "admin" && (
+        {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name={
               <span
-              style={{ 
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%"
-              }}
-                
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
               >
                 <span>Export</span>
                 <IconButton
@@ -544,16 +481,16 @@ const Sidebar = ({ isOpen, type }) => {
           >
             <Collapse in={isExportOpen}>
               <List component="div" disablePadding>
-                <ListItem  
-                 button
-                 onClick={() => handleItemClick('/admin/export/order')}               
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/export/order")}
                   sx={{ pl: 4 }}
                 >
                   <ListItemText primary="Export Order" />
                 </ListItem>
-                <ListItem 
+                <ListItem
                   button
-                  onClick={() => handleItemClick('/admin/export/follow-up')}
+                  onClick={() => handleItemClick("/admin/export/follow-up")}
                   sx={{ pl: 4 }}
                 >
                   <ListItemText primary="Export Follow Up" />
@@ -561,20 +498,18 @@ const Sidebar = ({ isOpen, type }) => {
               </List>
             </Collapse>
           </HoverableNavItem>
-        )} 
-
-       {type === "admin" && (
+        )}
+        {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name={
               <span
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%"
-              }}
-                
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
               >
                 <span>Leads</span>
                 <IconButton
@@ -595,16 +530,16 @@ const Sidebar = ({ isOpen, type }) => {
           >
             <Collapse in={isLeadsOpen}>
               <List component="div" disablePadding>
-                <ListItem  
-                 button
-                 onClick={() => handleItemClick('/admin/leads/add-leads')}               
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/leads/add-leads")}
                   sx={{ pl: 4 }}
                 >
                   <ListItemText primary="Add Leads" />
                 </ListItem>
-                <ListItem 
+                <ListItem
                   button
-                  onClick={() => handleItemClick('/admin/leads')}
+                  onClick={() => handleItemClick("/admin/leads")}
                   sx={{ pl: 4 }}
                 >
                   <ListItemText primary="All Leads" />
@@ -618,12 +553,12 @@ const Sidebar = ({ isOpen, type }) => {
             isOpen={isOpen}
             name={
               <span
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: "100%"
-                  }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
               >
                 <span>Shipment</span>
                 <IconButton
@@ -644,36 +579,25 @@ const Sidebar = ({ isOpen, type }) => {
           >
             <Collapse in={isNDROpen}>
               <List component="div" disablePadding>
-              <ListItem                 
-                  sx={{ pl: 4 }}
-                >
+                <ListItem sx={{ pl: 4 }}>
                   <ListItemText primary="NDR" />
                 </ListItem>
-                <ListItem                 
-                  sx={{ pl: 4 }}
-                >
+                <ListItem sx={{ pl: 4 }}>
                   <ListItemText primary="EDD" />
                 </ListItem>
-                <ListItem                 
-                  sx={{ pl: 4 }}
-                >
+                <ListItem sx={{ pl: 4 }}>
                   <ListItemText primary="OFD Counter" />
                 </ListItem>
-                <ListItem                 
-                  sx={{ pl: 4 }}
-                >
+                <ListItem sx={{ pl: 4 }}>
                   <ListItemText primary="RTO" />
                 </ListItem>
-                <ListItem                 
-                  sx={{ pl: 4 }}>
+                <ListItem sx={{ pl: 4 }}>
                   <ListItemText primary="Manifesto" />
                 </ListItem>
-
               </List>
             </Collapse>
           </HoverableNavItem>
         )}
-
         {type == "admin" && (
           <Typography
             className="sidebar-section-label"
@@ -682,7 +606,6 @@ const Sidebar = ({ isOpen, type }) => {
             Product
           </Typography>
         )}
-
         {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -692,95 +615,96 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/admin/category")}
           ></HoverableNavItem>
         )}
-
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Product"
-          icon={<StoreIcon />}
-          active={currentPath === '/admin/product'}
-          onClick={() => handleItemClick('/admin/product')}
-        />)}
-
-        {type == "admin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name={
-            <span
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%"
-            }}
-              
-            >
-              <span>Order</span>
-              <IconButton
-                size="small"
-                onClick={handleOrderClick}
-                sx={{
-                  color: "white",
-                  marginLeft: "70px",
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Product"
+            icon={<StoreIcon />}
+            active={currentPath === "/admin/product"}
+            onClick={() => handleItemClick("/admin/product")}
+          />
+        )}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name={
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
                 }}
               >
-                {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </IconButton>
-            </span>
-          }
-          icon={<LocalMallIcon />}
-          active={currentPath.startsWith('/order')}
-          onClick={handleOrderClick}
-        >
-          <Collapse in={isOrderOpen}>
-            <List component="div" disablePadding>
-              <ListItem
-                button
-                onClick={() => handleItemClick('/admin/orders')}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="All Orders" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick('/admin/orders/repeatorder')}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Repeat Order" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick('/admin/orders/pincodeorder')}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Pincode Order" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick('/admin/orders/course')}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Course Order" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick('/admin/orders/schedule-order')}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Schedule Order" />
-              </ListItem>
-
-            </List>
-          </Collapse>
-        </HoverableNavItem>)}
-
-        {type == "superadmin" && (<HoverableNavItem
-          isOpen={isOpen}
-          name="Form Enquiry"
-          icon={<EmailIcon />}
-          active={currentPath === '/superadmin/form-enquiry'}
-          onClick={() => handleItemClick('/superadmin/form-enquiry')}
-        ></HoverableNavItem>)}
-
-  
+                <span>Order</span>
+                <IconButton
+                  size="small"
+                  onClick={handleOrderClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "70px",
+                  }}
+                >
+                  {isOrderOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </span>
+            }
+            icon={<LocalMallIcon />}
+            active={currentPath.startsWith("/order")}
+            onClick={handleOrderClick}
+          >
+            <Collapse in={isOrderOpen}>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="All Orders" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders/repeatorder")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Repeat Order" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders/pincodeorder")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Pincode Order" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders/course")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Course Order" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() =>
+                    handleItemClick("/admin/orders/schedule-order")
+                  }
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Schedule Order" />
+                </ListItem>
+              </List>
+            </Collapse>
+          </HoverableNavItem>
+        )}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Form Enquiry"
+            icon={<EmailIcon />}
+            active={currentPath === "/superadmin/form-enquiry"}
+            onClick={() => handleItemClick("/superadmin/form-enquiry")}
+          ></HoverableNavItem>
+        )}
       </Box>
     </Box>
   );

@@ -25,11 +25,16 @@ import AddIcon from "@mui/icons-material/Add";
 import { Visibility, Edit, Delete } from "@mui/icons-material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
+import { Poppins } from "next/font/google";
 
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 const ModuleList = () => {
   const router = useRouter();
   const { data, refetch } = useGetAllMenu();
- 
+
   const [open, setOpen] = useState(false);
   const [menuToDelete, setMenuToDelete] = useState(null);
   const [viewMenu, setViewMenu] = useState(null);
@@ -38,7 +43,7 @@ const ModuleList = () => {
     router.push(`/superadmin/menu/editmenu?id=${id}`);
   };
 
-  const handleCreateModule = () => {
+  const handleCreateMenu = () => {
     router.push("/superadmin/menu/createmenu");
   };
 
@@ -124,6 +129,7 @@ const ModuleList = () => {
           <CardContent>
             <Grid item xs={12}>
               <Grid
+                container
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -131,32 +137,57 @@ const ModuleList = () => {
                 <Typography
                   sx={{
                     fontWeight: "600",
-                    fontSize: "1rem",
+                    fontSize: "20px",
                     whiteSpace: "nowrap",
                     textTransform: "capitalize",
                     color: "black",
+                    marginLeft: "30px",
+                    flex: 1,
                   }}
+                  className={poppins.className}
                 >
                   Menu List
                 </Typography>
-                <Button
-                  onClick={handleCreateModule}
-                  sx={{
-                    padding: "8px 16px",
-                    fontSize: "14px",
-                    backgroundColor: "#405189",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#334a6c",
-                    },
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <AddIcon sx={{ fontSize: 20 }} />
-                  Create Menu
-                </Button>
+                <Grid item display="flex" gap={1} sx={{ marginRight: 2 }}>
+                  <Button
+                    onClick={handleCreateMenu}
+                    sx={{
+                      padding: "8px 16px",
+                      fontSize: "14px",
+                      backgroundColor: "#405189",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#334a6c",
+                      },
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                    className={poppins.className}
+                  >
+                    <AddIcon sx={{ fontSize: 20 }} />
+                    Create Submenu
+                  </Button>
+                  <Button
+                    onClick={handleCreateMenu}
+                    sx={{
+                      padding: "8px 16px",
+                      fontSize: "14px",
+                      backgroundColor: "#405189",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#334a6c",
+                      },
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                    className={poppins.className}
+                  >
+                    <AddIcon sx={{ fontSize: 20 }} />
+                    Create Menu
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -165,24 +196,37 @@ const ModuleList = () => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <HeaderCell>ID</HeaderCell>
-                      <HeaderCell>Menu</HeaderCell>
-                      <HeaderCell>Icon</HeaderCell>
-                      <HeaderCell>URL</HeaderCell>
-                      <HeaderCell>Action</HeaderCell>
+                      <HeaderCell className={poppins.className}>ID</HeaderCell>
+                      <HeaderCell className={poppins.className}>
+                        Menu
+                      </HeaderCell>
+                      <HeaderCell className={poppins.className}>
+                        Icon
+                      </HeaderCell>
+                      <HeaderCell className={poppins.className}>URL</HeaderCell>
+                      <HeaderCell className={poppins.className}>
+                        Action
+                      </HeaderCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {data?.results.map((row, index) => (
                       <TableRow key={index + 1}>
-                        <DataCell>{index + 1}</DataCell>
+                        <DataCell className={poppins.className}>
+                          {index + 1}{" "}
+                        </DataCell>
                         <DataCell
+                          className={poppins.className}
                           sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}
                         >
                           {truncateDescription(row?.name)}
                         </DataCell>
-                        <DataCell>{row.icon}</DataCell>
-                        <DataCell>{row.url}</DataCell>
+                        <DataCell className={poppins.className}>
+                          {row.icon}
+                        </DataCell>
+                        <DataCell className={poppins.className}>
+                          {row.url}
+                        </DataCell>
 
                         <TableCell>
                           <IconButton
