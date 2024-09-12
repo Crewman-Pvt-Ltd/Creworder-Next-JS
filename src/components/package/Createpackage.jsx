@@ -59,6 +59,54 @@ const modules = [
 ];
 
 const CreatePackage = () => {
+  const [checkedItems, setCheckedItems] = useState({
+    Home: false,
+    Services: false,
+    Products: false,
+  });
+
+  const [checkedSubmenus, setCheckedSubmenus] = useState({
+    Development: false,
+    DigitalMarketing: false,
+    ERP: false,
+    CRM: false,
+    MLM: false,
+  });
+
+  const handleMainMenuChange = (event) => {
+    const { name, checked } = event.target;
+    setCheckedItems((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+
+    // Reset submenus when main menu is unchecked
+    if (name === 'Services' && !checked) {
+      setCheckedSubmenus({
+        Development: false,
+        DigitalMarketing: false,
+      });
+    }
+
+    if (name === 'Products' && !checked) {
+      setCheckedSubmenus({
+        ERP: false,
+        CRM: false,
+        MLM: false, 
+      });
+    }
+  };
+
+  const handleSubmenuChange = (event) => {
+    const { name, checked } = event.target;
+    setCheckedSubmenus((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
+
+  
+
   const { permissionsData } = usePermissions();
   const router = useRouter();
   const { data: modulesData, refetch } = useGetAllModules();
@@ -381,9 +429,7 @@ const CreatePackage = () => {
                     control={
                       <Checkbox
                         onChange={handleSelectAll}
-                        checked={
-                          formState.modules.length === modules.length
-                        }
+                        checked={formState.modules.length === modules.length}
                       />
                     }
                     label="Select All"
@@ -395,16 +441,125 @@ const CreatePackage = () => {
                 container
                 spacing={2}
                 sx={{ width: "900px", margin: "20px" }}
-                    >
-                   {modulesData?.results.map((row, index) => (
+              >
+                {modulesData?.results.map((row, index) => (
                   <Grid item xs={12} sm={6} md={2} key={index}>
-                    <FormControlLabel control={<Checkbox />} label={row?.name} onChange={handleCheckboxChange} value={row?.id}/>
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      label={row?.name}
+                      onChange={handleCheckboxChange}
+                      value={row?.id}
+                    />
                   </Grid>
                 ))}
               </Grid>
             </Grid>
 
             <Divider sx={{ my: 2 }} />
+
+      {/* Main Menu List */}
+      <ul>
+        <li>
+          <FormControlLabel
+            control={<Checkbox checked={checkedItems.Home} />}
+            label="Home"
+            name="Home"
+            onChange={handleMainMenuChange}
+          />
+        </li>
+
+        <li>
+          <FormControlLabel
+            control={<Checkbox checked={checkedItems.Services} />}
+            label="Services"
+            name="Services"
+            onChange={handleMainMenuChange}
+          />
+
+          {/* Submenu for Services - Conditionally render below Services */}
+          {checkedItems.Services && (
+            <ul style={{ paddingLeft: '40px', listStyleType: 'none' }}>
+              <li>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedSubmenus.Development}
+                      onChange={handleSubmenuChange}
+                      name="Development"
+                    />
+                  }
+                  label="Development"
+                />
+              </li>
+              <li>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedSubmenus.DigitalMarketing}
+                      onChange={handleSubmenuChange}
+                      name="DigitalMarketing"
+                    />
+                  }
+                  label="Digital Marketing"
+                />
+              </li>
+            </ul>
+          )}
+        </li>
+
+        <li>
+          <FormControlLabel
+            control={<Checkbox checked={checkedItems.Products} />}
+            label="Products"
+            name="Products"
+            onChange={handleMainMenuChange}
+          />
+
+          {/* Submenu for Products - Conditionally render below Products */}
+          {checkedItems.Products && (
+            <ul style={{ paddingLeft: '40px', listStyleType: 'none' }}>
+              <li>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedSubmenus.ERP}
+                      onChange={handleSubmenuChange}
+                      name="ERP"
+                    />
+                  }
+                  label="ERP"
+                />
+              </li>
+              <li>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedSubmenus.CRM}
+                      onChange={handleSubmenuChange}
+                      name="CRM"
+                    />
+                  }
+                  label="CRM"
+                />
+              </li>
+              <li>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checkedSubmenus.MLM}
+                      onChange={handleSubmenuChange}
+                      name="MLM"
+                    />
+                  }
+                  label="MLM"
+                />
+              </li>             
+            </ul>
+          )}
+        </li>
+      </ul>
+
+      <Divider sx={{ my: 2 }} />
 
             <Grid item xs={12} sm={12} md={12}>
               <CustomLabel htmlFor="description">Description</CustomLabel>
