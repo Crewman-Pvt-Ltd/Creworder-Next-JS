@@ -9,4 +9,4 @@ const SettingsSidebar = ({type}) => {
   )
 }
 
-export default SettingsSidebar
+export default SettingsSidebar;

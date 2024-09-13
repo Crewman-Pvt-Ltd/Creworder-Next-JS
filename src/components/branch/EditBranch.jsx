@@ -10,14 +10,15 @@ import { getToken } from "@/utils/getToken";
 
 const EditBranch = () => {
   const router = useRouter();
-  const { id } = router.query;
-  const [notice, setNotice] = useState({ title: "", description: "" });
+  const { id } = router.query; // Get the branch ID from the query params
+  const [branch, setBranch] = useState({ name: "", address: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch branch data on component mount if the ID is available
   useEffect(() => {
     if (id) {
-      const fetchNotice = async () => {
+      const fetchBranch = async () => {
         try {
           setLoading(true);
           const token = getToken();
@@ -25,30 +26,31 @@ const EditBranch = () => {
             throw new Error("No authentication token found.");
           }
 
-          const response = await MainApi.get(`/api/notices/${id}`, {
+          const response = await MainApi.get(`/api/branches/${id}`, {
             headers: {
               Authorization: `Token ${token}`,
             },
           });
 
           if (response.status === 200) {
-            setNotice(response.data);
+            setBranch(response.data); // Update branch state with fetched data
           } else {
-            console.error("Failed to fetch the notice");
-            setError("Failed to fetch the notice");
+            console.error("Failed to fetch the Branch");
+            setError("Failed to fetch the Branch");
           }
         } catch (error) {
-          console.error("An error occurred while fetching the notice:", error);
-          setError("An error occurred while fetching the notice");
+          console.error("An error occurred while fetching the Branch:", error);
+          setError("An error occurred while fetching the Branch");
         } finally {
           setLoading(false);
         }
       };
 
-      fetchNotice();
+      fetchBranch();
     }
   }, [id]);
 
+  // Handle form submission for updating the branch
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -58,9 +60,7 @@ const EditBranch = () => {
         throw new Error("No authentication token found.");
       }
 
-      console.log("Updating notice with data:", notice);
-
-      const response = await MainApi.put(`/api/notices/${id}/`, notice, {
+      const response = await MainApi.put(`/api/branches/${id}/`, branch, {
         headers: {
           Authorization: `Token ${token}`,
           'Content-Type': 'application/json',
@@ -68,15 +68,15 @@ const EditBranch = () => {
       });
 
       if (response.status === 200) {
-        console.log("Notice updated successfully");
-        router.push("/superadmin/notice-board");
+        console.log("Branch updated successfully");
+        router.push("/admin/settings");
       } else {
-        console.error("Failed to update the notice");
-        setError("Failed to update the notice");
+        console.error("Failed to update the Branch");
+        setError("Failed to update the Branch");
       }
     } catch (error) {
-      console.error("An error occurred while updating the notice:", error);
-      setError("An error occurred while updating the notice");
+      console.error("An error occurred while updating the branch:", error);
+      setError("An error occurred while updating the branch");
     }
   };
 
@@ -102,33 +102,33 @@ const EditBranch = () => {
             <form onSubmit={handleFormSubmit}>
               <Grid item sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, marginTop: 2 }}>
                 <Grid item xs={12}>
-                  <CustomLabel htmlFor="title" required>
+                  <CustomLabel htmlFor="name" required>
                     Branch Name
                   </CustomLabel>
                   <CustomTextField
-                    id="title"
-                    name="title"
+                    id="name"
+                    name="name"
                     placeholder="Branch Name"
                     type="text"
                     required
                     fullWidth
-                    value={notice.title}
-                    onChange={(e) => setNotice({ ...notice, title: e.target.value })}
+                    value={branch.name}
+                    onChange={(e) => setBranch({ ...branch, name: e.target.value })} // Update the name field
                   />
                 </Grid>
               </Grid>
 
               <Grid item sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, marginTop: 2 }}>
                 <Grid item xs={12}>
-                  <CustomLabel htmlFor="description" required>
+                  <CustomLabel htmlFor="address" required>
                     Branch Address
                   </CustomLabel>
                   <CKEditor
                     editor={ClassicEditor}
-                    data={notice.description}
+                    data={branch.address}
                     onChange={(event, editor) => {
                       const data = editor.getData();
-                      setNotice((prevNotice) => ({ ...prevNotice, description: data }));
+                      setBranch((prevBranch) => ({ ...prevBranch, address: data })); // Update the address field
                     }}
                   />
                 </Grid>

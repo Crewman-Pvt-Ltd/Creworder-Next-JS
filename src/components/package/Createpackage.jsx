@@ -5,8 +5,6 @@ import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import useGetAllModules from "@/api-manage/react-query/useGetAllModules";
-import useGetAllMenu from "@/api-manage/react-query/useGetAllMenu";
-import useGetAllSubmenu from "@/api-manage/react-query/useGetAllSubmenu";
 import { usePermissions } from "@/contexts/PermissionsContext";
 
 import {
@@ -24,45 +22,9 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
-
-const modules = [
-  "Clients",
-  "Invoices",
-  "Leaves",
-  "Reports",
-  "Zoom",
-  "Webhooks",
-  "Employees",
-  "Payments",
-  "Leads",
-  "Orders",
-  "SMS",
-  "QR Code",
-  "Projects",
-  "Time Logs",
-  "Holidays",
-  "Knowledge Base",
-  "Recruit",
-  "Biolinks",
-  "Attendance",
-  "Tickets",
-  "Products",
-  "Bank Account",
-  "Payroll",
-  "Tasks",
-  "Events",
-  "Expenses",
-  "Messages",
-  "Purchase",
-  "Estimates",
-  "Notices",
-  "Contracts",
-  "Assets",
-  "Letter",
-];
-
+const modules = [];
 const CreatePackage = () => {
-
+  const router = useRouter();
   const [menus, setMenus] = useState([]);
   const [submenus, setSubmenus] = useState([]);
   const [checkedItems, setCheckedItems] = useState({});
@@ -86,7 +48,7 @@ const CreatePackage = () => {
       }
 
       const data = await response.json();
-      setMenus(data.results);    
+      setMenus(data.results);
       const initialCheckedItems = data.results.reduce((acc, menu) => {
         acc[menu.name] = false;
         return acc;
@@ -142,7 +104,6 @@ const CreatePackage = () => {
       [name]: checked,
     }));
   };
-
 
   const { permissionsData } = usePermissions();
   const { data: modulesData, refetch } = useGetAllModules();
@@ -489,7 +450,7 @@ const CreatePackage = () => {
                   </Grid>
                 ))}
               </Grid>
-            </Grid> */}
+            </Grid>  */}
 
             <Divider sx={{ my: 2 }} />
 

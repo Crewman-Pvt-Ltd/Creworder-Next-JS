@@ -1,109 +1,152 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomCard from "../CustomCard";
-import { Grid, 
-  Typography, 
-  Button, 
-  IconButton, 
-  CardContent, 
-  TableContainer, 
-  Table, 
-  TableHead, 
+import {
+  Grid,
+  Typography,
+  Button,
+  IconButton,
+  CardContent,
+  TableContainer,
+  Table,
+  TableHead,
   TableRow,
   TableCell,
   TableBody,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
-  DialogTitle, } from "@mui/material";
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Visibility, Edit, Delete } from "@mui/icons-material";
-import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
-import { useRouter } from "next/router";
+import Edit from "@mui/icons-material/Edit";
+import Delete from "@mui/icons-material/Delete";
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
 
-const BranchListpage = ({ onAddBranch, onEditBranch }) => {
-  const router = useRouter();
-  const { data, refetch } = useGetAllBranches();
-  const [open, setOpen] = useState(false);
+const BranchListPage = ({ onAddBranch }) => {
+  const [branches, setBranches] = useState([]);
+  const [openDelete, setOpenDelete] = useState(false);
   const [branchToDelete, setBranchToDelete] = useState(null);
-  const [viewBranch, setViewBranch] = useState(null);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [branchToEdit, setBranchToEdit] = useState(null);
+  const [formData, setFormData] = useState({ name: "", address: "" });
 
-  const handleCreateBranch = () => {
-    router.push("/admin/branch/createbranch");
+  // Fetch branches data
+  const fetchBranches = async () => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("No authentication token found.");
+
+      const response = await MainApi.get("/api/branches", {
+        headers: { Authorization: `Token ${token}` },
+      });
+
+      if (response.status === 200) {
+        setBranches(response.data.results);
+      } else {
+        console.error("Failed to fetch branches");
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching branches:", error);
+    }
   };
 
-  const handleView = (branch) => {
-    setViewBranch(branch);
-  };
+  useEffect(() => {
+    fetchBranches();
+  }, []);
 
-  const handleEdit = (id) => {
-    router.push(`/admin/branch/editbranch?id=${id}`);
-  };
-
+  // Handle branch deletion
   const handleDeleteClick = (id) => {
     setBranchToDelete(id);
-    setOpen(true);
+    setOpenDelete(true);
   };
 
   const handleDeleteConfirm = async () => {
     try {
       const token = getToken();
-      if (!token) {
-        throw new Error("No authentication token found.");
-      }
+      if (!token) throw new Error("No authentication token found.");
 
       const response = await MainApi.delete(`/api/branches/${branchToDelete}`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
+        headers: { Authorization: `Token ${token}` },
       });
 
       if (response.status === 204) {
         console.log("Branch deleted successfully");
-        refetch();
+        fetchBranches(); // Refresh the list
       } else {
-        console.error("Failed to delete the branch");
+        console.error("Failed to delete branch");
       }
     } catch (error) {
       console.error("An error occurred while deleting the branch:", error);
     }
-    setOpen(false);
+    setOpenDelete(false);
     setBranchToDelete(null);
   };
 
   const handleDeleteCancel = () => {
-    setOpen(false);
+    setOpenDelete(false);
     setBranchToDelete(null);
   };
 
-  const HeaderCell = (props) => (
-    <TableCell
-      sx={{
-        fontSize: "1rem",
-        whiteSpace: "nowrap",
-        fontWeight: "500",
-        textTransform: "capitalize",
-        color: "black",
-      }}
-      {...props}
-    />
-  );
+  // Handle branch editing
+  const handleEditClick = async (id) => {
+    setBranchToEdit(id);
+    try {
+      const token = getToken();
+      if (!token) throw new Error("No authentication token found.");
 
-  const DataCell = (props) => (
-    <TableCell
-      sx={{
-        color: "#999999",
-        fontSize: "14px",
-        whiteSpace: "nowrap",
-        fontWeight: "500",
-        textTransform: "capitalize",
-      }}
-      {...props}
-    />
-  );
+      const response = await MainApi.get(`/api/branches/${id}`, {
+        headers: { Authorization: `Token ${token}` },
+      });
 
- 
+      if (response.status === 200) {
+        setFormData({
+          name: response.data.name,
+          address: response.data.address,
+        });
+        setOpenEdit(true);
+      } else {
+        console.error("Failed to fetch branch data");
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching branch data:", error);
+    }
+  };
 
+  const handleEditClose = () => {
+    setOpenEdit(false);
+    setBranchToEdit(null);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleEditSave = async () => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error("No authentication token found.");
+
+      const response = await MainApi.patch(`/api/branches/${branchToEdit}/`, formData, {
+        headers: { Authorization: `Token ${token}` },
+      });
+
+      if (response.status === 200) {
+        console.log("Branch updated successfully");
+        fetchBranches(); // Refresh the list
+        handleEditClose(); // Close the dialog after saving
+      } else {
+        console.error("Failed to update branch");
+      }
+    } catch (error) {
+      console.error("An error occurred while updating the branch:", error);
+    }
+  };
 
   return (
     <Grid container>
@@ -152,56 +195,47 @@ const BranchListpage = ({ onAddBranch, onEditBranch }) => {
           </Grid>
         </Grid>
 
+
         <CustomCard>
-          <CardContent>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <HeaderCell>ID</HeaderCell>
-                    <HeaderCell>Branch Name</HeaderCell>
-                    <HeaderCell>Branch Address</HeaderCell>
-                    <HeaderCell>Action</HeaderCell>
+        <CardContent>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Branch Name</TableCell>
+                  <TableCell>Branch Address</TableCell>
+                  <TableCell>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {branches.map((branch, index) => (
+                  <TableRow key={branch.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{branch.name}</TableCell>
+                    <TableCell>{branch.address}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEditClick(branch.id)} aria-label="edit" sx={{ color: "green" }}>
+                        <Edit />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteClick(branch.id)} aria-label="delete" sx={{ color: "red" }}>
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data?.results.map((row, index) => (
-                    <TableRow key={row.id}>
-                      <DataCell>{index + 1}</DataCell>
-                      <DataCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>{row.name}</DataCell>
-                      <DataCell sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}>{row.address}</DataCell>
-                      <TableCell>
-                        <IconButton
-                          onClick={() => handleEdit(row.id)}
-                          aria-label="edit"
-                          sx={{ color: "green" }}
-                        >
-                          <Edit />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleDeleteClick(row.id)}
-                          aria-label="delete"
-                          sx={{ color: "red" }}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
         </CustomCard>
       </Grid>
 
-     
-      <Dialog open={open} onClose={handleDeleteCancel}>
+      {/* Delete confirmation dialog */}
+      <Dialog open={openDelete} onClose={handleDeleteCancel}>
         <DialogTitle>Delete Branch</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this branch? This action cannot be undone.
-          </DialogContentText>
+          Are you sure you want to delete this branch? This action cannot be undone.
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteCancel} color="primary">
@@ -213,8 +247,44 @@ const BranchListpage = ({ onAddBranch, onEditBranch }) => {
         </DialogActions>
       </Dialog>
 
+      {/* Edit branch dialog */}
+      <Dialog open={openEdit} onClose={handleEditClose}>
+        <DialogTitle>Edit Branch</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            id="name"
+            name="name"
+            label="Branch Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.name}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            id="address"
+            name="address"
+            label="Branch Address"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.address}
+            onChange={handleInputChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleEditSave} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
 
-export default BranchListpage;
+export default BranchListPage;

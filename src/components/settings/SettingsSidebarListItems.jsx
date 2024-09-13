@@ -67,7 +67,7 @@ const superAdminMenuItems = [
 const adminMenuItems = [
   { text: "Admin Settings", icon: <SettingsIcon /> },
   { text: "Branch", icon: <PeopleAltIcon /> },
-  { text: "Branch List", icon: <PeopleAltIcon /> },
+
   { text: "Courier Service", icon: <ShippingIcon /> },
   { text: "Telephonic Channels", icon: <PhoneIcon /> },
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
