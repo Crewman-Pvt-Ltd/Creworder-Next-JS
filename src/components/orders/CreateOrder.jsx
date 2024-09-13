@@ -144,7 +144,9 @@ const CreateOrder = () => {
   };
 
   const removeProductField = (index) => {
-    setProducts(products.filter((_, i) => i !== index));
+    if (products.length > 1) {
+      setProducts(products.filter((_, i) => i !== index));
+    }
   };
 
   const isRowFilled = (product) => {
@@ -185,13 +187,13 @@ const CreateOrder = () => {
 
               {/* Personal Details Fields */}
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="name" required>
+                <CustomLabel htmlFor="Full Name" required>
                   Customer Name
                 </CustomLabel>
                 <CustomTextField
                   id="name"
                   name="name"
-                  placeholder="e.g. name"
+                  placeholder="Full Name"
                   type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
@@ -204,7 +206,7 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="fathername"
                   name="fathername"
-                  placeholder="e.g. fathername"
+                  placeholder="Father's Name"
                   type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
@@ -217,7 +219,7 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="phone"
                   name="phone"
-                  placeholder="e.g. phone"
+                  placeholder="+91-987XXXXXXXX"
                   type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
@@ -230,7 +232,7 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="email"
                   name="email"
-                  placeholder="e.g. email"
+                  placeholder="Email-ID"
                   type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
@@ -257,6 +259,9 @@ const CreateOrder = () => {
                   <MenuItem value={1}>1 month</MenuItem>
                   <MenuItem value={2}>2 months</MenuItem>
                   <MenuItem value={3}>3 months</MenuItem>
+                  <MenuItem value={6}>6 months</MenuItem>
+                  <MenuItem value={9}>9 months</MenuItem>
+                  <MenuItem value={12}>12 months</MenuItem>
                   {/* Add more options as needed */}
                 </Select>
               </Grid>
@@ -271,21 +276,7 @@ const CreateOrder = () => {
               </Grid>
 
               {/* Address Details Fields */}
-              <Grid item xs={12}>
-                <CustomLabel htmlFor="address" required>
-                  Address
-                </CustomLabel>
-                <CustomTextField
-                  id="address"
-                  name="address"
-                  placeholder="e.g. address"
-                  type="text"
-                  fullWidth
-                  multiline
-                  rows={1} // Adjust the number of rows to fit your design
-                  sx={{ fontFamily: poppins.style.fontFamily }}
-                />
-              </Grid>
+             
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="postalcode" required>
                   Postal Code
@@ -293,9 +284,11 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="postalcode"
                   name="postalcode"
-                  placeholder="e.g. postalcode"
+                  placeholder="Postalcode"
                   type="text"
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -328,7 +321,7 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="city"
                   name="city"
-                  placeholder="e.g. city"
+                  placeholder="City"
                   type="text"
                   fullWidth
                   inputProps={{ readOnly: true }}
@@ -343,7 +336,7 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="state"
                   name="state"
-                  placeholder="e.g. state"
+                  placeholder="State"
                   type="text"
                   fullWidth
                   inputProps={{ readOnly: true }}
@@ -358,11 +351,26 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="country"
                   name="country"
-                  placeholder="e.g. country"
+                  placeholder="Country"
                   type="text"
                   fullWidth
                   inputProps={{ readOnly: true }}
                   style={{ backgroundColor: "#eeeeee" }}
+                  sx={{ fontFamily: poppins.style.fontFamily }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomLabel htmlFor="address" required>
+                  Address
+                </CustomLabel>
+                <CustomTextField
+                  id="address"
+                  name="address"
+                  placeholder="Full Address"
+                  type="text"
+                  fullWidth
+                  multiline
+                  rows={1} // Adjust the number of rows to fit your design
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -437,7 +445,7 @@ const CreateOrder = () => {
                               name="quantity"
                               value={product.quantity}
                               onChange={(e) => handleInputChange(index, e)}
-                              placeholder="e.g. quantity"
+                              placeholder="quantity"
                               type="number"
                               fullWidth
                               sx={{ fontFamily: "Poppins, sans-serif" }}
@@ -452,7 +460,7 @@ const CreateOrder = () => {
                               name="price"
                               value={product.price}
                               onChange={(e) => handleInputChange(index, e)}
-                              placeholder="e.g. price"
+                              placeholder="price"
                               type="number"
                               fullWidth
                               inputProps={{ readOnly: true }}
@@ -469,7 +477,7 @@ const CreateOrder = () => {
                               name="total"
                               value={product.total}
                               onChange={(e) => handleInputChange(index, e)}
-                              placeholder="e.g. total"
+                              placeholder="total"
                               type="number"
                               fullWidth
                               inputProps={{ readOnly: true }}
@@ -517,7 +525,7 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="orderRemark"
                   name="orderRemark"
-                  placeholder="e.g. order remark"
+                  placeholder="Order Remark"
                   type="text"
                   fullWidth
                   multiline
@@ -564,7 +572,7 @@ const CreateOrder = () => {
                         <CustomTextField
                           value={discount}
                           onChange={handleDiscountChange}
-                          placeholder="e.g. discount amount"
+                          placeholder="discount amount"
                           type="text"
                           fullWidth
                           sx={{ fontFamily: "Poppins, sans-serif" }}
@@ -617,7 +625,8 @@ const CreateOrder = () => {
                             Select Payment Mode
                           </MenuItem>
                           <MenuItem value="COD">COD</MenuItem>
-                          <MenuItem value="Partial">Partial Payment</MenuItem>
+                          <MenuItem value="Prepaid">Prepaid</MenuItem>
+                          <MenuItem value="Partial">Partial</MenuItem>
                         </Select>
                       </Grid>
 
@@ -776,6 +785,7 @@ const CreateOrder = () => {
                 >
                   <MenuItem value="">Payment Status</MenuItem>
                   <MenuItem value="true">COD</MenuItem>
+                  <MenuItem value="true">PARTIAL</MenuItem>
                   <MenuItem value="false">PREPAID</MenuItem>
                 </Select>
               </FormControl>
