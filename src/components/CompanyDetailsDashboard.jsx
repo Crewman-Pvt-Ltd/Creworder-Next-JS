@@ -116,8 +116,7 @@ const CompanyDetailsdashboard = ({ type }) => {
   const { title, headers, mapRow } = configuration[type] || {};
   if (!title) return null;
 
-  const rows = data?.results.map(mapRow) || [];
-
+  const rows = (data && Array.isArray(data) ? Object.entries(data).map(mapRow) : []);
   const handleChangePage = (event, newPage) => {
     if (newPage > page && data.next) {
       setUrl(data.next);
