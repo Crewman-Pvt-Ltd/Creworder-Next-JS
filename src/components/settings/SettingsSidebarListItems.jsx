@@ -18,6 +18,7 @@ import SocialLoginSettings from "./SocialLoginSettings";
 import ThemeSettings from "./ThemeSettings";
 import Branch from "./Branch";
 import BranchList from "./BranchListpage";
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import DatabaseBackupSettings from "./DatabaseBackupSettings";
 import LocalShippingIcon from '@mui/icons-material/Map';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -25,7 +26,7 @@ import ShippingIcon from '@mui/icons-material/LocalShipping';
 import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PaymentIcon from "@mui/icons-material/Payment";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import LockIcon from "@mui/icons-material/Lock";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import BackupIcon from "@mui/icons-material/Backup";
@@ -51,6 +52,8 @@ const poppins = Poppins({
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import IPAccess from "./IPAccess";
 import LeadSettings from "./LeadSettings";
+import BankDetails from "./BankDetails";
+import RolesList from "./RolesList";
 const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
@@ -75,13 +78,19 @@ const adminMenuItems = [
   { text: "Order Status", icon: <AssignmentIcon /> },
   { text: "Lead Status", icon: <PeopleAltIcon /> },
   { text: "Lead Setting", icon: <PeopleAltIcon /> },
+ 
   { text: "IP Access", icon: <PeopleAltIcon /> },
   { text: "Pickup Point", icon: <PeopleAltIcon /> },
+  { text: "Roles Setting", icon: <AssuredWorkloadIcon /> },
   
 ];
 const commonMenuItems = [
   { text: "Roles & Permissions", icon: <BackupIcon /> },
+  { text: "Bank Deatails", icon: <AssuredWorkloadIcon /> },
+ 
+ 
   { text: "E-Invoice Settings", icon: <ReceiptIcon /> },
+ 
   
 ];
 const SettingsSidebarListItems = ({type}) => {
@@ -299,9 +308,12 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "admin" && (selectedItem === "Order Status" &&  <OrderStatus />)}
           {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)}
           {type == "admin" && (selectedItem === "Lead Setting" &&  <LeadSettings />)}
+          {type == "admin" && (selectedItem === "Roles Setting" &&  <RolesList />)}
+          { selectedItem === "Bank Details" &&  <BankDetails />}
          { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
+        
          { selectedItem === "E-Invoice Settings" &&  <EInvoiceSettings />}
-
+        
          {type == "admin" && (selectedItem === "Pickup Point" &&  <PickupPoint />)}
          {type == "admin" && (selectedItem === "Email Settings" &&  <EmailSettings />)}
          {type == "admin" && (selectedItem === "IP Access" &&  <IPAccess />)}
