@@ -135,7 +135,7 @@ const PackageList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.results.map((row, index) => (
+                  {data?.map((row, index) => (
                     <TableRow key={row.id}>
                       <DataCell>{index + 1}</DataCell>
                       <DataCell>{row.name}</DataCell>
