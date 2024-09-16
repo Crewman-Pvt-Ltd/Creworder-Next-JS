@@ -11,6 +11,9 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  Button,
+  Grid,
+  TextField,
   TableRow,
   Select,
   MenuItem,
@@ -41,7 +44,6 @@ const RolesAndPermissions = () => {
     setActiveTab(newValue);
   };
 
-  // Determine the tabs to show based on user role
   const isSuperAdmin = permissionsData?.role === "superadmin";
   const isAdmin = permissionsData?.role === "admin";
 
@@ -54,7 +56,6 @@ const RolesAndPermissions = () => {
         { label: "Settings", index: 2 },
         { label: "Product", index: 3 },
         { label: "Order Status", index: 4 },
-      
       ]
     : []; // Handle other roles or cases if needed
 
@@ -64,6 +65,17 @@ const RolesAndPermissions = () => {
         <Typography variant="h6" gutterBottom>
           Roles and Permissions
         </Typography>
+        {isAdmin && (
+          <Grid container spacing={2} sx={{ mt: 2, mb: 2 }}>
+            <Grid item xs={12} sm={6}>
+              <TextField label="Role Name" variant="outlined" fullWidth />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField label="Remark" variant="outlined" fullWidth />
+            </Grid>
+          </Grid>
+        )}
+
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
@@ -171,7 +183,6 @@ const RolesAndPermissions = () => {
                           size="small"
                           sx={{ minWidth: 120 }}
                         >
-                          
                           <MenuItem value="All">Allow</MenuItem>
                           <MenuItem value="Owned">None</MenuItem>
                         </Select>
@@ -230,7 +241,7 @@ const RolesAndPermissions = () => {
             </Table>
           </StyledTableContainer>
         )}
-         {activeTab === 1 && isAdmin && (
+        {activeTab === 1 && isAdmin && (
           <StyledTableContainer>
             <Table>
               <TableHead>
@@ -241,21 +252,18 @@ const RolesAndPermissions = () => {
               </TableHead>
               <TableBody>
                 {[
-                  { name: 'Agent' },
-                  { name: 'Team Leader' },
-                  { name: 'Address verification' },
-                  { name: 'NDR' },
-                  { name: 'Accounts' },
-                  { name: 'Manager/HR' },
+                  { name: "Agent" },
+                  { name: "Team Leader" },
+                  { name: "Address verification" },
+                  { name: "NDR" },
+                  { name: "Accounts" },
+                  { name: "Manager/HR" },
                 ].map((permission, index) => (
                   <TableRow key={index}>
                     <TableCell>{permission.name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -284,20 +292,17 @@ const RolesAndPermissions = () => {
               </TableHead>
               <TableBody>
                 {[
-                  { name: 'Profile Information' },
-                  { name: 'Company Settings' },
-                  { name: 'Email Settings' },
-                  { name: 'Security Settings' },
-                  { name: 'Email Templates' },
+                  { name: "Profile Information" },
+                  { name: "Company Settings" },
+                  { name: "Email Settings" },
+                  { name: "Security Settings" },
+                  { name: "Email Templates" },
                 ].map((permission, index) => (
                   <TableRow key={index}>
                     <TableCell>{permission.name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -306,10 +311,7 @@ const RolesAndPermissions = () => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -318,10 +320,7 @@ const RolesAndPermissions = () => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -330,10 +329,7 @@ const RolesAndPermissions = () => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -361,17 +357,12 @@ const RolesAndPermissions = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {[
-                  { name: 'Products' },
-                ].map((permission, index) => (
+                {[{ name: "Products" }].map((permission, index) => (
                   <TableRow key={index}>
                     <TableCell>{permission.name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -380,10 +371,7 @@ const RolesAndPermissions = () => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -392,10 +380,7 @@ const RolesAndPermissions = () => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -404,10 +389,7 @@ const RolesAndPermissions = () => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select
-                          defaultValue="All"
-                          size="small"
-                        >
+                        <Select defaultValue="All" size="small">
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="none">None</MenuItem>
@@ -419,6 +401,28 @@ const RolesAndPermissions = () => {
               </TableBody>
             </Table>
           </StyledTableContainer>
+        )}
+        {isAdmin && (
+          <Grid
+            item
+            xs={12}
+            md={12}
+            sm={12}
+            mt={3}
+            sx={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <Button
+              sx={{
+                backgroundColor: "#405189",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#405189",
+                },
+              }}
+            >
+              Save
+            </Button>
+          </Grid>
         )}
       </CardContent>
     </CustomCard>

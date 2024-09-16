@@ -59,6 +59,7 @@ const EmailSettings = () => {
         <Tabs value={activeTab} onChange={handleTabChange}>
           <Tab className={poppins.className} label="Setup Email" />
           <Tab className={poppins.className} label="Otp For Mail" />
+          <Tab className={poppins.className} label="Reports" />
       
         </Tabs>
         <Divider sx={{ my: 2 }} />
@@ -230,6 +231,46 @@ const EmailSettings = () => {
           </Box>
         )}
 
+{activeTab === 2 && (
+          <Box>
+            <Grid container spacing={6}>
+              <Grid item xs={12} sm={4} md={6}>
+                <CustomLabel className={poppins.className} htmlFor="mailotp" required>
+                   Reports
+                </CustomLabel>
+                <CustomTextField
+                  id="mailotp"
+                  name="mailotp"
+                  placeholder="e.g. creworder"
+                  type="text"
+                  fullWidth
+                />
+              </Grid>
+
+             
+
+              <Grid
+                item
+                xs={12}
+                md={12}
+                sm={12}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
+                <Button
+                  sx={{
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#405189",
+                    },
+                  }} className={poppins.className}
+                >
+                  Save
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
       </CardContent>
     </CustomCard>
   );

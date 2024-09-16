@@ -31,7 +31,7 @@ const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
-const ModuleList = () => {
+const MenuList = () => {
   const router = useRouter();
   const { data, refetch } = useGetAllMenu();
 
@@ -275,4 +275,4 @@ const ModuleList = () => {
   );
 };
 
-export default ModuleList;
+export default MenuList;

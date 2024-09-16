@@ -105,6 +105,10 @@ const Sidebar = ({ isOpen, type }) => {
   const handleOrderClick = () => {
     setIsOrderOpen(!isOrderOpen);
   };
+  const [isManageOpen, setIsManageOpen] = useState(false);
+  const handleManageClick = () => {
+    setIsManageOpen(!isManageOpen);
+  };
 
   const [isHROpen, setIsHROpen] = useState(false);
   const handleHRClick = () => {
@@ -221,7 +225,7 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === "/dashboard"}
           onClick={() => handleItemClick("/dashboard")}
         />
-       
+
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -249,7 +253,7 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/company")}
           />
         )}
-       
+
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -266,7 +270,7 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === "/notice-board"}
           onClick={() => handleItemClick("/notice-board")}
         ></HoverableNavItem>
-       
+
         <HoverableNavItem
           isOpen={isOpen}
           name={
@@ -363,7 +367,7 @@ const Sidebar = ({ isOpen, type }) => {
             </List>
           </Collapse>
         </HoverableNavItem>
-     
+
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
@@ -382,7 +386,7 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/superadmin/stickynote")}
           ></HoverableNavItem>
         )}
-       
+
         <HoverableNavItem
           isOpen={isOpen}
           name="Follow Up"
@@ -390,6 +394,71 @@ const Sidebar = ({ isOpen, type }) => {
           active={currentPath === "/followup"}
           onClick={() => handleItemClick("/followup")}
         ></HoverableNavItem>
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name={
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <span>Manage</span>
+                <IconButton
+                  size="small"
+                  onClick={handleManageClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "70px",
+                  }}
+                >
+                  {isManageOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </span>
+            }
+            icon={<LocalMallIcon />}
+            active={currentPath.startsWith("/order")}
+            onClick={handleManageClick}
+          >
+            <Collapse in={isManageOpen}>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/targets")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Targets" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders/labels-layout")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Labels Layout" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/orders/cloud-telephony")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Cloud Telephony" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/invoice-layout")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Invoice Layout" />
+                </ListItem>
+               
+              </List>
+            </Collapse>
+          </HoverableNavItem>
+        )}
+
         {type == "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
