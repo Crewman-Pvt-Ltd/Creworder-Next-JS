@@ -618,6 +618,23 @@ const Sidebar = ({ isOpen, type }) => {
                 >
                   <ListItemText primary="All Leads" />
                 </ListItem>
+
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/leads/form-list")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Form List" />
+                </ListItem>
+
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/admin/leads/lead-form")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Lead Form" />
+                </ListItem>
+
               </List>
             </Collapse>
           </HoverableNavItem>
