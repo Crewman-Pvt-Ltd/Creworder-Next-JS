@@ -10,10 +10,14 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import { Download as DownloadIcon } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import DashboardIcon from "@mui/icons-material/Home";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import NearbyErrorRoundedIcon from '@mui/icons-material/NearbyErrorRounded';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import Image from "next/image";
 import creworderLogo from "../images/creworderlogo.png";
 import creworderIcon from "../images/crewordericon.png";
@@ -35,6 +39,7 @@ import Receipt from "@mui/icons-material/Receipt";
 import IconButton from "@mui/material/IconButton";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DisplaySettingsRoundedIcon from '@mui/icons-material/DisplaySettingsRounded';
 const HoverableNavItem = ({
   isOpen,
   name,
@@ -212,8 +217,8 @@ const Sidebar = ({ isOpen, type }) => {
         {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="Get Started"
-            icon={<RocketLaunchIcon />}
+            name="Home"
+            icon={<HomeRoundedIcon />}
             active={currentPath === "/admin/get-started"}
             onClick={() => handleItemClick("/admin/get-started")}
           />
@@ -221,7 +226,7 @@ const Sidebar = ({ isOpen, type }) => {
         <HoverableNavItem
           isOpen={isOpen}
           name="Dashboard"
-          icon={<DashboardIcon />}
+          icon={<DashboardRoundedIcon />}
           active={currentPath === "/dashboard"}
           onClick={() => handleItemClick("/dashboard")}
         />
@@ -266,7 +271,7 @@ const Sidebar = ({ isOpen, type }) => {
         <HoverableNavItem
           isOpen={isOpen}
           name="Notice"
-          icon={<NotificationsIcon />}
+          icon={<NearbyErrorRoundedIcon />}
           active={currentPath === "/notice-board"}
           onClick={() => handleItemClick("/notice-board")}
         ></HoverableNavItem>
@@ -295,7 +300,7 @@ const Sidebar = ({ isOpen, type }) => {
               </IconButton>
             </span>
           }
-          icon={<LocalMallIcon />}
+          icon={<AccountCircleRoundedIcon />}
           active={currentPath.startsWith("/hr/hr-employees")}
           onClick={handleHRClick}
         >
@@ -419,7 +424,7 @@ const Sidebar = ({ isOpen, type }) => {
                 </IconButton>
               </span>
             }
-            icon={<LocalMallIcon />}
+            icon={<DisplaySettingsRoundedIcon />}
             active={currentPath.startsWith("/order")}
             onClick={handleManageClick}
           >
