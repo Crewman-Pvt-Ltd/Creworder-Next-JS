@@ -39,9 +39,9 @@ import AdminSettings from "./AdminSettings";
 import MaintainanceMode from "./MaintainanceMode";
 import EmailSettings from "./EmailSettings";
 import EInvoiceSettings from "./EInvoiceSettings";
-import PickupPoint from "./PickupPoint";
+import PickupPoint from "./PickupAddressList";
 import OrderStatus from "./OrderStatus";
-import LeadStatus from "./LeadStatus";
+// import LeadStatus from "./LeadStatus";
 import AssignmentIcon from '@mui/icons-material/Assignment'; // Example new icon for Order Status
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import EmailIcon from '@mui/icons-material/Email';
@@ -76,7 +76,7 @@ const adminMenuItems = [
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
   { text: "Email Settings", icon: <EmailIcon /> },
   { text: "Order Status", icon: <AssignmentIcon /> },
-  { text: "Lead Status", icon: <PeopleAltIcon /> },
+  // { text: "Lead Status", icon: <PeopleAltIcon /> },
   { text: "Lead Setting", icon: <PeopleAltIcon /> },
  
   { text: "IP Access", icon: <PeopleAltIcon /> },
@@ -306,7 +306,7 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
           {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}
           {type == "admin" && (selectedItem === "Order Status" &&  <OrderStatus />)}
-          {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)}
+          {/* {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)} */}
           {type == "admin" && (selectedItem === "Lead Setting" &&  <LeadSettings />)}
           {type == "admin" && (selectedItem === "Roles Setting" &&  <RolesList />)}
           { selectedItem === "Bank Details" &&  <BankDetails />}

@@ -4,15 +4,23 @@ import Image from "next/image";
 import { Poppins } from "next/font/google";
 import CustomCard from "../CustomCard";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { useRouter } from 'next/router'; // Import useRouter
+
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
 
 const Checklist = () => {
+  const router = useRouter(); // Initialize useRouter
+
+  const handleKYC = () => {
+    router.push('/admin/get-started/kyc'); // Redirect to the KYC page
+  };
+
   return (
     <CustomCard margin={20}>
-      <Grid container spacing={1} >
+      <Grid container spacing={1}>
         <Grid item xs={12} sm={12} md={12} m={2}>
           <Typography variant="h6" className={poppins.className}>
             Get started in a few easy steps:
@@ -191,7 +199,6 @@ const Checklist = () => {
           </Grid>
         </Grid>
 
-       
         <Grid item xs={12} sm={12} md={12} m={2}>
           <Box
             sx={{
@@ -213,8 +220,7 @@ const Checklist = () => {
                 fontWeight: "600",
               }}
             >
-              <ErrorOutlineIcon sx={{ marginRight: "8px", fontSize: 16 }} />{" "}
-          
+              <ErrorOutlineIcon sx={{ marginRight: "8px", fontSize: 16 }} />
               <Typography> Please note:</Typography>
               <Typography
                 className={poppins.className}
@@ -228,6 +234,7 @@ const Checklist = () => {
             </Typography>
             <Button
               variant="text"
+              onClick={handleKYC} // Attach the redirection function
               sx={{
                 color: "#405189",
                 textTransform: "none",
@@ -241,7 +248,6 @@ const Checklist = () => {
             </Button>
           </Box>
         </Grid>
-        
       </Grid>
     </CustomCard>
   );

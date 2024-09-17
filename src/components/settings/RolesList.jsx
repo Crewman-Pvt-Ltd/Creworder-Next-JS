@@ -12,7 +12,7 @@ import {
   TableCell,
   TableBody,
   IconButton,
-  Typography, // Import Typography
+  Typography,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { Poppins } from "next/font/google";
