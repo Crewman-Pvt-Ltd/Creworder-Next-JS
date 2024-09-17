@@ -39,7 +39,7 @@ import AdminSettings from "./AdminSettings";
 import MaintainanceMode from "./MaintainanceMode";
 import EmailSettings from "./EmailSettings";
 import EInvoiceSettings from "./EInvoiceSettings";
-import PickupPoint from "./PickupAddressList";
+import PickupPoint from "./PickupPoint";
 import OrderStatus from "./OrderStatus";
 // import LeadStatus from "./LeadStatus";
 import AssignmentIcon from '@mui/icons-material/Assignment'; // Example new icon for Order Status
@@ -52,8 +52,9 @@ const poppins = Poppins({
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import IPAccess from "./IPAccess";
 import LeadSettings from "./LeadSettings";
-import BankDetails from "./BankDetails";
+
 import RolesList from "./RolesList";
+import BankDetails from "./BankDetails";
 const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
@@ -81,12 +82,12 @@ const adminMenuItems = [
  
   { text: "IP Access", icon: <PeopleAltIcon /> },
   { text: "Pickup Point", icon: <PeopleAltIcon /> },
-  { text: "Roles Setting", icon: <AssuredWorkloadIcon /> },
+  { text: "Roles List", icon: <AssuredWorkloadIcon /> },
   
 ];
 const commonMenuItems = [
   { text: "Roles & Permissions", icon: <BackupIcon /> },
-  { text: "Bank Deatails", icon: <AssuredWorkloadIcon /> },
+  { text: "Bank Details", icon: <AssuredWorkloadIcon /> },
  
  
   { text: "E-Invoice Settings", icon: <ReceiptIcon /> },
@@ -308,7 +309,7 @@ const SettingsSidebarListItems = ({type}) => {
           {type == "admin" && (selectedItem === "Order Status" &&  <OrderStatus />)}
           {/* {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)} */}
           {type == "admin" && (selectedItem === "Lead Setting" &&  <LeadSettings />)}
-          {type == "admin" && (selectedItem === "Roles Setting" &&  <RolesList />)}
+          {type == "admin" && (selectedItem === "Roles List" &&  <RolesList />)}
           { selectedItem === "Bank Details" &&  <BankDetails />}
          { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
         

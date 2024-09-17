@@ -24,12 +24,12 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
-const AddPickupAddress = ({ onPickupList }) => {
+const EditPickupAdress = ({ onPickupList }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [rtoChecked, setRtoChecked] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
-  
+
   const { data } = useGetAllBranches();
 
   const handleSubmit = (event) => {
@@ -71,10 +71,10 @@ const AddPickupAddress = ({ onPickupList }) => {
               className={poppins.className}
               sx={{ fontSize: "16px", fontWeight: "600", mb: 2 }}
             >
-              Add New Pick Up Address
+              Edit Pick Up Address
             </Typography>
             <Divider sx={{ my: 2 }} />
-           
+
             <Grid item xs={12} sm={3} md={3}>
               <CustomLabel>Select Branch</CustomLabel>
               <FormControl fullWidth>
@@ -89,7 +89,8 @@ const AddPickupAddress = ({ onPickupList }) => {
                     <MenuItem key={branch.id} value={branch.name}>
                       {branch.name}
                     </MenuItem>
-                  ))},
+                  ))}
+                  ,
                 </Select>
               </FormControl>
             </Grid>
@@ -340,4 +341,4 @@ const AddPickupAddress = ({ onPickupList }) => {
   );
 };
 
-export default AddPickupAddress;
+export default EditPickupAdress;
