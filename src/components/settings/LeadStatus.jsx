@@ -8,4 +8,4 @@ const LeadStatus = () => {
   )
 }
 
-export default LeadStatus
+export default LeadStatus;

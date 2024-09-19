@@ -21,7 +21,6 @@ import { useRouter } from "next/router";
 import RechargeWallet from "./recharge-wallet/RechargeWallet";
 import BranchSwitcher from "./branchswitcher/BranchSwitcher";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-
 const Header = ({ onMenuClick, type }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
@@ -96,7 +95,7 @@ const Header = ({ onMenuClick, type }) => {
           >
             <MenuIcon />
           </IconButton>   </Tooltip>
-          <Tooltip title="Search ">
+          {type == "admin" && ( <a href="/admin/search" style={{ textDecoration: "none" }}><Tooltip title="Search ">
           <SearchIcon
             sx={{
               backgroundColor: "#f9f8fe",
@@ -111,7 +110,8 @@ const Header = ({ onMenuClick, type }) => {
                 color: "#ffffff",
               },
             }}
-          />   </Tooltip>
+          />   </Tooltip></a>
+          )}
           <a href="/notepad" style={{ textDecoration: "none" }}>
             <Tooltip title="Notebad ">
               <EditNoteSharpIcon

@@ -21,6 +21,10 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DownloadFileIcon from "@mui/icons-material/Download";
 const AddLeads = () => {
   const [open, setOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const sampleFileUrl = "C:/Users/dell/Desktop/Frontend Creworder/Creworder-Next-JS/src/images/sample.csv";
+
   // State for holding input values
   const [inputValues, setInputValues] = useState({
     name: "",
@@ -84,6 +88,13 @@ const AddLeads = () => {
     setOpen(false);
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12} sm={12} md={12}>
@@ -132,6 +143,9 @@ const AddLeads = () => {
           <Button
             variant="outlined"
             startIcon={<DownloadFileIcon />}
+            component="a"
+            href={sampleFileUrl}
+            download=" "
             sx={{
               fontWeight: "600",
               textTransform: "none",
@@ -336,69 +350,71 @@ const AddLeads = () => {
 
         {/* Dialog */}
         <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-          <DialogContent>
-            <Typography variant="h6">
-              <b>Import Lead</b>
+      <DialogContent>
+        <Typography variant="h6">
+          <b>Import Lead</b>
+        </Typography>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          sx={{ mt: 2, mb: 2 }}
+        >
+          Date format should be in Y-m-d (e.g. 2024-09-17) format. Make sure the date format is correct in the excel file.
+        </Typography>
+        <div
+          style={{
+            border: '1px solid #ddd',
+            padding: '10px',
+            borderRadius: '4px',
+          }}
+        >
+          <input
+            type="file"
+            accept=".csv,.xls,.xlsx,.doc,.docx"
+            style={{ display: 'none' }}
+            id="upload-file"
+            onChange={handleFileChange}
+          />
+          <label
+            htmlFor="upload-file"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100px',
+              border: '2px dashed #ddd',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+          >
+            <UploadFileIcon sx={{ fontSize: 48, color: '#aaa' }} />
+            <Typography>
+              {selectedFile ? selectedFile.name : 'Choose a file'}
             </Typography>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              sx={{ mt: 2, mb: 2 }}
-            >
-              Date format should be in Y-m-d (e.g. 2024-09-17) format. Make sure
-              the date format is correct in the excel file.
-            </Typography>
-            <div
-              style={{
-                border: "1px solid #ddd",
-                padding: "10px",
-                borderRadius: "4px",
-              }}
-            >
-              <input
-                type="file"
-                accept=".csv,.xls,.xlsx"
-                style={{ display: "none" }}
-                id="upload-file"
-              />
-              <label
-                htmlFor="upload-file"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100px",
-                  border: "2px dashed #ddd",
-                  cursor: "pointer",
-                  borderRadius: "4px",
-                }}
-              >
-                <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
-                <Typography>Choose a file</Typography>
-              </label>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: "10px",
-              }}
-            >
-              <Button onClick={handleClose} fullWidth sx={{ mt: 1 }}>
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                fullWidth
-                sx={{ mt: 1 }}
-              >
-                Submit
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+          </label>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '10px',
+          }}
+        >
+          <Button onClick={handleClose} fullWidth sx={{ mt: 1 }}>
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 1 }}
+          >
+            Submit
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
       </Grid>
     </Grid>
   );
