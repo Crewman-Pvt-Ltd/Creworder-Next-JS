@@ -35,7 +35,7 @@ import {
   LockOpen as LockOpenIcon,
   Logout as LogoutIcon,
 } from "@mui/icons-material";
-const EmployeesList = ({ onAddEmployees }) => {
+const DeletedEmployees = ({ onAddEmployees }) => {
   const router = useRouter();
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -61,7 +61,6 @@ const EmployeesList = ({ onAddEmployees }) => {
   const handleDeleteClick = (id) => {
     console.log("Delete", id);
   };
-  
 
   return (
     <Grid container spacing={2}>
@@ -211,8 +210,6 @@ const EmployeesList = ({ onAddEmployees }) => {
           <ImportExportIcon sx={{ fontSize: 20 }} />
           Export
         </Button>
-
-
         <a href="/hr/employees/lockedemployees" style={{ textDecoration: "none" }}><Button
           sx={{
             padding: "8px 16px",
@@ -252,7 +249,6 @@ const EmployeesList = ({ onAddEmployees }) => {
           <DeleteForeverIcon sx={{ fontSize: 20 }} />
           Deleted Users
         </Button></a>
-
       </Grid>
       <Grid item xs={12} sm={12} md={12} m={2}>
         <CustomCard>
@@ -291,10 +287,9 @@ const EmployeesList = ({ onAddEmployees }) => {
                         <Chip
                           label={row?.profile?.status == "1" ? "Active" : "Inactive"}
                           size="large"
+                         
                         />
                       </TableCell>
-
-
                       <TableCell>
                       {row.status === "Approved" ? (
                           <Tooltip title="Suspend">
@@ -321,9 +316,6 @@ const EmployeesList = ({ onAddEmployees }) => {
                             </IconButton>
                           </Tooltip>
                         )}
-
-
-
                       <Tooltip title="Change Password">
                           <IconButton
                             aria-label="change password"
@@ -358,7 +350,8 @@ const EmployeesList = ({ onAddEmployees }) => {
                           <Delete />
                         </IconButton>
                         </Tooltip>
-                      </TableCell>  
+                      </TableCell>   
+
                     </TableRow>
                   ))}
                 </TableBody>
@@ -371,4 +364,4 @@ const EmployeesList = ({ onAddEmployees }) => {
   );
 };
 
-export default EmployeesList;
+export default DeletedEmployees;

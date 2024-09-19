@@ -132,8 +132,8 @@ const CreateNotice = () => {
                 <Grid
                   container
                   spacing={2}
-                  sx={{ width: "900px", margin: "20px" }}
-                >
+                  sx={{ width: "900px"}}
+                   >
                   {usersData?.results.map((row, index) => (
                   <Grid item xs={12} sm={6} md={2} key={index}>
                     <FormControlLabel control={<Checkbox />} label={row?.username} onChange={handleCheckboxChange} value={row?.id}/>

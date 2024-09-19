@@ -31,7 +31,6 @@ const poppins = Poppins({
 });
 const List = () => {
   const router = useRouter();
-
   const rows = [
     {
       id: 1,
@@ -46,8 +45,7 @@ const List = () => {
   ];
 
   return (
-    <Grid container spacing={2} p={3}>
-      
+    <Grid container spacing={2} p={3}>      
       <Grid item xs={12}>
         <CustomCard padding="13px">
         <Grid item>
@@ -97,8 +95,8 @@ const List = () => {
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                     Customer Phone
                     </TableCell>                   
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>User Name</TableCell>
-                   
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      User Name</TableCell>                   
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       Remark
                     </TableCell>
@@ -151,19 +149,6 @@ const List = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50]}
-                  colSpan={12}
-                  count={rows.length}
-                  rowsPerPage={10}
-                  page={0}
-                  onPageChange={() => {}}
-                  onRowsPerPageChange={() => {}}
-                />
-              </TableRow>
-            </TableFooter>
           </Box>
         </CustomCard>
       </Grid>
