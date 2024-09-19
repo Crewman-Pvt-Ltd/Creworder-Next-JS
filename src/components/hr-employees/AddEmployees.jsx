@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
+import CustomLabel from "../CustomLabel";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
