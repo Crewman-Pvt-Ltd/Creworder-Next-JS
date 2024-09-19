@@ -7,6 +7,12 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import KeyOffIcon from "@mui/icons-material/KeyOff";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
+import HomeWorkIcon from "@mui/icons-material/HomeWork";
+import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
+import ReviewsIcon from "@mui/icons-material/Reviews";
+import HighlightIcon from "@mui/icons-material/Highlight";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import { Poppins } from "next/font/google";
 import {
   Typography,
@@ -18,17 +24,6 @@ import {
   IconButton,
   Button,
 } from "@mui/material";
-
-import {
-  Add as AddIcon,
-  CheckCircle as CheckCircleIcon,
-  Cancel as CancelIcon,
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-  LockOpen as LockOpenIcon,
-  Logout as LogoutIcon,
-} from "@mui/icons-material";
-
 const poppins = Poppins({
   weight: "300",
   subsets: ["latin"],
@@ -36,9 +31,34 @@ const poppins = Poppins({
 
 const LandingPageSettings = () => {
   const [activeSection, setActiveSection] = useState("slider");
-
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [sliderFile, setSliderFile] = useState(null);
+  const [featuresFile, setFeaturesFile] = useState(null);
+  const [testimonialsFile, setTestimonialsFile] = useState(null);
+  const [highlightsFile, setHighlightsFile] = useState(null);
+  const [clientsFile, setClientsFile] = useState(null); 
+  const [settingsFile, setSettingsFile] = useState(null); 
   const handleSectionChange = (section) => {
     setActiveSection(section);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (activeSection === "slider") {
+        setSliderFile(file);
+      } else if (activeSection === "features") {
+        setFeaturesFile(file);
+      } else if (activeSection === "testimonials") {
+        setTestimonialsFile(file);
+      } else if (activeSection === "highlights") {
+        setHighlightsFile(file);
+      } else if (activeSection === "clients") {
+        setClientsFile(file);
+      }else if (activeSection === "settings") {
+        setSettingsFile(file);
+      }
+    }
   };
 
   return (
@@ -62,7 +82,7 @@ const LandingPageSettings = () => {
             textTransform: "none",
           }}
         >
-          <AddIcon sx={{ fontSize: 20 }} />
+          <HomeWorkIcon sx={{ fontSize: 20 }} />
           Slider Section
         </Button>
         <Button
@@ -83,7 +103,7 @@ const LandingPageSettings = () => {
             textTransform: "none",
           }}
         >
-          <AddIcon sx={{ fontSize: 20 }} />
+          <ProductionQuantityLimitsIcon sx={{ fontSize: 20 }} />
           Product features
         </Button>
         <Button
@@ -106,7 +126,7 @@ const LandingPageSettings = () => {
             textTransform: "none",
           }}
         >
-          <ImportExportIcon sx={{ fontSize: 20 }} />
+          <ReviewsIcon sx={{ fontSize: 20 }} />
           Testimonials
         </Button>
 
@@ -130,7 +150,7 @@ const LandingPageSettings = () => {
             textTransform: "none",
           }}
         >
-          <ImportExportIcon sx={{ fontSize: 20 }} />
+          <HighlightIcon sx={{ fontSize: 20 }} />
           Highlights
         </Button>
 
@@ -152,7 +172,7 @@ const LandingPageSettings = () => {
             textTransform: "none",
           }}
         >
-          <KeyOffIcon sx={{ fontSize: 20 }} />
+          <HandshakeIcon sx={{ fontSize: 20 }} />
           Clients
         </Button>
 
@@ -174,7 +194,7 @@ const LandingPageSettings = () => {
             textTransform: "none",
           }}
         >
-          <DeleteForeverIcon sx={{ fontSize: 20 }} />
+          <SettingsSuggestIcon sx={{ fontSize: 20 }} />
           Settings
         </Button>
       </Grid>
@@ -197,18 +217,6 @@ const LandingPageSettings = () => {
 
                 {/* Slider Section Content */}
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12}>
-                    <Typography
-                      sx={{
-                        fontSize: "16px",
-                        fontWeight: "600",
-                        fontFamily: poppins.style.fontFamily,
-                      }}
-                    >
-                      First Section
-                    </Typography>
-                  </Grid>
-
                   <Grid item xs={12} sm={6}>
                     <CustomLabel htmlFor="heading" required>
                       Heading
@@ -272,26 +280,42 @@ const LandingPageSettings = () => {
                         </Tooltip>
                       </Typography>
 
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="150px"
-                        border="1px dashed grey"
-                        borderRadius="4px"
-                        mt={2}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <UploadFileIcon fontSize="large" />
-                        <Typography
-                          variant="body2"
-                          sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
+                      <div style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                        <input type="file" style={{ display: "none" }} id="upload-slider-file" onChange={handleFileChange} />
+                        <label
+                          htmlFor="upload-slider-file"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100px",
+                            border: "2px dashed #ddd",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                          }}
                         >
-                          Choose a file
-                        </Typography>
-                      </Box>
+                          <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
+                          <Typography>{sliderFile ? sliderFile.name : "Choose a file"}</Typography>
+                        </label>
+                      </div>
                     </Box>
                   </Grid>
+                  <Button 
+                  type="submit"
+                  sx={{
+                    marginLeft: "20px",
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#334a6c",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
                 </Grid>
               </>
             )}
@@ -371,24 +395,24 @@ const LandingPageSettings = () => {
                         </Tooltip>
                       </Typography>
 
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="150px"
-                        border="1px dashed grey"
-                        borderRadius="4px"
-                        mt={2}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <UploadFileIcon fontSize="large" />
-                        <Typography
-                          variant="body2"
-                          sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
+                      <div style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                        <input type="file" style={{ display: "none" }} id="upload-features-file" onChange={handleFileChange} />
+                        <label
+                          htmlFor="upload-features-file"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100px",
+                            border: "2px dashed #ddd",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                          }}
                         >
-                          Choose a file
-                        </Typography>
-                      </Box>
+                          <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
+                          <Typography>{featuresFile ? featuresFile.name : "Choose a file"}</Typography>
+                        </label>
+                      </div>
                     </Box>
                   </Grid>
                   <Grid item xs={12} sm={6} md={6}>
@@ -427,82 +451,42 @@ const LandingPageSettings = () => {
                         </Tooltip>
                       </Typography>
 
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="150px"
-                        border="1px dashed grey"
-                        borderRadius="4px"
-                        mt={2}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <UploadFileIcon fontSize="large" />
-                        <Typography
-                          variant="body2"
-                          sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
+                      <div style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                        <input type="file" style={{ display: "none" }} id="upload-features-file" onChange={handleFileChange} />
+                        <label
+                          htmlFor="upload-features-file"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100px",
+                            border: "2px dashed #ddd",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                          }}
                         >
-                          Choose a file
-                        </Typography>
-                      </Box>
+                          <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
+                          <Typography>{featuresFile ? featuresFile.name : "Choose a file"}</Typography>
+                        </label>
+                      </div>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={6}>
-                    <CustomLabel htmlFor="featurethirdtitle" required>
-                      Feature 3 title
-                    </CustomLabel>
-                    <CustomTextField
-                      id="featurethirdtitle"
-                      name="featurethirdtitle"
-                      type="text"
-                      placeholder="e.g. Title"
-                      fullWidth
-                    />
-                    <CustomLabel htmlFor="featurethirdtitle" required>
-                      Feature 3 Subtitle
-                    </CustomLabel>
-                    <CustomTextField
-                      id="featurethirdsubtitle"
-                      name="featurethirdsubtitle"
-                      type="text"
-                      placeholder="e.g. Sub title"
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Box>
-                      <Typography
-                        variant="body1"
-                        sx={{ fontFamily: poppins.style.fontFamily }}
-                      >
-                        Image 3
-                        <Tooltip title="Upload your front website logo here">
-                          <IconButton>
-                            <HelpOutlineIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Typography>
-
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="150px"
-                        border="1px dashed grey"
-                        borderRadius="4px"
-                        mt={2}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <UploadFileIcon fontSize="large" />
-                        <Typography
-                          variant="body2"
-                          sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
-                        >
-                          Choose a file
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
+                  <Button 
+                  type="submit"
+                  sx={{
+                    marginLeft: "20px",
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#334a6c",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
                 </Grid>
               </>
             )}
@@ -582,26 +566,42 @@ const LandingPageSettings = () => {
                         </Tooltip>
                       </Typography>
 
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="150px"
-                        border="1px dashed grey"
-                        borderRadius="4px"
-                        mt={2}
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <UploadFileIcon fontSize="large" />
-                        <Typography
-                          variant="body2"
-                          sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
+                      <div style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                        <input type="file" style={{ display: "none" }} id="upload-testimonials-file" onChange={handleFileChange} />
+                        <label
+                          htmlFor="upload-testimonials-file"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100px",
+                            border: "2px dashed #ddd",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                          }}
                         >
-                          Choose a file
-                        </Typography>
-                      </Box>
+                          <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
+                          <Typography>{testimonialsFile ? testimonialsFile.name : "Choose a file"}</Typography>
+                        </label>
+                      </div>
                     </Box>
                   </Grid>
+                  <Button 
+                  type="submit"
+                  sx={{
+                    marginLeft: "20px",
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#334a6c",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
                 </Grid>
               </>
             )}
@@ -621,62 +621,79 @@ const LandingPageSettings = () => {
 
                 {/* Highlights Content */}
                 <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="highlightsheading" required>
-                  Heading
-                </CustomLabel>
-                <CustomTextField
-                  id="highlightsheading"
-                  name="highlightsheading"
-                  type="text"
-                  placeholder="e.g. heading"
-                  fullWidth
-                />
-                <CustomLabel htmlFor="highlightssubheading" required>
-                  Subheading
-                </CustomLabel>
-                <CustomTextField
-                  id="highlightssubheading"
-                  name="highlightssubheading"
-                  type="text"
-                  placeholder="e.g. Sub title"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <Box>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontFamily: poppins.style.fontFamily }}
-                  >
-                    Highlights Image
-                    <Tooltip title="Upload your front website logo here">
-                      <IconButton>
-                        <HelpOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Typography>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <CustomLabel htmlFor="highlightsheading" required>
+                      Heading
+                    </CustomLabel>
+                    <CustomTextField
+                      id="highlightsheading"
+                      name="highlightsheading"
+                      type="text"
+                      placeholder="e.g. heading"
+                      fullWidth
+                    />
+                    <CustomLabel htmlFor="highlightssubheading" required>
+                      Subheading
+                    </CustomLabel>
+                    <CustomTextField
+                      id="highlightssubheading"
+                      name="highlightssubheading"
+                      type="text"
+                      placeholder="e.g. Sub title"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <Box>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontFamily: poppins.style.fontFamily }}
+                      >
+                        Highlights Image
+                        <Tooltip title="Upload your front website logo here">
+                          <IconButton>
+                            <HelpOutlineIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Typography>
 
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    height="150px"
-                    border="1px dashed grey"
-                    borderRadius="4px"
-                    mt={2}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <UploadFileIcon fontSize="large" />
-                    <Typography
-                      variant="body2"
-                      sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
-                    >
-                      Choose a file
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
+
+                      <div style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                        <input type="file" style={{ display: "none" }} id="upload-highlights-file" onChange={handleFileChange} />
+                        <label
+                          htmlFor="upload-highlights-file"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100px",
+                            border: "2px dashed #ddd",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
+                          <Typography>{highlightsFile ? highlightsFile.name : "Choose a file"}</Typography>
+                        </label>
+                      </div>
+                    </Box>
+                  </Grid>
+                  <Button 
+                  type="submit"
+                  sx={{
+                    marginLeft: "20px",
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#334a6c",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
                 </Grid>
               </>
             )}
@@ -696,62 +713,78 @@ const LandingPageSettings = () => {
 
                 {/* Clients Content */}
                 <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="highlightsheading" required>
-                  Heading
-                </CustomLabel>
-                <CustomTextField
-                  id="highlightsheading"
-                  name="highlightsheading"
-                  type="text"
-                  placeholder="e.g. heading"
-                  fullWidth
-                />
-                <CustomLabel htmlFor="highlightssubheading" required>
-                  Subheading
-                </CustomLabel>
-                <CustomTextField
-                  id="highlightssubheading"
-                  name="highlightssubheading"
-                  type="text"
-                  placeholder="e.g. Sub title"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <Box>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontFamily: poppins.style.fontFamily }}
-                  >
-                    Clients Image
-                    <Tooltip title="Upload your front website logo here">
-                      <IconButton>
-                        <HelpOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Typography>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <CustomLabel htmlFor="highlightsheading" required>
+                      Heading
+                    </CustomLabel>
+                    <CustomTextField
+                      id="highlightsheading"
+                      name="highlightsheading"
+                      type="text"
+                      placeholder="e.g. heading"
+                      fullWidth
+                    />
+                    <CustomLabel htmlFor="highlightssubheading" required>
+                      Subheading
+                    </CustomLabel>
+                    <CustomTextField
+                      id="highlightssubheading"
+                      name="highlightssubheading"
+                      type="text"
+                      placeholder="e.g. Sub title"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <Box>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontFamily: poppins.style.fontFamily }}
+                      >
+                        Clients Image
+                        <Tooltip title="Upload your front website logo here">
+                          <IconButton>
+                            <HelpOutlineIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Typography>
 
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    height="150px"
-                    border="1px dashed grey"
-                    borderRadius="4px"
-                    mt={2}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <UploadFileIcon fontSize="large" />
-                    <Typography
-                      variant="body2"
-                      sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
-                    >
-                      Choose a file
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
+                     <div style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                        <input type="file" style={{ display: "none" }} id="upload-clients-file" onChange={handleFileChange} />
+                        <label
+                          htmlFor="upload-clients-file"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100px",
+                            border: "2px dashed #ddd",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
+                          <Typography>{clientsFile ? clientsFile.name : "Choose a file"}</Typography>
+                        </label>
+                      </div>
+                    </Box>
+                  </Grid>
+                  <Button 
+                  type="submit"
+                  sx={{
+                    marginLeft: "20px",
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#334a6c",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
                 </Grid>
               </>
             )}
@@ -771,62 +804,79 @@ const LandingPageSettings = () => {
 
                 {/* Deleted Users Content */}
                 <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="highlightsheading" required>
-                  About Company Heading
-                </CustomLabel>
-                <CustomTextField
-                  id="highlightsheading"
-                  name="highlightsheading"
-                  type="text"
-                  placeholder="e.g. heading"
-                  fullWidth
-                />
-                <CustomLabel htmlFor="highlightssubheading" required>
-                  Tag Lines for company
-                </CustomLabel>
-                <CustomTextField
-                  id="highlightssubheading"
-                  name="highlightssubheading"
-                  type="text"
-                  placeholder="e.g. Sub title"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <Box>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontFamily: poppins.style.fontFamily }}
-                  >
-                    logo Image
-                    <Tooltip title="Upload your front website logo here">
-                      <IconButton>
-                        <HelpOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Typography>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <CustomLabel htmlFor="highlightsheading" required>
+                      About Company Heading
+                    </CustomLabel>
+                    <CustomTextField
+                      id="highlightsheading"
+                      name="highlightsheading"
+                      type="text"
+                      placeholder="e.g. heading"
+                      fullWidth
+                    />
+                    <CustomLabel htmlFor="highlightssubheading" required>
+                      Tag Lines for company
+                    </CustomLabel>
+                    <CustomTextField
+                      id="highlightssubheading"
+                      name="highlightssubheading"
+                      type="text"
+                      placeholder="e.g. Sub title"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={6}>
+                    <Box>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontFamily: poppins.style.fontFamily }}
+                      >
+                        logo Image
+                        <Tooltip title="Upload your front website logo here">
+                          <IconButton>
+                            <HelpOutlineIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Typography>
 
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    height="150px"
-                    border="1px dashed grey"
-                    borderRadius="4px"
-                    mt={2}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    <UploadFileIcon fontSize="large" />
-                    <Typography
-                      variant="body2"
-                      sx={{ ml: 1, fontFamily: poppins.style.fontFamily }}
-                    >
-                      Choose a file
-                    </Typography>
-                  </Box>
-                </Box>
-              </Grid>
+                      <div style={{ border: "1px solid #ddd", padding: "10px", borderRadius: "4px" }}>
+                        <input type="file" style={{ display: "none" }} id="upload-settings-file" onChange={handleFileChange} />
+                        <label
+                          htmlFor="upload-settings-file"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100px",
+                            border: "2px dashed #ddd",
+                            cursor: "pointer",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
+                          <Typography>{settingsFile ? settingsFile.name : "Choose a file"}</Typography>
+                        </label>
+                      </div>
+                    </Box>
+                    
+                  </Grid>
+                  <Button 
+                  type="submit"
+                  sx={{
+                    marginLeft: "20px",
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    backgroundColor: "#405189",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#334a6c",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
                 </Grid>
               </>
             )}
