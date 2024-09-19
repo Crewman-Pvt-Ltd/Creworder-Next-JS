@@ -4,6 +4,8 @@ import Layout from "@/components/Layout";
 import CheckList from "@/components/GetStarted/Checklist";
 import Loader from "@/components/Loader";
 import { usePermissions } from "@/contexts/PermissionsContext";
+import EmailAndSMSCommunication from "@/components/integrations/EmailAndSMSCommunication";
+import WhatsappCommunication from "@/components/integrations/WhatsappCommunication";
 
 const Index = () => {
   const { permissionsData, permissionLoading } = usePermissions();

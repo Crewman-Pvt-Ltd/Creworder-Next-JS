@@ -17,16 +17,16 @@ import FinanceSettings from "./FinanceSettings";
 import SocialLoginSettings from "./SocialLoginSettings";
 import ThemeSettings from "./ThemeSettings";
 import Branch from "./Branch";
-import BranchList from "./BranchListpage";
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import DatabaseBackupSettings from "./DatabaseBackupSettings";
-import LocalShippingIcon from '@mui/icons-material/Map';
-import PhoneIcon from '@mui/icons-material/Phone';
-import ShippingIcon from '@mui/icons-material/LocalShipping';
+import LocalShippingIcon from "@mui/icons-material/Map";
+import PhoneIcon from "@mui/icons-material/Phone";
+import ShippingIcon from "@mui/icons-material/LocalShipping";
 import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import PaymentIcon from "@mui/icons-material/Payment";
-import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
+import AssuredWorkloadIcon from "@mui/icons-material/AssuredWorkload";
 import LockIcon from "@mui/icons-material/Lock";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import BackupIcon from "@mui/icons-material/Backup";
@@ -41,15 +41,19 @@ import EmailSettings from "./EmailSettings";
 import EInvoiceSettings from "./EInvoiceSettings";
 import PickupPoint from "./PickupPoint";
 import OrderStatus from "./OrderStatus";
-// import LeadStatus from "./LeadStatus";
-import AssignmentIcon from '@mui/icons-material/Assignment'; // Example new icon for Order Status
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import EmailIcon from '@mui/icons-material/Email';
+import PlaceIcon from "@mui/icons-material/Place";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import ListIcon from "@mui/icons-material/List";
+import EmailIcon from "@mui/icons-material/Email";
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 const poppins = Poppins({
   weight: "300",
   subsets: ["latin"],
 });
-import ReceiptIcon from '@mui/icons-material/Receipt';
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import IPAccess from "./IPAccess";
 import LeadSettings from "./LeadSettings";
 
@@ -77,31 +81,27 @@ const adminMenuItems = [
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
   { text: "Email Settings", icon: <EmailIcon /> },
   { text: "Order Status", icon: <AssignmentIcon /> },
-  // { text: "Lead Status", icon: <PeopleAltIcon /> },
-  { text: "Lead Setting", icon: <PeopleAltIcon /> },
- 
-  { text: "IP Access", icon: <PeopleAltIcon /> },
-  { text: "Pickup Point", icon: <PeopleAltIcon /> },
-  { text: "Roles List", icon: <AssuredWorkloadIcon /> },
-  
+
+  { text: "Lead Setting", icon: <ManageAccountsIcon /> },
+
+  { text: "IP Access", icon: <PrivacyTipIcon /> },
+  { text: "Pickup Point", icon: <PlaceIcon /> },
+  { text: "Roles List", icon: <ListIcon /> },
 ];
 const commonMenuItems = [
-  { text: "Roles & Permissions", icon: <BackupIcon /> },
+  { text: "Permission Setting", icon: <ChecklistIcon /> },
   { text: "Bank Details", icon: <AssuredWorkloadIcon /> },
- 
- 
+
   { text: "E-Invoice Settings", icon: <ReceiptIcon /> },
- 
-  
 ];
-const SettingsSidebarListItems = ({type}) => {
+const SettingsSidebarListItems = ({ type }) => {
   const defaultState = type == "superadmin" ? "App Settings" : "Admin Settings";
   const [selectedItem, setSelectedItem] = useState(defaultState);
 
   const handleItemClick = (item) => {
     setSelectedItem(item.text);
   };
-  const userType = 'superadmin'; 
+  const userType = "superadmin";
   return (
     <Grid container spacing={1}>
       <Grid
@@ -159,87 +159,89 @@ const SettingsSidebarListItems = ({type}) => {
           }}
         >
           <List>
-            {type == "superadmin" && superAdminMenuItems.map((item, index) => (
-              <ListItem
-                button
-                key={index}
-                onClick={() => handleItemClick(item)}
-                sx={{
-                  borderRadius: 1,
-                  mb: 1,
-                  transition: "all 0.3s ease",
-                  backgroundColor:
-                    selectedItem === item.text ? "#d7defabf" : "transparent",
-                  "&:hover": {
-                    backgroundColor: "#f5f5f5",
-                    transform: "translateX(5px)",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                  },
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <ListItemIcon
-                    sx={{
-                      minWidth: "auto",
-                      color: "#405189",
-                    }}
-                  >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{
-                      fontFamily: poppins.style.fontFamily,
-                      color: "#405189",
-                      fontWeight: 500,
-                      letterSpacing: "0.5px",
-                      transition: "color 0.3s ease",
-                    }}
-                  />
-                </Box>
-              </ListItem>
-            ))}
-            {type == "admin" && adminMenuItems.map((item, index) => (
-              <ListItem
-                button
-                key={index}
-                onClick={() => handleItemClick(item)}
-                sx={{
-                  borderRadius: 1,
-                  mb: 1,
-                  transition: "all 0.3s ease",
-                  backgroundColor:
-                    selectedItem === item.text ? "#d7defabf" : "transparent",
-                  "&:hover": {
-                    backgroundColor: "#f5f5f5",
-                    transform: "translateX(5px)",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                  },
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <ListItemIcon
-                    sx={{
-                      minWidth: "auto",
-                      color: "#405189",
-                    }}
-                  >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.text}
-                    sx={{
-                      fontFamily: poppins.style.fontFamily,
-                      color: "#405189",
-                      fontWeight: 500,
-                      letterSpacing: "0.5px",
-                      transition: "color 0.3s ease",
-                    }}
-                  />
-                </Box>
-              </ListItem>
-            ))}
-             {commonMenuItems.map((item, index) => (
+            {type == "superadmin" &&
+              superAdminMenuItems.map((item, index) => (
+                <ListItem
+                  button
+                  key={index}
+                  onClick={() => handleItemClick(item)}
+                  sx={{
+                    borderRadius: 1,
+                    mb: 1,
+                    transition: "all 0.3s ease",
+                    backgroundColor:
+                      selectedItem === item.text ? "#d7defabf" : "transparent",
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5",
+                      transform: "translateX(5px)",
+                      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                    },
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: "auto",
+                        color: "#405189",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{
+                        fontFamily: poppins.style.fontFamily,
+                        color: "#405189",
+                        fontWeight: 500,
+                        letterSpacing: "0.5px",
+                        transition: "color 0.3s ease",
+                      }}
+                    />
+                  </Box>
+                </ListItem>
+              ))}
+            {type == "admin" &&
+              adminMenuItems.map((item, index) => (
+                <ListItem
+                  button
+                  key={index}
+                  onClick={() => handleItemClick(item)}
+                  sx={{
+                    borderRadius: 1,
+                    mb: 1,
+                    transition: "all 0.3s ease",
+                    backgroundColor:
+                      selectedItem === item.text ? "#d7defabf" : "transparent",
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5",
+                      transform: "translateX(5px)",
+                      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                    },
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: "auto",
+                        color: "#405189",
+                      }}
+                    >
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.text}
+                      sx={{
+                        fontFamily: poppins.style.fontFamily,
+                        color: "#405189",
+                        fontWeight: 500,
+                        letterSpacing: "0.5px",
+                        transition: "color 0.3s ease",
+                      }}
+                    />
+                  </Box>
+                </ListItem>
+              ))}
+            {commonMenuItems.map((item, index) => (
               <ListItem
                 button
                 key={index}
@@ -292,32 +294,65 @@ const SettingsSidebarListItems = ({type}) => {
         }}
       >
         <Box p={2}>
-          {type == "superadmin" && (selectedItem === "App Settings" && <AppSettings />)}
-          {type == "superadmin" && (selectedItem === "Notification Settings" && <NotificationSettings />)}
-          {type == "superadmin" && (selectedItem === "Payment Credentials" && <PaymentCredentials />)}
-          {type == "superadmin" && (selectedItem === "Finance Settings" && <FinanceSettings />)}
-          {type == "superadmin" && (selectedItem === "Social Login Settings" && <SocialLoginSettings />)}
-          {type == "superadmin" && (selectedItem === "Theme Settings" && <ThemeSettings />)}
-          {type == "superadmin" && (selectedItem === "Database Backup Settings" && <DatabaseBackupSettings />)}
-          {type == "superadmin" && (selectedItem === "Maintainance Mode" && <MaintainanceMode />)}
-          {type == "admin" && (selectedItem === "Admin Settings" && <AdminSettings /> )}
-          {type == "admin" && (selectedItem === "Branch" &&  <Branch />)}
-          {/* {type == "admin" && (selectedItem === "Branch List" &&  <BranchList />)} */}
-          {type == "admin" && (selectedItem === "Courier Service" &&  <CourierServiceList />)}
-          {type == "admin" && (selectedItem === "Telephonic Channels" &&  <TelephonicChannelsList />)}
-          {type == "admin" && (selectedItem === "Shipment Channels" &&  <ShipmentChannelsList />)}
-          {type == "admin" && (selectedItem === "Order Status" &&  <OrderStatus />)}
-          {/* {type == "admin" && (selectedItem === "Lead Status" &&  <LeadStatus />)} */}
-          {type == "admin" && (selectedItem === "Lead Setting" &&  <LeadSettings />)}
-          {type == "admin" && (selectedItem === "Roles List" &&  <RolesList />)}
-          { selectedItem === "Bank Details" &&  <BankDetails />}
-         { selectedItem === "Roles & Permissions" &&  <RolesAndPermissions />}
-        
-         { selectedItem === "E-Invoice Settings" &&  <EInvoiceSettings />}
-        
-         {type == "admin" && (selectedItem === "Pickup Point" &&  <PickupPoint />)}
-         {type == "admin" && (selectedItem === "Email Settings" &&  <EmailSettings />)}
-         {type == "admin" && (selectedItem === "IP Access" &&  <IPAccess />)}
+          {type == "superadmin" && selectedItem === "App Settings" && (
+            <AppSettings />
+          )}
+          {type == "superadmin" && selectedItem === "Notification Settings" && (
+            <NotificationSettings />
+          )}
+          {type == "superadmin" && selectedItem === "Payment Credentials" && (
+            <PaymentCredentials />
+          )}
+          {type == "superadmin" && selectedItem === "Finance Settings" && (
+            <FinanceSettings />
+          )}
+          {type == "superadmin" && selectedItem === "Social Login Settings" && (
+            <SocialLoginSettings />
+          )}
+          {type == "superadmin" && selectedItem === "Theme Settings" && (
+            <ThemeSettings />
+          )}
+          {type == "superadmin" &&
+            selectedItem === "Database Backup Settings" && (
+              <DatabaseBackupSettings />
+            )}
+          {type == "superadmin" && selectedItem === "Maintainance Mode" && (
+            <MaintainanceMode />
+          )}
+          {type == "admin" && selectedItem === "Admin Settings" && (
+            <AdminSettings />
+          )}
+          {type == "admin" && selectedItem === "Branch" && <Branch />}
+
+          {type == "admin" && selectedItem === "Courier Service" && (
+            <CourierServiceList />
+          )}
+          {type == "admin" && selectedItem === "Telephonic Channels" && (
+            <TelephonicChannelsList />
+          )}
+          {type == "admin" && selectedItem === "Shipment Channels" && (
+            <ShipmentChannelsList />
+          )}
+          {type == "admin" && selectedItem === "Order Status" && (
+            <OrderStatus />
+          )}
+
+          {type == "admin" && selectedItem === "Lead Setting" && (
+            <LeadSettings />
+          )}
+          {type == "admin" && selectedItem === "Roles List" && <RolesList />}
+          {selectedItem === "Bank Details" && <BankDetails />}
+          {selectedItem === "Permission Setting" && <RolesAndPermissions />}
+
+          {selectedItem === "E-Invoice Settings" && <EInvoiceSettings />}
+
+          {type == "admin" && selectedItem === "Pickup Point" && (
+            <PickupPoint />
+          )}
+          {type == "admin" && selectedItem === "Email Settings" && (
+            <EmailSettings />
+          )}
+          {type == "admin" && selectedItem === "IP Access" && <IPAccess />}
         </Box>
       </Grid>
     </Grid>
