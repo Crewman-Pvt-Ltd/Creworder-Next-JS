@@ -1,14 +1,13 @@
 import MainApi from "../MainApi";
 import { useQuery } from "react-query";
-import { submenu } from "../ApiRoutes";
+import { get_role } from "../ApiRoutes";
 import { getToken } from "@/utils/getToken";
 
 
-const getSubmenu = async (url = submenu) => {
+const getRole = async () => {
   const token = getToken();
-  
   const { data } = await MainApi.get(
-    url,
+    get_role,
     {
       headers: {
         Authorization: `Token ${token}`,
@@ -18,8 +17,8 @@ const getSubmenu = async (url = submenu) => {
   return data;
 };
 
-export default function useGetAllSubmenu(url) {
-  return useQuery(["submenu", url], () => getSubmenu(url), {
+export default function useGetAllRole() {
+  return useQuery(["role"], () => getRole(), {
     cacheTime: 300000,
   });
 }

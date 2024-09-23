@@ -289,7 +289,7 @@ const CreateMenu = () => {
                     label="Menu"
                     sx={{ height: "40px" }}
                   >
-                    {menuData?.results.map((menu) => (
+                    {menuData?.map((menu) => (
                       <MenuItem key={menu.id} value={menu.id}>
                         {menu.name}
                       </MenuItem>
