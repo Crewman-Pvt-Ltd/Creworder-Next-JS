@@ -250,7 +250,7 @@ const CreateOrder = () => {
                   value={courseDuration}
                   onChange={handleCourseDurationChange}
                   displayEmpty // This makes the empty string display as the placeholder
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }} // Set minHeight
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
                   fullWidth
                 >
                   <MenuItem value="" disabled>
@@ -303,7 +303,7 @@ const CreateOrder = () => {
                   value={locality}
                   onChange={handlelocality}
                   displayEmpty // This makes the empty string display as the placeholder
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }} // Set minHeight
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
                   fullWidth
                 >
                   <MenuItem value="" disabled>
@@ -403,7 +403,7 @@ const CreateOrder = () => {
                               displayEmpty
                               sx={{
                                 fontFamily: "Poppins, sans-serif",
-                                height: "40px",
+                                height: "50px",
                               }}
                               fullWidth
                             >
@@ -619,7 +619,7 @@ const CreateOrder = () => {
                           onChange={handlePaymentTypeChange}
                           displayEmpty
                           fullWidth
-                          style={{ height: "40px" }}
+                          style={{ height: "50px" }}
                         >
                           <MenuItem value="" disabled>
                             Select Payment Mode
@@ -780,7 +780,7 @@ const CreateOrder = () => {
                   value={paymentMode}
                   onChange={handlePaymentMode}
                   displayEmpty
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                   fullWidth
                 >
                   <MenuItem value="">Payment Status</MenuItem>

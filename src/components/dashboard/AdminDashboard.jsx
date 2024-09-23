@@ -90,7 +90,7 @@ const AdminDashboard = () => {
               <Grid item xs={12} sm={10} md={5}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6} md={9}>
-                    <DateRangePicker
+                    {/* <DateRangePicker
                       visibleMonths={2}
                       onChange={handleDateRangeChange}
                       style={{
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
                           backgroundColor: "#fff",
                         },
                       }}
-                    />
+                    /> */}
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
                     <LightButton

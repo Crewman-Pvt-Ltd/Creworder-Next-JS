@@ -4,7 +4,8 @@ import CustomLabel from "../CustomLabel";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
-import useGetAllModules from "@/api-manage/react-query/useGetAllModules";
+import useGetAllMenu from "@/api-manage/react-query/useGetAllMenu";
+import useGetAllSubmenu from "@/api-manage/react-query/useGetAllSubmenu";
 import { usePermissions } from "@/contexts/PermissionsContext";
 
 import {
@@ -23,42 +24,6 @@ import {
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 
-const modules = [
-  "Clients",
-  "Invoices",
-  "Leaves",
-  "Reports",
-  "Zoom",
-  "Webhooks",
-  "Employees",
-  "Payments",
-  "Leads",
-  "Orders",
-  "SMS",
-  "QR Code",
-  "Projects",
-  "Time Logs",
-  "Holidays",
-  "Knowledge Base",
-  "Recruit",
-  "Biolinks",
-  "Attendance",
-  "Tickets",
-  "Products",
-  "Bank Account",
-  "Payroll",
-  "Tasks",
-  "Events",
-  "Expenses",
-  "Messages",
-  "Purchase",
-  "Estimates",
-  "Notices",
-  "Contracts",
-  "Assets",
-  "Letter",
-];
-
 const EditPackage = () => {
   const { permissionsData } = usePermissions();
   const router = useRouter();
@@ -66,40 +31,98 @@ const EditPackage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = router.query;
-  const { data: modulesData, refetch } = useGetAllModules();
+
+  const [checkedItems, setCheckedItems] = useState({});
+  const [checkedSubmenus, setCheckedSubmenus] = useState({});
+  const [packageDetails, setPackageDetails] = useState([]);
+  const { data: menus = [] } = useGetAllMenu(); // Fetch all menus
+  const { data: submenus = [] } = useGetAllSubmenu(); // Fetch all submenus
   const [formState, setFormState] = useState({
-    name: "",
-    type: "",
-    max_admin: "",
-    setup_fees: "",
-    max_employees: "",
-    monthly_price: "",
-    annual_price: "",
-    description: "",
-    created_by: permissionsData?.user?.id || "",
-    modules: [], // Ensure this is initialized as an array
+    package: {
+      name: "",
+      type: "",
+      max_admin: "",
+      setup_fees: "",
+      max_employees: "",
+      monthly_price: 0,
+      quarterly_price: 0,
+      annual_price: 0,
+      description: "",
+      created_by: permissionsData?.user?.id || "",
+    },
+    package_details: [],
   });
+
+  // Set initial states for checkedItems and checkedSubmenus
+  useEffect(() => {
+    const initialCheckedItems = menus.reduce((acc, menu) => {
+      acc[menu.name] = false;
+      return acc;
+    }, {});
+    setCheckedItems(initialCheckedItems);
+
+    const initialCheckedSubmenus = submenus.reduce((acc, submenu) => {
+      acc[submenu.name] = false;
+      return acc;
+    }, {});
+    setCheckedSubmenus(initialCheckedSubmenus);
+  }, [menus, submenus]);
+
+  // Handle main menu selection
+  const handleMainMenuChange = (event) => {
+    const { name, checked } = event.target;
+    const menu = menus.find((menu) => menu.name === name);
+
+    setCheckedItems((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+
+    // Add or remove menu from package_details
+    setPackageDetails((prevDetails) => {
+      if (checked) {
+        return [...prevDetails, { menu: menu.id }];
+      } else {
+        return prevDetails.filter((detail) => detail.menu !== menu.id);
+      }
+    });
+  };
+
+  // Handle submenu selection
+  const handleSubmenuChange = (event, menuId) => {
+    const { name, checked } = event.target;
+    const submenu = submenus.find((submenu) => submenu.name === name);
+
+    setCheckedSubmenus((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+
+    // Update the submenu under the corresponding menu
+    setPackageDetails((prevDetails) => {
+      return prevDetails.map((detail) => {
+        if (detail.menu === menuId) {
+          // If checked, include both `menu` and `submenu`
+          if (checked) {
+            return {
+              menu: detail.menu,
+              submenu: submenu.id, // Include submenu
+            };
+          } else {
+            // Only include `menu` if submenu is unchecked
+            return {
+              menu: detail.menu,
+            };
+          }
+        }
+        return detail; // Return other details unchanged
+      });
+    });
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({ ...prevState, [name]: value }));
-  };
-
-  const handleCheckboxChange = (event) => {
-    const moduleId = event.target.value;
-    setFormState((prevState) => ({
-      ...prevState,
-      modules: prevState.modules.includes(moduleId)
-        ? prevState.modules.filter((item) => item !== moduleId)
-        : [...prevState.modules, moduleId],
-    }));
-  };
-
-  const handleSelectAll = (event) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      modules: event.target.checked ? modulesData.results.map((module) => module.id) : [],
-    }));
   };
 
   const handlePlanChange = (event) => {
@@ -290,92 +313,34 @@ const EditPackage = () => {
                   }}
                 >
                   <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="name" required>
-                      Package Name
-                    </CustomLabel>
+                    <CustomLabel htmlFor="name">Name</CustomLabel>
                     <CustomTextField
-                      id="name"
+                      placeholder="Name"
                       name="name"
-                      placeholder="e.g. creworder"
-                      type="text"
-                      required
-                      fullWidth
+                      id="name"
                       value={formState.name}
                       onChange={handleInputChange}
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="max_admin" required>
-                      Max Admin
-                    </CustomLabel>
+                    <CustomLabel htmlFor="max_admin">Max Admin</CustomLabel>
                     <CustomTextField
-                      id="max_admin"
+                      placeholder="Max Admin"
                       name="max_admin"
-                      placeholder="e.g. 2"
-                      type="number"
-                      required
-                      fullWidth
+                      id="max_admin"
                       value={formState.max_admin}
                       onChange={handleInputChange}
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="max_employees" required>
+                    <CustomLabel htmlFor="max_employees">
                       Max Employees
                     </CustomLabel>
                     <CustomTextField
-                      id="max_employees"
+                      placeholder="Max Employees"
                       name="max_employees"
-                      placeholder="e.g. 30"
-                      type="number"
-                      required
-                      fullWidth
+                      id="max_employees"
                       value={formState.max_employees}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="setup_fees" required>
-                      Setup Fees
-                    </CustomLabel>
-                    <CustomTextField
-                      id="setup_fees"
-                      name="setup_fees"
-                      placeholder="e.g. 99"
-                      type="number"
-                      required
-                      fullWidth
-                      value={formState.setup_fees}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="monthly_price" required>
-                      Monthly Price
-                    </CustomLabel>
-                    <CustomTextField
-                      id="monthly_price"
-                      name="monthly_price"
-                      placeholder="e.g. 99"
-                      type="number"
-                      required
-                      fullWidth
-                      value={formState.monthly_price}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <CustomLabel htmlFor="annual_price" required>
-                      Annual Price
-                    </CustomLabel>
-                    <CustomTextField
-                      id="annual_price"
-                      name="annual_price"
-                      placeholder="e.g. 99"
-                      type="number"
-                      required
-                      fullWidth
-                      value={formState.annual_price}
                       onChange={handleInputChange}
                     />
                   </Grid>
@@ -383,78 +348,67 @@ const EditPackage = () => {
               </Grid>
             </Grid>
 
-            <Divider sx={{ my: 2 }} />
-
             <Grid container spacing={2} sx={{ mt: 2 }}>
+              {/* Add your form inputs like name, type, price, etc. */}
               <Grid item xs={12}>
-                <Typography sx={{ fontSize: "15px" }}>Select Modules</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={handleSelectAll}
-                      checked={formState.modules.length === modulesData?.results.length}
-                      indeterminate={
-                        formState.modules.length > 0 &&
-                        formState.modules.length < modulesData?.results.length
-                      }
-                    />
-                  }
-                  label="Select All"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormGroup row>
-                  {modulesData?.results.map((module, index) => (
-                    <FormControlLabel
-                      key={module.id}
-                      control={
-                        <Checkbox
-                          checked={formState.modules.includes(module.id)}
-                          onChange={handleCheckboxChange}
-                          value={module.id}
-                        />
-                      }
-                      label={module.name}
-                    />
+                <Typography sx={{ fontSize: "15px" }}>
+                  Select Menus and Submenus
+                </Typography>
+                <ul>
+                  {menus.map((menu) => (
+                    <li key={menu.id}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={checkedItems[menu.name] || false}
+                            onChange={handleMainMenuChange}
+                            name={menu.name}
+                          />
+                        }
+                        label={menu.name}
+                      />
+                      {/* Show submenus only if the main menu is checked */}
+                      {checkedItems[menu.name] &&
+                        submenus
+                          .filter((submenu) => submenu.menu === menu.id)
+                          .map((submenu) => (
+                            <ul key={submenu.id} style={{ paddingLeft: "40px" }}>
+                              <li>
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={
+                                        checkedSubmenus[submenu.name] || false
+                                      }
+                                      onChange={(event) =>
+                                        handleSubmenuChange(event, menu.id)
+                                      }
+                                      name={submenu.name}
+                                    />
+                                  }
+                                  label={submenu.name}
+                                />
+                              </li>
+                            </ul>
+                          ))}
+                    </li>
                   ))}
-                </FormGroup>
+                </ul>
               </Grid>
             </Grid>
 
             <Divider sx={{ my: 2 }} />
 
-            <Grid item xs={12} mt={2}>
-              <CustomLabel htmlFor="description">Description</CustomLabel>
-              <CustomTextField
-                id="description"
-                name="description"
-                placeholder="e.g. description"
-                type="text"
-                fullWidth
-                multiline
-                rows={4}
-                value={formState.description}
-                onChange={handleInputChange}
-              />
-            </Grid>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Update Package"}
+            </Button>
 
-            <Divider sx={{ my: 2 }} />
-
-            <Grid container spacing={2} mt={2}>
-              <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{ float: "right" }}
-                  onClick={handleSubmit}
-                >
-                  Save
-                </Button>
-              </Grid>
-            </Grid>
+            {error && <Typography color="error">{error}</Typography>}
           </CardContent>
         </CustomCard>
       </Grid>

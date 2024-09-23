@@ -166,10 +166,10 @@ const Sidebar = ({ isOpen, type }) => {
     DownloadIcon: <DownloadIcon />,
     CategoryIcon: <CategoryIcon />,
     GroupIcon: <GroupIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
+    SupervisedUserCircleIcon: <SupervisedUserCircleIcon />,
+    StoreIcon: <StoreIcon />,
+    LocationOnIcon: <LocationOnIcon />,
+    EventNoteIcon: <EventNoteIcon />,
     NotificationsIcon: <NotificationsIcon />,
     NotificationsIcon: <NotificationsIcon />,
     NotificationsIcon: <NotificationsIcon />,
@@ -319,14 +319,15 @@ const Sidebar = ({ isOpen, type }) => {
               </HoverableNavItem>
             );
           } else if (!menu.includes("_icon")) {
+            // console.log(items[`${menu}`])
             return (
               <HoverableNavItem
                 key={menu}
                 isOpen={isOpen}
                 name={menu}
                 icon={iconMap[items.icon]}
-                active={currentPath === items}
-                onClick={() => handleItemClick(items)}
+                active={currentPath === items[`${menu}`]}
+                onClick={() => handleItemClick(items[`${menu}`])}
               />
             );
           }
