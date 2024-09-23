@@ -157,7 +157,7 @@ const PincodeOrder = () => {
                     value={AgentId}
                     onChange={handleAgentId}
                     displayEmpty // This makes the empty string display as the placeholder
-                    sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }} // Set minHeight
+                    sx={{ fontFamily: 'Poppins, sans-serif', height: '50px' }} // Set minHeight
                     fullWidth>
                     <MenuItem value="" disabled>
                       Select Agent
@@ -244,7 +244,7 @@ const PincodeOrder = () => {
             value={courseDuration}
             onChange={handleCourseDurationChange}
             displayEmpty // This makes the empty string display as the placeholder
-            sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }} // Set minHeight
+            sx={{ fontFamily: 'Poppins, sans-serif', height: '50px' }} // Set minHeight
             fullWidth>
             <MenuItem value="" disabled>
               Select Course
@@ -305,7 +305,7 @@ const PincodeOrder = () => {
                 value={locality}
                 onChange={handlelocality}
                 displayEmpty // This makes the empty string display as the placeholder
-                sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }} // Set minHeight
+                sx={{ fontFamily: 'Poppins, sans-serif', height: '50px' }} // Set minHeight
                 fullWidth>
                 <MenuItem value="" disabled>
                   Select Locality
@@ -381,7 +381,7 @@ const PincodeOrder = () => {
                            value={product.productName}
                            onChange={(e) => handleInputChange(index, e)}
                            displayEmpty
-                           sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }}
+                           sx={{ fontFamily: 'Poppins, sans-serif', height: '50px' }}
                            fullWidth
                          >
                            <MenuItem value="" disabled>Select Product</MenuItem>
@@ -558,7 +558,7 @@ const PincodeOrder = () => {
                   value={paymentType}
                   onChange={handlePaymentTypeChange}
                   displayEmpty
-                  sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }}
+                  sx={{ fontFamily: 'Poppins, sans-serif', height: '50px' }}
                   fullWidth
                 >
                   <MenuItem value="" disabled>Select Payment</MenuItem>
@@ -690,7 +690,7 @@ const PincodeOrder = () => {
             value={paymentMode} 
             onChange={handlePaymentMode}
             displayEmpty 
-            sx={{ fontFamily: 'Poppins, sans-serif', height: '40px' }} 
+            sx={{ fontFamily: 'Poppins, sans-serif', height: '50px' }} 
             fullWidth
           >
             <MenuItem value="">

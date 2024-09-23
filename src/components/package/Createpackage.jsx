@@ -4,9 +4,9 @@ import CustomLabel from "../customLabel";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
-import useGetAllModules from "@/api-manage/react-query/useGetAllModules";
+import useGetAllMenu from "@/api-manage/react-query/useGetAllMenu";
+import useGetAllSubmenu from "@/api-manage/react-query/useGetAllSubmenu";
 import { usePermissions } from "@/contexts/PermissionsContext";
-
 import {
   Typography,
   Button,
@@ -22,141 +22,133 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
-const modules = [];
+
 const CreatePackage = () => {
   const router = useRouter();
-  const [menus, setMenus] = useState([]);
-  const [submenus, setSubmenus] = useState([]);
   const [checkedItems, setCheckedItems] = useState({});
   const [checkedSubmenus, setCheckedSubmenus] = useState({});
+  const [packageDetails, setPackageDetails] = useState([]);
+
+  const { data: menus = [] } = useGetAllMenu(); // Fetch all menus
+  const { data: submenus = [] } = useGetAllSubmenu(); // Fetch all submenus
+
+  const { permissionsData } = usePermissions();
+  const token = getToken();
+
+  const [formState, setFormState] = useState({
+    package: {
+      name: "",
+      type: "",
+      max_admin: "",
+      setup_fees: "",
+      max_employees: "",
+      monthly_price: 0,
+      quarterly_price: 0,
+      annual_price: 0,
+      description: "",
+      created_by: permissionsData?.user?.id || "",
+    },
+    package_details: [],
+  });
+
+  // Set initial states for checkedItems and checkedSubmenus
   useEffect(() => {
-    fetchMenus();
-    fetchSubmenus();
-  }, []);
-  const fetchMenus = async () => {
-    try {
-      const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const response = await fetch(`${BASE_URL}/api/menu`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const initialCheckedItems = menus.reduce((acc, menu) => {
+      acc[menu.name] = false;
+      return acc;
+    }, {});
+    setCheckedItems(initialCheckedItems);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch menu data");
-      }
+    const initialCheckedSubmenus = submenus.reduce((acc, submenu) => {
+      acc[submenu.name] = false;
+      return acc;
+    }, {});
+    setCheckedSubmenus(initialCheckedSubmenus);
+  }, [menus, submenus]);
 
-      const data = await response.json();
-      setMenus(data.results);
-      const initialCheckedItems = data.results.reduce((acc, menu) => {
-        acc[menu.name] = false;
-        return acc;
-      }, {});
-      setCheckedItems(initialCheckedItems);
-    } catch (error) {
-      console.error("Error fetching menu data:", error);
-    }
-  };
-
-  const fetchSubmenus = async () => {
-    try {
-      const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const response = await fetch(`${BASE_URL}/api/submenu`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch submenu data");
-      }
-
-      const data = await response.json();
-      setSubmenus(data.results);
-
-      // Initialize checkedSubmenus state for submenus
-      const initialCheckedSubmenus = data.results.reduce((acc, submenu) => {
-        acc[submenu.name] = false;
-        return acc;
-      }, {});
-      setCheckedSubmenus(initialCheckedSubmenus);
-    } catch (error) {
-      console.error("Error fetching submenu data:", error);
-    }
-  };
-
-  // Handle change for main menu checkboxes
+  // Handle main menu selection
   const handleMainMenuChange = (event) => {
     const { name, checked } = event.target;
+    const menu = menus.find((menu) => menu.name === name);
+
     setCheckedItems((prevState) => ({
       ...prevState,
       [name]: checked,
     }));
+
+    // Add or remove menu from package_details
+    setPackageDetails((prevDetails) => {
+      if (checked) {
+        return [...prevDetails, { menu: menu.id }];
+      } else {
+        return prevDetails.filter((detail) => detail.menu !== menu.id);
+      }
+    });
   };
 
-  // Handle change for submenu checkboxes
-  const handleSubmenuChange = (event) => {
+  // Handle submenu selection
+  const handleSubmenuChange = (event, menuId) => {
     const { name, checked } = event.target;
+    const submenu = submenus.find((submenu) => submenu.name === name);
+
     setCheckedSubmenus((prevState) => ({
       ...prevState,
       [name]: checked,
     }));
-  };
 
-  const { permissionsData } = usePermissions();
-  const { data: modulesData, refetch } = useGetAllModules();
-  const token = getToken();
-  const [formState, setFormState] = useState({
-    name: "",
-    type: "",
-    max_admin: "",
-    setup_fees: "",
-    max_employees: "",
-    monthly_price: 0,
-    annual_price: 0,
-    description: "",
-    created_by: permissionsData.user.id,
-    modules: [],
-  });
+    // Update the submenu under the corresponding menu
+    setPackageDetails((prevDetails) => {
+      return prevDetails.map((detail) => {
+        if (detail.menu === menuId) {
+          // If checked, include both `menu` and `submenu`
+          if (checked) {
+            return {
+              menu: detail.menu,
+              submenu: submenu.id, // Include submenu
+            };
+          } else {
+            // Only include `menu` if submenu is unchecked
+            return {
+              menu: detail.menu,
+            };
+          }
+        }
+        return detail; // Return other details unchanged
+      });
+    });
+    
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormState((prevState) => ({ ...prevState, [name]: value }));
-  };
-
-  const handleCheckboxChange = (event) => {
-    const name = event.target.value;
     setFormState((prevState) => ({
       ...prevState,
-      modules: prevState.modules.includes(name)
-        ? prevState.modules.filter((item) => item !== name)
-        : [...prevState.modules, name],
-    }));
-    console.log("Form State", formState);
-  };
-
-  const handleSelectAll = (event) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      checkedModules: event.target.checked ? modules : [],
+      package: {
+        ...prevState.package,
+        [name]: value,
+      },
     }));
   };
 
   const handlePlanChange = (event) => {
-    setFormState((prevState) => ({ ...prevState, type: event.target.value }));
+    setFormState((prevState) => ({
+      ...prevState,
+      package: {
+        ...prevState.package,
+        type: event.target.value,
+      },
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const form = new FormData();
-    Object.keys(formState).forEach((key) => {
-      form.append(key, formState[key]);
-    });
+    const finalFormState = {
+      ...formState,
+      package_details: packageDetails,
+    };
 
-    const response = await MainApi.post("/api/packages/", formState, {
+    const response = await MainApi.post("/api/packages/", finalFormState, {
       headers: {
         Authorization: `Token ${token}`,
       },
@@ -171,9 +163,14 @@ const CreatePackage = () => {
 
   return (
     <Grid container sx={{ padding: 3 }}>
+      {/* Form fields for package data */}
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
+            <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
+              Add Package
+            </Typography>
+
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
               Add Package
             </Typography>
@@ -192,7 +189,7 @@ const CreatePackage = () => {
                     row
                     aria-label="package-type"
                     name="row-radio-buttons-group"
-                    value={formState.type}
+                    value={formState.package.type}
                     onChange={handlePlanChange}
                   >
                     <Box
@@ -204,9 +201,9 @@ const CreatePackage = () => {
                         alignItems: "center",
                         marginRight: 2,
                         bgcolor:
-                          formState.type === "free" ? "#e3f2fd" : "transparent",
+                          formState.package.type === "free" ? "#e3f2fd" : "transparent",
                         borderColor:
-                          formState.type === "free" ? "#2196f3" : "#ccc",
+                          formState.package.type === "free" ? "#2196f3" : "#ccc",
                       }}
                     >
                       <FormControlLabel
@@ -238,9 +235,9 @@ const CreatePackage = () => {
                         display: "flex",
                         alignItems: "center",
                         bgcolor:
-                          formState.type === "paid" ? "#e3f2fd" : "transparent",
+                          formState.package.type === "paid" ? "#e3f2fd" : "transparent",
                         borderColor:
-                          formState.type === "paid" ? "#2196f3" : "#ccc",
+                          formState.package.type === "paid" ? "#2196f3" : "#ccc",
                       }}
                     >
                       <FormControlLabel
@@ -269,25 +266,17 @@ const CreatePackage = () => {
               </Grid>
             </Grid>
 
-            <Divider sx={{ my: 2 }} />
+
+
+
+
+
+
+
 
             <Grid container spacing={2} mt={2}>
-              <Grid
-                item
-                xs={12}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Grid
-                  container
-                  spacing={2}
-                  sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
-                  }}
-                >
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
                   <Grid item xs={12} sm={3}>
                     <CustomLabel htmlFor="name" required>
                       Package Name
@@ -299,7 +288,7 @@ const CreatePackage = () => {
                       type="text"
                       required
                       fullWidth
-                      value={formState.name}
+                      value={formState.package.name}
                       onChange={handleInputChange}
                     />
                   </Grid>
@@ -314,7 +303,7 @@ const CreatePackage = () => {
                       placeholder="e.g. 100"
                       required
                       fullWidth
-                      value={formState.max_admin}
+                      value={formState.package.max_admin}
                       onChange={handleInputChange}
                     />
                   </Grid>
@@ -328,7 +317,7 @@ const CreatePackage = () => {
                       type="number"
                       placeholder="e.g. 100"
                       fullWidth
-                      value={formState.max_employees}
+                      value={formState.package.max_employees}
                       onChange={handleInputChange}
                     />
                   </Grid>
@@ -342,7 +331,7 @@ const CreatePackage = () => {
                       type="number"
                       placeholder="e.g. 500"
                       fullWidth
-                      value={formState.setup_fees}
+                      value={formState.package.setup_fees}
                       onChange={handleInputChange}
                     />
                   </Grid>
@@ -350,7 +339,9 @@ const CreatePackage = () => {
               </Grid>
             </Grid>
 
-            {formState.type === "paid" && (
+
+            
+            {formState.package.type === "paid" && (
               <>
                 <Divider sx={{ my: 2 }} />
                 <Grid container spacing={2}>
@@ -359,7 +350,7 @@ const CreatePackage = () => {
                       Payment Gateway Plans
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={12}>
+                  <Grid item xs={12}>
                     <Grid container spacing={2} mt={2}>
                       <Grid item xs={12} sm={4}>
                         <CustomLabel htmlFor="monthlyplanprice" required>
@@ -368,11 +359,10 @@ const CreatePackage = () => {
                         <CustomTextField
                           id="monthlyplanprice"
                           name="monthly_price"
-                          placeholder=""
                           type="number"
                           required
                           fullWidth
-                          value={formState.monthly_price}
+                          value={formState.package.monthly_price}
                           onChange={handleInputChange}
                         />
                       </Grid>
@@ -384,25 +374,23 @@ const CreatePackage = () => {
                           id="quarterlyplanprice"
                           name="quarterly_price"
                           type="number"
-                          placeholder=""
                           required
                           fullWidth
-                          value={formState.quarterly_price}
+                          value={formState.package.quarterly_price}
                           onChange={handleInputChange}
                         />
                       </Grid>
                       <Grid item xs={12} sm={4}>
                         <CustomLabel htmlFor="annualprice" required>
-                          Anually Plan Price
+                          Annual Plan Price
                         </CustomLabel>
                         <CustomTextField
                           id="annualprice"
                           name="annual_price"
                           type="number"
-                          placeholder=""
                           required
                           fullWidth
-                          value={formState.annual_price}
+                          value={formState.package.annual_price}
                           onChange={handleInputChange}
                         />
                       </Grid>
@@ -411,132 +399,82 @@ const CreatePackage = () => {
                 </Grid>
               </>
             )}
-            {/* <Divider sx={{ my: 2 }} />
+             <Divider sx={{ my: 2 }} />
 
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom>
-                  Select Modules for this package
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        onChange={handleSelectAll}
-                        checked={formState.modules.length === modules.length}
-                      />
-                    }
-                    label="Select All"
-                  />
-                </FormGroup>
-              </Grid>
-
-              <Grid
-                container
-                spacing={2}
-                sx={{ width: "900px", margin: "20px" }}
-              >
-                {modulesData?.results.map((row, index) => (
-                  <Grid item xs={12} sm={6} md={2} key={index}>
-                    <FormControlLabel
-                      control={<Checkbox />}
-                      label={row?.name}
-                      onChange={handleCheckboxChange}
-                      value={row?.id}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Grid>  */}
-
-            <Divider sx={{ my: 2 }} />
-
-            {/* Main Menu List */}
-            <ul>
-              {menus.map((menu) => (
-                <li key={menu.id}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox checked={checkedItems[menu.name] || false} />
-                    }
-                    label={menu.name}
-                    name={menu.name}
-                    onChange={handleMainMenuChange}
-                  />
-
-                  {/* Submenu for each menu */}
-                  {checkedItems[menu.name] &&
-                    submenus
-                      .filter((submenu) => submenu.menu === menu.id)
-                      .map((submenu) => (
-                        <ul
-                          key={submenu.id}
-                          style={{ paddingLeft: "40px", listStyleType: "none" }}
-                        >
-                          <li>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={
-                                    checkedSubmenus[submenu.name] || false
-                                  }
-                                  onChange={handleSubmenuChange}
-                                  name={submenu.name}
-                                />
-                              }
-                              label={submenu.name}
+           <Divider sx={{ my: 2 }} />
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                {/* Add your form inputs like name, type, price, etc. */}
+                <Grid item xs={12}>
+                  <Typography sx={{ fontSize: "15px" }}>
+                    Select Menus and Submenus
+                  </Typography>
+                  <ul>
+                    {menus.map((menu) => (
+                      <li key={menu.id}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={checkedItems[menu.name] || false}
+                              onChange={handleMainMenuChange}
+                              name={menu.name}
                             />
-                          </li>
-                        </ul>
-                      ))}
-                </li>
-              ))}
-            </ul>
+                          }
+                          label={menu.name}
+                        />
+                        {checkedItems[menu.name] &&
+                          submenus
+                            .filter((submenu) => submenu.menu === menu.id)
+                            .map((submenu) => (
+                              <ul
+                                key={submenu.id}
+                                style={{
+                                  paddingLeft: "40px",
+                                  listStyleType: "none",
+                                }}
+                              >
+                                <li>
+                                  <FormControlLabel
+                                    control={
+                                      <Checkbox
+                                        checked={
+                                          checkedSubmenus[submenu.name] || false
+                                        }
+                                        onChange={(e) =>
+                                          handleSubmenuChange(e, menu.id)
+                                        }
+                                        name={submenu.name}
+                                      />
+                                    }
+                                    label={submenu.name}
+                                  />
+                                </li>
+                              </ul>
+                            ))}
+                      </li>
+                    ))}
+                  </ul>
+                </Grid>
+              </Grid>
 
-            <Divider sx={{ my: 2 }} />
-
-            <Grid item xs={12} sm={12} md={12}>
+              <Grid item xs={12}>
               <CustomLabel htmlFor="description">Description</CustomLabel>
               <CustomTextField
                 id="description"
                 name="description"
                 placeholder="e.g. description"
                 multiline
-                // rows={2}
                 required
                 fullWidth
-                value={formState.description}
+                value={formState.package.description}
                 onChange={handleInputChange}
               />
-            </Grid>
+            </Grid><br></br>
 
-            <Grid
-              item
-              sx={{
-                marginTop: 3,
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                }}
-                onClick={handleSubmit}
-              >
-                Submit
+              <Button type="submit" variant="contained">
+                Save Package
               </Button>
-            </Grid>
+            </form>
           </CardContent>
         </CustomCard>
       </Grid>

@@ -17,6 +17,7 @@ import {
   TableFooter,
   TablePagination,
   FormControl,
+  TextField 
 } from "@mui/material";
 import {
   Delete as DeleteIcon,
@@ -27,13 +28,17 @@ import CustomLabel from "../CustomLabel";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-import { DateRangePicker } from "@nextui-org/date-picker";
-
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
 const ScheduleOrder = () => {
+  const [startDate, setStartDate] = useState(dayjs(null));
+  const [endDate, setEndDate] = useState(dayjs(null));
   const router = useRouter();
 
   const createOrder = () => {
@@ -58,13 +63,19 @@ const ScheduleOrder = () => {
     },
   ];
 
+  const handleStartDateChange = (newValue) => {
+    setStartDate(newValue);
+  };
+
+  const handleEndDateChange = (newValue) => {
+    setEndDate(newValue);
+  };
+
   return (
     <Grid container spacing={2} p={3}>
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-              <Typography
+       <Grid item xs={12}>
+        <CustomCard padding="15px">
+        <Typography
                 sx={{
                   fontWeight: "600",
                   fontSize: "20px",
@@ -75,43 +86,73 @@ const ScheduleOrder = () => {
                 }}
               >
                 Schedule Orders
-              </Typography>
-            </Grid>
-           
-          </Grid>
-        </CustomCard>
-      </Grid>
-
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
+              </Typography><br></br>
           <Grid
             container
             spacing={1}
             justifyContent="space-between"
             alignItems="center"
             >           
-            <Grid item xs={12} sm={6} style={{ backgroundColor: "#fff" }}>
-              <CustomLabel htmlFor="dateRange" required>
-                Date Range
-              </CustomLabel>
-              <DateRangePicker 
-                label="Stay duration" 
-                visibleMonths={2} 
-                style={{            
-                  backgroundColor: '#fff',
-                }}
-                popoverProps={{
-                  style: {
-                    backgroundColor: '#fff', 
-                  },
-                }}
-              />
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                
+                <DatePicker
+                  label="Start Date"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+                          {
+                            borderColor: "#212121",
+                            height: "55px",
+                          },
+                        "& .MuiFormLabel-root.Mui-error": {
+                          color: "#212121",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
+             
+                <DatePicker
+                  label="End Date"
+                  value={endDate}
+                  onChange={handleEndDateChange}                 
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+                          {
+                            borderColor: "#212121",
+                            height: "55px",
+                          },
+                        "& .MuiFormLabel-root.Mui-error": {
+                          color: "#212121",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Button
                 sx={{
-                  marginTop: "24px",
-                  padding: "8px 16px",
+                
+                  padding: "14px 16px",
                   fontSize: "14px",
                   fontWeight: "bold",
                   backgroundColor: "#405189",
