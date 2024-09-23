@@ -22,6 +22,7 @@ export const appreciations = '/api/appreciations/';
 export const awards = '/api/awards/';
 export const holidays = '/api/holidays/';
 export const menu = '/api/menu/';
+export const role = '/api/role/';
 export const submenu = '/api/submenu/';
 export const get_notice_users = '/api/specific-users/';
 export const get_username_suggestions = '/api/username-suggestions/';

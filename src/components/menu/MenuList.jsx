@@ -210,7 +210,7 @@ const MenuList = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data?.results.map((row, index) => (
+                    {data?.map((row, index) => (
                       <TableRow key={index + 1}>
                         <DataCell className={poppins.className}>
                           {index + 1}{" "}

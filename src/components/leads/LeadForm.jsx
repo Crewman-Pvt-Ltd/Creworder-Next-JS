@@ -314,52 +314,77 @@ const LeadForm = () => {
               </Grid>
             )}
             {fields.productEnabled && (
-              <Grid item xs={12}>
-                <Select
-                  labelId="product-select-label"
-                  id="product"
-                  name="product"
-                  value={inputValues.product}
-                  onChange={handleInputChange("product")}
-                  displayEmpty
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
-                  fullWidth
-                >
-                  <MenuItem value="" disabled>
-                    Select Product
-                  </MenuItem>
-                  <MenuItem value="1">Weight Loss</MenuItem>
-                  <MenuItem value="2">Weight Gain</MenuItem>
-                </Select>
-                {errors.product && (
-                  <FormHelperText>{errors.product}</FormHelperText>
-                )}
-              </Grid>
+             <Grid item xs={12}>
+             <Select
+               labelId="product-select-label"
+               id="product"
+               name="product"
+               value={inputValues.product}
+               onChange={handleInputChange("product")}
+               displayEmpty
+               fullWidth
+               sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
+               MenuProps={{
+                 PaperProps: {
+                   style: {
+                     maxHeight: 200, // Adjust the dropdown's max height
+                     overflowY: 'auto', // Enable vertical scrolling
+                   },
+                 },
+               }}
+             >
+               <MenuItem value="" disabled>
+                 Select Product
+               </MenuItem>
+               <MenuItem value="1">Weight Loss</MenuItem>
+               <MenuItem value="2">Weight Gain</MenuItem>
+               <MenuItem value="3">Muscle Building</MenuItem>
+               <MenuItem value="4">Energy Boost</MenuItem>
+               <MenuItem value="5">Vitamins & Supplements</MenuItem>
+               <MenuItem value="6">Protein Powders</MenuItem>
+             </Select>
+             {errors.product && (
+               <FormHelperText>{errors.product}</FormHelperText>
+             )}
+           </Grid>
+           
             )}
             {fields.sourceEnabled && (
-              <Grid item xs={12} error={!!errors.source}>
-                <Select
-                  labelId="source-select-label"
-                  id="source"
-                  value={inputValues.source}
-                  onChange={handleInputChange("source")}
-                  displayEmpty
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
-                  fullWidth
-                >
-                  <MenuItem value="" disabled>
-                    Select Lead Source
-                  </MenuItem>
-                  <MenuItem value="1">Facebook</MenuItem>
-                  <MenuItem value="2">Instagram</MenuItem>
-                  <MenuItem value="3">Google</MenuItem>
-                  <MenuItem value="4">Youtube</MenuItem>
-                  <MenuItem value="5">LinkedIn</MenuItem>
-                </Select>
-                {errors.source && (
-                  <FormHelperText>{errors.source}</FormHelperText>
-                )}
-              </Grid>
+            <Grid item xs={12} error={!!errors.source}>
+            <Select
+              labelId="source-select-label"
+              id="source"
+              value={inputValues.source}
+              onChange={handleInputChange("source")}
+              displayEmpty
+              fullWidth
+              sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 200, // Adjust this to control the dropdown height
+                    overflowY: 'auto', // Enable vertical scrolling
+                  },
+                },
+              }}
+            >
+              <MenuItem value="" disabled>
+                Select Lead Source
+              </MenuItem>
+              <MenuItem value="1">Facebook</MenuItem>
+              <MenuItem value="2">Instagram</MenuItem>
+              <MenuItem value="3">Google</MenuItem>
+              <MenuItem value="4">Youtube</MenuItem>
+              <MenuItem value="5">LinkedIn</MenuItem>
+              <MenuItem value="6">Twitter</MenuItem>
+              <MenuItem value="7">Snapchat</MenuItem>
+              <MenuItem value="8">Pinterest</MenuItem>
+            </Select>
+            {errors.source && (
+              <FormHelperText>{errors.source}</FormHelperText>
+            )}
+          </Grid>
+          
             )}
           </Grid>
 
