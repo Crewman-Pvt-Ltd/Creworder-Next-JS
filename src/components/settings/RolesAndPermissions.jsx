@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomCard from "../CustomCard";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import {
@@ -21,6 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/system";
+import { fetchSideBarData } from "@/utils/sideBarData";
 
 const tableHeadCellStyles = {
   fontWeight: "bold",
@@ -39,7 +40,7 @@ const StyledTableContainer = styled(TableContainer)({
 const RolesAndPermissions = () => {
   const { permissionsData, permissionLoading } = usePermissions();
   const [activeTab, setActiveTab] = useState(0);
-
+  const [sideBarDataList, setsideBarDataList] = useState([]);
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
@@ -51,13 +52,46 @@ const RolesAndPermissions = () => {
     ? [{ label: "Modules", index: 0 }]
     : isAdmin
     ? [
-        { label: "Order Editing", index: 0 },
-        { label: "Dashboard", index: 1 },
-        { label: "Settings", index: 2 },
-        { label: "Product", index: 3 },
-        { label: "Order Status", index: 4 },
+        { label: "Role", index: 0 },
+        { label: "Order Editing", index: 1 },
+        { label: "Dashboard", index: 2 },
+        { label: "Settings", index: 3 },
+        { label: "Product List", index: 4 },
+        { label: "Order Status", index: 5 },
       ]
-    : []; // Handle other roles or cases if needed
+    : [];
+
+  const fetchData = async () => {
+    try {
+      const data = await fetchSideBarData();
+      console.log(data);
+      let newSideBarData = [];
+      Object.entries(data).forEach(([menu, items]) => {
+        if (!menu.includes("_icon")) {
+          if (Array.isArray(items)) {
+            items.forEach((item) => {
+              Object.entries(item).forEach(([key, value]) => {
+                newSideBarData.push({ name: key });
+              });
+            });
+          } else {
+            newSideBarData.push({ name: menu });
+          }
+        }
+      });
+      setsideBarDataList(newSideBarData);
+    } catch (error) {
+      console.error("Error fetching sidebar data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log(sideBarDataList);
+  }, [sideBarDataList]);
 
   return (
     <CustomCard>
@@ -195,7 +229,66 @@ const RolesAndPermissions = () => {
           </StyledTableContainer>
         )}
 
-        {activeTab === 0 && isAdmin && (
+{activeTab === 0 && isAdmin && (
+  <StyledTableContainer>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell sx={tableHeadCellStyles}>Permissions</TableCell>
+          <TableCell sx={tableHeadCellStyles}>Create</TableCell>
+          <TableCell sx={tableHeadCellStyles}>Update</TableCell>
+          <TableCell sx={tableHeadCellStyles}>View</TableCell>
+          <TableCell sx={tableHeadCellStyles}>Delete</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {sideBarDataList.map((permission, index) => (
+          <TableRow key={index}>
+            <TableCell>{permission.name}</TableCell>
+            <TableCell>
+              <FormControl fullWidth sx={{ width: 120 }}> {/* Adjust width here */}
+                <Select defaultValue="All" size="small">
+                  <MenuItem value="All">All</MenuItem>
+                  <MenuItem value="Owned">Owned</MenuItem>
+                  <MenuItem value="none">None</MenuItem>
+                </Select>
+              </FormControl>
+            </TableCell>
+            <TableCell>
+              <FormControl fullWidth sx={{ width: 120 }}> {/* Adjust width here */}
+                <Select defaultValue="All" size="small">
+                  <MenuItem value="All">All</MenuItem>
+                  <MenuItem value="Owned">Owned</MenuItem>
+                  <MenuItem value="none">None</MenuItem>
+                </Select>
+              </FormControl>
+            </TableCell>
+            <TableCell>
+              <FormControl fullWidth sx={{ width: 120 }}> {/* Adjust width here */}
+                <Select defaultValue="All" size="small">
+                  <MenuItem value="All">All</MenuItem>
+                  <MenuItem value="Owned">Owned</MenuItem>
+                  <MenuItem value="none">None</MenuItem>
+                </Select>
+              </FormControl>
+            </TableCell>
+            <TableCell>
+              <FormControl fullWidth sx={{ width: 120 }}> {/* Adjust width here */}
+                <Select defaultValue="All" size="small">
+                  <MenuItem value="All">All</MenuItem>
+                  <MenuItem value="Owned">Owned</MenuItem>
+                  <MenuItem value="none">None</MenuItem>
+                </Select>
+              </FormControl>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </StyledTableContainer>
+)}
+
+        {activeTab === 1 && isAdmin && (
           <StyledTableContainer>
             <Table>
               <TableHead>
@@ -241,7 +334,7 @@ const RolesAndPermissions = () => {
             </Table>
           </StyledTableContainer>
         )}
-        {activeTab === 1 && isAdmin && (
+        {activeTab === 2 && isAdmin && (
           <StyledTableContainer>
             <Table>
               <TableHead>
@@ -278,7 +371,7 @@ const RolesAndPermissions = () => {
         )}
 
         {/* Tab Content for "Dashboard" */}
-        {activeTab === 2 && isAdmin && (
+        {activeTab === 3 && isAdmin && (
           <StyledTableContainer>
             <Table>
               <TableHead>
@@ -344,7 +437,7 @@ const RolesAndPermissions = () => {
         )}
 
         {/* Tab Content for "Settings" */}
-        {activeTab === 3 && isAdmin && (
+        {activeTab === 4 && isAdmin && (
           <StyledTableContainer>
             <Table>
               <TableHead>
