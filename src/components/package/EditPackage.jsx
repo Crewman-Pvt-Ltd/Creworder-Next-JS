@@ -15,7 +15,6 @@ import {
   CardContent,
   Divider,
   Box,
-  FormGroup,
   Checkbox,
   FormControl,
   RadioGroup,
@@ -23,7 +22,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
-
 const EditPackage = () => {
   const { permissionsData } = usePermissions();
   const router = useRouter();
@@ -396,6 +394,22 @@ const EditPackage = () => {
                 </ul>
               </Grid>
             </Grid>
+
+
+
+            <Grid item xs={12}>
+              <CustomLabel htmlFor="description">Description</CustomLabel>
+              <CustomTextField
+                id="description"
+                name="description"
+                placeholder="e.g. description"
+                multiline
+                required
+                fullWidth
+                value={formState.description}
+                onChange={handleInputChange}
+              />
+            </Grid><br></br>
 
             <Divider sx={{ my: 2 }} />
 
