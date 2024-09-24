@@ -170,13 +170,7 @@ const CreatePackage = () => {
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
               Add Package
             </Typography>
-
-            <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Add Package
-            </Typography>
-
             <Divider sx={{ my: 2 }} />
-
             <Grid container spacing={2} sx={{ marginTop: 3 }}>
               <Grid item xs={12}>
                 <Typography sx={{ fontSize: "15px" }}>
@@ -265,14 +259,6 @@ const CreatePackage = () => {
                 </FormControl>
               </Grid>
             </Grid>
-
-
-
-
-
-
-
-
 
             <Grid container spacing={2} mt={2}>
               <Grid item xs={12}>

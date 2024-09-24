@@ -29,8 +29,8 @@ import {
   CheckCircle,
   Cancel,
 } from "@mui/icons-material";
-import MainApi from "@/api-manage/MainApi"; 
-import { getToken } from "@/utils/getToken"; 
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
 import { Poppins } from "next/font/google";
 
 const poppins = Poppins({
@@ -67,15 +67,18 @@ const CompanyList = () => {
         throw new Error("No authentication token found.");
       }
 
-      const response = await MainApi.delete(`/api/companies/${companyToDelete}`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      const response = await MainApi.delete(
+        `/api/companies/${companyToDelete}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
 
       if (response.status === 204) {
         console.log("Company deleted successfully");
-        refetch(); 
+        refetch();
       } else {
         console.error("Failed to delete the company");
       }
@@ -152,7 +155,8 @@ const CompanyList = () => {
                       textTransform: "capitalize",
                       color: "black",
                       marginLeft: "30px",
-                    }}className={poppins.className}
+                    }}
+                    className={poppins.className}
                   >
                     Company List
                   </Typography>
@@ -172,7 +176,8 @@ const CompanyList = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: 1,
-                    }}className={poppins.className}
+                    }}
+                    className={poppins.className}
                   >
                     <AddIcon sx={{ fontSize: 15 }} />
                     Add Company
@@ -191,19 +196,35 @@ const CompanyList = () => {
                 <TableHead>
                   <TableRow>
                     <HeaderCell className={poppins.className}>ID</HeaderCell>
-                    <HeaderCell className={poppins.className}>Company Name</HeaderCell>
-                    <HeaderCell className={poppins.className}>Package Name</HeaderCell>
-                    <HeaderCell className={poppins.className}>Details</HeaderCell>
-                    <HeaderCell className={poppins.className}>Created Date</HeaderCell>
-                    <HeaderCell className={poppins.className}>Action</HeaderCell>
+                    <HeaderCell className={poppins.className}>
+                      Company Name
+                    </HeaderCell>
+                    <HeaderCell className={poppins.className}>
+                      Package Name
+                    </HeaderCell>
+                    <HeaderCell className={poppins.className}>
+                      Details
+                    </HeaderCell>
+                    <HeaderCell className={poppins.className}>
+                      Created Date
+                    </HeaderCell>
+                    <HeaderCell className={poppins.className}>
+                      Action
+                    </HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.results.map((row, index) =>(
+                  {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
-                      <DataCell className={poppins.className}>{index + 1}</DataCell>
-                      <DataCell className={poppins.className}>{row.name}</DataCell>
-                      <DataCell className={poppins.className}>{row.package_name}</DataCell>
+                      <DataCell className={poppins.className}>
+                        {index + 1}
+                      </DataCell>
+                      <DataCell className={poppins.className}>
+                        {row.name}
+                      </DataCell>
+                      <DataCell className={poppins.className}>
+                        {row.package_name}
+                      </DataCell>
                       <DataCell className={poppins.className}>
                         <Typography
                           sx={{
@@ -211,7 +232,8 @@ const CompanyList = () => {
                             color: "black",
                             whiteSpace: "nowrap",
                             fontWeight: "500",
-                          }}className={poppins.className}
+                          }}
+                          className={poppins.className}
                         >
                           Register Date: {formatDate(row.created_at)}
                           {/* <br />
@@ -220,7 +242,9 @@ const CompanyList = () => {
                           Total Users: {row.total_user_count}
                         </Typography>
                       </DataCell>
-                      <DataCell className={poppins.className}>{formatDate(row.created_at)}</DataCell>
+                      <DataCell className={poppins.className}>
+                        {formatDate(row.created_at)}
+                      </DataCell>
                       <TableCell>
                         <IconButton
                           onClick={() => handleView(row)}

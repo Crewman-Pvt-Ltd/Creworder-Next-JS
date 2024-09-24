@@ -48,6 +48,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { baseApiUrl } from "@/api-manage/ApiRoutes";
 import { getToken } from "@/utils/getToken";
 import { fetchSideBarData } from "@/utils/sideBarData";
+import DashboardsIcon from '@mui/icons-material/Dashboard';
 import axios from "axios";
 const HoverableNavItem = ({
   isOpen,
@@ -170,7 +171,7 @@ const Sidebar = ({ isOpen, type }) => {
     StoreIcon: <StoreIcon />,
     LocationOnIcon: <LocationOnIcon />,
     EventNoteIcon: <EventNoteIcon />,
-    NotificationsIcon: <NotificationsIcon />,
+    DashboardsIcon: <DashboardsIcon />,
     NotificationsIcon: <NotificationsIcon />,
     NotificationsIcon: <NotificationsIcon />,
     NotificationsIcon: <NotificationsIcon />,
