@@ -304,7 +304,7 @@ const CreateCompanyLayout = () => {
                     ) : packageError ? (
                       <MenuItem disabled>Error fetching packages</MenuItem>
                     ) : (
-                      data.results.map((packageItem) => (
+                      data.map((packageItem) => (
                         <MenuItem key={packageItem.id} value={packageItem.id}>
                           {packageItem.name}
                         </MenuItem>
