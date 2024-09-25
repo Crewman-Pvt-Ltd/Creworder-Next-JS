@@ -17,6 +17,7 @@ import {
   TableFooter,
   TablePagination,
   FormControl,
+  TextField
 } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import CallIcon from "@mui/icons-material/Call";
@@ -25,7 +26,10 @@ import CustomTextField from "../CustomTextField";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-import { DateRangePicker } from "@nextui-org/date-picker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { baseApiUrl } from "@/api-manage/ApiRoutes";
 import { getToken } from "@/utils/getToken";
 import axios from "axios";
@@ -37,6 +41,8 @@ const poppins = Poppins({
 const InvoiceManagementList = () => {
   const token = getToken();
   const router = useRouter();
+  const [startDate, setStartDate] = useState(dayjs(null));
+  const [endDate, setEndDate] = useState(dayjs(null));
   const [rowData, setRowData] = useState([]);
 
   const handleRedirect = (orderId) => {
@@ -127,6 +133,14 @@ const InvoiceManagementList = () => {
     },
   ];
 
+  const handleStartDateChange = (newValue) => {
+    setStartDate(newValue);
+  };
+
+  const handleEndDateChange = (newValue) => {
+    setEndDate(newValue);
+  };
+
   return (
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
@@ -196,7 +210,7 @@ const InvoiceManagementList = () => {
                 value={product}
                 onChange={handleproduct}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -217,7 +231,7 @@ const InvoiceManagementList = () => {
                 value={payment}
                 onChange={handlepayment}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -238,7 +252,7 @@ const InvoiceManagementList = () => {
                 value={agent}
                 onChange={handleagent}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -258,7 +272,7 @@ const InvoiceManagementList = () => {
                 value={agentname}
                 onChange={handleagentname}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -279,7 +293,7 @@ const InvoiceManagementList = () => {
                 value={teamlead}
                 onChange={handleteamlead}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -290,7 +304,7 @@ const InvoiceManagementList = () => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <CustomLabel htmlFor="state">State</CustomLabel>
               <Select
                 labelId="state"
@@ -299,7 +313,7 @@ const InvoiceManagementList = () => {
                 value={state}
                 onChange={handlestate}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -310,7 +324,7 @@ const InvoiceManagementList = () => {
                 <MenuItem value={3}>West Bengal</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <CustomLabel htmlFor="Order Status">Order Status</CustomLabel>
               <Select
                 labelId="Order Status"
@@ -319,7 +333,7 @@ const InvoiceManagementList = () => {
                 value={status}
                 onChange={handlestatus}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -331,21 +345,62 @@ const InvoiceManagementList = () => {
                 <MenuItem value={4}>Delete</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
-              <CustomLabel htmlFor="dateRange">Date Range</CustomLabel>
-              <DateRangePicker
-                visibleMonths={2}
-                style={{
-                  backgroundColor: "#fff",
-                }}
-                popoverProps={{
-                  style: {
-                    backgroundColor: "#fff",
-                  },
-                }}
-              />
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <CustomLabel htmlFor="Start Date">Start Date</CustomLabel>
+                <DatePicker
+                  label="Start Date"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+                          {
+                            borderColor: "#212121",
+                            height: "55px",
+                          },
+                        "& .MuiFormLabel-root.Mui-error": {
+                          color: "#212121",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={AdapterDayjs} >
+              <CustomLabel htmlFor="End Date">End Date</CustomLabel>
+                <DatePicker
+                  label="End Date"
+                  value={endDate}
+                  onChange={handleEndDateChange}                 
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+                          {
+                            borderColor: "#212121",
+                            height: "55px",
+                          },
+                        "& .MuiFormLabel-root.Mui-error": {
+                          color: "#212121",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
               <Button
                 onClick={getOrders}
                 sx={{
