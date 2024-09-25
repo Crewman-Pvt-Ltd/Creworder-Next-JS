@@ -1,10 +1,10 @@
-import React from "react";
+"use client";
+import { React, useEffect, useState } from "react";
 import {
   Grid,
   Card,
   CardContent,
   Divider,
-
   TableContainer,
   Table,
   TableHead,
@@ -16,14 +16,18 @@ import {
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import { Poppins } from "next/font/google";
-
+import { baseApiUrl } from "@/api-manage/ApiRoutes";
+import { getToken } from "@/utils/getToken";
+import swal from "sweetalert";
+import axios from "axios";
+const token = getToken();
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
-
-const RolesList = () => { 
-
+const RolesList = () => {
+  const [roleList, setRoleList] = useState([]);
+  const [forDeleteId, setforDeleteId] = useState();
   const HeaderCell = (props) => (
     <TableCell
       sx={{
@@ -50,12 +54,86 @@ const RolesList = () => {
     />
   );
 
+  const fetchRole = async () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}auth-role-group/`,
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        setRoleList(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchRole();
+  }, []);
+
+  const handleDeleteClick = (id) => {
+    sweetAlert({
+      title: "Are you sure?",
+      text: "Are you sure that you want to delete this role?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteRole(id);
+      }
+    });
+  };
+  const deleteRole = async (id) => {
+    let data = "";
+    let config = {
+      method: "delete",
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}auth-role-group/${id}/`,
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        sweetAlert(
+          "Deleted!",
+          "The role has been deleted successfully!",
+          "success"
+        );
+        fetchRole();
+      })
+      .catch((error) => {
+        sweetAlert(
+          "Error",
+          "Failed to delete the role. Please try again.",
+          "error"
+        );
+      });
+  };
+
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <Card>
           <CardContent>
-            <Grid container display="flex" justifyContent="space-between" alignItems="center">
+            <Grid
+              container
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography
                 sx={{
                   fontWeight: "600",
@@ -69,49 +147,49 @@ const RolesList = () => {
                 Roles
               </Typography>
             </Grid>
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 1 }} />
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
                     <HeaderCell className={poppins.className}>ID</HeaderCell>
                     <HeaderCell className={poppins.className}>Roles</HeaderCell>
-                    <HeaderCell className={poppins.className}>Remark</HeaderCell>
-                 
-                    <HeaderCell className={poppins.className}>Action</HeaderCell>
+                    <HeaderCell className={poppins.className}>
+                      Action
+                    </HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                 
+                  {roleList.length === 0 ? (
                     <TableRow>
-                      <DataCell className={poppins.className}>1</DataCell>
-                      <DataCell
-                        className={poppins.className}
-                       
-                      >
-                       wsdweded 
-                      </DataCell>
-                      <DataCell className={poppins.className}>asdasd</DataCell> {/* Assuming data field */}
-                      
-
-                      <TableCell>
-                        <IconButton
-                         
-                          aria-label="edit"
-                          sx={{ color: "green" }}
-                        >
-                          <Edit />
-                        </IconButton>
-                        <IconButton
-                        
-                          aria-label="delete"
-                          sx={{ color: "red" }}
-                        >
-                          <Delete />
-                        </IconButton>
+                      <TableCell colSpan={3} align="center">
+                        Role nhi he
                       </TableCell>
                     </TableRow>
-               
+                  ) : (
+                    roleList.map((roledata, index) => (
+                      <TableRow key={index}>
+                        <DataCell className={poppins.className}>
+                          {index + 1}
+                        </DataCell>
+                        <DataCell className={poppins.className}>
+                          {roledata.group.name}
+                        </DataCell>
+                        <TableCell>
+                          <IconButton aria-label="edit" sx={{ color: "green" }}>
+                            <Edit />
+                          </IconButton>
+                          <IconButton
+                            aria-label="delete"
+                            sx={{ color: "red" }}
+                            onClick={() => handleDeleteClick(roledata.id)}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
