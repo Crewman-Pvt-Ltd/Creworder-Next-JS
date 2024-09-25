@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
+import CustomLabel from "../CustomLabel";
 import CustomCard from "../CustomCard";
 import {
   Typography,
@@ -328,7 +328,7 @@ const EditCompany = () => {
                     ) : packageError ? (
                       <MenuItem disabled>Error fetching packages</MenuItem>
                     ) : (
-                      data.results.map((packageItem) => (
+                      data.map((packageItem) => (
                         <MenuItem key={packageItem.id} value={packageItem.id}>
                           {packageItem.name}
                         </MenuItem>
