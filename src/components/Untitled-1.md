@@ -28,6 +28,7 @@ reverce plan data expire
 6. 2.4 Order status - Same as products , agent can work on given order status.
 7. 2.5 Remove Setup Email from Email for 
 8. 2.6 Courier Service Change it to Courier Tracking Links
+
 <!--===================================================================================================================================-->
 Added Manage Tab in Sidebar
 
@@ -47,3 +48,25 @@ Bank Account DEtail , Admin and Superadmin(https://app.shiprocket.in/seller/home
 WhatsApp Integration(https://app.shiprocket.in/settings/notification-settings)
 MAnual msg integration(chat , payment links)
 --Sms integrations
+<!-- ===================================================Email templates=========================================================== -->
+ Pixels 
+ Meta 
+ 
+ 
+ 
+ --------------------Admin Templates----------------------------
+1) Signup Template / Registration 
+2) Query Template
+3) Forgot Password Template
+4) Ticket Raised Template
+5) Account Suspension/ Non Payment Templates
+----------------------Order Template---------------------------
+1) Placement
+2) New Order
+3) Login OTP
+4) Status Template
+
+----------------------Wallet Template---------------------------
+1) Fund Add
+2) Report Template
+3) Export Template
