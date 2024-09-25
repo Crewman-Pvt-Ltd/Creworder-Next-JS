@@ -17,7 +17,7 @@ const CustomTextField = (props) => {
       sx={{
         '& .MuiInputBase-input': {
           padding: '6px 12px',
-          height: '25px',
+          height: '30px',
         },
         '& .MuiFormLabel-root': {
           lineHeight: 1.5, 

@@ -8,6 +8,7 @@ import {
   Select,
   MenuItem,
   Card,
+  TextField,
 } from "@mui/material";
 import { SketchPicker } from "react-color";
 import CustomCard from "../CustomCard";
@@ -20,7 +21,7 @@ import MainApi from "@/api-manage/MainApi";
 import useGetAllCategories from "@/api-manage/react-query/useGetAllCategories";
 import dynamic from "next/dynamic";
 import ColorPicker from "../ColorPicker"; // Import ColorPicker
-import { Box, InputBase } from '@mui/material';
+import { Box, InputBase } from "@mui/material";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 
@@ -125,7 +126,7 @@ const CreateProduct = () => {
                   onChange={handleInputChange(setProductName)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
-                /> 
+                />
               </Grid>
 
               <Grid item xs={12}>
@@ -178,27 +179,30 @@ const CreateProduct = () => {
                 </CustomLabel>
                 <Box
                   sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                    padding: '4px',
+                    display: "flex",
+                    alignItems: "center",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "4px",
                     fontFamily: poppins.style.fontFamily,
                   }}
                 >
                   <Box
                     sx={{
-                      backgroundColor: '#F1F3F4',
-                      padding: '8px 12px',
-                      borderRight: '1px solid #ccc',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      backgroundColor: "#F1F3F4",
+                      padding: "8px 12px",
+                      borderRight: "1px solid #ccc",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
                     <Typography
                       variant="body1"
-                      sx={{ color: 'grey', fontFamily: poppins.style.fontFamily }}
+                      sx={{
+                        color: "grey",
+                        fontFamily: poppins.style.fontFamily,
+                      }}
                     >
                       $
                     </Typography>
@@ -211,7 +215,7 @@ const CreateProduct = () => {
                     value={price}
                     onChange={handleInputChange(setPrice)}
                     sx={{
-                      paddingLeft: '12px',
+                      paddingLeft: "12px",
                       flexGrow: 1,
                       fontFamily: poppins.style.fontFamily,
                     }}
@@ -306,41 +310,44 @@ const CreateProduct = () => {
             variant="h6"
             sx={{ fontFamily: poppins.style.fontFamily, marginBottom: 2 }}
           >
-            Variation
+            Dimensions
           </Typography>
           <Divider sx={{ marginBottom: 2 }} />
-          <Grid item xs={12}>
-            <CustomLabel htmlFor="size" required>
-              Size
-            </CustomLabel>
-            <Select
-              labelId="size"
-              id="size"
-              name="size"
-              value={size}
-              onChange={handleInputChange(setSize)}
-              displayEmpty
-              sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-              fullWidth
-            >
-              <MenuItem value="" disabled>
-                Select Size
-              </MenuItem>
-              <MenuItem value="1">Single</MenuItem>
-              <MenuItem value="5">Pack Of Two</MenuItem>
-            </Select>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <CustomLabel htmlFor="size" required>
+                Size
+              </CustomLabel>
+              <CustomTextField
+                id="size"
+                placeholder="Size"
+                variant="outlined"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <CustomLabel htmlFor="width" required>
+                Width
+              </CustomLabel>
+              <CustomTextField
+                id="width"
+                placeholder="Width"
+                variant="outlined"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <CustomLabel htmlFor="height" required>
+                Height
+              </CustomLabel>
+              <CustomTextField
+                id="height"
+                placeholder="Height"
+                variant="outlined"
+                fullWidth
+              />
+            </Grid>
           </Grid>
-
-          <Grid item xs={12} sm={12} sx={{ marginTop: "10px" }}>
-            <CustomLabel htmlFor="product_color" required>
-              Color
-            </CustomLabel>
-            <ColorPicker
-              selectedColor={color}
-              onColorSelect={handleColorSelect}
-            />
-          </Grid>
-
           {/* Sidebar content can go here, like filters or additional navigation */}
         </Card>
 
