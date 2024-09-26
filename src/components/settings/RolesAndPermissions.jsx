@@ -24,7 +24,7 @@ import { styled } from "@mui/system";
 import { fetchSideBarData } from "@/utils/sideBarData";
 import { baseApiUrl } from "@/api-manage/ApiRoutes";
 import { getToken } from "@/utils/getToken";
-import swal from 'sweetalert';
+import swal from "sweetalert";
 import axios from "axios";
 
 const tableHeadCellStyles = {
@@ -42,16 +42,18 @@ const StyledTableContainer = styled(TableContainer)({
 });
 
 const RolesAndPermissions = () => {
+  const token = getToken();
   const { permissionsData, permissionLoading } = usePermissions();
   const [activeTab, setActiveTab] = useState(0);
   const [sideBarDataList, setsideBarDataList] = useState([]);
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
-  const [permissionJson, setPermissionJson] = useState({});
+  const [permissionList, setPermissionList] = useState([]);
+  const [permissionDict, setPermissionDict] = useState({});
   const isSuperAdmin = permissionsData?.role === "superadmin";
   const isAdmin = permissionsData?.role === "admin";
-  const [roleName, setRoleName] = useState('');
+  const [roleName, setRoleName] = useState("");
 
   const tabs = isSuperAdmin
     ? [{ label: "Modules", index: 0 }]
@@ -69,7 +71,6 @@ const RolesAndPermissions = () => {
   const fetchData = async () => {
     try {
       const data = await fetchSideBarData();
-      console.log(data);
       let newSideBarData = [];
       Object.entries(data).forEach(([menu, items]) => {
         if (!menu.includes("_icon")) {
@@ -94,58 +95,97 @@ const RolesAndPermissions = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log(sideBarDataList);
-  }, [sideBarDataList]);
+  useEffect(() => {}, [sideBarDataList]);
 
-  const makePermissionJson = async (name, action, value) => {
+  const makePermissionJson = async (id) => {
     try {
-      let updatedPermissions = { ...permissionJson };
-      if (updatedPermissions[name]) {
-        updatedPermissions[name][action] = value;
-      } else {
-        updatedPermissions[name] = { [action]: value };
-      }
-      setPermissionJson(updatedPermissions);
+      setPermissionList((prevItems) => [...prevItems, id]);
     } catch (error) {
       console.error("Error creating permission object:", error);
     }
+    console.log(permissionList);
   };
 
   const createRole = async () => {
-    const token = getToken();
     const data = {
       group: {
         name: roleName,
       },
-      permission_ids: permissionJson,
+      permission_ids: permissionList,
     };
-  
+
     const config = {
-      method: 'post',
+      method: "post",
       maxBodyLength: Infinity,
       url: `${baseApiUrl}auth-role-group/`,
       headers: {
-        'Authorization': `Token ${token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
       },
       data: data,
     };
-  
+
     try {
       const response = await axios.request(config);
-      swal("Created!", "You clicked the button!", "success")
-      console.log('Response Data:', response.data);
+      swal("Created!", "You clicked the button!", "success");
     } catch (error) {
-      console.log(error.response.data)
-      if(error.response.data.error){
+      console.log(error.response.data);
+      if (error.response.data.error) {
         sweetAlert("Oops...", `${error.response.data.error}`, "error");
-      }else{
+      } else {
         sweetAlert("Oops...", `${error.response.data.group.name[0]}`, "error");
       }
-      console.error('Error:', error.response ? error.response.data : error.message);
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
+
+  const getPermission = async (name) => {
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}permissions/${name}/`,
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    };
+    if (!(name in permissionDict)) {
+      try {
+        const response = await axios.request(config);
+        Object.values(response.data).forEach((value) => {
+          const action = value.name.includes("add")
+            ? "create"
+            : value.name.includes("change") || value.name.includes("chan own")
+            ? "update"
+            : value.name.includes("view") || value.name.includes("view own")
+            ? "view"
+            : value.name.includes("delete") || value.name.includes("delete own")
+            ? "delete"
+            : "extra";
+
+          if (action) {
+            setPermissionDict((prevState) => ({
+              ...prevState,
+              [name]: {
+                ...prevState[name],
+                [action]: {
+                  ...(prevState[name]?.[action] || {}),
+                  [value.name]: value.id,
+                },
+              },
+            }));
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching permissions:", error);
+      }
+    } else {
+      console.log('Key "name" exists in the object');
+    }
+  };
+
   return (
     <CustomCard>
       <CardContent>
@@ -155,7 +195,14 @@ const RolesAndPermissions = () => {
         {isAdmin && (
           <Grid container spacing={2} sx={{ mt: 2, mb: 2 }}>
             <Grid item xs={12} sm={12}>
-              <TextField label="Role Name" variant="outlined" fullWidth onChange={(event) => {setRoleName(event.target.value); }}/>
+              <TextField
+                label="Role Name"
+                variant="outlined"
+                fullWidth
+                onChange={(event) => {
+                  setRoleName(event.target.value);
+                }}
+              />
             </Grid>
           </Grid>
         )}
@@ -290,6 +337,7 @@ const RolesAndPermissions = () => {
                   <TableCell sx={tableHeadCellStyles}>View</TableCell>
                   <TableCell sx={tableHeadCellStyles}>Delete</TableCell>
                   <TableCell sx={tableHeadCellStyles}>Export</TableCell>
+                  <TableCell sx={tableHeadCellStyles}>Extra</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -302,15 +350,20 @@ const RolesAndPermissions = () => {
                           defaultValue="N"
                           size="small"
                           onChange={(event) =>
-                            makePermissionJson(
-                              permission.name,
-                              "create",
-                              event.target.value
-                            )
+                            makePermissionJson(event.target.value)
                           }
+                          onClick={() => getPermission(permission.name)}
                         >
-                          <MenuItem value="Y">YES</MenuItem>
                           <MenuItem value="N">NO</MenuItem>
+                          {permissionDict[permission.name] &&
+                            permissionDict[permission.name]["create"] &&
+                            Object.entries(
+                              permissionDict[permission.name]["create"]
+                            ).map(([key, value], index) => (
+                              <MenuItem key={index} value={value}>
+                                YES
+                              </MenuItem>
+                            ))}
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -320,16 +373,113 @@ const RolesAndPermissions = () => {
                           defaultValue="N"
                           size="small"
                           onChange={(event) =>
-                            makePermissionJson(
-                              permission.name,
-                              "update",
-                              event.target.value
-                            )
+                            makePermissionJson(event.target.value)
                           }
+                          onClick={() => getPermission(permission.name)}
                         >
-                          <MenuItem value="All">All</MenuItem>
-                          <MenuItem value="Owned">Owned</MenuItem>
                           <MenuItem value="N">None</MenuItem>
+                          {permissionDict[permission.name] &&
+                            permissionDict[permission.name]["update"] &&
+                            Object.entries(
+                              permissionDict[permission.name]["update"]
+                            ).map(([key, value], index) =>
+                              key.includes("own") ? (
+                                <MenuItem key={index} value={value}>
+                                  Owned
+                                </MenuItem>
+                              ) : (
+                                <MenuItem key={index} value={value}>
+                                  All
+                                </MenuItem>
+                              )
+                            )}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
+                      <FormControl fullWidth sx={{ width: 120 }}>
+                        <Select
+                          defaultValue="N"
+                          size="small"
+                          onChange={(event) =>
+                            makePermissionJson(event.target.value)
+                          }
+                          onClick={() => getPermission(permission.name)}
+                        >
+                          <MenuItem value="N">None</MenuItem>
+                          {permissionDict[permission.name] &&
+                            permissionDict[permission.name]["view"] &&
+                            Object.entries(
+                              permissionDict[permission.name]["view"]
+                            ).map(([key, value], index) =>
+                              key.includes("own") ? (
+                                <MenuItem key={index} value={value}>
+                                  Owned
+                                </MenuItem>
+                              ) : (
+                                <MenuItem key={index} value={value}>
+                                  All
+                                </MenuItem>
+                              )
+                            )}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
+                      <FormControl fullWidth sx={{ width: 120 }}>
+                        <Select
+                          defaultValue="N"
+                          size="small"
+                          onChange={(event) =>
+                            makePermissionJson(event.target.value)
+                          }
+                          onClick={() => getPermission(permission.name)}
+                        >
+                          <MenuItem value="N">None</MenuItem>
+                          {permissionDict[permission.name] &&
+                            permissionDict[permission.name]["delete"] &&
+                            Object.entries(
+                              permissionDict[permission.name]["delete"]
+                            ).map(([key, value], index) =>
+                              key.includes("own") ? (
+                                <MenuItem key={index} value={value}>
+                                  Owned
+                                </MenuItem>
+                              ) : (
+                                <MenuItem key={index} value={value}>
+                                  All
+                                </MenuItem>
+                              )
+                            )}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
+                      <FormControl fullWidth sx={{ width: 120 }}>
+                        <Select
+                          defaultValue="N"
+                          size="small"
+                          onChange={(event) =>
+                            makePermissionJson(event.target.value)
+                          }
+                          onClick={() => getPermission(permission.name)}
+                        >
+                          <MenuItem value="N">None</MenuItem>
+                          {permissionDict[permission.name] &&
+                            permissionDict[permission.name]["export"] &&
+                            Object.entries(
+                              permissionDict[permission.name]["export"]
+                            ).map(([key, value], index) =>
+                              key.includes("own") ? (
+                                <MenuItem key={index} value={value}>
+                                  Owned
+                                </MenuItem>
+                              ) : (
+                                <MenuItem key={index} value={value}>
+                                  All
+                                </MenuItem>
+                              )
+                            )}
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -340,53 +490,29 @@ const RolesAndPermissions = () => {
                         onChange={(event) =>
                           makePermissionJson(
                             permission.name,
-                            "view",
+                            "extra",
                             event.target.value
                           )
                         }
                       >
-                        <Select defaultValue="N" size="small">
-                          <MenuItem value="All">All</MenuItem>
-                          <MenuItem value="Owned">Owned</MenuItem>
+                        <Select
+                          defaultValue="N"
+                          size="small"
+                          onChange={(event) =>
+                            makePermissionJson(event.target.value)
+                          }
+                          onClick={() => getPermission(permission.name)}
+                        >
                           <MenuItem value="N">None</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>
-                      <FormControl
-                        fullWidth
-                        sx={{ width: 120 }}
-                        onChange={(event) =>
-                          makePermissionJson(
-                            permission.name,
-                            "delete",
-                            event.target.value
-                          )
-                        }
-                      >
-                        <Select defaultValue="N" size="small">
-                          <MenuItem value="All">All</MenuItem>
-                          <MenuItem value="Owned">Owned</MenuItem>
-                          <MenuItem value="N">None</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>
-                      <FormControl
-                        fullWidth
-                        sx={{ width: 120 }}
-                        onChange={(event) =>
-                          makePermissionJson(
-                            permission.name,
-                            "delete",
-                            event.target.value
-                          )
-                        }
-                      >
-                        <Select defaultValue="N" size="small">
-                          <MenuItem value="All">All</MenuItem>
-                          <MenuItem value="Owned">Owned</MenuItem>
-                          <MenuItem value="N">None</MenuItem>
+                          {permissionDict[permission.name] &&
+                            permissionDict[permission.name]["extra"] &&
+                            Object.entries(
+                              permissionDict[permission.name]["extra"]
+                            ).map(([key, value], index) => (
+                              <MenuItem key={index} value={value}>
+                                {key}
+                              </MenuItem>
+                            ))}
                         </Select>
                       </FormControl>
                     </TableCell>
