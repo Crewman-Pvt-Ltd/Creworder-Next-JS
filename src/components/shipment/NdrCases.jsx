@@ -18,26 +18,22 @@ import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
+
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
 
-const AssignTlList = () => {
+const NdrCase = () => {
   const router = useRouter();
   const rows = [
     {
       id: 1,
-      agent: "Shivam Kumar",
-      tl: "Test Tl",
+      name: "Shivam",
+      telephone: "Sampark",
       created_at: "2024-08-01",
     },
   ];
-
-  const createtl = () => {
-    router.push("/admin/manage/assign-tl");
-  };
 
   return (
     <Grid container spacing={2} p={3}>
@@ -50,47 +46,18 @@ const AssignTlList = () => {
               maxHeight: "400px",
             }}
           >
-            <Grid item xs={12}>
-                <CustomCard padding="13px">
-                  <Grid container justifyContent="space-between" alignItems="center">
-                    <Grid item>
-                      <Typography
-                        sx={{
-                          fontWeight: "600",
-                          fontSize: "20px",
-                          whiteSpace: "nowrap",
-                          textTransform: "capitalize",
-                          color: "black",
-                          marginLeft: "30px",
-                        }}
-                      >
-                        Assign Role List
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        onClick={createtl}
-                        sx={{
-                          padding: "8px",
-                          fontSize: "14px",
-                          backgroundColor: "#405189",
-                          color: "white",
-                          "&:hover": {
-                            backgroundColor: "#334a6c",
-                          },
-                          borderRadius: "30px",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                        }}
-                      >
-                        <AddIcon sx={{ fontSize: 15 }} />
-                        Assign Role
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </CustomCard>
-              </Grid>
+            <Typography
+              sx={{
+                fontWeight: "600",
+                fontSize: "20px",
+                whiteSpace: "nowrap",
+                textTransform: "capitalize",
+                color: "black",
+                margin: "20px",
+              }}
+            >
+              Assign Telephone
+            </Typography>
             <TableContainer
               component={Paper}
               sx={{ overflowY: "auto", maxHeight: "340px" }}
@@ -102,13 +69,10 @@ const AssignTlList = () => {
                       <b>Sr.</b>
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      <b>Agent Name</b>
+                      <b>Name</b>
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      <b>TeamLead</b>
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      <b>Manager</b>
+                      <b>Assigned Telephone</b>
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       <b>Created At</b>
@@ -125,13 +89,10 @@ const AssignTlList = () => {
                         {row.id}.
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.agent}
+                        {row.name}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.tl}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.agent}
+                        {row.telephone}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.created_at}
@@ -158,4 +119,4 @@ const AssignTlList = () => {
   );
 };
 
-export default AssignTlList;
+export default NdrCase;
