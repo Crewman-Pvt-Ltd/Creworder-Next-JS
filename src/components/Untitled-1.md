@@ -1,3 +1,14 @@
+<!--------Inventory----------- -->
+<!---------------- Performance----------------------- -->
+
+
+<!-- Referal id of Compamy -->
+
+Refereal Code of Company
+add this referal code in admin dashboard in referal
+Add Referal field in Signup
+
+
 
 <!-- Manage Tab -->
 manage (main tab)
@@ -60,13 +71,14 @@ MAnual msg integration(chat , payment links)
 3) Forgot Password Template
 4) Ticket Raised Template
 5) Account Suspension/ Non Payment Templates
+6) Login OTP
 ----------------------Order Template---------------------------
-1) Placement
-2) New Order
-3) Login OTP
-4) Status Template
+1) New Order
+2) Status Template
 
 ----------------------Wallet Template---------------------------
 1) Fund Add
 2) Report Template
 3) Export Template
+
+
