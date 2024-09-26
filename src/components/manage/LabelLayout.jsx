@@ -13,11 +13,18 @@ import {
   DialogContent,
   Box,
   Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
-import Image from "next/image";
-import creworderLogo from "../../images/CO-logo.png";
-const CreateLabel = () => {
+// Import Image component if necessary
+// import Image from "next/image";
+// import creworderLogo from "../../images/CO-logo.png";
+
+const LabelLayout = () => {
   const [labelFormat, setLabelFormat] = useState("4.5x6.25");
   const [preferences, setPreferences] = useState({
     codPrepaidValue: true,
@@ -57,13 +64,137 @@ const CreateLabel = () => {
     setOpenDialog(false);
   };
 
+  // Function to render the label box
+  const renderLabelBox = () => (
+    <Box
+      sx={{
+        border: "2px solid #000",
+        padding: 2,
+        width: "auto",
+        bgcolor: "#f9f9f9",
+      }}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h6">
+            <strong>Deliver To:</strong>
+          </Typography>
+          <Typography>
+            <b>Rahul Kumar,</b>
+            <br />
+            {preferences.shipperAddress && (
+              <Typography variant="body1">
+                House No.211, First Floor, Noida
+                <br />
+                Sector- 63 Uttar Pradesh, India - 201304
+                <br />
+                {preferences.mobileNumber && (
+                  <>
+                    Phone: 9110998103
+                    <br />
+                  </>
+                )}
+                {preferences.supportNumberEmail && (
+                  <Typography variant="body1" sx={{ marginTop: 1 }}>
+                    Email: test@gmail.com
+                  </Typography>
+                )}
+              </Typography>
+            )}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Divider sx={{ marginY: 1 }} />
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Typography>
+            Order Date: <strong>25/09/2024</strong>
+          </Typography>
+          <Typography>
+            Invoice No: <strong>ORDER9202323</strong>
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <img
+            src="https://www.pngall.com/wp-content/uploads/2/Barcode-PNG-Images.png"
+            alt="AWB Product Code"
+            style={{ maxWidth: "80%", height: "auto" }} // Ensuring responsive image
+          />
+        </Grid>
+      </Grid>
+      <Divider sx={{ marginY: 1 }} />
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
+          <Typography>
+            <strong style={{ fontSize: "24px" }}>COD:</strong>
+          </Typography>
+          <Typography>
+            <strong style={{ fontSize: "22px" }}>₹2000</strong>
+          </Typography>
+          <Typography>Weight: 1.5 KG</Typography>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2zmm39pKpY2coD0De8cWvlLdZUBzHE9z8Ie7Yu0RiygKZAaAvT5yb2mXvqwj-E5DePhE&usqp=CAU"
+            alt="AWB Product Code"
+            style={{ maxWidth: "80%", height: "auto" }} // Ensuring responsive image
+          />
+          <Typography>Dimensions: 12x12x12</Typography>
+        </Grid>
+      </Grid>
+      <Divider />
+      <TableContainer>
+        <Table size="small">
+          <TableBody>
+            <TableRow>
+              <TableCell style={{ padding: "4px 8px" }}>
+                <Typography>
+                  <strong>SKU</strong>
+                </Typography>
+              </TableCell>
+              <TableCell style={{ padding: "4px 8px" }}>
+                <Typography>
+                  <strong>OPSKU9844</strong>
+                </Typography>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell style={{ padding: "4px 8px" }}>
+                <Typography>
+                  <strong>Quantity</strong>
+                </Typography>
+              </TableCell>
+              <TableCell style={{ padding: "4px 8px" }}>
+                <Typography>
+                  <strong>2</strong>
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Typography variant="body1">
+        <strong>Pickup and Return Address:</strong>
+        <br /> New Delhi, 110095
+      </Typography>
+      <Divider />
+      <Typography variant="body1" style={{ fontSize: "14px" }}>
+        This is a system generated document, hence does not require signature.
+        <br />
+        <strong>Note:</strong> All disputes are subject to Delhi jurisdiction.
+        Goods once sold will only be taken back or exchanged as per the store
+        exchange/return policy.
+      </Typography>
+    </Box>
+  );
+
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <CustomCard padding="20px">
           <Typography
             variant="h5"
-            sx={{              
+            sx={{
               fontWeight: "500",
               marginBottom: "10px",
               color: "#405189",
@@ -97,7 +228,6 @@ const CreateLabel = () => {
           </FormControl>
         </CustomCard>
       </Grid>
-
       <Grid item xs={12}>
         <CustomCard padding="20px">
           <Typography
@@ -197,7 +327,6 @@ const CreateLabel = () => {
           </FormGroup>
         </CustomCard>
       </Grid>
-
       <Grid item xs={12}>
         <Grid container justifyContent="space-between" spacing={2}>
           <Grid item>
@@ -235,113 +364,27 @@ const CreateLabel = () => {
 
       {/* Dialog for Previewing the Label */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogContent>
-          <Box
-            sx={{
-              border: "2px solid #000",
-              padding: 2,
-              width: "500px",
-              bgcolor: "#f9f9f9",
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={7}>
-                <Typography variant="h5">Shipping Label</Typography>
-                <Typography>
-                  <strong>Ship To:</strong>
-                  <br />
-                  Rahul Kumar,
-                  <br />
-                  {preferences.shipperAddress && (
-                    <Typography variant="body1">
-                      House No.211,
-                      <br />
-                      First Floor, Noida
-                      <br />
-                      Sector- 63 UP, India - 201304
-                    </Typography>
-                  )}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={5}>
-              {preferences.hideCompanyLogo && (
-              <Image
-                src={creworderLogo}
-                style={{ cursor: "pointer" }}
-                alt="Creworder Logo"
-                sx={{
-                  backgroundColor: "black",
-                }}
-                 />
-              )}
-              </Grid>
-            </Grid>
-            <Divider sx={{ marginY: 2 }} />
-            <Grid container spacing={2} ml={1}>
-              <Grid item xs={12} md={6}>
-                <img
-                  src="https://pngimg.com/uploads/barcode/barcode_PNG30.png"
-                  alt="AWB Product Code"
-                  style={{ maxWidth: "80%", height: "auto" }} // Ensuring responsive image
-                />
-                <Typography>
-                  <strong>AWB:</strong> PRODUCT987
-                </Typography>
-                <Typography>
-                  <strong>Routing Code:</strong> <strong>DEL/KRB</strong>
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <img
-                  src="https://pngimg.com/uploads/barcode/barcode_PNG30.png"
-                  alt="AWB Product Code"
-                  style={{ maxWidth: "80%", height: "auto" }} // Ensuring responsive image
-                />
-              </Grid>
-            </Grid>
-            <Divider sx={{ marginY: 2 }} />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography variant="body1">
-                  Dimensions: 12.00x12.00x12.00
-                </Typography>
-                <Typography variant="body1">Payment Mode: COD</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1">Weight: 1Kg</Typography>
-                <Typography variant="body1">
-                  Item(s): Tshirts + 1 more.....
-                </Typography>
-              </Grid>
-            </Grid>
-            <Divider sx={{ marginY: 2 }} />
-            <Typography variant="body1">
-              <b>Shipped By:</b> Laxmi Nagar New Delhi, 110095 <br />
-              {preferences.mobileNumber && (
-                <>
-                  Phone: 9110998103
-                  <br />
-                </>
-              )}
-              {preferences.supportNumberEmail && (
-                <Typography variant="body1" sx={{ marginTop: 1 }}>
-                  Email: test@gmail.com
-                </Typography>
-              )}
-            </Typography>
-
-            <Typography variant="body1">
-              <b>Order #</b>: PRODUCT987
-            </Typography>
-            <Typography variant="body1">
-              <b>Product Description:</b> Tshirt + 1 Items | SKU: 1111 | Qty: 2{" "}
-              <br></br> <b>Total Amount: Rs.180.00</b>
-            </Typography>
-          </Box>
+        <DialogContent
+          style={{ width: labelFormat === "4.5x6.25" ? "1200px" : "auto" }}
+        >
+          {labelFormat === "4.5x6.25" && (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)",
+                gap: "16px",
+              }}
+            >
+              {Array.from({ length: 4 }, (_, index) => (
+                <div key={index}>{renderLabelBox()}</div>
+              ))}
+            </div>
+          )}
+          {labelFormat === "4x6" && <>{renderLabelBox()}</>}
         </DialogContent>
       </Dialog>
     </Grid>
   );
 };
 
-export default CreateLabel;
+export default LabelLayout;

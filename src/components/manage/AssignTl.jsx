@@ -72,9 +72,37 @@ const AssignTl = () => {
                   marginLeft: "10px",
                 }}
               >
-                Assign TL
+                Assign Role
               </Typography>
               <Grid container spacing={2}>
+
+
+                 {/* Agent Select with Multi-Select and Checkboxes */}
+                 <Grid item xs={12} sm={4} md={4}>
+                  <Select
+                    labelId="agent-select-label"
+                    id="agent"
+                    value={inputValues.agent}
+                    onChange={handleInputChange("agent")}
+                    multiple
+                    displayEmpty
+                    sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
+                    fullWidth
+                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select Manager")}
+                  >
+                    <MenuItem value="" disabled>
+                      Select Manager
+                    </MenuItem>
+                    {["Test1", "Test2", "Test3"].map((name) => (
+                      <MenuItem key={name} value={name}>
+                        <ListItemText primary={name} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.agent && (
+                    <FormHelperText>{errors.agent}</FormHelperText>
+                  )}
+                </Grid>
                 {/* Agent Select with Multi-Select and Checkboxes */}
                 <Grid item xs={12} sm={4} md={4}>
                   <Select
@@ -86,14 +114,13 @@ const AssignTl = () => {
                     displayEmpty
                     sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
                     fullWidth
-                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select Agent")}
+                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select TeamLead")}
                   >
                     <MenuItem value="" disabled>
-                      Select Agent
+                      Select TeamLead
                     </MenuItem>
                     {["Test1", "Test2", "Test3"].map((name) => (
                       <MenuItem key={name} value={name}>
-                        <Checkbox checked={inputValues.agent.indexOf(name) > -1} />
                         <ListItemText primary={name} />
                       </MenuItem>
                     ))}
@@ -106,7 +133,7 @@ const AssignTl = () => {
                 {/* TL Select with Multi-Select and Checkboxes */}
                 <Grid item xs={12} sm={4} md={4}>
                   <Select
-                    labelId="tl-select-label"
+                    labelId="select-agent"
                     id="tl"
                     value={inputValues.tl}
                     onChange={handleInputChange("tl")}
@@ -114,10 +141,10 @@ const AssignTl = () => {
                     displayEmpty
                     sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
                     fullWidth
-                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select TL")}
+                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select Agent")}
                   >
                     <MenuItem value="" disabled>
-                      Select TL
+                      Select Agent
                     </MenuItem>
                     {["TL 1", "TL 2", "TL 3"].map((tl) => (
                       <MenuItem key={tl} value={tl}>
