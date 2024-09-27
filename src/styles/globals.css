@@ -42,3 +42,8 @@ body{
     z-index: 1000;
   }
 }
+
+/* Global styles for TableHead */
+ .tablehead {
+    font-weight: 700; /* Set font weight to 700 for all table headers */
+  }

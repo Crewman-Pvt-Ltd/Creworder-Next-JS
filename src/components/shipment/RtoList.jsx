@@ -16,14 +16,13 @@ import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import PhoneIcon from "@mui/icons-material/Phone";
 
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
 
-const NdrCases = () => {
+const RtoList = () => {
   const router = useRouter();
   const rows = [
     {
@@ -39,6 +38,7 @@ const NdrCases = () => {
       order_date: "2024-08-01",
       remark:
         "You can override the style of the component using one of these customization options.",
+      action: "Edit",
     },
   ];
 
@@ -88,7 +88,7 @@ const NdrCases = () => {
                 margin: "20px",
               }}
             >
-              NDR Cases
+              RTO List
             </Typography>
             <TableContainer
               component={Paper}
@@ -100,9 +100,14 @@ const NdrCases = () => {
                     <HeaderCell>Sr.</HeaderCell>
                     <HeaderCell>Order ID</HeaderCell>
                     <HeaderCell>Customer Name</HeaderCell>
-                    <HeaderCell>Order Status</HeaderCell>                   
+                    <HeaderCell>City</HeaderCell>
+                    <HeaderCell>Product</HeaderCell>
+                    <HeaderCell>Amount</HeaderCell>
+                    <HeaderCell>Agent</HeaderCell>
+                    <HeaderCell>Order Status</HeaderCell>
+                    <HeaderCell>Payment Mode</HeaderCell>
                     <HeaderCell>Order Date</HeaderCell>
-                    <HeaderCell>C.C </HeaderCell>
+                    <HeaderCell>Remark</HeaderCell>
                     <HeaderCell>Action</HeaderCell>
                   </TableRow>
                 </TableHead>
@@ -112,16 +117,23 @@ const NdrCases = () => {
                       <DataCell>{row.id}.</DataCell>
                       <DataCell>{row.order_id}</DataCell>
                       <DataCell>{row.name}</DataCell>
-                      <DataCell>{row.status}</DataCell>                    
+                      <DataCell>{row.city}</DataCell>
+                      <DataCell>{row.product}</DataCell>
+                      <DataCell>{row.amount}</DataCell>
+                      <DataCell>{row.agent}</DataCell>
+                      <DataCell>{row.status}</DataCell>
+                      <DataCell>{row.payment_mode}</DataCell>
                       <DataCell>{row.order_date}</DataCell>
-                      <DataCell>
-                      <IconButton aria-label="call" sx={{ color: "green" }}>
-                          <PhoneIcon />                          
-                        </IconButton>
-                      </DataCell>
+                      <DataCell>{row.remark}</DataCell>
                       <DataCell>
                         <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
                           <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="delete"
+                          sx={{ color: "#FF0000" }}
+                        >
+                          <DeleteIcon />
                         </IconButton>
                       </DataCell>
                     </TableRow>
@@ -136,4 +148,4 @@ const NdrCases = () => {
   );
 };
 
-export default NdrCases;
+export default RtoList;

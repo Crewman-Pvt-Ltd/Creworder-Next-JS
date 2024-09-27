@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import NdrCases from "@/components/shipment/NdrCases";
+import SchedulePickup from "@/components/shipment/SchedulePickup";
 import Layout from "@/components/Layout";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import Loader from "@/components/Loader";
 
-const ndrcases = () => {
+const schedulepickup = () => {
   const { permissionsData, permissionLoading } = usePermissions();
   if (permissionLoading) return <Loader />;
   const router = useRouter();
@@ -19,10 +19,10 @@ const ndrcases = () => {
   if (permissionsData?.role) {
     return (
       <Layout type={userRole}>
-        <NdrCases />
+        <SchedulePickup />
       </Layout>
     );
   }
 };
 
-export default ndrcases;
+export default schedulepickup;
