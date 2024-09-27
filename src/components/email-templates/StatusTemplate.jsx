@@ -33,6 +33,27 @@ const StatusTemplate = () => {
     orderNumber: "Order No.123456789",
     productImage: null,
     productName: "dress",
+    quantity: "Quantity",
+    price: "Price",
+    discount: "Discount",
+    total: "Total",
+    sold: "Sold by:",
+    quantityNo: "2",
+    priceNo: "1400",
+    discountNo: "100",
+    totalNo: "1300",
+    soldBy: "Vision",
+    deliveryTitle: "Delivery Address",
+    deliveryAddress: "2nd Floor, XYZ Street,Someplace, City, State - 123456",
+    billingTitle: "Billing Details",
+    package: "Package value:",
+    packagePrice: "₹900",
+    shipping: "Shipping Charge:",
+    shippingValue: "Free",
+    billingTotal: "Total",
+    billingTotalValue: "₹900",
+    paymentMode: "Mode Of Payment",
+    PaymentModeType: "online",
     pageLinks: {
       privacyPolicy: true,
       refundPolicy: true,
@@ -55,25 +76,174 @@ const StatusTemplate = () => {
       [name]: value,
     }));
   };
-  const handleExperienceChange = (e) => {
-    const { name, value } = e.target; // Destructure name and value from e.target
+  const handleQuantityChange = (e) => {
+    const { name, value } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value, // Use name as the key
+      [name]: value,
+    }));
+  };
+  const handlePriceChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleDiscountChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleTotalChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleQuantityNoChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handlePriceNoChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleDiscountNoChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleTotalNoChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleSoldChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleSoldbyChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleDeliveryTitle = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleDeliveryAddress = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleBillingTitle = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handlePackage = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handlePackagePrice = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleShipping = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleShippingValue = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleBillingTotal = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handleBillingTotalValue = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handlePaymentMode = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+  const handlePaymentModeType = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleExperienceChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
     }));
   };
   const handleExperienceBodyChange = (e) => {
-    const { name, value } = e.target; // Destructure name and value from e.target
+    const { name, value } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value, // Use name as the key
+      [name]: value,
     }));
   };
   const handleOrderChange = (e) => {
-    const { name, value } = e.target; // Destructure name and value from e.target
+    const { name, value } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value, // Use name as the key
+      [name]: value,
     }));
   };
   const handleOrderNoChange = (e) => {
@@ -110,10 +280,10 @@ const StatusTemplate = () => {
     }
   };
   const handleProductChange = (e) => {
-    const { name, value } = e.target; // Destructure name and value from e.target
+    const { name, value } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: value, // Use name as the key
+      [name]: value,
     }));
   };
 
@@ -263,19 +433,21 @@ const StatusTemplate = () => {
                 </Grid>
                 <Grid item xs={9} textAlign="right">
                   <Typography sx={{ fontSize: "14px" }}>
-                   {formValues.productName}
+                    {formValues.productName}
                     <br />
-                    Qty: 1
+                    {formValues.quantity} {formValues.quantityNo}
                   </Typography>
                   <Typography sx={{ fontSize: "14px" }}>
-                    Price: ₹1000
+                    {formValues.price} {formValues.priceNo}
                   </Typography>
                   <Typography sx={{ fontSize: "14px" }}>
-                    Discount: ₹100
+                    {formValues.discount} {formValues.discountNo}
                   </Typography>
-                  <Typography sx={{ fontSize: "14px" }}>Total: ₹900</Typography>
                   <Typography sx={{ fontSize: "14px" }}>
-                    Sold by: Vision Star
+                    {formValues.total} {formValues.totalNo}
+                  </Typography>
+                  <Typography sx={{ fontSize: "14px" }}>
+                    {formValues.sold} {formValues.soldBy}
                   </Typography>
                 </Grid>
               </Grid>
@@ -287,12 +459,10 @@ const StatusTemplate = () => {
                     className={poppins.className}
                     sx={{ fontWeight: 600 }}
                   >
-                    Delivery Address
+                    {formValues.deliveryTitle}
                   </Typography>
                   <Typography sx={{ fontSize: "14px" }}>
-                    2nd Floor, XYZ Street,
-                    <br />
-                    Someplace, City, State - 123456
+                    {formValues.deliveryAddress}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
@@ -300,34 +470,40 @@ const StatusTemplate = () => {
                     className={poppins.className}
                     sx={{ fontWeight: 600 }}
                   >
-                    Billing Details
+                    {formValues.billingTitle}
                   </Typography>
                   <Grid container justifyContent="space-between">
                     <Typography sx={{ fontSize: "14px" }}>
-                      Package value:
+                      {formValues.package}
                     </Typography>
-                    <Typography sx={{ fontSize: "14px" }}>₹900</Typography>
+                    <Typography sx={{ fontSize: "14px" }}>
+                      {formValues.packagePrice}
+                    </Typography>
                   </Grid>
                   <Grid container justifyContent="space-between">
                     <Typography sx={{ fontSize: "14px" }}>
-                      Shipping Charge:
+                      {formValues.shipping}
                     </Typography>
                     <Typography sx={{ fontSize: "14px", color: "green" }}>
-                      Free
+                      {formValues.shippingValue}
                     </Typography>
                   </Grid>
                   <Divider sx={{ mt: 1 }} />
                   <Grid container justifyContent="space-between">
-                    <Typography sx={{ fontWeight: 600 }}>Total:</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>
+                      {formValues.billingTotal}:
+                    </Typography>
                     <Typography sx={{ fontSize: "14px", color: "green" }}>
-                      ₹900
+                      {formValues.billingTotalValue}
                     </Typography>
                   </Grid>
                   <Grid container justifyContent="space-between">
                     <Typography sx={{ fontSize: "14px" }}>
-                      Mode Of Payment:
+                      {formValues.paymentMode}
                     </Typography>
-                    <Typography sx={{ fontSize: "14px" }}>Online</Typography>
+                    <Typography sx={{ fontSize: "14px" }}>
+                      {formValues.PaymentModeType}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -386,6 +562,7 @@ const StatusTemplate = () => {
           </Grid>
         </Box>
       </Grid>
+
       <Grid
         item
         xs={12}
@@ -393,74 +570,79 @@ const StatusTemplate = () => {
         component="form"
         sx={{ padding: 3, borderRadius: 2 }}
       >
-        <Grid container>
-          <Grid item xs={12}>
-            <Typography
-              className={poppins.className}
-              sx={{ color: "#4f4f4f", fontWeight: "500", padding: 1 }}
-            >
-              Icon
-            </Typography>
-            <input
-              type="file"
-              accept="*"
-              onChange={handleFileChange}
-              style={{ marginTop: "16px", width: "100%" }}
-            />
-          </Grid>
+        <Grid
+          container
+          sx={{
+            mt: 2,
+            backgroundColor: "#f8f9fc",
+            borderRadius: "10px",
+            padding: "18px",
+          }}
+        >
+        
+              <Grid item xs={6} sm={6} md={6}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "500", padding: 1 }}
+                >
+                  Icon
+                </Typography>
+                <input
+                  type="file"
+                  accept="*"
+                  onChange={handleFileChange}
+                  style={{ marginTop: "16px", width: "100%" }}
+                />
+              </Grid>
+              <Grid item xs={6} sm={6} md={6}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Main Title(Default)
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="mainTitle"
+                  value={formValues.mainTitle}
+                  onChange={handleChange}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Typography
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Mail Body Message (Default)
+                </Typography>
+                <ReactQuill
+                  value={formValues.bodyMessage}
+                  onChange={handleQuillChange}
+                  placeholder="Enter your mail body content..."
+                  style={{ marginBottom: "20px", backgroundColor: "white" }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} md={12}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Experience Title
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="experienceTitle"
+                  value={formValues.experienceTitle}
+                  onChange={handleExperienceChange}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+           
 
-          <Grid
-            item
-            xs={12}
-            sx={{
-              mt: 2,
-              backgroundColor: "#f8f9fc",
-              borderRadius: "10px",
-              padding: "18px",
-            }}
-          >
-            <Typography
-              className={poppins.className}
-              sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
-            >
-              Main Title(Default)
-            </Typography>
-            <TextField
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              name="mainTitle"
-              value={formValues.mainTitle}
-              onChange={handleChange}
-              sx={{ backgroundColor: "white" }}
-            />
-            <Typography
-              sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
-            >
-              Mail Body Message (Default)
-            </Typography>
-            <ReactQuill
-              value={formValues.bodyMessage}
-              onChange={handleQuillChange}
-              placeholder="Enter your mail body content..."
-              style={{ marginBottom: "20px", backgroundColor: "white" }}
-            />
-
-            <Typography
-              className={poppins.className}
-              sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
-            >
-              Experience Title
-            </Typography>
-            <TextField
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              name="experienceTitle"
-              value={formValues.experienceTitle}
-              onChange={handleExperienceChange}
-              sx={{ backgroundColor: "white" }}
-            />
             <Typography
               className={poppins.className}
               sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
@@ -519,7 +701,7 @@ const StatusTemplate = () => {
                   variant="outlined"
                   name="orderNumber"
                   value={formValues.orderNumber}
-                  onChange={handleOrderChange}
+                  onChange={handleOrderNoChange}
                   sx={{ backgroundColor: "white" }}
                 />{" "}
               </Grid>
@@ -570,66 +752,180 @@ const StatusTemplate = () => {
                   fullWidth
                   margin="normal"
                   variant="outlined"
-                  name="productName"
-                  value={formValues.productName}
-                  onChange={handleProductChange}
+                  name="quantity"
+                  value={formValues.quantity}
+                  onChange={handleQuantityChange}
                   sx={{ backgroundColor: "white" }}
-                />{" "}
+                />
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Quantity No
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="quantityNo"
+                  value={formValues.quantityNo}
+                  onChange={handleQuantityNoChange}
+                  sx={{ backgroundColor: "white" }}
+                />
               </Grid>
               <Grid item xs={3} sm={3} md={3}>
                 <Typography
                   className={poppins.className}
                   sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
                 >
-                 Price
+                  Price
                 </Typography>
                 <TextField
                   fullWidth
                   margin="normal"
                   variant="outlined"
-                  name="productName"
-                  value={formValues.productName}
-                  onChange={handleProductChange}
+                  name="price"
+                  value={formValues.price}
+                  onChange={handlePriceChange}
                   sx={{ backgroundColor: "white" }}
-                />{" "}
+                />
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Price No
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="priceNo"
+                  value={formValues.priceNo}
+                  onChange={handlePriceNoChange}
+                  sx={{ backgroundColor: "white" }}
+                />
               </Grid>
               <Grid item xs={3} sm={3} md={3}>
                 <Typography
                   className={poppins.className}
                   sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
                 >
-                 Discount
+                  Discount
                 </Typography>
                 <TextField
                   fullWidth
                   margin="normal"
                   variant="outlined"
-                  name="productName"
-                  value={formValues.productName}
-                  onChange={handleProductChange}
+                  name="discount"
+                  value={formValues.discount}
+                  onChange={handleDiscountChange}
                   sx={{ backgroundColor: "white" }}
-                />{" "}
+                />
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Discount No
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="discountNo"
+                  value={formValues.discountNo}
+                  onChange={handleDiscountNoChange}
+                  sx={{ backgroundColor: "white" }}
+                />
               </Grid>
               <Grid item xs={3} sm={3} md={3}>
                 <Typography
                   className={poppins.className}
                   sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
                 >
-                 Total
+                  Total
                 </Typography>
                 <TextField
                   fullWidth
                   margin="normal"
                   variant="outlined"
-                  name="productName"
-                  value={formValues.productName}
-                  onChange={handleProductChange}
+                  name="total"
+                  value={formValues.total}
+                  onChange={handleTotalChange}
                   sx={{ backgroundColor: "white" }}
-                />{" "}
+                />
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Total No
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="totalNo"
+                  value={formValues.totalNo}
+                  onChange={handleTotalNoChange}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                sx={{
+                  display: "flex",
+                }}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={6} sm={6} md={6}>
+                    <Typography
+                      className={poppins.className}
+                      sx={{
+                        color: "#4f4f4f",
+                        fontWeight: "400",
+                        fontSize: "15px",
+                      }}
+                    >
+                      Sold By
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      name="sold"
+                      value={formValues.sold}
+                      onChange={handleSoldChange}
+                      sx={{ backgroundColor: "white" }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sm={6} md={6}>
+                    <Typography
+                      className={poppins.className}
+                      sx={{
+                        color: "#4f4f4f",
+                        fontWeight: "400",
+                        fontSize: "15px",
+                      }}
+                    >
+                      sold by name
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      name="soldBy"
+                      value={formValues.soldBy}
+                      onChange={handleSoldbyChange}
+                      sx={{ backgroundColor: "white" }}
+                    />
+                  </Grid>{" "}
+                </Grid>
               </Grid>
             </Grid>
 
-            
             <Typography
               sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
             >
@@ -643,7 +939,214 @@ const StatusTemplate = () => {
             />
           </Grid>
 
-          {/* Footer Content */}
+          <Grid
+            item
+            xs={12}
+            sx={{
+              mt: 2,
+              backgroundColor: "#f8f9fc",
+              borderRadius: "10px",
+              padding: "18px",
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={6} sm={6} md={6}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Delivery Address Title
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="deliveryTitle"
+                  value={formValues.deliveryTitle}
+                  onChange={handleDeliveryTitle}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+              <Grid item xs={6} sm={6} md={6}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Delivery Address
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="deliveryAddress"
+                  value={formValues.deliveryAddress}
+                  onChange={handleDeliveryAddress}
+                  sx={{ backgroundColor: "white" }}
+                />{" "}
+              </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12} md={12}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Billing Title
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="billingTitle"
+                  value={formValues.billingTitle}
+                  onChange={handleBillingTitle}
+                  sx={{ backgroundColor: "white" }}
+                />{" "}
+              </Grid>
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Package
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="package"
+                  value={formValues.package}
+                  onChange={handlePackage}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Package price
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="packagePrice"
+                  value={formValues.packagePrice}
+                  onChange={handlePackagePrice}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Total
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="billingTotal"
+                  value={formValues.billingTotal}
+                  onChange={handleBillingTotal}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Total Value
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="billingTotalValue"
+                  value={formValues.billingTotalValue}
+                  onChange={handleBillingTotalValue}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Shipping
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="shipping"
+                  value={formValues.shipping}
+                  onChange={handleShipping}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Shipping Charge
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="shippingValue"
+                  value={formValues.shippingValue}
+                  onChange={handleShippingValue}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Mode Of Payment
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="paymentMode"
+                  value={formValues.paymentMode}
+                  onChange={handlePaymentMode}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+              <Grid item xs={3} sm={3} md={3}>
+                <Typography
+                  className={poppins.className}
+                  sx={{ color: "#4f4f4f", fontWeight: "400", fontSize: "15px" }}
+                >
+                  Mode Name
+                </Typography>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="PaymentModeType"
+                  value={formValues.PaymentModeType}
+                  onChange={handlePaymentModeType}
+                  sx={{ backgroundColor: "white" }}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          {/* 
           <Grid
             item
             xs={12}
@@ -754,9 +1257,8 @@ const StatusTemplate = () => {
               onChange={handleChange}
               sx={{ backgroundColor: "white" }}
             />
-          </Grid>
+          </Grid> */}
 
-          {/* Submit Button */}
           <Grid item xs={12} sx={{ mt: 2 }}>
             <Button variant="contained" color="primary" fullWidth type="submit">
               Submit
@@ -764,7 +1266,7 @@ const StatusTemplate = () => {
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    
   );
 };
 

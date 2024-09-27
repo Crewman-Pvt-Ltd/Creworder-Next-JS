@@ -37,8 +37,8 @@ import IconButton from "@mui/material/IconButton";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { fetchSideBarData } from "@/utils/sideBarData";
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import CommitIcon from '@mui/icons-material/Commit';
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import CommitIcon from "@mui/icons-material/Commit";
 const HoverableNavItem = ({
   isOpen,
   name,
@@ -246,20 +246,24 @@ const Sidebar = ({ isOpen, type }) => {
           color: "#abb9e8",
         }}
       >
-       {type == "admin" && ( <HoverableNavItem
-          isOpen={isOpen}
-          name="Home"
-          icon={<DashboardIcon />}
-          active={currentPath === "/admin/get-started"}
-          onClick={() => handleItemClick("/admin/get-started")}
-        />)}
-         {type == "superadmin" && ( <HoverableNavItem
-          isOpen={isOpen}
-          name="Dashboard"
-          icon={<DashboardIcon />}
-          active={currentPath === "/dashboard"}
-          onClick={() => handleItemClick("/dashboard")}
-        />)}
+        {type == "admin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Home"
+            icon={<DashboardIcon />}
+            active={currentPath === "/admin/get-started"}
+            onClick={() => handleItemClick("/admin/get-started")}
+          />
+        )}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Dashboard"
+            icon={<DashboardIcon />}
+            active={currentPath === "/dashboard"}
+            onClick={() => handleItemClick("/dashboard")}
+          />
+        )}
         {Object.entries(sideBarDataList).map(([menu, items]) => {
           if (Array.isArray(items)) {
             return (
@@ -338,12 +342,12 @@ const Sidebar = ({ isOpen, type }) => {
         )} */}
         {type == "superadmin" && (
           <HoverableNavItem
-          isOpen={isOpen}
-          name="Menu"
-          icon={<AppsIcon />}
+            isOpen={isOpen}
+            name="Menu"
+            icon={<AppsIcon />}
             onClick={() => handleItemClick("/superadmin/menu")}
           />
-        )}      
+        )}
 
         {type == "superadmin" && (
           <HoverableNavItem
@@ -365,112 +369,113 @@ const Sidebar = ({ isOpen, type }) => {
           />
         )}
 
-      {type == "superadmin" && ( 
+        {type == "superadmin" && (
           <HoverableNavItem
-          isOpen={isOpen}
-          name="Notice"
-          icon={<NotificationsIcon />}
-          active={currentPath === "/notice-board"}
-          onClick={() => handleItemClick("/notice-board")}>
-        </HoverableNavItem> 
-           )}
-         {type == "superadmin" && ( <HoverableNavItem
-          isOpen={isOpen}
-          name={
-            <span
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <span>HR</span>
-              <IconButton
-                size="small"
-                onClick={handleHRClick}
-                sx={{
-                  color: "white",
-                  marginLeft: "70px",
+            isOpen={isOpen}
+            name="Notice"
+            icon={<NotificationsIcon />}
+            active={currentPath === "/notice-board"}
+            onClick={() => handleItemClick("/notice-board")}
+          ></HoverableNavItem>
+        )}
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name={
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
                 }}
               >
-                {isHROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </IconButton>
-            </span>
-          }
-          icon={<LocalMallIcon />}
-          active={currentPath.startsWith("/hr/hr-employees")}
-          onClick={handleHRClick}
-        >
-          <Collapse in={isHROpen}>
-            <List component="div" disablePadding>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/employees")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Employees" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/leaves")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Leaves" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/shift")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Shift" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/shift-roster")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Shift Roster" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/attendance")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Attendance" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/holiday")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Holiday" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/designation")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Designation" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/department")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Department" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleItemClick("/hr/appreciation")}
-                sx={{ pl: 4 }}
-              >
-                <ListItemText primary="Appreciation" />
-              </ListItem>
-            </List>
-          </Collapse>
-        </HoverableNavItem> 
- )}
+                <span>HR</span>
+                <IconButton
+                  size="small"
+                  onClick={handleHRClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "70px",
+                  }}
+                >
+                  {isHROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </span>
+            }
+            icon={<LocalMallIcon />}
+            active={currentPath.startsWith("/hr/hr-employees")}
+            onClick={handleHRClick}
+          >
+            <Collapse in={isHROpen}>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/employees")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Employees" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/leaves")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Leaves" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/shift")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Shift" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/shift-roster")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Shift Roster" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/attendance")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Attendance" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/holiday")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Holiday" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/designation")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Designation" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/department")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Department" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/hr/appreciation")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Appreciation" />
+                </ListItem>
+              </List>
+            </Collapse>
+          </HoverableNavItem>
+        )}
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
