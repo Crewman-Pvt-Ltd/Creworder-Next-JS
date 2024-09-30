@@ -18,6 +18,7 @@ import { Edit, Delete } from "@mui/icons-material";
 import { Poppins } from "next/font/google";
 import { baseApiUrl } from "@/api-manage/ApiRoutes";
 import { getToken } from "@/utils/getToken";
+import RoleEdit from "@/components/settings/RoleEdit";
 import swal from "sweetalert";
 import axios from "axios";
 const token = getToken();
@@ -26,8 +27,13 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 const RolesList = () => {
+  const [showEditComponent, setShowEditComponent] = useState(false);
+  const [editRoleData, setEditRoleData] = useState(null); 
+  const handleEditClick = (roleId) => {
+    setShowEditComponent(true);
+    setEditRoleData(roleId);
+  };
   const [roleList, setRoleList] = useState([]);
-  const [forDeleteId, setforDeleteId] = useState();
   const HeaderCell = (props) => (
     <TableCell
       sx={{
@@ -126,6 +132,7 @@ const RolesList = () => {
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
+      {!showEditComponent ? ( // If not showing the edit component, display the default card
         <Card>
           <CardContent>
             <Grid
@@ -136,11 +143,11 @@ const RolesList = () => {
             >
               <Typography
                 sx={{
-                  fontWeight: "600",
-                  fontSize: "20px",
-                  whiteSpace: "nowrap",
-                  textTransform: "capitalize",
-                  color: "black",
+                  fontWeight: '600',
+                  fontSize: '20px',
+                  whiteSpace: 'nowrap',
+                  textTransform: 'capitalize',
+                  color: 'black',
                 }}
                 className={poppins.className}
               >
@@ -152,11 +159,9 @@ const RolesList = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <HeaderCell className={poppins.className}>ID</HeaderCell>
-                    <HeaderCell className={poppins.className}>Roles</HeaderCell>
-                    <HeaderCell className={poppins.className}>
-                      Action
-                    </HeaderCell>
+                    <TableCell className={poppins.className}>ID</TableCell>
+                    <TableCell className={poppins.className}>Roles</TableCell>
+                    <TableCell className={poppins.className}>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -169,21 +174,17 @@ const RolesList = () => {
                   ) : (
                     roleList.map((roledata, index) => (
                       <TableRow key={index}>
-                        <DataCell className={poppins.className}>
+                        <TableCell className={poppins.className}>
                           {index + 1}
-                        </DataCell>
-                        <DataCell className={poppins.className}>
+                        </TableCell>
+                        <TableCell className={poppins.className}>
                           {roledata.group.name}
-                        </DataCell>
+                        </TableCell>
                         <TableCell>
-                          <IconButton aria-label="edit" sx={{ color: "green" }}>
+                          <IconButton aria-label="edit" sx={{ color: 'green' }} onClick={() => handleEditClick(roledata.id)}>
                             <Edit />
                           </IconButton>
-                          <IconButton
-                            aria-label="delete"
-                            sx={{ color: "red" }}
-                            onClick={() => handleDeleteClick(roledata.id)}
-                          >
+                          <IconButton aria-label="delete" sx={{ color: 'red' }} onClick={() => handleDeleteClick(roledata.id)}>
                             <Delete />
                           </IconButton>
                         </TableCell>
@@ -195,6 +196,9 @@ const RolesList = () => {
             </TableContainer>
           </CardContent>
         </Card>
+      ) : (
+        <RoleEdit roleId={editRoleData} />
+      )}
       </Grid>
     </Grid>
   );
