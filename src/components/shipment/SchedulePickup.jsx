@@ -47,6 +47,19 @@ const SchedulePickup = () => {
       order_date: "2024-08-01",
       action: "Edit",
     },
+    {
+      id: 2,
+      order_id: "PRXTW003",
+      name: "Shivam sain",
+      city: "Noida",
+      product: "Weight Gain",
+      amount: "2024",
+      status: "Pending",
+      payment_mode: "Prepaid",
+      awb: "AWBNMBR98334443",
+      order_date: "2024-08-31",
+      action: "Edit",
+    },
   ];
 
   // State for selected rows
@@ -158,7 +171,7 @@ const SchedulePickup = () => {
                 margin: "20px",
               }}
             >
-              Shipments
+               Schedule Pickup
             </Typography>
 
             {/* Table */}
@@ -188,7 +201,7 @@ const SchedulePickup = () => {
                     <TableCell className="tablehead">Payment Mode</TableCell>
                     <TableCell className="tablehead">AWB</TableCell>
                     <TableCell className="tablehead">Order Date</TableCell>
-                    <TableCell className="tablehead">Action</TableCell>
+                    {/* <TableCell className="tablehead">Action</TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -215,7 +228,7 @@ const SchedulePickup = () => {
                       <TableCell>{row.payment_mode}</TableCell>
                       <TableCell>{row.awb}</TableCell>
                       <TableCell>{row.order_date}</TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <Tooltip title="Edit">
                           <IconButton>
                             <EditIcon color="primary" />
@@ -226,7 +239,7 @@ const SchedulePickup = () => {
                             <DeleteIcon color="error" />
                           </IconButton>
                         </Tooltip>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>

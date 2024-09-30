@@ -20,14 +20,7 @@ import { Poppins } from "next/font/google";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PrintIcon from "@mui/icons-material/Print";
-import CancelIcon from "@mui/icons-material/Cancel";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useRouter } from "next/router";
-
-const poppins = Poppins({
-  weight: "500",
-  subsets: ["latin"],
-});
 
 const Manifest = () => {
   const router = useRouter();
@@ -43,7 +36,7 @@ const Manifest = () => {
       product: "Weight loss",
       amount: "2024",
       status: "Pending",
-      payment_mode: "COD",
+      payment_mode: "Prepaid",
       awb: "AWBNMBR98334433",
       order_date: "2024-08-01",
       action: "Edit",
@@ -80,8 +73,12 @@ const Manifest = () => {
       alert("Please select at least one row to print the label."); // Alert if no rows are selected
       return;
     }
-    const selectedRowsData = rows.filter((row) => selectedRows.includes(row.id));
-    const url = `/admin/shipment/LabelPreviewPage?selectedRows=${JSON.stringify(selectedRowsData)}`; // Prepare URL with selected rows
+    const selectedRowsData = rows.filter((row) =>
+      selectedRows.includes(row.id)
+    );
+    const url = `/admin/shipment/manifestlabelpage?selectedRows=${JSON.stringify(
+      selectedRowsData
+    )}`; // Prepare URL with selected rows
     window.open(url, "_blank"); // Open in a new tab
   };
 
@@ -96,32 +93,40 @@ const Manifest = () => {
             backgroundColor: "#f5f5f5",
             padding: "10px",
           }}
-             >
+        >
           <Typography
             sx={{ fontWeight: "600", fontSize: "18px", whiteSpace: "nowrap" }}
           >
             {selectedRows.length} selected
           </Typography>
-          <div>   
+          <div>
             <Tooltip title="Print Label">
               <Button
                 startIcon={<PrintIcon />}
-                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}
+                sx={{
+                  marginRight: "10px",
+                  backgroundColor: "white",
+                  border: "2px solid #405189",
+                  padding: "8px 16px",
+                }}
                 onClick={handlePrintLabel} // Print Label onClick event
               >
-                Print Label
+                Print Manifest
               </Button>
             </Tooltip>
             <Tooltip title="Print Invoice">
               <Button
-               
                 startIcon={<PrintIcon />}
-                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}
+                sx={{
+                  marginRight: "10px",
+                  backgroundColor: "white",
+                  border: "2px solid #405189",
+                  padding: "8px 16px",
+                }}
               >
                 Print Invoice
               </Button>
             </Tooltip>
-            
           </div>
         </Toolbar>
 
@@ -145,7 +150,6 @@ const Manifest = () => {
             >
               Manifest
             </Typography>
-            
 
             {/* Table */}
             <TableContainer
@@ -170,12 +174,10 @@ const Manifest = () => {
                     <TableCell className="tablehead">Manifest ID</TableCell>
                     <TableCell className="tablehead">Created Date</TableCell>
                     <TableCell className="tablehead">Courier</TableCell>
-                    <TableCell className="tablehead">Product</TableCell>
                     <TableCell className="tablehead">Payment Amount</TableCell>
                     <TableCell className="tablehead">Payment Mode</TableCell>
                     <TableCell className="tablehead">AWB</TableCell>
                     <TableCell className="tablehead">Order Date</TableCell>
-                    <TableCell className="tablehead">Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -196,24 +198,12 @@ const Manifest = () => {
                       </TableCell>
                       <TableCell>{row.id}</TableCell>
                       <TableCell>{row.manifest_id}</TableCell>
-                      <TableCell>{row.created_at}</TableCell>                     
+                      <TableCell>{row.created_at}</TableCell>
                       <TableCell>{row.courier}</TableCell>
                       <TableCell>₹{row.amount}</TableCell>
                       <TableCell>{row.payment_mode}</TableCell>
                       <TableCell>{row.awb}</TableCell>
                       <TableCell>{row.order_date}</TableCell>
-                      <TableCell>
-                        <Tooltip title="Edit">
-                          <IconButton>
-                            <EditIcon color="primary" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton>
-                            <DeleteIcon color="error" />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

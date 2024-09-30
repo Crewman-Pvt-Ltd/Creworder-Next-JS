@@ -10,15 +10,29 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const LabelPreview = () => {
-  const renderLabelBox = () => (
+  const router = useRouter();
+  const [selectedOrders, setSelectedOrders] = useState([]);
+
+  useEffect(() => {
+    if (router.query.selectedRows) {
+      const parsedOrders = JSON.parse(router.query.selectedRows); // Parse the selected rows data from query
+      setSelectedOrders(parsedOrders);
+    }
+  }, [router.query]);
+
+  const renderLabelBox = (order) => (
     <Box
+      key={order.id}
       sx={{
         border: "2px solid #000",
         padding: 2,
         width: "auto",
         bgcolor: "#f9f9f9",
+        marginBottom: 4, // Add margin between labels
       }}
     >
       <Grid container spacing={2}>
@@ -27,9 +41,9 @@ const LabelPreview = () => {
             <strong>Deliver To:</strong>
           </Typography>
           <Typography variant="body1">
-            <strong>Rahul Kumar,</strong>
+            <strong>{order.name},</strong>
             <br />
-            House No.211, First Floor, Noida
+            House No.211, First Floor, {order.city}
             <br />
             Sector- 63, Uttar Pradesh, India - 201304
             <br />
@@ -43,17 +57,17 @@ const LabelPreview = () => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Typography>
-            Order Date: <strong>25/09/2024</strong>
+            Order Date: <strong>{order.order_date}</strong>
           </Typography>
           <Typography>
-            Invoice No: <strong>ORDER9202323</strong>
+            Invoice No: <strong>{order.order_id}</strong>
           </Typography>
         </Grid>
         <Grid item xs={12} md={6}>
           <img
             src="https://www.pngall.com/wp-content/uploads/2/Barcode-PNG-Images.png"
             alt="AWB Product Code"
-            style={{ maxWidth: "80%", height: "auto" }} // Ensuring responsive image
+            style={{ maxWidth: "80%", height: "auto" }}
           />
         </Grid>
       </Grid>
@@ -64,7 +78,7 @@ const LabelPreview = () => {
             <strong style={{ fontSize: "24px" }}>COD:</strong>
           </Typography>
           <Typography>
-            <strong style={{ fontSize: "22px" }}>₹2000</strong>
+            <strong style={{ fontSize: "22px" }}>₹{order.amount}</strong>
           </Typography>
           <Typography>Weight: 1.5 KG</Typography>
         </Grid>
@@ -72,7 +86,7 @@ const LabelPreview = () => {
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2zmm39pKpY2coD0De8cWvlLdZUBzHE9z8Ie7Yu0RiygKZAaAvT5yb2mXvqwj-E5DePhE&usqp=CAU"
             alt="AWB Product Code"
-            style={{ maxWidth: "80%", height: "auto" }} // Ensuring responsive image
+            style={{ maxWidth: "80%", height: "auto" }}
           />
           <Typography>Dimensions: 12x12x12</Typography>
         </Grid>
@@ -118,13 +132,14 @@ const LabelPreview = () => {
         <br />
         <strong>Note:</strong> All disputes are subject to Delhi jurisdiction.
         Goods once sold will only be taken back or exchanged as per the store
-        exchange/return policy. 
+        exchange/return policy.
       </Typography>
     </Box>
   );
+
   return (
     <div>
-      {renderLabelBox()}
+      {selectedOrders.map((order) => renderLabelBox(order))}
     </div>
   );
 };
