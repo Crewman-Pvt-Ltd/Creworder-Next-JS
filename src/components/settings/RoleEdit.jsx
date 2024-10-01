@@ -138,7 +138,7 @@ const RoleEdit = ({ roleId }) => {
       console.log('Key "name" exists in the object');
     }
   };
-  const getRoleSavedPermmision = async () => {
+  const getRoleSavedPermmision = () => {
     let data = "";
     let config = {
       method: "get",
@@ -166,7 +166,7 @@ const RoleEdit = ({ roleId }) => {
   }, []);
 
 
-  const selectedPermmision = async (data) => {
+  const selectedPermmision = (data) => {
     const tempSelectedPermissions = {};
     Object.entries(data).forEach(([key, value]) => {
       Object.entries(value).forEach(([key1, value1]) => {
@@ -184,13 +184,11 @@ const RoleEdit = ({ roleId }) => {
     });
     setSelectedPermmisions(tempSelectedPermissions);
   };
-
   useEffect(() => {
     selectedPermmision(permissionDict);
   }, [permissionDict]);
-  console.log(selectedPermmisions)
 
-  const makePermissionJson = async (permissionName, actionType, value) => {
+  const makePermissionJson = (permissionName, actionType, value) => {
     setSelectedPermmisions((prevPermissions) => ({
       ...prevPermissions,
       [permissionName]: {
@@ -202,23 +200,26 @@ const RoleEdit = ({ roleId }) => {
 
   const makePermissionJsonList = (data) => {
     const uniquePermissions = new Set();
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(data).forEach(([key, value]) => {      
       Object.entries(value).forEach(([key1, value1]) => {
+        console.log(key1)
+        console.log(value1)
         uniquePermissions.add(value1);
+        console.log(uniquePermissions)
       });
     });
   
-    // Convert the Set back to an array and update state
     setPermissionList(Array.from(uniquePermissions));
+    console.log(permissionList);
   };
   
 
   const createRole = async () => {
+    // console.log(selectedPermmisions)
     makePermissionJsonList(selectedPermmisions);
-    console.log(permissionList);
     const data = {
       group: {
-        name: "Testing",
+        name: roleName
       },
       permission_ids: permissionList,
     };
