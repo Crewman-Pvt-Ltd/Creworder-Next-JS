@@ -76,8 +76,7 @@ const NdrCases = () => {
               display: "grid",
               gridTemplateRows: "auto 1fr auto",
               maxHeight: "400px",
-            }}
-          >
+            }}>
             <Typography
               sx={{
                 fontWeight: "600",
@@ -86,14 +85,12 @@ const NdrCases = () => {
                 textTransform: "capitalize",
                 color: "black",
                 margin: "20px",
-              }}
-            >
+              }}>
               NDR Cases
             </Typography>
             <TableContainer
               component={Paper}
-              sx={{ overflowY: "auto", maxHeight: "340px" }}
-            >
+              sx={{ overflowY: "auto", maxHeight: "340px" }}>
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -117,7 +114,7 @@ const NdrCases = () => {
                       <DataCell>
                       <IconButton aria-label="call" sx={{ color: "green" }}>
                           <PhoneIcon />                          
-                        </IconButton>
+                      </IconButton>
                       </DataCell>
                       <DataCell>
                         <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
