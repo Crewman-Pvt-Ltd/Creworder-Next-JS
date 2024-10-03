@@ -349,7 +349,7 @@ const InvoiceManagementList = () => {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <CustomLabel htmlFor="Start Date">Start Date</CustomLabel>
                 <DatePicker
-                  label="Start Date"
+                
                   value={startDate}
                   onChange={handleStartDateChange}
                   renderInput={(params) => (
@@ -376,7 +376,7 @@ const InvoiceManagementList = () => {
               <LocalizationProvider dateAdapter={AdapterDayjs} >
               <CustomLabel htmlFor="End Date">End Date</CustomLabel>
                 <DatePicker
-                  label="End Date"
+                  // label="End Date"
                   value={endDate}
                   onChange={handleEndDateChange}                 
                   renderInput={(params) => (
