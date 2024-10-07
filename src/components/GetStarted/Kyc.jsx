@@ -5,13 +5,15 @@ import {
   Divider,
   Select,
   MenuItem,
+  InputLabel,
   IconButton,
   Card,
+  FormControl,
   Button,
   TextField,
   Box,
 } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
@@ -33,6 +35,17 @@ const Kyc = () => {
   const handlebelowClick = () => {
     // Corrected this line to toggle state correctly
     setOpenbelowFields(!openbelowFields);
+  };
+  const [selectedDoc, setSelectedDoc] = useState("aadhar");
+  const [docNumber, setDocNumber] = useState("");
+  const [file, setFile] = useState(null);
+
+  const handleDocChange = (event) => {
+    setSelectedDoc(event.target.value);
+  };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
   };
 
   return (
@@ -297,190 +310,95 @@ const Kyc = () => {
                 </Grid>
 
                 {openbelowFields && (
-                  <Grid item xs={12}>
-                    <Box
-                      sx={{
-                        padding: 2,
-                        border: "1px solid #afcfff",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={6}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Typography
-                              sx={{ fontWeight: "500", fontSize: "14px" }}
-                              className={poppins.className}
-                            >
-                              Document 1
-                            </Typography>
-                            <Typography
-                              sx={{
-                                fontWeight: "500",
-                                fontSize: "14px",
-                                color: "primary.main",
-                              }} 
-                              className={poppins.className}
-                            >
-                              Change Document 1
-                            </Typography>
-                          </Box>
-
-                          <Box sx={{ marginTop: 1 }}>
-                            <Typography
-                              className={poppins.className}
-                              sx={{ fontWeight: "500", fontSize: "13px" }}
-                            >
-                              Document Type
-                            </Typography>
+                  <Grid container spacing={2} mt={2}>
+                    <Grid item xs={12}>
+                      <Grid
+                        container
+                        spacing={2}
+                        sx={{
+                          padding: 2,
+                          border: "1px solid #afcfff",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        <Grid item xs={12} sm={3} md={3}>
+                          <FormControl fullWidth>
+                            <InputLabel>Select Document</InputLabel>
                             <Select
-                              fullWidth
-                              value="Pan Card"
-                              sx={{
-                                fontSize: "12px",
-                              }}
-                              className={poppins.className}
+                              value={selectedDoc}
+                              onChange={handleDocChange}
+                              label="Select Document"
                             >
-                              <MenuItem value="Pan Card">Pan Card</MenuItem>
-                              <MenuItem value="Aadhar Card">
-                                Aadhar Card
-                              </MenuItem>
+                              <MenuItem value="aadhar">Aadhar</MenuItem>
+                              <MenuItem value="pan">PAN</MenuItem>
+                              <MenuItem value="dl">Driving License</MenuItem>
                             </Select>
-
-                            <Box
-                              sx={{
-                                border: "1px dashed #afcfff",
-                                padding: 2,
-                                textAlign: "center",
-                                marginTop: 2,
-                                height: "150px",
-                                borderRadius: "10px",
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                            >
-                              <CloudUploadIcon />
-                              <Typography
-                                className={poppins.className}
-                                sx={{
-                                  fontSize: "12px",
-                                }}
-                              >
-                                Upload Front Side
-                              </Typography>
-                            </Box>
-
-                            <Button
-                              fullWidth
-                              className={poppins.className}
-                              sx={{ marginTop: 2, backgroundColor: "#f5f5f5" }}
-                            >
-                              Submit Document 1
-                            </Button>
-                          </Box>
+                          </FormControl>
                         </Grid>
 
-                        <Grid item xs={12} sm={6} md={6}>
-                          <Typography
-                            className={poppins.className}
-                            sx={{ fontWeight: "500", fontSize: "14px" }}
-                          >
-                            Document 2
-                          </Typography>
-
-                          <Box sx={{ marginTop: 1 }}>
-                            <Typography
-                              className={poppins.className}
-                              sx={{ fontWeight: "500", fontSize: "13px" }}
-                            >
-                              Document Type
-                            </Typography>
-                            <Select
-                              fullWidth
-                              value="Pan Card"
-                              sx={{
-                                fontSize: "12px",
-                              }}
-                              className={poppins.className}
-                            >
-                              <MenuItem value="Pan Card">Pan Card</MenuItem>
-                              <MenuItem value="Aadhar Card">
-                                Aadhar Card
-                              </MenuItem>
-                            </Select>
-
-                            <Grid container spacing={2} sx={{ marginTop: 1 }}>
-                              <Grid item xs={6} sm={6}>
-                                <Box
-                                  sx={{
-                                    border: "1px dashed #afcfff",
-                                    padding: 2,
-                                    textAlign: "center",
-                                    height: "150px",
-                                    borderRadius: "10px",
-                                  }}
-                                >
-                                  <CloudUploadIcon />
-                                  <Typography
-                                    className={poppins.className}
-                                    sx={{
-                                      fontSize: "12px",
-                                    }}
-                                  >
-                                    Upload Front Side
-                                  </Typography>
-                                </Box>
+                        {selectedDoc && (
+                          <Grid item xs={12}>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12} sm={6} md={6}>
+                                <TextField
+                                  fullWidth
+                                  margin="normal"
+                                  label={`${
+                                    selectedDoc === "aadhar"
+                                      ? "Aadhar"
+                                      : selectedDoc === "pan"
+                                      ? "PAN"
+                                      : "Driving License"
+                                  } Number`}
+                                  value={docNumber}
+                                  onChange={(e) => setDocNumber(e.target.value)}
+                                />
                               </Grid>
-                              <Grid item xs={6} sm={6}>
-                                <Box
-                                  sx={{
-                                    border: "1px dashed #afcfff",
-                                    padding: 2,
-                                    textAlign: "center",
-                                    height: "150px",
-                                    borderRadius: "10px",
-                                  }}
+
+                              <Grid item xs={12} sm={6} md={6}>
+                                <Typography variant="body1" mb={1}>
+                                  Upload
+                                  {selectedDoc === "aadhar"
+                                    ? " Aadhar"
+                                    : selectedDoc === "pan"
+                                    ? " PAN"
+                                    : " Driving License"}{" "}
+                                </Typography>
+                                <Grid
+                                  container
+                                  border={1}
+                                  borderColor="grey.400"
+                                  p={2}
+                                  borderRadius={2}
+                                  textAlign="center"
+                                  justifyContent="center"
+                                  alignItems="center"
                                 >
-                                  <CloudUploadIcon />
-                                  <Typography
-                                    className={poppins.className}
-                                    sx={{
-                                      fontSize: "12px",
-                                    }}
-                                  >
-                                    Upload Back Side
-                                  </Typography>
-                                </Box>
+                                  <Grid item xs={12} sm={6}>
+                                    <Button
+                                      variant="contained"
+                                      component="label"
+                                    >
+                                      Upload Document
+                                      <input
+                                        type="file"
+                                        hidden
+                                        onChange={handleFileChange}
+                                      />
+                                    </Button>
+                                  </Grid>
+                                  {file && (
+                                    <Grid item xs={12} sm={6} textAlign="left">
+                                      <Typography>{file.name}</Typography>
+                                    </Grid>
+                                  )}
+                                </Grid>
                               </Grid>
                             </Grid>
-
-                            <Button
-                              fullWidth
-                              className={poppins.className}
-                              sx={{ marginTop: 2, backgroundColor: "#f5f5f5" }}
-                            >
-                              Submit Document 2
-                            </Button>
-                          </Box>
-                        </Grid>
+                          </Grid>
+                        )}
                       </Grid>
-
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginTop: 3 }}
-                      >
-                        Complete KYC
-                      </Button>
-                    </Box>
+                    </Grid>
                   </Grid>
                 )}
               </Grid>

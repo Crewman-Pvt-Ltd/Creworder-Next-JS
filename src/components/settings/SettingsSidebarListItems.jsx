@@ -59,6 +59,7 @@ import LeadSettings from "./LeadSettings";
 
 import RolesList from "./RolesList";
 import BankDetails from "./BankDetails";
+import PixelSettings from "./PixelSettings";
 const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
@@ -68,7 +69,7 @@ const superAdminMenuItems = [
   { text: "Theme Settings", icon: <ColorLensIcon /> },
   { text: "Database Backup Settings", icon: <BackupIcon /> },
   { text: "Maintainance Mode", icon: <LocalShippingIcon /> },
-
+  { text: "Pixel Settings", icon: <LocalShippingIcon /> },
   ,
 ];
 
@@ -318,6 +319,9 @@ const SettingsSidebarListItems = ({ type }) => {
             )}
           {type == "superadmin" && selectedItem === "Maintainance Mode" && (
             <MaintainanceMode />
+          )}
+          {type == "superadmin" && selectedItem === "Pixel Settings" && (
+            <PixelSettings />
           )}
           {type == "admin" && selectedItem === "Admin Settings" && (
             <AdminSettings />

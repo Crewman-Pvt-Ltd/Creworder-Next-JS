@@ -46,43 +46,45 @@ const OrderList = () => {
     router.push("/admin/orders/createorders");
   };
   const [state, setstate] = useState("");
-  // Handle change for courseDuration
+ 
   const handlestate = (event) => {
     setstate(event.target.value);
   };
-
+const handleEdit = () => {
+  router.push("/admin/orders/editorders")
+}
   const [product, setproduct] = useState("");
-  // Handle change for courseDuration
+  
   const handleproduct = (event) => {
     setproduct(event.target.value);
   };
 
   const [payment, setpayment] = useState("");
-  // Handle change for courseDuration
+
   const handlepayment = (event) => {
     setpayment(event.target.value);
   };
 
   const [agent, setagent] = useState("");
-  // Handle change for courseDuration
+  
   const handleagent = (event) => {
     setagent(event.target.value);
   };
 
   const [agentname, setagentname] = useState("");
-  // Handle change for courseDuration
+
   const handleagentname = (event) => {
     setagentname(event.target.value);
   };
 
   const [teamlead, setteamlead] = useState("");
-  // Handle change for courseDuration
+  
   const handleteamlead = (event) => {
     setteamlead(event.target.value);
   };
 
   const [status, setstatus] = useState("");
-  // Handle change for courseDuration
+ 
   const handlestatus = (event) => {
     setstatus(event.target.value);
   };
@@ -513,7 +515,9 @@ const OrderList = () => {
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon />
+                          <EditIcon 
+                          onClick={handleEdit}
+                          />
                         </IconButton>
                         <IconButton
                           aria-label="delete"

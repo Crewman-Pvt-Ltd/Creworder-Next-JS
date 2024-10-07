@@ -4,11 +4,18 @@ import {
   Typography,
   Divider,
   CardContent,
+  Checkbox,
+  FormHelperText,
+  FormGroup,
   Button,
+  FormControlLabel,
   TextField,
+  ListItemText,
   IconButton,
   Select,
   MenuItem,
+  List,
+  ListItem,
   FormControl,
   InputLabel,
   Dialog,
@@ -43,6 +50,8 @@ const CreateOrder = () => {
   const [paymentMode, setPaymentMode] = useState("");
   const [locality, setLocality] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(true);
+  const [isSecondDialogOpen, setIsSecondDialogOpen] = useState(false);
+  const [selectedPincodes, setSelectedPincodes] = useState([]);
   const [products, setProducts] = useState([
     { productName: "", quantity: 1, price: 0, total: 0 },
   ]);
@@ -52,6 +61,66 @@ const CreateOrder = () => {
   const [codAmount, setCodAmount] = useState(0);
   const [paymentType, setPaymentType] = useState("");
   const [partialPayment, setPartialPayment] = useState(0);
+  const [postalCode, setPostalCode] = useState("");
+  const [postalCodeError, setPostalCodeError] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState(false);
+
+  const [paymentModeError, setPaymentModeError] = useState(false);
+
+  const handlePincodeSelection = (pincode) => {
+    if (selectedPincodes.includes(pincode)) {
+      // If the pincode is already selected, remove it from the selection
+      setSelectedPincodes(selectedPincodes.filter((item) => item !== pincode));
+    } else {
+      // Otherwise, add it to the selection
+      setSelectedPincodes([...selectedPincodes, pincode]);
+    }
+  };
+
+  const handleSubmit = () => {
+    let valid = true;
+
+    // Validate postal code
+    if (!postalCode) {
+      setPostalCodeError(true);
+      valid = false;
+    } else {
+      setPostalCodeError(false);
+    }
+
+    // Validate phone number
+    if (!phone) {
+      setPhoneError(true);
+      valid = false;
+    } else {
+      setPhoneError(false);
+    }
+
+    // Validate payment mode
+    if (!paymentMode) {
+      setPaymentModeError(true);
+      valid = false;
+    } else {
+      setPaymentModeError(false);
+    }
+
+    // If validation passes, close current dialog and open second dialog
+    if (valid) {
+      console.log("Form submitted successfully!");
+      setIsDialogOpen(false); // Close current dialog
+      setIsSecondDialogOpen(true); // Open second dialog
+    }
+  };
+
+  const handleCloseSecondDialog = () => {
+    setIsSecondDialogOpen(false);
+  };
+  const pincodeData = [
+    { pincode: "123433", edd: "2 Day" },
+    { pincode: "423256", edd: "3 Day" },
+    { pincode: "782329", edd: "4 Day" },
+  ];
 
   const prices = {
     "Weight Loss": 3000,
@@ -59,12 +128,10 @@ const CreateOrder = () => {
     "Liver Detox": 5000,
   };
 
-  // Show dialog when component loads
   useEffect(() => {
     setIsDialogOpen(true);
   }, []);
 
-  // Calculate the gross amount and payable amount
   useEffect(() => {
     const totalGross = products.reduce(
       (acc, product) => acc + product.total,
@@ -84,7 +151,6 @@ const CreateOrder = () => {
     }
   }, [products, discount, partialPayment, paymentType]);
 
-  // Handlers for form input changes
   const handleCourseDurationChange = (event) => {
     setCourseDuration(event.target.value);
   };
@@ -135,7 +201,6 @@ const CreateOrder = () => {
     }
   };
 
-  // Adding and removing product fields
   const addProductField = () => {
     setProducts([
       ...products,
@@ -157,7 +222,6 @@ const CreateOrder = () => {
     return products.map((product) => product.productName);
   };
 
-  // Close the dialog
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
   };
@@ -276,7 +340,7 @@ const CreateOrder = () => {
               </Grid>
 
               {/* Address Details Fields */}
-             
+
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="postalcode" required>
                   Postal Code
@@ -713,101 +777,190 @@ const CreateOrder = () => {
         </CustomCard>
       </Grid>
 
-      <Dialog
-        open={isDialogOpen}
-        onClose={(event, reason) => {
-          if (reason !== "backdropClick") {
-            handleCloseDialog();
-          }
-        }}
-        fullWidth
-        maxWidth="sm"
-      >
-        <DialogTitle sx={{ m: 0, p: 2 }}>
-          Verify Postal Code
-          <IconButton
-            aria-label="close"
-            onClick={() => window.history.back()}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent dividers>
-          <Grid container spacing={2}>
-            {/* Four Input Fields */}
-            <Grid item xs={6}>
-              <CustomTextField
-                id="postal_code"
-                name="postal_code"
-                placeholder="Postal Code"
-                type="text"
-                fullWidth
-                sx={{ fontFamily: poppins.style.fontFamily }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <CustomTextField
-                id="call_id"
-                name="call_id"
-                placeholder="Customer Call Id"
-                type="text"
-                fullWidth
-                sx={{ fontFamily: poppins.style.fontFamily }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <CustomTextField
-                id="phone"
-                name="phone"
-                placeholder="Customer Phone Number"
-                type="text"
-                fullWidth
-                sx={{ fontFamily: poppins.style.fontFamily }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <FormControl fullWidth>
-                <Select
-                  labelId="payment-mode"
-                  id="payment-mode"
-                  name="paymentMode"
-                  value={paymentMode}
-                  onChange={handlePaymentMode}
-                  displayEmpty
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+      <>
+        <Dialog
+          open={isDialogOpen}
+          onClose={(event, reason) => {
+            if (reason !== "backdropClick") {
+              setIsDialogOpen(false);
+            }
+          }}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle sx={{ m: 0, p: 2 }}>
+            Verify Postal Code
+            <IconButton
+              aria-label="close"
+              onClick={() => window.history.back()}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent dividers>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <CustomTextField
+                  id="postal_code"
+                  name="postal_code"
+                  placeholder="Postal Code"
+                  type="text"
+                  required
                   fullWidth
-                >
-                  <MenuItem value="">Payment Status</MenuItem>
-                  <MenuItem value="true">COD</MenuItem>
-                  <MenuItem value="true">PARTIAL</MenuItem>
-                  <MenuItem value="false">PREPAID</MenuItem>
-                </Select>
-              </FormControl>
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  sx={{ fontFamily: poppins.style.fontFamily }}
+                  error={postalCodeError}
+                  helperText={postalCodeError ? "Postal Code is required" : ""}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <CustomTextField
+                  id="call_id"
+                  name="call_id"
+                  placeholder="Customer Call Id"
+                  type="text"
+                  fullWidth
+                  sx={{ fontFamily: poppins.style.fontFamily }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <CustomTextField
+                  id="phone"
+                  name="phone"
+                  placeholder="Customer Phone Number"
+                  type="text"
+                  required
+                  fullWidth
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  sx={{ fontFamily: poppins.style.fontFamily }}
+                  error={phoneError}
+                  helperText={phoneError ? "Phone Number is required" : ""}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth error={paymentModeError}>
+                  <Select
+                    labelId="payment-mode"
+                    id="payment-mode"
+                    name="paymentMode"
+                    value={paymentMode}
+                    onChange={handlePaymentMode}
+                    displayEmpty
+                    required
+                    sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                    fullWidth
+                  >
+                    <MenuItem value="">Payment Status</MenuItem>
+                    <MenuItem value="true">COD</MenuItem>
+                    <MenuItem value="true">PARTIAL</MenuItem>
+                    <MenuItem value="false">PREPAID</MenuItem>
+                  </Select>
+                  {paymentModeError && (
+                    <FormHelperText>Payment Status is required</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleCloseDialog}
-            sx={{
-              fontFamily: poppins.style.fontFamily,
-              color: "white",
-              backgroundColor: "#405189",
-              "&:hover": {
-                backgroundColor: "#334a6c",
-              },
-            }}
-          >
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </DialogContent>
+
+          <DialogActions>
+            <Button
+              onClick={handleSubmit}
+              sx={{
+                fontFamily: poppins.style.fontFamily,
+                color: "white",
+                backgroundColor: "#405189",
+                "&:hover": {
+                  backgroundColor: "#334a6c",
+                },
+              }}
+            >
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={isSecondDialogOpen}
+          onClose={handleCloseSecondDialog}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle sx={{ m: 0, p: 2 }}>
+            Pickup Pincode and EDD
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseSecondDialog}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Pickup Pincode
+                </Typography>
+                <FormGroup>
+                  {pincodeData.map((item) => (
+                    <FormControlLabel
+                      key={item.pincode}
+                      control={
+                        <Checkbox
+                          checked={selectedPincodes.includes(item.pincode)}
+                          onChange={() => handlePincodeSelection(item.pincode)}
+                        />
+                      }
+                      label={item.pincode}
+                    />
+                  ))}
+                </FormGroup>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Typography>EDD</Typography>
+                <List>
+                  {pincodeData.map((item) => (
+                    <ListItem key={item.pincode}>
+                      <ListItemText primary={item.edd} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseSecondDialog}
+              sx={{
+                fontFamily: poppins.style.fontFamily,
+                color: "white",
+                backgroundColor: "#405189",
+                "&:hover": {
+                  backgroundColor: "#334a6c",
+                },
+              }}
+            >
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </Grid>
   );
 };
