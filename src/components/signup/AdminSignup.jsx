@@ -207,7 +207,7 @@ const AdminSignup = () => {
                 htmlFor="username"
                 required
               >
-                Username <span style={{ color: "red" }}>*</span>
+                Full Name <span style={{ color: "red" }}>*</span>
               </Typography>
               <Box
                 component="input"

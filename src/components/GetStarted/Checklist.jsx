@@ -26,6 +26,7 @@ const Checklist = () => {
             Get started in a few easy steps:
           </Typography>
         </Grid>
+        
         <Grid item xs={12} sm={12} md={12} m={2}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4} md={4}>
