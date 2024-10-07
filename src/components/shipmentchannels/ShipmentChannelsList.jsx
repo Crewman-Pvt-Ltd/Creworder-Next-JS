@@ -9,15 +9,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Image from "next/image";
-import shiprocket from "../../images/shiprocket-logo.png";
-import shipway from "../../images/shipway-logo.png";
-import Techky from "../../images/Techky-post-logo.png";
-import Nimbus from "../../images/Nimbus-logo.png";
-import { baseApiUrl, backendUrl } from "@/api-manage/ApiRoutes";
-import { getToken } from "@/utils/getToken";
-import axios from "axios";
-import dayjs from "dayjs";
-
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import FormData from 'form-data';
 import {
   Grid,
   Typography,
@@ -32,8 +25,18 @@ import {
   TableCell,
   TableBody,
   MenuItem,
+  InputAdornment,
 } from "@mui/material";
 
+import { baseApiUrl, backendUrl } from "@/api-manage/ApiRoutes";
+import { getToken } from "@/utils/getToken";
+import axios from "axios";
+import dayjs from "dayjs";
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 const initialData = [
   {
     id: 1,
@@ -46,23 +49,43 @@ const initialData = [
 
 const ShipmentChannelsList = () => {
   const [data, setData] = useState(initialData);
-  const router = useRouter();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [shipMentList, setshipMentList] = useState([]);
   const token = getToken();
+  const [showPassword, setShowPassword] = useState(false);
+  const [image, setImage] = useState(null);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    name: "",
+    name: "",
+    image: "",
     status: "Active",
+    credential_email: "",
+    credential_token: "",
+    provider_priority: "",
+    credential_username: "",
+    credential_password: "",
+    same_provider_priority: "",
   });
+
   const [inputLabels, setInputLabels] = useState({
-    emailLabel: "Email",
-    passwordLabel: "Password",
+    nameLabel: "Name",
+    imageLabel: "Image",
+    statusLabel: "Status",
+    emailLabel: "Provider Email",
+    tokenLabel: "Provider Token",
+    usernameLabel: "Provider Username",
+    passwordLabel: "Provider Password",
+    providernameLabel: "Provider Name",
+    providerPriorityLabel: "Provider Priority",
+    sameProviderPriorityLabel: "Same Provider Priority",
   });
 
   const [errors, setErrors] = useState({});
+
   const handleOpenDialog = (labels) => {
     setInputLabels(labels);
     setDialogOpen(true);
@@ -71,24 +94,17 @@ const ShipmentChannelsList = () => {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setIsEditing(false);
-    setFormData({
-      email: "",
-      password: "",
-      status: "Active",
-    });
   };
-
+  const handleImageUpload = (file) => {
+    setImage(file);
+  };
   const handleInputChange = (name, value) => {
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+  useEffect(() => {
+  }, [formData]);
 
-  const handleEdit = (row) => {
-    setFormData({
-      email: row.email,
-      password: "",
-      status: row.status,
-    });
-    setEditId(row.id);
+  const handleEdit = (id) => {
     setIsEditing(true);
     setDialogOpen(true);
   };
@@ -98,25 +114,56 @@ const ShipmentChannelsList = () => {
       setData((prevData) =>
         prevData.map((item) =>
           item.id === editId
-            ? {
-                ...item,
-                ...formData,
-                updated_at: new Date().toISOString().split("T")[0],
-              }
+            ? { ...item, ...formData, updated_at: new Date().toISOString().split("T")[0] }
             : item
         )
       );
     } else {
       setData([
-        ...data,
         {
-          id: data.length + 1,
-          email: formData.email,
+          name: formData.name,
+          image: formData.image,
           status: formData.status,
+          email: formData.credential_email,
+          provider_name: formData.provider_name,
+          credential_password: formData.credential_password,
+          credential_token: formData.credential_token,
+          provider_priority: formData.provider_priority,
+          credential_username: formData.credential_username,
+          same_provider_priority: formData.same_provider_priority,
         },
       ]);
+      let data = new FormData();
+      data.append('name', formData.name);
+      data.append('provider_name', formData.provider_name);
+      data.append('same_provider_priority', formData.same_provider_priority);
+      data.append('provider_priority', formData.provider_priority);
+      data.append('status', formData.status);
+      data.append('image', image);
+      data.append('credential_username', formData.credential_username);
+      data.append('credential_password', formData.credential_password);
+      data.append('credential_token', formData.credential_token);
+      data.append('credential_email', formData.credential_email);
+
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${baseApiUrl}shipment-channel/`,
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        data: data,
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          getShipmentlist();
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
-    console.log(formData)
     handleCloseDialog();
   };
 
@@ -133,14 +180,15 @@ const ShipmentChannelsList = () => {
       };
       const response = await axios.request(config);
       setshipMentList(response.data.Data);
-      console.log(shipMentList);
     } catch (error) {
-      console.error("Error fetching orders:", error);
+      console.error("Error fetching shipment channels:", error);
     }
   };
+
   useEffect(() => {
     getShipmentlist();
   }, []);
+
   const HeaderCell = (props) => (
     <TableCell
       sx={{
@@ -173,11 +221,7 @@ const ShipmentChannelsList = () => {
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
             <CustomCard padding="13px">
-              <Grid
-                container
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Grid container justifyContent="space-between" alignItems="center">
                 <Grid item>
                   <Typography
                     sx={{
@@ -198,16 +242,16 @@ const ShipmentChannelsList = () => {
                     color="primary"
                     onClick={() =>
                       handleOpenDialog({
-                        emailLabel: "Provider Email",
                         usernameLabel: "Provider Username",
                         passwordLabel: "Provider Password",
+                        emailLabel: "Provider Email",
                         tokenLabel: "Provider Token",
-                        providerNameLabel: "Provider name",
-                        nameLabel: "Name",
+                        providernameLabel: "Provider Name",
+                        providerPriorityLabel: "Provider Priority",
                         sameProviderPriorityLabel: "Same Provider Priority",
-                        providerPriorityLabel: "Provider  Priority",
-                        statusLabel: "Provider status",
-                        imageLabel: "Provider Image",
+                        statusLabel: "Status",
+                        nameLabel: "Name",
+                        imageLabel: "Image",
                       })
                     }
                     sx={{ textTransform: "capitalize" }}
@@ -219,28 +263,19 @@ const ShipmentChannelsList = () => {
             </CustomCard>
           </Grid>
         </Grid>
+
         <Grid container spacing={2} sx={{ marginBottom: "10px" }}>
-          {/* Card 1 */}
-          {shipMentList.map((row) => (
-            <Grid item xs={12} sm={4}>
+          {shipMentList.map((row, index) => (
+            <Grid item xs={12} sm={4} key={index}>
               <CustomCard padding="20px">
-                <Grid
-                  container
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
+                <Grid container justifyContent="space-between" alignItems="center">
                   <Grid item>
                     <Image
                       src={backendUrl + row.image}
                       alt={row.name}
                       width={100}
                       height={60}
-                      style={{
-                        width: "100%",
-                        height: "60px",
-                        borderRadius: "4px",
-                      }}
-                      // layout="responsive"
+                      style={{ width: "100%", height: "60px", borderRadius: "4px" }}
                     />
                   </Grid>
                   <Grid item>
@@ -257,25 +292,15 @@ const ShipmentChannelsList = () => {
                     </Typography>
                   </Grid>
                 </Grid>
-                <Grid
-                  container
-                  justifyContent="flex-end"
-                  alignItems="center"
-                  sx={{ marginTop: 2 }}
-                >
+                <Grid container justifyContent="flex-end" alignItems="center" sx={{ marginTop: 2 }}>
                   <Grid item>
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() =>
-                        handleOpenDialog({
-                          emailLabel: "Shiprocket Email ####",
-                          passwordLabel: "Shiprocket Password",
-                        })
-                      }
+                      onClick={() => handleEdit(row.id)}
                       sx={{ textTransform: "capitalize" }}
                     >
-                      Create Channels
+                      Edit Channel
                     </Button>
                   </Grid>
                 </Grid>
@@ -283,6 +308,7 @@ const ShipmentChannelsList = () => {
             </Grid>
           ))}
         </Grid>
+
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
             <CustomCard>
@@ -314,37 +340,22 @@ const ShipmentChannelsList = () => {
                             <Button
                               variant="contained"
                               style={{
-                                backgroundColor:
-                                  row.status === 1 ? "green" : "red",
+                                backgroundColor: row.status === 1 ? "green" : "red",
                                 color: "white",
                               }}
                             >
                               {row.status === 1 ? "Active" : "Inactive"}
                             </Button>
                           </DataCell>
+                          <DataCell>{dayjs(row.created_at).format("YYYY-MM-DD")}</DataCell>
+                          <DataCell>{dayjs(row.updated_at).format("YYYY-MM-DD")}</DataCell>
                           <DataCell>
-                            {dayjs(row.created_at).format(
-                              "YYYY-MM-DD HH:mm:ss"
-                            )}
-                          </DataCell>
-                          <DataCell>
-                            {dayjs(row.updated_at).format(
-                              "YYYY-MM-DD HH:mm:ss"
-                            )}
-                          </DataCell>
-
-                          <DataCell>
-                            <Box sx={{ display: "flex", gap: "8px" }}>
-                              <IconButton
-                                color="primary"
-                                onClick={() => handleEdit(row)}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                              <IconButton color="error">
-                                <DeleteIcon />
-                              </IconButton>
-                            </Box>
+                            <IconButton onClick={() => handleEdit(row)}>
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton>
+                              <DeleteIcon />
+                            </IconButton>
                           </DataCell>
                         </TableRow>
                       ))}
@@ -355,168 +366,150 @@ const ShipmentChannelsList = () => {
             </CustomCard>
           </Grid>
         </Grid>
-      </Grid>
 
-      {/* Dialog for Creating/Editing Channel */}
-      <Dialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>
-          {isEditing ? "Edit Channel" : "Create Channel"}
-        </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} justifyContent="center">
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.usernameLabel}
-                type="text"
-                fullWidth
-                value={formData.credential_username}
-                onChange={(e) =>
-                  handleInputChange("credential_username", e.target.value)
-                }
-                sx={{ marginBottom: 2 }}
-              />
+        <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+          <DialogTitle>{isEditing ? "Edit Shipment Channel" : "Create Shipment Channel"}</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2}>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.emailLabel}
+                  type="email"
+                  fullWidth
+                  value={formData.credential_email}
+                  onChange={(e) => handleInputChange("credential_email", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.usernameLabel}
+                  type="text"
+                  fullWidth
+                  value={formData.credential_username}
+                  onChange={(e) => handleInputChange("credential_username", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.passwordLabel}
+                  type={showPassword ? "text" : "password"}
+                  fullWidth
+                  value={formData.credential_password}
+                  onChange={(e) => handleInputChange("credential_password", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.tokenLabel}
+                  type="text"
+                  fullWidth
+                  value={formData.credential_token}
+                  onChange={(e) => handleInputChange("credential_token", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.providernameLabel}
+                  type="text"
+                  fullWidth
+                  value={formData.provider_name}
+                  onChange={(e) => handleInputChange("provider_name", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.providerPriorityLabel}
+                  type="number"
+                  fullWidth
+                  value={formData.provider_priority}
+                  onChange={(e) => handleInputChange("provider_priority", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.sameProviderPriorityLabel}
+                  type="number"
+                  fullWidth
+                  value={formData.same_provider_priority}
+                  onChange={(e) => handleInputChange("same_provider_priority", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  select
+                  margin="dense"
+                  label={inputLabels.statusLabel}
+                  fullWidth
+                  value={formData.status}
+                  onChange={(e) => handleInputChange("status", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                >
+                  <MenuItem value="1">Active</MenuItem>
+                  <MenuItem value="0">Inactive</MenuItem>
+                </TextField>
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.nameLabel}
+                  type="text"
+                  fullWidth
+                  value={formData.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <TextField
+                  margin="dense"
+                  label={inputLabels.providerPriorityLabel}
+                  type="file"
+                  fullWidth
+                  accept="image/*"
+                  value={formData.image}
+                  onChange={(e) => handleImageUpload(e.target.files[0])}
+                  sx={{ marginBottom: 2 }}
+                />
+              </Grid>
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.passwordLabel}
-                type="password"
-                fullWidth
-                value={formData.credential_password}
-                onChange={(e) =>
-                  handleInputChange("credential_password", e.target.value)
-                }
-                sx={{ marginBottom: 2 }}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.emailLabel}
-                type="email"
-                fullWidth
-                value={formData.credential_email}
-                onChange={(e) =>
-                  handleInputChange("credential_email", e.target.value)
-                }
-                sx={{ marginBottom: 2 }}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.tokenLabel}
-                type="token"
-                fullWidth
-                value={formData.credential_token}
-                onChange={(e) =>
-                  handleInputChange("credential_token", e.target.value)
-                }
-                sx={{ marginBottom: 2 }}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.nameLabel}
-                type="text"
-                fullWidth
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                sx={{ marginBottom: 2 }}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.providerNameLabel}
-                type="text"
-                fullWidth
-                value={formData.provider_name}
-                onChange={(e) =>
-                  handleInputChange("provider_name", e.target.value)
-                }
-                sx={{ marginBottom: 2 }}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.sameProviderPriorityLabel}
-                type="number"
-                fullWidth
-                value={formData.same_provider_priority}
-                onChange={(e) =>
-                  handleInputChange("same_provider_priority", e.target.value)
-                }
-                sx={{ marginBottom: 2 }}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                margin="dense"
-                label={inputLabels.providerPriorityLabel}
-                type="number"
-                fullWidth
-                value={formData.provider_priority}
-                onChange={(e) =>
-                  handleInputChange("provider_priority", e.target.value)
-                }
-                sx={{ marginBottom: 2 }}
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                select
-                margin="dense"
-                label={inputLabels.statusLabel}
-                fullWidth
-                value={formData.status}
-                onChange={(e) => handleInputChange("status", e.target.value)}
-                sx={{ marginBottom: 2 }}
-              >
-                <MenuItem value="1">Active</MenuItem>
-                <MenuItem value="0">Inactive</MenuItem>
-              </TextField>
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <label
-                htmlFor="image-upload"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                {inputLabels.imageLabel}
-              </label>
-              <input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleInputChange("image", e.target.files[0])}
-                style={{ width: "100%", marginBottom: "16px" }} // Adjust margin as needed
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button
-            onClick={handleSubmit}
-            color="primary"
-            style={{ backgroundColor: "#213a8b", color: "#fff" }}
-          >
-            {isEditing ? "Update" : "Create"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} color="primary">
+              {isEditing ? "Save Changes" : "Create Channel"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Grid>
     </Grid>
   );
 };

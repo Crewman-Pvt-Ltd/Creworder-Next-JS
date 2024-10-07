@@ -375,7 +375,7 @@ const RolesAndPermissions = () => {
                             onChange={(event) =>
                               makePermissionJson(event.target.value)
                             }
-                      
+
                           >
                             <MenuItem value="N">None</MenuItem>
                             {permissionDict[permission.name] &&
@@ -404,7 +404,7 @@ const RolesAndPermissions = () => {
                             onChange={(event) =>
                               makePermissionJson(event.target.value)
                             }
-                      
+
                           >
                             <MenuItem value="N">None</MenuItem>
                             {permissionDict[permission.name] &&
@@ -433,7 +433,7 @@ const RolesAndPermissions = () => {
                             onChange={(event) =>
                               makePermissionJson(event.target.value)
                             }
-                      
+
                           >
                             <MenuItem value="N">None</MenuItem>
                             {permissionDict[permission.name] &&
@@ -462,7 +462,7 @@ const RolesAndPermissions = () => {
                             onChange={(event) =>
                               makePermissionJson(event.target.value)
                             }
-                      
+
                           >
                             <MenuItem value="N">None</MenuItem>
                             {permissionDict[permission.name] &&
@@ -501,7 +501,7 @@ const RolesAndPermissions = () => {
                             onChange={(event) =>
                               makePermissionJson(event.target.value)
                             }
-                      
+
                           >
                             <MenuItem value="N">None</MenuItem>
                             {permissionDict[permission.name] &&
