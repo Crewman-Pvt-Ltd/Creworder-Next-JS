@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navitem from "./Navitem";
 import {
   Collapse,
   List,
@@ -12,7 +11,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import DashboardIcon from "@mui/icons-material/Home";
-import { Download as DownloadIcon, Height, Margin } from "@mui/icons-material";
+import { Download as DownloadIcon } from "@mui/icons-material";
 import ReceiptIcon from "@mui/icons-material/ShoppingCart";
 import GroupIcon from "@mui/icons-material/Group";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -39,6 +38,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { fetchSideBarData } from "@/utils/sideBarData";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import CommitIcon from "@mui/icons-material/Commit";
+
 const HoverableNavItem = ({
   isOpen,
   name,
@@ -46,26 +46,38 @@ const HoverableNavItem = ({
   children,
   onClick,
   active,
+  dropdownIcon,
 }) => {
   const [hovered, setHovered] = useState(false);
   const [hoveredItemPosition, setHoveredItemPosition] = useState({ top: 0 });
+
   const handleMouseEnter = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
     setHovered(true);
     setHoveredItemPosition({ top: rect.top });
   };
+
   const handleMouseLeave = () => {
     setHovered(false);
   };
+
   return (
     <Box
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
     >
-      <Navitem name={isOpen ? name : ""} icon={icon} active={active}>
-        {children}
-      </Navitem>
+      <ListItem
+        button
+        selected={active}
+        sx={{ justifyContent: "space-between" }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {icon}
+          <ListItemText primary={isOpen ? name : ""} />
+        </Box>
+        {dropdownIcon}
+      </ListItem>
       {!isOpen && hovered && (
         <Box
           sx={{
@@ -83,6 +95,7 @@ const HoverableNavItem = ({
           <Typography variant="body2">{name}</Typography>
         </Box>
       )}
+      {children}
     </Box>
   );
 };
@@ -92,9 +105,7 @@ const Sidebar = ({ isOpen, type }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [sideBarDataList, setsideBarDataList] = useState({});
-  if (isMobile) {
-    return null;
-  }
+  const [openMenu, setOpenMenu] = useState({});
 
   const fetchData = async () => {
     try {
@@ -105,6 +116,7 @@ const Sidebar = ({ isOpen, type }) => {
       console.error("Error fetching sidebar data:", error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -115,35 +127,18 @@ const Sidebar = ({ isOpen, type }) => {
     }
   };
 
-  const [isOrderOpen, setIsOrderOpen] = useState(false);
-  const handleOrderClick = () => {
-    setIsOrderOpen(!isOrderOpen);
-  };
-
   const [isHROpen, setIsHROpen] = useState(false);
   const handleHRClick = () => {
     setIsHROpen(!isHROpen);
   };
 
-  const [isExportOpen, setIsExportOpen] = useState(false);
-  const handleExportClick = () => {
-    setIsExportOpen(!isExportOpen);
+  const handleMenuClick = (menu) => {
+    setOpenMenu((prevOpenMenu) => ({
+      ...prevOpenMenu,
+      [menu]: !prevOpenMenu[menu],
+    }));
   };
 
-  const [isNDROpen, setIsNDROpen] = useState(false);
-  const handleNDRClick = () => {
-    setIsNDROpen(!isNDROpen);
-  };
-
-  const [isCallOpen, setIsCallOpen] = useState(false);
-  const handleCallClick = () => {
-    setIsCallOpen(!isCallOpen);
-  };
-
-  const [isLeadsOpen, setIsLeadsOpen] = useState(false);
-  const handleLeadsClick = () => {
-    setIsLeadsOpen(!isLeadsOpen);
-  };
   const iconMap = {
     Receipt: <ReceiptIcon />,
     NotificationsIcon: <NotificationsIcon />,
@@ -159,22 +154,13 @@ const Sidebar = ({ isOpen, type }) => {
     EventNoteIcon: <EventNoteIcon />,
     CommitIcon: <CommitIcon />,
     DashboardIcon: <DashboardIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
-    NotificationsIcon: <NotificationsIcon />,
   };
+
   const currentPath = router.pathname;
+
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <Box
@@ -188,16 +174,6 @@ const Sidebar = ({ isOpen, type }) => {
         overflowY: "auto",
         color: "white",
         transition: "width 0.2s ease",
-        "&::-webkit-scrollbar": {
-          width: "6px",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#c9c9c9",
-          borderRadius: "10px",
-        },
-        "&::-webkit-scrollbar-track": {
-          backgroundColor: "#405189",
-        },
       }}
     >
       <Box
@@ -214,17 +190,10 @@ const Sidebar = ({ isOpen, type }) => {
           alt="Creworder Logo"
           width={isOpen ? 150 : 40}
           height={isOpen ? 50 : 20}
-          active={currentPath === "/dashboard"}
           onClick={() => handleItemClick("/dashboard")}
         />
         {!isOpen && !isMobile && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: 1,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 1 }}>
             <Image
               src={creworderIcon}
               alt="Creworder Icon"
@@ -238,15 +207,17 @@ const Sidebar = ({ isOpen, type }) => {
       <Box
         sx={{
           overflowY: "auto",
-          scrollbarWidth: "none",
+          height: "900px",
+          marginTop: "13px",
+          color: "#abb9e8",
           "&::-webkit-scrollbar": {
             display: "none",
           },
-          marginTop: "13px",
-          color: "#abb9e8",
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
         }}
       >
-        {type == "admin" && (
+        {type === "admin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name="Home"
@@ -255,7 +226,8 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/admin/get-started")}
           />
         )}
-        {type == "superadmin" && (
+
+        {type === "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
             name="Dashboard"
@@ -264,57 +236,43 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/dashboard")}
           />
         )}
+
         {Object.entries(sideBarDataList).map(([menu, items]) => {
           if (Array.isArray(items)) {
             return (
-              <HoverableNavItem
-                key={menu}
-                isOpen={isOpen}
-                name={
-                  <span
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <span style={{ flexGrow: 1, textAlign: "left" }}>
-                      {menu}
-                    </span>
+              <Box key={menu}>
+                <HoverableNavItem
+                  isOpen={isOpen}
+                  name={menu}
+                  icon={iconMap[sideBarDataList[`${menu}_icon`]] || null}
+                  dropdownIcon={
                     <IconButton
                       size="small"
-                      onClick={handleHRClick}
-                      sx={{
-                        color: "white",
-                        marginLeft: "auto",
-                      }}
+                      onClick={() => handleMenuClick(menu)}
+                      sx={{ color: "white" }}
                     >
-                      {isHROpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                      {openMenu[menu] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                     </IconButton>
-                  </span>
-                }
-                icon={iconMap[sideBarDataList[`${menu}_icon`]] || null}
-                active={currentPath.startsWith("/hr/hr-employees")}
-                onClick={handleHRClick}
-              >
-                <Collapse in={isHROpen}>
-                  <List component="div" disablePadding>
-                    {items.map((item, index) =>
-                      Object.entries(item).map(([key, value]) => (
-                        <ListItem
-                          button
-                          key={`${index}-${key}`}
-                          onClick={() => handleItemClick(value)}
-                          sx={{ pl: 4 }}
-                        >
-                          <ListItemText primary={key} />
-                        </ListItem>
-                      ))
-                    )}
-                  </List>
-                </Collapse>
-              </HoverableNavItem>
+                  }
+                >
+                  <Collapse in={openMenu[menu]} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {items.map((item, index) =>
+                        Object.entries(item).map(([key, value]) => (
+                          <ListItem
+                            button
+                            key={`${index}-${key}`}
+                            onClick={() => handleItemClick(value)}
+                            sx={{ pl: 4 }}
+                          >
+                            <ListItemText primary={key} />
+                          </ListItem>
+                        ))
+                      )}
+                    </List>
+                  </Collapse>
+                </HoverableNavItem>
+              </Box>
             );
           } else if (!menu.includes("_icon")) {
             return (
@@ -331,15 +289,6 @@ const Sidebar = ({ isOpen, type }) => {
           return null;
         })}
 
-        {/* {type == "superadmin" && (
-          <HoverableNavItem
-            isOpen={isOpen}
-            name="Module"
-            icon={<AppsIcon />}
-            active={currentPath === "/superadmin/module"}
-            onClick={() => handleItemClick("/superadmin/module")}
-          />
-        )} */}
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
