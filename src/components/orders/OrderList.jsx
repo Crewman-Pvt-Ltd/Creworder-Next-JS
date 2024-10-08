@@ -18,7 +18,13 @@ import {
   TablePagination,
   FormControl,
   TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
+import Rating from "@mui/material/Rating";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import Link from "next/link";
 import CallIcon from "@mui/icons-material/Call";
@@ -46,15 +52,15 @@ const OrderList = () => {
     router.push("/admin/orders/createorders");
   };
   const [state, setstate] = useState("");
- 
+
   const handlestate = (event) => {
     setstate(event.target.value);
   };
-const handleEdit = () => {
-  router.push("/admin/orders/editorders")
-}
+  const handleEdit = () => {
+    router.push("/admin/orders/editorders");
+  };
   const [product, setproduct] = useState("");
-  
+
   const handleproduct = (event) => {
     setproduct(event.target.value);
   };
@@ -66,7 +72,7 @@ const handleEdit = () => {
   };
 
   const [agent, setagent] = useState("");
-  
+
   const handleagent = (event) => {
     setagent(event.target.value);
   };
@@ -78,13 +84,13 @@ const handleEdit = () => {
   };
 
   const [teamlead, setteamlead] = useState("");
-  
+
   const handleteamlead = (event) => {
     setteamlead(event.target.value);
   };
 
   const [status, setstatus] = useState("");
- 
+
   const handlestatus = (event) => {
     setstatus(event.target.value);
   };
@@ -116,7 +122,30 @@ const handleEdit = () => {
   const handleEndDateChange = (newValue) => {
     setEndDate(newValue);
   };
+  const [open, setOpen] = useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    // Reset ratings when closing
+    setQuestions((prev) => prev.map((q) => ({ ...q, rating: 0 })));
+  };
+
+  const handleRatingChange = (index, newValue) => {
+    // Update the rating for the specific question
+    setQuestions((prev) =>
+      prev.map((q, i) => (i === index ? { ...q, rating: newValue } : q))
+    );
+  };
+  const [rating, setRating] = useState(0); // State to store the rating
+  const [questions, setQuestions] = useState([
+    { question: "How satisfied are you with our service?", rating: 0 },
+    { question: "How likely are you to recommend us?", rating: 0 },
+    { question: "What is your overall experience?", rating: 0 },
+  ]);
   return (
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
@@ -378,12 +407,12 @@ const handleEdit = () => {
             </Grid>
 
             <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs} >
-              <CustomLabel htmlFor="End Date">End Date</CustomLabel>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <CustomLabel htmlFor="End Date">End Date</CustomLabel>
                 <DatePicker
                   label="End Date"
                   value={endDate}
-                  onChange={handleEndDateChange}                 
+                  onChange={handleEndDateChange}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -515,15 +544,19 @@ const handleEdit = () => {
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon 
-                          onClick={handleEdit}
-                          />
+                          <EditIcon onClick={handleEdit} />
                         </IconButton>
                         <IconButton
                           aria-label="delete"
                           sx={{ color: "#FF0000" }}
                         >
                           <DeleteIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="open-dialog"
+                          sx={{ color: "#FF0000" }}
+                        >
+                          <QuestionAnswerIcon onClick={handleClickOpen} />
                         </IconButton>
                       </TableCell>
                     </TableRow>
@@ -533,6 +566,30 @@ const handleEdit = () => {
             </TableContainer>
           </Box>
         </CustomCard>
+        <Dialog open={open} onClose={handleClose} fullWidth>
+          <DialogTitle>{"Feedback Questions"}</DialogTitle>
+          <DialogContent>
+            {questions.map((q, index) => (
+              <Box key={index} sx={{ marginBottom: 3 }}>
+                <Typography variant="h6">
+                  {index + 1}. {q.question} {/* Add ID here */}
+                </Typography>
+                <Rating
+                  name={`rating-${index}`}
+                  value={q.rating}
+                  onChange={(event, newValue) =>
+                    handleRatingChange(index, newValue)
+                  }
+                />
+              </Box>
+            ))}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
     </Grid>
   );

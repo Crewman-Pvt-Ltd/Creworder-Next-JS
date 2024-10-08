@@ -17,7 +17,7 @@ import FinanceSettings from "./FinanceSettings";
 import SocialLoginSettings from "./SocialLoginSettings";
 import ThemeSettings from "./ThemeSettings";
 import Branch from "./Branch";
-
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import DatabaseBackupSettings from "./DatabaseBackupSettings";
 import LocalShippingIcon from "@mui/icons-material/Map";
@@ -60,6 +60,7 @@ import LeadSettings from "./LeadSettings";
 import RolesList from "./RolesList";
 import BankDetails from "./BankDetails";
 import PixelSettings from "./PixelSettings";
+import QCSettings from "./QCSettings";
 const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
@@ -82,7 +83,7 @@ const adminMenuItems = [
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
   { text: "Email Settings", icon: <EmailIcon /> },
   { text: "Order Status", icon: <AssignmentIcon /> },
-
+  { text: "QC Setting", icon: <QuestionAnswerIcon /> },
   { text: "Lead Setting", icon: <ManageAccountsIcon /> },
 
   { text: "IP Access", icon: <PrivacyTipIcon /> },
@@ -340,7 +341,7 @@ const SettingsSidebarListItems = ({ type }) => {
           {type == "admin" && selectedItem === "Order Status" && (
             <OrderStatus />
           )}
-
+          {type == "admin" && selectedItem === "QC Setting" && <QCSettings />}
           {type == "admin" && selectedItem === "Lead Setting" && (
             <LeadSettings />
           )}
