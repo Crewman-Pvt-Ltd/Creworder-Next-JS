@@ -106,7 +106,7 @@ const PickupAddressList = ({ onAddPickup, onEditPickup }) => {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={12} md={12}>
+            {/* <Grid item xs={12} sm={12} md={12}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={3}>
                   <CustomTextField
@@ -161,7 +161,7 @@ const PickupAddressList = ({ onAddPickup, onEditPickup }) => {
                   </CustomTextField>
                 </Grid>
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={12} md={12} mt={2}>
               <TableContainer >
                 <Table>

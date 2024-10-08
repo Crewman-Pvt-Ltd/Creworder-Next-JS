@@ -9,7 +9,7 @@ import {
   FormGroup,
   Button,
   FormControlLabel,
-  TextField,
+ 
   ListItemText,
   IconButton,
   Select,
@@ -17,7 +17,7 @@ import {
   List,
   ListItem,
   FormControl,
-  InputLabel,
+  
   Dialog,
   DialogTitle,
   DialogContent,
@@ -32,7 +32,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import CloseIcon from "@mui/icons-material/Close";
 
-// Importing the Poppins font with weight 300
+
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
@@ -45,7 +45,7 @@ const CreateOrder = () => {
     router.push("/admin/orders");
   };
 
-  // State variables
+  
   const [courseDuration, setCourseDuration] = useState("");
   const [paymentMode, setPaymentMode] = useState("");
   const [locality, setLocality] = useState("");
@@ -70,10 +70,10 @@ const CreateOrder = () => {
 
   const handlePincodeSelection = (pincode) => {
     if (selectedPincodes.includes(pincode)) {
-      // If the pincode is already selected, remove it from the selection
+      
       setSelectedPincodes(selectedPincodes.filter((item) => item !== pincode));
     } else {
-      // Otherwise, add it to the selection
+
       setSelectedPincodes([...selectedPincodes, pincode]);
     }
   };
@@ -81,7 +81,7 @@ const CreateOrder = () => {
   const handleSubmit = () => {
     let valid = true;
 
-    // Validate postal code
+    
     if (!postalCode) {
       setPostalCodeError(true);
       valid = false;
@@ -89,7 +89,7 @@ const CreateOrder = () => {
       setPostalCodeError(false);
     }
 
-    // Validate phone number
+    
     if (!phone) {
       setPhoneError(true);
       valid = false;
@@ -97,7 +97,7 @@ const CreateOrder = () => {
       setPhoneError(false);
     }
 
-    // Validate payment mode
+   
     if (!paymentMode) {
       setPaymentModeError(true);
       valid = false;
@@ -105,11 +105,11 @@ const CreateOrder = () => {
       setPaymentModeError(false);
     }
 
-    // If validation passes, close current dialog and open second dialog
+    
     if (valid) {
       console.log("Form submitted successfully!");
-      setIsDialogOpen(false); // Close current dialog
-      setIsSecondDialogOpen(true); // Open second dialog
+      setIsDialogOpen(false); 
+      setIsSecondDialogOpen(true); 
     }
   };
 
@@ -189,7 +189,7 @@ const CreateOrder = () => {
     const partialAmount = Number(e.target.value) || 0;
     setPartialPayment(
       partialAmount > payableAmount ? payableAmount : partialAmount
-    ); // Prevent partial amount from exceeding payable amount
+    ); 
   };
 
   const handlePaymentTypeChange = (e) => {

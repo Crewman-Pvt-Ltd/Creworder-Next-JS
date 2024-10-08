@@ -18,25 +18,70 @@ import CustomCard from "../CustomCard";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
-
+import { getToken } from "@/utils/getToken";
+import { usePermissions } from "@/contexts/PermissionsContext";
+import { useRouter } from "next/router";
+import MainApi from "@/api-manage/MainApi";
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
 
 const AddPickupAddress = ({ onPickupList }) => {
+  const router = useRouter();
+  const token = getToken();
+  const { permissionsData } = usePermissions();
   const [isVisible, setIsVisible] = useState(false);
   const [rtoChecked, setRtoChecked] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
-  
   const { data } = useGetAllBranches();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Form submitted");
-    if (onPickupList) {
-      onPickupList();
+  // Corrected useState for formData
+  const [formData, setFormData] = useState({
+    created_by: permissionsData.user.id,
+    contact_person_name: "",
+    contact_number: "",
+    contact_email: "",
+    alternate_contact_number: "",
+    complete_address: "",
+    landmark: "",
+    pincode: "",
+    city: "",
+    state: "",
+    is_verified: "0",
+    created_at: "",
+    status: "0",
+    country: "",
+    updated_at: "",
+    company: 26,
+    branches: [6],
+    
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
+    });
+
+    const response = await MainApi.post("/api/pick-up-point/", formData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+
+    if (response.status === 201) {
+      router.push("/admin/settings");
+    } else {
+      throw new Error("Unexpected response from server");
     }
   };
 
@@ -56,12 +101,6 @@ const AddPickupAddress = ({ onPickupList }) => {
     setSelectedBranch(event.target.value);
   };
 
-  const addressOptions = [
-    { value: "address1", label: "Address 1" },
-    { value: "address2", label: "Address 2" },
-    { value: "address3", label: "Address 3" },
-  ];
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -74,7 +113,7 @@ const AddPickupAddress = ({ onPickupList }) => {
               Add New Pick Up Address
             </Typography>
             <Divider sx={{ my: 2 }} />
-           
+
             <Grid item xs={12} sm={3} md={3}>
               <CustomLabel>Select Branch</CustomLabel>
               <FormControl fullWidth>
@@ -89,7 +128,7 @@ const AddPickupAddress = ({ onPickupList }) => {
                     <MenuItem key={branch.id} value={branch.name}>
                       {branch.name}
                     </MenuItem>
-                  ))},
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -103,13 +142,15 @@ const AddPickupAddress = ({ onPickupList }) => {
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
-                <CustomLabel htmlFor="contact_person" required>
+                <CustomLabel htmlFor="contact_person_name" required>
                   Contact Person
                 </CustomLabel>
                 <CustomTextField
-                  id="contact_person"
-                  name="contact_person"
+                  id="contact_person_name"
+                  name="contact_person_name"
                   type="text"
+                  value={formData.contact_person_name}
+                  onChange={handleInputChange}
                   placeholder="Enter contact person name"
                   required
                   fullWidth
@@ -124,32 +165,38 @@ const AddPickupAddress = ({ onPickupList }) => {
                   name="contact_number"
                   type="text"
                   placeholder="Enter contact number"
+                  value={formData.contact_number}
+                  onChange={handleInputChange}
                   required
                   fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <CustomLabel htmlFor="email_address" required>
+                <CustomLabel htmlFor="contact_email" required>
                   Email Address
                 </CustomLabel>
                 <CustomTextField
-                  id="email_address"
-                  name="email_address"
+                  id="contact_email"
+                  name="contact_email"
                   type="email"
                   placeholder="Enter email address"
+                  value={formData.contact_email}
+                  onChange={handleInputChange}
                   required
                   fullWidth
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <CustomLabel htmlFor="alternate_phone">
+                <CustomLabel htmlFor="alternate_contact_number">
                   Alternate Phone No. (Optional)
                 </CustomLabel>
                 <CustomTextField
-                  id="alternate_phone"
-                  name="alternate_phone"
+                  id="alternate_contact_number"
+                  name="alternate_contact_number"
                   type="text"
                   placeholder="Enter 10 digit mobile number"
+                  value={formData.alternate_contact_number}
+                  onChange={handleInputChange}
                   fullWidth
                 />
               </Grid>
@@ -173,6 +220,8 @@ const AddPickupAddress = ({ onPickupList }) => {
                   name="complete_address"
                   type="text"
                   placeholder="House/Floor No., Building Name or Street, Locality"
+                  value={formData.complete_address}
+                  onChange={handleInputChange}
                   fullWidth
                 />
               </Grid>
@@ -183,6 +232,8 @@ const AddPickupAddress = ({ onPickupList }) => {
                   name="landmark"
                   type="text"
                   placeholder="Any nearby post office, market, hospital as the landmark"
+                  value={formData.landmark}
+                  onChange={handleInputChange}
                   fullWidth
                 />
               </Grid>
@@ -193,6 +244,8 @@ const AddPickupAddress = ({ onPickupList }) => {
                   name="pincode"
                   type="text"
                   placeholder="Add pincode"
+                  value={formData.pincode}
+                  onChange={handleInputChange}
                   fullWidth
                 />
               </Grid>
@@ -203,6 +256,8 @@ const AddPickupAddress = ({ onPickupList }) => {
                   name="city"
                   type="text"
                   placeholder="City"
+                  value={formData.city}
+                  onChange={handleInputChange}
                   fullWidth
                 />
               </Grid>
@@ -213,6 +268,8 @@ const AddPickupAddress = ({ onPickupList }) => {
                   name="state"
                   type="text"
                   placeholder="State"
+                  value={formData.state}
+                  onChange={handleInputChange}
                   fullWidth
                 />
               </Grid>
@@ -223,13 +280,15 @@ const AddPickupAddress = ({ onPickupList }) => {
                   name="country"
                   type="text"
                   placeholder="Country"
+                  value={formData.country}
+                  onChange={handleInputChange}
                   fullWidth
                 />
               </Grid>
               <Grid item xs={12}>
                 <Divider sx={{ my: 1 }} />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Grid container alignItems="center">
                   <Grid item>
                     <Typography
@@ -251,88 +310,55 @@ const AddPickupAddress = ({ onPickupList }) => {
                     </IconButton>
                   </Grid>
                 </Grid>
-              </Grid>
-              {isVisible && (
-                <Grid
-                  container
-                  spacing={2}
-                  m={1}
-                  sx={{ backgroundColor: "#fafafa", borderRadius: "4px" }}
-                >
-                  <Grid item xs={12}>
-                    <Grid container spacing={2} alignItems="center">
-                      <Grid item xs={12} sm={6} display="flex">
-                        <Checkbox
-                          checked={rtoChecked}
-                          onChange={handleCheckboxRtoChange}
-                        />
-                        <Typography
-                          sx={{
-                            fontSize: "14px",
-                            color: "#000",
-                            fontWeight: "500",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          Use a different RTO Address
-                        </Typography>
-                      </Grid>
-                      {rtoChecked && (
-                        <Grid item xs={12} sm={6} pr={1} mt={1}>
-                          <Grid container direction="column" spacing={2}>
-                            <Grid item xs={12}>
-                              <CustomLabel htmlFor="select_address">
-                                Select Address
-                              </CustomLabel>
-                              <FormControl fullWidth>
-                                <Select
-                                  id="select_address"
-                                  name="select_address"
-                                  value={selectedAddress}
-                                  onChange={handleAddressChange}
-                                  sx={{ height: "35px" }}
-                                >
-                                  {addressOptions.map((option) => (
-                                    <MenuItem
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                            </Grid>
-                            <Grid item xs={12}>
-                              <Typography
-                                sx={{ fontSize: "11px" }}
-                                className={poppins.className}
-                              >
-                                Note: RTO address is only applicable for
-                                Xpressbees, Delhivery and Ecom express.
-                              </Typography>
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                      )}
-                    </Grid>
+              </Grid> */}
+
+              {/* {isVisible && (
+                <>
+                  <Grid item xs={12} sm={6}>
+                    <CustomLabel htmlFor="rto_complete_address">
+                      RTO Complete Address
+                    </CustomLabel>
+                    <CustomTextField
+                      id="rto_complete_address"
+                      name="rto_complete_address"
+                      type="text"
+                      placeholder="Enter complete RTO address"
+                      value={formData.rto_complete_address}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
                   </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <CustomLabel htmlFor="rto_pincode">RTO Pincode</CustomLabel>
+                    <CustomTextField
+                      id="rto_pincode"
+                      name="rto_pincode"
+                      type="text"
+                      placeholder="Add RTO pincode"
+                      value={formData.rto_pincode}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
+                </>
+              )} */}
+              {/* <Grid item xs={12}>
+                <Divider sx={{ my: 1 }} />
+              </Grid> */}
+              <Grid container spacing={2} justifyContent="flex-end" mt={2}>
+                <Grid item>
+                  <Button variant="outlined" onClick={onPickupList}>
+                    Cancel
+                  </Button>
                 </Grid>
-              )}
-            </Grid>
-            <Grid container spacing={2} justifyContent="flex-end" mt={2}>
-              <Grid item>
-                <Button variant="outlined" onClick={onPickupList}>
-                  Cancel
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button variant="contained" onClick={handleSubmit}>
-                  Verify and Save Address
-                </Button>
+                <Grid item>
+                  <Button variant="contained" onClick={handleSubmit}>
+                    Verify and Save Address
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
+            
           </CardContent>
         </CustomCard>
       </Grid>
