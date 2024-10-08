@@ -100,7 +100,7 @@ const HoverableNavItem = ({
   );
 };
 
-const Sidebar = ({ isOpen, type }) => {
+  const Sidebar = ({ isOpen, type }) => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));

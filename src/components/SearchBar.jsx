@@ -13,18 +13,18 @@ const SearchBar = ({ onSearch }) => {
         size="small"
         onChange={(e) => onSearch(e.target.value)}
         sx={{
-          backgroundColor: '#f3f3f9', // Light background color
-          borderRadius: 1, // Slight rounding of corners
-          width: '300px', // Full width
+          backgroundColor: '#f3f3f9',
+          borderRadius: 1,
+          width: '300px',
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: 'transparent', // Remove border color
+              borderColor: 'transparent',
             },
             '&:hover fieldset': {
-              borderColor: 'transparent', // Remove border color on hover
+              borderColor: 'transparent',
             },
             '&.Mui-focused fieldset': {
-              borderColor: 'transparent', // Remove border color on focus
+              borderColor: 'transparent',
             },
           },
         }}

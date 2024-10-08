@@ -185,7 +185,7 @@ const AppreciationList = ({ onAddAppreciation }) => {
                             color: "black",
                           }}
                         >
-                          {awardIdToTitleMap[row.award] || "Unknown Award"} {/* Display award title or fallback */}
+                          {awardIdToTitleMap[row.award] || "Unknown Award"}
                         </Typography>
                       </TableCell>
                       <TableCell>{row.date_given}</TableCell>
