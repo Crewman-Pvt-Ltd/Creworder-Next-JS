@@ -150,7 +150,7 @@ const OrderList = () => {
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
         <CustomCard padding="13px">
-          <Grid container justifyContent="space-between" alignItems="center">
+        <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
               <Typography
                 sx={{
@@ -159,14 +159,14 @@ const OrderList = () => {
                   whiteSpace: "nowrap",
                   textTransform: "capitalize",
                   color: "black",
-                  marginLeft: "30px",
+                  marginLeft: "30px"
                 }}
               >
                 Order List
               </Typography>
             </Grid>
             <Grid item>
-              <Button
+            <Button
                 onClick={createOrder}
                 sx={{
                   padding: "8px",
@@ -187,11 +187,6 @@ const OrderList = () => {
               </Button>
             </Grid>
           </Grid>
-        </CustomCard>
-      </Grid>
-
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
           <Grid
             container
             spacing={1}

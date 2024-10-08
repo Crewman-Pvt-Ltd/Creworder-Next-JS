@@ -32,11 +32,7 @@ import { baseApiUrl, backendUrl } from "@/api-manage/ApiRoutes";
 import { getToken } from "@/utils/getToken";
 import axios from "axios";
 import dayjs from "dayjs";
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+
 const initialData = [
   {
     id: 1,
@@ -59,7 +55,6 @@ const ShipmentChannelsList = () => {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const [formData, setFormData] = useState({
-    name: "",
     name: "",
     image: "",
     status: "Active",
@@ -94,77 +89,78 @@ const ShipmentChannelsList = () => {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setIsEditing(false);
+    setFormData({
+      name: "",
+      image: "",
+      status: "Active",
+      credential_email: "",
+      credential_token: "",
+      provider_priority: "",
+      credential_username: "",
+      credential_password: "",
+      same_provider_priority: "",
+    });
   };
+
   const handleImageUpload = (file) => {
     setImage(file);
   };
+
   const handleInputChange = (name, value) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-  useEffect(() => {
-  }, [formData]);
 
   const handleEdit = (id) => {
-    setIsEditing(true);
-    setDialogOpen(true);
+    const channelToEdit = shipMentList.find(channel => channel.id === id);
+    if (channelToEdit) {
+      setIsEditing(true);
+      setEditId(id);
+      setFormData({
+        name: channelToEdit.name,
+        image: channelToEdit.image,
+        status: channelToEdit.status,
+        credential_email: channelToEdit.credential_email,
+        credential_token: channelToEdit.credential_token,
+        provider_priority: channelToEdit.provider_priority,
+        credential_username: channelToEdit.credential_username,
+        credential_password: channelToEdit.credential_password,
+        same_provider_priority: channelToEdit.same_provider_priority,
+      });
+      setDialogOpen(true);
+    }
   };
 
-  const handleSubmit = () => {
-    if (isEditing) {
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === editId
-            ? { ...item, ...formData, updated_at: new Date().toISOString().split("T")[0] }
-            : item
-        )
-      );
-    } else {
-      setData([
-        {
-          name: formData.name,
-          image: formData.image,
-          status: formData.status,
-          email: formData.credential_email,
-          provider_name: formData.provider_name,
-          credential_password: formData.credential_password,
-          credential_token: formData.credential_token,
-          provider_priority: formData.provider_priority,
-          credential_username: formData.credential_username,
-          same_provider_priority: formData.same_provider_priority,
-        },
-      ]);
-      let data = new FormData();
-      data.append('name', formData.name);
-      data.append('provider_name', formData.provider_name);
-      data.append('same_provider_priority', formData.same_provider_priority);
-      data.append('provider_priority', formData.provider_priority);
-      data.append('status', formData.status);
-      data.append('image', image);
-      data.append('credential_username', formData.credential_username);
-      data.append('credential_password', formData.credential_password);
-      data.append('credential_token', formData.credential_token);
-      data.append('credential_email', formData.credential_email);
+  const handleSubmit = async () => {
+    let data = new FormData();
+    data.append('name', formData.name);
+    data.append('provider_name', formData.provider_name);
+    data.append('same_provider_priority', formData.same_provider_priority);
+    data.append('provider_priority', formData.provider_priority);
+    data.append('status', formData.status);
+    data.append('image', image);
+    data.append('credential_username', formData.credential_username);
+    data.append('credential_password', formData.credential_password);
+    data.append('credential_token', formData.credential_token);
+    data.append('credential_email', formData.credential_email);
 
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: `${baseApiUrl}shipment-channel/`,
-        headers: {
-          'Authorization': `Token ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-        data: data,
-      };
-      axios
-        .request(config)
-        .then((response) => {
-          getShipmentlist();
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+    let config = {
+      method: isEditing ? 'put' : 'post',
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}shipment-channel/${isEditing ? editId : ''}`,
+      headers: {
+        'Authorization': `Token ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+      data: data,
+    };
+
+    try {
+      await axios.request(config);
+      await getShipmentlist();
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error:', error);
     }
-    handleCloseDialog();
   };
 
   const getShipmentlist = async () => {
@@ -215,8 +211,22 @@ const ShipmentChannelsList = () => {
     />
   );
 
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this channel?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`${baseApiUrl}shipment-channel/${id}`, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        getShipmentlist(); // Refresh list after deletion
+      } catch (error) {
+        console.error("Error deleting channel:", error);
+      }
+    }
+  };
+
   return (
-    <Grid container sx={{ padding: 3 }}>
+    <Grid container>
       <Grid item xs={12}>
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
@@ -350,11 +360,11 @@ const ShipmentChannelsList = () => {
                           <DataCell>{dayjs(row.created_at).format("YYYY-MM-DD")}</DataCell>
                           <DataCell>{dayjs(row.updated_at).format("YYYY-MM-DD")}</DataCell>
                           <DataCell>
-                            <IconButton onClick={() => handleEdit(row)}>
-                              <EditIcon />
+                            <IconButton onClick={() => handleEdit(row.id)}>
+                              <EditIcon  color="primary"/>
                             </IconButton>
-                            <IconButton>
-                              <DeleteIcon />
+                            <IconButton onClick={() => handleDelete(row.id)}>
+                              <DeleteIcon style={{color: 'red'}} />
                             </IconButton>
                           </DataCell>
                         </TableRow>
@@ -486,14 +496,13 @@ const ShipmentChannelsList = () => {
                   sx={{ marginBottom: 2 }}
                 />
               </Grid>
-              <Grid item md={6} xs={12}>
+              <Grid item md={6} xs={12}>                
                 <TextField
                   margin="dense"
-                  label={inputLabels.providerPriorityLabel}
+                  label={inputLabels.imageLabel}
                   type="file"
                   fullWidth
                   accept="image/*"
-                  value={formData.image}
                   onChange={(e) => handleImageUpload(e.target.files[0])}
                   sx={{ marginBottom: 2 }}
                 />
