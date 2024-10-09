@@ -54,7 +54,7 @@ const AddPickupAddress = ({ onPickupList }) => {
     status: "0",
     country: "",
     updated_at: "",
-    company: 26,
+    company: 2,
     branches: [6],
     
   });
