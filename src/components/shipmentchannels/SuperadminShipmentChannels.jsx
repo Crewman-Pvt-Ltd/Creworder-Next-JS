@@ -43,7 +43,7 @@ const initialData = [
   },
 ];
 
-const ShipmentChannelsList = () => {
+const SuperadminShipmentChannels = () => {
   const [data, setData] = useState(initialData);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -55,15 +55,11 @@ const ShipmentChannelsList = () => {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const [formData, setFormData] = useState({
-    name: "",
-    image: "",
+   
     status: "Active",
-    credential_email: "",
-    credential_token: "",
-    provider_priority: "",
-    credential_username: "",
-    credential_password: "",
-    same_provider_priority: "",
+    provider_name: "",
+    logo: "",
+    
   });
 
   const [inputLabels, setInputLabels] = useState({
@@ -93,10 +89,10 @@ const ShipmentChannelsList = () => {
       name: "",
       image: "",
       status: "Active",
-      credential_email: "",
+      provider_name: "",
       credential_token: "",
       provider_priority: "",
-      credential_username: "",
+      logo: "",
       credential_password: "",
       same_provider_priority: "",
     });
@@ -119,10 +115,10 @@ const ShipmentChannelsList = () => {
         name: channelToEdit.name,
         image: channelToEdit.image,
         status: channelToEdit.status,
-        credential_email: channelToEdit.credential_email,
+        provider_name: channelToEdit.provider_name,
         credential_token: channelToEdit.credential_token,
         provider_priority: channelToEdit.provider_priority,
-        credential_username: channelToEdit.credential_username,
+        logo: channelToEdit.logo,
         credential_password: channelToEdit.credential_password,
         same_provider_priority: channelToEdit.same_provider_priority,
       });
@@ -138,10 +134,10 @@ const ShipmentChannelsList = () => {
     data.append('provider_priority', formData.provider_priority);
     data.append('status', formData.status);
     data.append('image', image);
-    data.append('credential_username', formData.credential_username);
+    data.append('logo', formData.logo);
     data.append('credential_password', formData.credential_password);
     data.append('credential_token', formData.credential_token);
-    data.append('credential_email', formData.credential_email);
+    data.append('provider_name', formData.provider_name);
 
     let config = {
       method: isEditing ? 'put' : 'post',
@@ -218,7 +214,7 @@ const ShipmentChannelsList = () => {
         await axios.delete(`${baseApiUrl}shipment-channel/${id}`, {
           headers: { Authorization: `Token ${token}` },
         });
-        getShipmentlist(); // Refresh list after deletion
+        getShipmentlist(); 
       } catch (error) {
         console.error("Error deleting channel:", error);
       }
@@ -327,22 +323,18 @@ const ShipmentChannelsList = () => {
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <HeaderCell>Email</HeaderCell>
-                        <HeaderCell>User Name</HeaderCell>
-                        <HeaderCell>Priority Provider Bias</HeaderCell>
-                        <HeaderCell>Priority Same</HeaderCell>
+                        <HeaderCell>Provider Name</HeaderCell>
+                        <HeaderCell>Logo</HeaderCell>
                         <HeaderCell>Status</HeaderCell>
-                        <HeaderCell>Created At</HeaderCell>
-                        <HeaderCell>Action</HeaderCell>
+                       <HeaderCell>Action</HeaderCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {shipMentList.map((row, index) => (
                         <TableRow key={index}>
-                          <DataCell>{row.credential_email}</DataCell>
-                          <DataCell>{row.credential_username}</DataCell>
-                          <DataCell>{row.provider_priority}</DataCell>
-                          <DataCell>{row.same_provider_priority}</DataCell>
+                          <DataCell>{row.provider_name}</DataCell>
+                          <DataCell>{row.logo}</DataCell>
+                          
                           <DataCell>
                             <Button
                               variant="contained"
@@ -354,7 +346,7 @@ const ShipmentChannelsList = () => {
                               {row.status === 1 ? "Active" : "Inactive"}
                             </Button>
                           </DataCell>
-                          <DataCell>{dayjs(row.created_at).format("YYYY-MM-DD")}</DataCell>
+                   
                           <DataCell>
                             <IconButton onClick={() => handleEdit(row.id)}>
                               <EditIcon  color="primary"/>
@@ -377,63 +369,7 @@ const ShipmentChannelsList = () => {
           <DialogTitle>{isEditing ? "Edit Shipment Channel" : "Create Shipment Channel"}</DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  margin="dense"
-                  label={inputLabels.emailLabel}
-                  type="email"
-                  fullWidth
-                  value={formData.credential_email}
-                  onChange={(e) => handleInputChange("credential_email", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  margin="dense"
-                  label={inputLabels.usernameLabel}
-                  type="text"
-                  fullWidth
-                  value={formData.credential_username}
-                  onChange={(e) => handleInputChange("credential_username", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  margin="dense"
-                  label={inputLabels.passwordLabel}
-                  type={showPassword ? "text" : "password"}
-                  fullWidth
-                  value={formData.credential_password}
-                  onChange={(e) => handleInputChange("credential_password", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  margin="dense"
-                  label={inputLabels.tokenLabel}
-                  type="text"
-                  fullWidth
-                  value={formData.credential_token}
-                  onChange={(e) => handleInputChange("credential_token", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                />
-              </Grid>
+              
               <Grid item md={6} xs={12}>
                 <TextField
                   margin="dense"
@@ -445,53 +381,7 @@ const ShipmentChannelsList = () => {
                   sx={{ marginBottom: 2 }}
                 />
               </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  margin="dense"
-                  label={inputLabels.providerPriorityLabel}
-                  type="number"
-                  fullWidth
-                  value={formData.provider_priority}
-                  onChange={(e) => handleInputChange("provider_priority", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  margin="dense"
-                  label={inputLabels.sameProviderPriorityLabel}
-                  type="number"
-                  fullWidth
-                  value={formData.same_provider_priority}
-                  onChange={(e) => handleInputChange("same_provider_priority", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                />
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  select
-                  margin="dense"
-                  label={inputLabels.statusLabel}
-                  fullWidth
-                  value={formData.status}
-                  onChange={(e) => handleInputChange("status", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                >
-                  <MenuItem value="1">Active</MenuItem>
-                  <MenuItem value="0">Inactive</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <TextField
-                  margin="dense"
-                  label={inputLabels.nameLabel}
-                  type="text"
-                  fullWidth
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  sx={{ marginBottom: 2 }}
-                />
-              </Grid>
+              
               <Grid item md={6} xs={12}>                
                 <TextField
                   margin="dense"
@@ -514,9 +404,10 @@ const ShipmentChannelsList = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        
       </Grid>
     </Grid>
   );
 };
 
-export default ShipmentChannelsList;
+export default SuperadminShipmentChannels;

@@ -61,6 +61,7 @@ import RolesList from "./RolesList";
 import BankDetails from "./BankDetails";
 import PixelSettings from "./PixelSettings";
 import QCSettings from "./QCSettings";
+import SuperadminShipmentChannels from "../shipmentchannels/SuperadminShipmentChannels";
 const superAdminMenuItems = [
   { text: "App Settings", icon: <SettingsIcon /> },
   { text: "Notification Settings", icon: <NotificationsIcon /> },
@@ -71,6 +72,7 @@ const superAdminMenuItems = [
   { text: "Database Backup Settings", icon: <BackupIcon /> },
   { text: "Maintainance Mode", icon: <LocalShippingIcon /> },
   { text: "Pixel Settings", icon: <LocalShippingIcon /> },
+  { text: "Shipment Channels", icon: <LocalShippingIcon /> },
   ,
 ];
 
@@ -337,6 +339,9 @@ const SettingsSidebarListItems = ({ type }) => {
           )}
           {type == "admin" && selectedItem === "Shipment Channels" && (
             <ShipmentChannelsList />
+          )}
+            {type == "superadmin" && selectedItem === "Shipment Channels" && (
+            <SuperadminShipmentChannels />
           )}
           {type == "admin" && selectedItem === "Order Status" && (
             <OrderStatus />
