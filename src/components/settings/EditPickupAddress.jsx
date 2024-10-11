@@ -63,8 +63,7 @@ const EditPickupAdress = ({ onPickupList }) => {
   ];
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
+    
         <CustomCard>
           <CardContent>
             <Typography
@@ -90,7 +89,6 @@ const EditPickupAdress = ({ onPickupList }) => {
                       {branch.name}
                     </MenuItem>
                   ))}
-                  ,
                 </Select>
               </FormControl>
             </Grid>
@@ -306,13 +304,35 @@ const EditPickupAdress = ({ onPickupList }) => {
                               </FormControl>
                             </Grid>
                             <Grid item xs={12}>
-                              <Typography
-                                sx={{ fontSize: "11px" }}
-                                className={poppins.className}
+                              <CustomLabel htmlFor="rto_complete_address">
+                                Complete RTO Address
+                              </CustomLabel>
+                              <CustomTextField
+                                id="rto_complete_address"
+                                name="rto_complete_address"
+                                type="text"
+                                placeholder="RTO House/Floor No., Building Name or Street, Locality"
+                                fullWidth
+                              />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <CustomLabel htmlFor="rto_landmark">RTO Landmark</CustomLabel>
+                              <CustomTextField
+                                id="rto_landmark"
+                                name="rto_landmark"
+                                type="text"
+                                placeholder="Any nearby post office, market, hospital as the RTO landmark"
+                                fullWidth
+                              />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Button
+                                variant="contained"
+                                onClick={handleSubmit}
+                                sx={{ mt: 2 }}
                               >
-                                Note: RTO address is only applicable for
-                                Xpressbees, Delhivery and Ecom express.
-                              </Typography>
+                                Submit
+                              </Button>
                             </Grid>
                           </Grid>
                         </Grid>
@@ -322,22 +342,9 @@ const EditPickupAdress = ({ onPickupList }) => {
                 </Grid>
               )}
             </Grid>
-            <Grid container spacing={2} justifyContent="flex-end" mt={2}>
-              <Grid item>
-                <Button variant="outlined" onClick={onPickupList}>
-                  Cancel
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button variant="contained" onClick={handleSubmit}>
-                  Verify and Save Address
-                </Button>
-              </Grid>
-            </Grid>
           </CardContent>
         </CustomCard>
-      </Grid>
-    </Grid>
+     
   );
 };
 
