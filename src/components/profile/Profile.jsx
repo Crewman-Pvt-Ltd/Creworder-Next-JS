@@ -14,7 +14,7 @@ import ScoreIcon from "@mui/icons-material/Score";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { useRouter } from "next/router";
-
+import Performance from "./Performance";
 const Profile = () => {
   const router = useRouter();
   const { permissionsData } = usePermissions();
@@ -131,10 +131,11 @@ const Profile = () => {
       </Grid>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={12}>
-          <Tabs sx={{
-            height:"10px",
-            alignItems:"center",
-          }}
+          <Tabs
+            sx={{
+              height: "10px",
+              alignItems: "center",
+            }}
             value={activeTab}
             onChange={handleTabChange}
             TabIndicatorProps={{
@@ -196,89 +197,107 @@ const Profile = () => {
 
         <Divider />
 
-        <Grid item xs={12} sm={6} md={6}>
-          {activeTab === 0 && (
-            <Box  sx={{
-              marginLeft:"10px",
-            }}>
-              <Box
-                sx={{
-                 
-                //  marginRight:"10px",
-                }}
-              >
-                <Button
-                  onClick={handleEdit}
+        <Grid item xs={12} sm={12} md={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={6}>
+              {activeTab === 0 && (
+                <Box
                   sx={{
-                    fontSize: "14px",
-                    backgroundColor: "#388d38",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#334a6c",
-                    },
+                    marginLeft: "10px",
                   }}
                 >
-                  Edit profile
-                </Button>
-              </Box>
-
-              {[
-                {
-                  label: "User Id",
-                  value: permissionsData?.user?.profile?.employee_id,
-                },
-                {
-                  label: "Gender",
-                  value:
-                    permissionsData?.user?.profile?.gender === "m"
-                      ? "Male"
-                      : permissionsData?.user?.profile?.gender === "f"
-                      ? "Female"
-                      : permissionsData?.user?.profile?.gender === "t"
-                      ? "Transgender"
-                      : "Unknown",
-                },
-                { label: "User Role", value: permissionsData?.role },
-                { label: "User Email", value: permissionsData?.user?.email },
-                {
-                  label: "Created",
-                  value: formatDate(permissionsData?.user?.date_joined),
-                },
-                {
-                  label: "Last Login",
-                  value: formatDate(permissionsData?.user?.last_login),
-                },
-              ].map((item, index) => (
-                <Grid
-                  key={index}
-                  container
-                  sx={{
-                    display: "flex",
-                    marginTop: "10px",
-                    padding: "6px",
-                 
-                  }}
-                >
-                  <Grid item xs={6} sm={6} md={6}>
-                    <Typography
+                  <Box
+                    sx={
+                      {
+                        //  marginRight:"10px",
+                      }
+                    }
+                  >
+                    <Button
+                      onClick={handleEdit}
                       sx={{
-                        color: "gray",
+                        fontSize: "14px",
+                        backgroundColor: "#388d38",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#334a6c",
+                        },
                       }}
                     >
-                      {item.label}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6} sm={6} md={6}>
-                    <Typography>{item.value}</Typography>
+                      Edit profile
+                    </Button>
+                  </Box>
+
+                  {[
+                    {
+                      label: "User Id",
+                      value: permissionsData?.user?.profile?.employee_id,
+                    },
+                    {
+                      label: "Gender",
+                      value:
+                        permissionsData?.user?.profile?.gender === "m"
+                          ? "Male"
+                          : permissionsData?.user?.profile?.gender === "f"
+                          ? "Female"
+                          : permissionsData?.user?.profile?.gender === "t"
+                          ? "Transgender"
+                          : "Unknown",
+                    },
+                    { label: "User Role", value: permissionsData?.role },
+                    {
+                      label: "User Email",
+                      value: permissionsData?.user?.email,
+                    },
+                    {
+                      label: "Created",
+                      value: formatDate(permissionsData?.user?.date_joined),
+                    },
+                    {
+                      label: "Last Login",
+                      value: formatDate(permissionsData?.user?.last_login),
+                    },
+                  ].map((item, index) => (
+                    <Grid
+                      key={index}
+                      container
+                      sx={{
+                        display: "flex",
+                        marginTop: "10px",
+                        padding: "6px",
+                      }}
+                    >
+                      <Grid item xs={6} sm={6} md={6}>
+                        <Typography
+                          sx={{
+                            color: "gray",
+                          }}
+                        >
+                          {item.label}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={6} sm={6} md={6}>
+                        <Typography>{item.value}</Typography>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Box>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              {activeTab === 1 && (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <Performance />
                   </Grid>
                 </Grid>
-              ))}
-            </Box>
-          )}
-          {activeTab === 1 && (
-            <Box>{/* Performance-related content here */}</Box>
-          )}
-          {activeTab === 2 && <Box>{/* QC Score-related content here */}</Box>}
+              )}
+            </Grid>
+
+            {activeTab === 2 && (
+              <Box>{/* QC Score-related content here */}</Box>
+            )}
+          </Grid>
         </Grid>
       </Grid>
     </Grid>
