@@ -66,24 +66,30 @@ const AddPickupAddress = ({ onPickupList }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const form = new FormData();
     Object.keys(formData).forEach((key) => {
       form.append(key, formData[key]);
     });
-
-    const response = await MainApi.post("/api/pick-up-point/", formData, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    });
-
-    if (response.status === 201) {
-      router.push("/admin/settings");
-    } else {
-      throw new Error("Unexpected response from server");
+  
+    try {
+      const response = await MainApi.post("/api/pick-up-point/", form, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+  
+      if (response.status === 201) {
+        router.push("/admin/settings");
+        window.location.reload();
+      } else {
+        throw new Error("Unexpected response from server");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
+  
 
   const handleToggle = () => {
     setIsVisible((prev) => !prev);

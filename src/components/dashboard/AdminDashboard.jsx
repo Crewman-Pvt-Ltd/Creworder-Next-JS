@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Grid, Typography, styled, Button } from "@mui/material";
 import Tile from "../Tile";
 import TopSellers from "../TopSellers";
+import TeamOrderLead from "../TeamOrderLead";
 import InvoicesChart from "../InvoicesChart";
 import Charttwo from "../Charttwo";
 import ReferalInvite from "../ReferalInvite";
@@ -127,7 +128,7 @@ const AdminDashboard = () => {
               </Grid>
               {tilesTypes.map((type, index) => (
                 <Grid item xs={12} sm={6} md={6} key={index}>
-                  <Tile height="130px" padding="20px 20px" type={type} />
+                  <Tile height="130px" padding="10px 10px" type={type} />
                 </Grid>
               ))}
             </Grid>
@@ -142,7 +143,7 @@ const AdminDashboard = () => {
       </Grid>
 
       <Grid item>
-        <Grid container spacing={0}>
+        <Grid container spacing={1}>
           {tiles.map((type, index) => (
             <Grid item xs={12} sm={6} md={2.4} key={index} mt={1}>
               <Tile height="120px" padding="20px 20px" type={type} />
@@ -179,6 +180,18 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
       </Grid>
+
+
+      <Grid item>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12}>
+            <TeamOrderLead />
+          </Grid>
+        </Grid>
+      </Grid>
+
+
+
     </Grid>
   );
 };
