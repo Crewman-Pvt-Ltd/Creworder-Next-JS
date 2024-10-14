@@ -40,6 +40,7 @@ const CreateProduct = () => {
   const [sku, setSku] = useState("");
   const [status, setStatus] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [weight, setWeight] = useState("");
   const [price, setPrice] = useState("");
   const [hsnCode, setHsnCode] = useState("");
   const [description, setDescription] = useState("");
@@ -157,7 +158,7 @@ const CreateProduct = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6} sx={{ marginTop: "16px" }}>
+              <Grid item xs={12} sm={3} sx={{ marginTop: "16px" }}>
                 <CustomLabel htmlFor="quantity" required>
                   Quantity
                 </CustomLabel>
@@ -168,6 +169,21 @@ const CreateProduct = () => {
                   type="text"
                   value={quantity}
                   onChange={handleInputChange(setQuantity)}
+                  fullWidth
+                  sx={{ fontFamily: poppins.style.fontFamily }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} sx={{ marginTop: "16px" }}>
+                <CustomLabel htmlFor="weight" required>
+                  Weight
+                </CustomLabel>
+                <CustomTextField
+                  id="weight"
+                  name="weight"
+                  placeholder="e.g. 0.6kg"
+                  type="text"
+                  value={weight}
+                  onChange={handleInputChange(setWeight)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />

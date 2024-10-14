@@ -337,7 +337,7 @@ const TeamLead = () => {
                       <Button
                         variant="contained"
                         color={getButtonColor(product.status)}
-                        sx={{ minWidth: 100 }}
+                        sx={{ minWidth: 100, padding: "5px" }}
                       >
                         {product.status}{" "}
                       </Button>
