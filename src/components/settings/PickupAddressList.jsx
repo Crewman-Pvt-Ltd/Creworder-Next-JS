@@ -22,6 +22,10 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText
 } from "@mui/material";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
@@ -79,6 +83,7 @@ const PickupAddressList = ({ onAddPickup, onEditPickup }) => {
       country: row.country,
       company: row.company,
       branches: row.branches,
+      status: row. status,
     });
     setOpenDialog(true);
   };
@@ -252,7 +257,7 @@ const PickupAddressList = ({ onAddPickup, onEditPickup }) => {
                           <TableCell>
                             <Box display="flex" flexDirection="column">
                               <Box display="flex" alignItems="center">
-                                <Switch checked={row.status} size="small" />
+                               
                                 <IconButton
                                   onClick={() => handleEditClick(row)}
                                 >
@@ -329,6 +334,8 @@ const PickupAddressList = ({ onAddPickup, onEditPickup }) => {
           </Grid>
         </CustomCard>
       </Grid>
+
+
 
       <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>Edit Pickup Address</DialogTitle>
@@ -461,6 +468,21 @@ const PickupAddressList = ({ onAddPickup, onEditPickup }) => {
                 helperText={errors.country}
               />
             </Grid>
+            <Grid item xs={12} md={6}>
+            <FormControl fullWidth margin="dense" variant="outlined" error={Boolean(errors.status)}>
+              <InputLabel>Status</InputLabel>
+              <Select
+                name="status"
+                value={formData.status}
+                onChange={handleFormChange}
+                label="Status"
+              >
+                <MenuItem value="true">Active</MenuItem>
+                <MenuItem value="false">Inactive</MenuItem>
+              </Select>
+              {errors.status && <FormHelperText>{errors.status}</FormHelperText>}
+            </FormControl>
+          </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>

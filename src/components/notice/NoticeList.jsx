@@ -243,9 +243,10 @@ const NoticeList = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={Boolean(viewNotice)} onClose={handleViewClose}>
+      <Dialog open={Boolean(viewNotice)} onClose={handleViewClose} fullWidth>
         <DialogTitle>{viewNotice?.title}</DialogTitle>
         <DialogContent>
+        <Divider sx={{ my: 2 }} />
           <DialogContentText>{viewNotice?.description}</DialogContentText>
         </DialogContent>
         <DialogActions>

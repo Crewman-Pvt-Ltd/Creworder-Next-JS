@@ -28,8 +28,10 @@ const SupportTicketList = () => {
   const router = useRouter();
   const { data, refetch } = useGetAllSupportTickets();
 
-  const handleEdit = (row) => {
-    router.push(`/superadmin/supportticket/editticket/${row.id}`);
+
+
+  const handleEdit = (id) => {
+    router.push(`/superadmin/supportticket/editticket?id=${id}`);
   };
 
   const handleView = (row) => {
@@ -140,15 +142,9 @@ const SupportTicketList = () => {
                       <DataCell className={poppins.className}>{row.priority}</DataCell>
                       <DataCell className={poppins.className}>{row.agent?.username || "N/A"}</DataCell> {/* Adjust as needed */}
                       <TableCell>
+                        
                         <IconButton
-                          onClick={() => handleView(row)}
-                          aria-label="view"
-                          sx={{ color: "#708090" }}
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleEdit(row)}
+                           onClick={() => handleEdit(row.id)}
                           aria-label="edit"
                           sx={{ color: "green" }}
                         >

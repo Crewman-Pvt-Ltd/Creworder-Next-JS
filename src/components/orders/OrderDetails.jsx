@@ -53,6 +53,7 @@ import CustomTextField from "../CustomTextField";
 import CustomLabel from "../CustomLabel";
 import CreateIcon from '@mui/icons-material/Create';
 import creworder from '../../images/crewordericon.png';
+import PaymentIcon from '@mui/icons-material/Payment';
 import Image from 'next/image';
 import { px } from "framer-motion";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
@@ -117,7 +118,7 @@ const OrderDetails = () => {
   const rows = [
     {
       id: 1,
-      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
+      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', 
       name: "Gummsi Gummies",
       color: "Pink",
       size: "M",
@@ -128,7 +129,7 @@ const OrderDetails = () => {
     },
     {
       id: 2,
-      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
+      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620',
       name: "Gummsi Gummies ",
       color: "Black",
       size: "32.5mm",
@@ -139,7 +140,7 @@ const OrderDetails = () => {
     },
     {
       id: 3,
-      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', // replace with your image paths
+      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620',
       name: "Sleep Easy Gummies",
       color: "White",
       size: "350 ml",
@@ -174,8 +175,7 @@ const OrderDetails = () => {
                   marginRight: 1,
                   fontSize: "11px",
                   backgroundColor: "#dff0fa",
-                }}
-              >
+                }}>
                NDR
               </Button>
               <Button
@@ -186,19 +186,16 @@ const OrderDetails = () => {
                   marginRight: 1,
                   fontSize: "11px",
                   backgroundColor: "#fde8e4",
-                }}
-              >
+                }}>
                 Account
               </Button>
               <Button
                 className={poppins.className}
                 startIcon={<CreateIcon />}
                 sx={{
-                  
                   fontSize: "11px",
                   backgroundColor: "#dff0fa",
-                }}
-              >
+                }}>
                Edit
               </Button>
             </div>
@@ -210,10 +207,10 @@ const OrderDetails = () => {
       <CustomCard>
         <CardContent>
           <Tabs value={activeTab} onChange={handleTabChange}>
-            <Tab icon={<LocalMallIcon/>} style={{display:"flex"}} className={poppins.className} label="Product Information" />
-            <Tab icon={<DirectionsRunIcon/>} className={poppins.className} label="Customer Information" />
-            <Tab icon={<LocalShippingIcon/>} className={poppins.className} label="Order Status Tracking" />
-            <Tab icon={<LocalMallIcon/>} className={poppins.className} label="Order Payment Status" />
+            <Tab icon={ <LocalMallIcon/> } style={{ display: "inline", textTransform: "capitalize" }} className={poppins.className} label="Product Information" />
+            <Tab icon={ <DirectionsRunIcon/> } style={{ display: "inline", textTransform: "capitalize" }} className={poppins.className} label="Customer Information" />
+            <Tab icon={ <LocalShippingIcon/> } style={{ display: "inline", textTransform: "capitalize" }} className={poppins.className} label="Status Tracking" />
+            <Tab icon={ <PaymentIcon/> } style={{ display: "inline", textTransform: "capitalize" }} className={poppins.className} label="Payment Status" />
           </Tabs>
           <Divider sx={{ my: 2 }} />
           {activeTab === 0 && (

@@ -26,8 +26,16 @@ import MainApi from "@/api-manage/MainApi";
 
 const SupportTicketCreate = () => {
   const router = useRouter();
-  const { data: companiesData, isLoading: companiesLoading, error: companiesError } = useGetAllCompanies();
-  const { data: usersData, isLoading: usersLoading, error: usersError } = useGetAllUsers();
+  const {
+    data: companiesData,
+    isLoading: companiesLoading,
+    error: companiesError,
+  } = useGetAllCompanies();
+  const {
+    data: usersData,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useGetAllUsers();
   const token = getToken();
   const [formData, setFormData] = useState({
     company: "",
@@ -59,33 +67,32 @@ const SupportTicketCreate = () => {
     e.preventDefault();
 
     const form = new FormData();
-    Object.keys(formData).forEach(key => {
-        form.append(key, formData[key]);
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
     });
 
-  
-      const response = await MainApi.post("/api/support-tickets/", formData, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+    const response = await MainApi.post("/api/support-tickets/", formData, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
 
-      if (response.status === 201) {
-        router.push("/superadmin/supportticket");
-      } else {
-        throw new Error("Unexpected response from server");
-      }
-    
-};
-
+    if (response.status === 201) {
+      router.push("/superadmin/supportticket");
+    } else {
+      throw new Error("Unexpected response from server");
+    }
+  };
 
   return (
-    
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
-            <Typography className={poppins.className} sx={{ fontSize: "16px", fontWeight: "600" }}>
+            <Typography
+              className={poppins.className}
+              sx={{ fontSize: "16px", fontWeight: "600" }}
+            >
               Add Ticket Details
             </Typography>
             <Divider sx={{ my: 2 }} />
@@ -99,7 +106,7 @@ const SupportTicketCreate = () => {
               }}
             >
               <Grid item xs={12} sm={4}>
-                <CustomLabel  htmlFor="company" required>
+                <CustomLabel htmlFor="company" required>
                   Company Name
                 </CustomLabel>
                 <Select
@@ -186,7 +193,11 @@ const SupportTicketCreate = () => {
                     accept=".jpg,.jpeg,.png"
                   />
                 </div>
-                <img id="preview" alt="Preview" style={{ marginTop: "10px", maxWidth: "100%" }} />
+                <img
+                  id="preview"
+                  alt="Preview"
+                  style={{ marginTop: "10px", maxWidth: "100%" }}
+                />
               </Grid>
             </Grid>
 
