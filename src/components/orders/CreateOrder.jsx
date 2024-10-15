@@ -9,7 +9,6 @@ import {
   FormGroup,
   Button,
   FormControlLabel,
- 
   ListItemText,
   IconButton,
   Select,
@@ -17,20 +16,31 @@ import {
   List,
   ListItem,
   FormControl,
-  
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
+  DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import { useRouter } from "next/router";
-import { Poppins } from "next/font/google";
+import { Headland_One, Poppins } from "next/font/google";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import CloseIcon from "@mui/icons-material/Close";
+import { baseApiUrl } from "@/api-manage/ApiRoutes";
+import { getToken } from "@/utils/getToken";
+import axios from "axios";
+import swal from "sweetalert";
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 
 const poppins = Poppins({
@@ -39,94 +49,78 @@ const poppins = Poppins({
 });
 
 const CreateOrder = () => {
+  const token = getToken();
   const router = useRouter();
-
-  const orderlist = () => {
-    router.push("/admin/orders");
-  };
-
-  
+  const [customerName, setCustomerName] = useState('')
+  const [customerFatherName, setCustomerFatherName] = useState('')
+  const [phoneCustomer, setPhoneCustomer] = useState("");
+  const [customerEmailId, setCustomerEmailId] = useState('')
   const [courseDuration, setCourseDuration] = useState("");
-  const [paymentMode, setPaymentMode] = useState("");
+
+  const [postalCode, setPostalCode] = useState("");
   const [locality, setLocality] = useState("");
+  const [cutomerCity, setCutomerCity] = useState('')
+  const [cutomerState, setCutomerState] = useState('')
+  const [cutomerCountry, setCutomerCountry] = useState('India')
+  const [customerAddress, setCustomerAddress] = useState('')
+
+  const [productList, setproductList] = useState([])
+  const [products, setProducts] = useState([
+    { product: 0, productName: "", product_qty: 1, price: 0, total: 0 },
+  ]);
+  const [grossAmount, setGrossAmount] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [payableAmount, setPayableAmount] = useState(0)
+  const [paymentMode, setPaymentMode] = useState("");
+  const [paymentType, setPaymentType] = useState("");
+  const [codAmount, setCodAmount] = useState(0);
+  const [partialPayment, setPartialPayment] = useState(0);
   const [isDialogOpen, setIsDialogOpen] = useState(true);
   const [isSecondDialogOpen, setIsSecondDialogOpen] = useState(false);
   const [selectedPincodes, setSelectedPincodes] = useState([]);
-  const [products, setProducts] = useState([
-    { productName: "", quantity: 1, price: 0, total: 0 },
-  ]);
-  const [discount, setDiscount] = useState(0);
-  const [grossAmount, setGrossAmount] = useState(0);
-  const [payableAmount, setPayableAmount] = useState(0);
-  const [codAmount, setCodAmount] = useState(0);
-  const [paymentType, setPaymentType] = useState("");
-  const [partialPayment, setPartialPayment] = useState(0);
-  const [postalCode, setPostalCode] = useState("");
+  const [pincodeData, setPincodeData] = useState([])
   const [postalCodeError, setPostalCodeError] = useState(false);
-  const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState(false);
-
+  const [customerCallId, setCustomerCallId] = useState(false);
   const [paymentModeError, setPaymentModeError] = useState(false);
-
+  const [selectedPincode, setSelectedPincode] = useState(null);
+  const [orderRemark, setOrderRemark] = useState(null);
+  // 
   const handlePincodeSelection = (pincode) => {
-    if (selectedPincodes.includes(pincode)) {
-      
-      setSelectedPincodes(selectedPincodes.filter((item) => item !== pincode));
+    if (selectedPincode === pincode) {
+      setSelectedPincode(null);
     } else {
-
-      setSelectedPincodes([...selectedPincodes, pincode]);
-    }
-  };
-
-  const handleSubmit = () => {
-    let valid = true;
-
-    
-    if (!postalCode) {
-      setPostalCodeError(true);
-      valid = false;
-    } else {
-      setPostalCodeError(false);
-    }
-
-    
-    if (!phone) {
-      setPhoneError(true);
-      valid = false;
-    } else {
-      setPhoneError(false);
-    }
-
-   
-    if (!paymentMode) {
-      setPaymentModeError(true);
-      valid = false;
-    } else {
-      setPaymentModeError(false);
-    }
-
-    
-    if (valid) {
-      console.log("Form submitted successfully!");
-      setIsDialogOpen(false); 
-      setIsSecondDialogOpen(true); 
+      setSelectedPincode(pincode);
     }
   };
 
   const handleCloseSecondDialog = () => {
     setIsSecondDialogOpen(false);
   };
-  const pincodeData = [
-    { pincode: "123433", edd: "2 Day" },
-    { pincode: "423256", edd: "3 Day" },
-    { pincode: "782329", edd: "4 Day" },
-  ];
 
-  const prices = {
-    "Weight Loss": 3000,
-    "Kidney Detox": 4000,
-    "Liver Detox": 5000,
-  };
+  const getProductsList = () => {
+    let data = '';
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}products/`,
+      headers: {
+        'Authorization': `Token ${token}`
+      },
+      data: data
+    };
+    axios.request(config)
+      .then((response) => {
+        setproductList(response.data.results)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  useEffect(() => {
+    getProductsList(true);
+  }, []);
+
 
   useEffect(() => {
     setIsDialogOpen(true);
@@ -138,16 +132,14 @@ const CreateOrder = () => {
       0
     );
     setGrossAmount(totalGross);
-
-    let totalPayable = totalGross - discount;
-    if (totalPayable < 0) totalPayable = 0; // Prevent negative payable amount
+    var totalPayable = totalGross - discount;
+    if (totalPayable < 0) totalPayable = 0;
     setPayableAmount(totalPayable);
-
     if (paymentType === "Partial") {
       const codAmount = totalPayable - partialPayment;
-      setCodAmount(codAmount > 0 ? codAmount : 0); // Handle negative COD amount
+      setCodAmount(codAmount > 0 ? codAmount : 0);
     } else {
-      setCodAmount(totalPayable); // Full payable amount for non-partial payments
+      setCodAmount(totalPayable);
     }
   }, [products, discount, partialPayment, paymentType]);
 
@@ -164,37 +156,35 @@ const CreateOrder = () => {
   };
 
   const handleInputChange = (index, e) => {
-    const { name, value } = e.target;
+    const { id, name, Pname, Pprice, product_qty } = e;
     const updatedProducts = [...products];
-    updatedProducts[index][name] = value;
-
+    updatedProducts[index][name] = Pname;
     if (name === "productName") {
-      updatedProducts[index].price = prices[value] || 0;
+      updatedProducts[index].price = Pprice || 0;
+      updatedProducts[index].product = id;
     }
-
-    if (name === "quantity" || name === "productName") {
-      updatedProducts[index].total =
-        updatedProducts[index].price * updatedProducts[index].quantity || 0;
+    if (name === "product_qty") {
+      updatedProducts[index][name] = Number(product_qty);
     }
-
+    updatedProducts[index].total =
+      updatedProducts[index].price * updatedProducts[index].product_qty || 0;
     setProducts(updatedProducts);
   };
 
   const handleDiscountChange = (e) => {
     const discountValue = Number(e.target.value) || 0;
-    setDiscount(discountValue > grossAmount ? grossAmount : discountValue); // Prevent discount from exceeding gross amount
+    setDiscount(discountValue > grossAmount ? grossAmount : discountValue);
   };
 
   const handlePartialPaymentChange = (e) => {
     const partialAmount = Number(e.target.value) || 0;
     setPartialPayment(
       partialAmount > payableAmount ? payableAmount : partialAmount
-    ); 
+    );
   };
 
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
-
     if (e.target.value !== "Partial") {
       setPartialPayment(0);
       setCodAmount(payableAmount);
@@ -204,7 +194,7 @@ const CreateOrder = () => {
   const addProductField = () => {
     setProducts([
       ...products,
-      { productName: "", quantity: 1, price: 0, total: 0 },
+      { product: 0, productName: "", product_qty: 1, price: 0, total: 0 },
     ]);
   };
 
@@ -215,17 +205,130 @@ const CreateOrder = () => {
   };
 
   const isRowFilled = (product) => {
-    return product.productName && product.quantity && product.price;
+    return product.productName && product.product_qty && product.price;
   };
 
   const getSelectedProducts = () => {
-    return products.map((product) => product.productName);
+    return products.map((product) => product.id);
   };
 
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
+  const checkServiceAndOrderExistOrNot = () => {
+    if (!phoneCustomer || !phoneCustomer.startsWith('+91')) {
+      setPhoneError(true);
+    } else {
+      setPhoneError(false);
+    }
+    let valid = true;
+    if (!postalCode) {
+      setPostalCodeError(true);
+      valid = false;
+    } else {
+      setPostalCodeError(false);
+    }
+    if (!paymentMode) {
+      setPaymentModeError(true);
+      valid = false;
+    } else {
+      setPaymentModeError(false);
+    }
+    if (valid) {
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${baseApiUrl}check-serviceability/`,
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          pincode: postalCode,
+          mobile: phoneCustomer
+        }
+      };
 
+      axios.request(config)
+        .then((response) => {
+          if (response.status === 208) {
+            swal({
+              title: "Order Status!",
+              text: "Re-Order",
+              icon: "warning",
+              button: "Ok!",
+            });
+          } else {
+            setPincodeData(response.data.data)
+            setCutomerCity(response.data.data[0].delivery_city)
+            setCutomerState(response.data.data[0].delivery_state)
+            setIsDialogOpen(false);
+            setIsSecondDialogOpen(true);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }
+  const createOrder = () => {
+    if(!customerName){
+      
+    }
+    const axios = require('axios');
+    let data = JSON.stringify({
+      "network_ip": `192.168.1.1`,
+      "customer_name": `${customerName}`,
+      "customer_phone": `${phoneCustomer}`,
+      "customer_address": `${customerAddress}`,
+      "customer_postal": `${postalCode}`,
+      "customer_city": `${cutomerCity}`,
+      "customer_country": `${cutomerCountry}`,
+      "total_amount": payableAmount,
+      "gross_amount": grossAmount,
+      "discount": discount,
+      "prepaid_amount": partialPayment,
+      "order_remark": orderRemark,
+      "repeat_order": 0,
+      "is_booked": 1,
+      "customer_state": 1,
+      "payment_type": 1,
+      "payment_status": 1,
+      "order_status": 1,
+      "order_created_by": 6,
+      "product_details": products
+    });
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}orders/`,
+      headers: {
+        'Authorization': `Token ${token}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+    axios.request(config)
+      .then((response) => {
+        if (response.status === 201) {
+          swal({
+            title: "Order Status!",
+            text: "Successfully Created !",
+            icon: "success",
+            button: "Ok",
+          });
+          router.push("/admin/orders");
+
+        }
+      })
+      .catch((error) => {
+        swal({
+          title: "Order Status!",
+          text: "Failed Create!",
+          icon: "error",
+          button: "Ok",
+        });
+      });
+
+  };
   return (
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
@@ -249,7 +352,6 @@ const CreateOrder = () => {
                 </Typography>
               </Grid>
 
-              {/* Personal Details Fields */}
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="Full Name" required>
                   Customer Name
@@ -257,6 +359,8 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="name"
                   name="name"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Full Name"
                   type="text"
                   fullWidth
@@ -270,6 +374,8 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="fathername"
                   name="fathername"
+                  value={customerFatherName}
+                  onChange={(e) => setCustomerFatherName(e.target.value)}
                   placeholder="Father's Name"
                   type="text"
                   fullWidth
@@ -283,9 +389,13 @@ const CreateOrder = () => {
                 <CustomTextField
                   id="phone"
                   name="phone"
-                  placeholder="+91-987XXXXXXXX"
+                  value={phoneCustomer}
+                  onChange={(e) => setPhoneCustomer(e.target.value)}
+                  placeholder="+91987XXXXXXXX"
                   type="text"
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -297,6 +407,8 @@ const CreateOrder = () => {
                   id="email"
                   name="email"
                   placeholder="Email-ID"
+                  value={customerEmailId}
+                  onChange={(e) => setCustomerEmailId(e.target.value)}
                   type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
@@ -313,8 +425,8 @@ const CreateOrder = () => {
                   name="courseOrder"
                   value={courseDuration}
                   onChange={handleCourseDurationChange}
-                  displayEmpty // This makes the empty string display as the placeholder
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                   fullWidth
                 >
                   <MenuItem value="" disabled>
@@ -349,6 +461,7 @@ const CreateOrder = () => {
                   id="postalcode"
                   name="postalcode"
                   placeholder="Postalcode"
+                  value={postalCode}
                   type="text"
                   fullWidth
                   inputProps={{ readOnly: true }}
@@ -366,8 +479,8 @@ const CreateOrder = () => {
                   name="locality"
                   value={locality}
                   onChange={handlelocality}
-                  displayEmpty // This makes the empty string display as the placeholder
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                   fullWidth
                 >
                   <MenuItem value="" disabled>
@@ -386,6 +499,8 @@ const CreateOrder = () => {
                   id="city"
                   name="city"
                   placeholder="City"
+                  value={cutomerCity}
+                  onChange={(e) => setCutomerCity(e.target.value)}
                   type="text"
                   fullWidth
                   inputProps={{ readOnly: true }}
@@ -401,6 +516,8 @@ const CreateOrder = () => {
                   id="state"
                   name="state"
                   placeholder="State"
+                  value={cutomerState}
+                  onChange={(e) => setCutomerState(e.target.value)}
                   type="text"
                   fullWidth
                   inputProps={{ readOnly: true }}
@@ -418,6 +535,7 @@ const CreateOrder = () => {
                   placeholder="Country"
                   type="text"
                   fullWidth
+                  value={cutomerCountry}
                   inputProps={{ readOnly: true }}
                   style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
@@ -431,10 +549,12 @@ const CreateOrder = () => {
                   id="address"
                   name="address"
                   placeholder="Full Address"
+                  value={customerAddress}
+                  onChange={(e) => setCustomerAddress(e.target.value)}
                   type="text"
                   fullWidth
                   multiline
-                  rows={1} // Adjust the number of rows to fit your design
+                  rows={1}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -463,7 +583,17 @@ const CreateOrder = () => {
                               id={`product-${index}`}
                               name="productName"
                               value={product.productName}
-                              onChange={(e) => handleInputChange(index, e)}
+                              onChange={(e) => {
+                                const selectedValue = e.target.value;
+                                const selectedname = e.target.name;
+                                const selectedProduct = productList.find(item => item.product_name === selectedValue);
+                                handleInputChange(index, {
+                                  id: selectedProduct.id,
+                                  name: selectedname,
+                                  Pname: selectedValue,
+                                  Pprice: selectedProduct ? selectedProduct.product_price : 0
+                                });
+                              }}
                               displayEmpty
                               sx={{
                                 fontFamily: "Poppins, sans-serif",
@@ -474,42 +604,37 @@ const CreateOrder = () => {
                               <MenuItem value="" disabled>
                                 Select Product
                               </MenuItem>
-                              <MenuItem
-                                value="Weight Loss"
-                                disabled={getSelectedProducts().includes(
-                                  "Weight Loss"
-                                )}
-                              >
-                                Weight Loss
-                              </MenuItem>
-                              <MenuItem
-                                value="Kidney Detox"
-                                disabled={getSelectedProducts().includes(
-                                  "Kidney Detox"
-                                )}
-                              >
-                                Kidney Detox
-                              </MenuItem>
-                              <MenuItem
-                                value="Liver Detox"
-                                disabled={getSelectedProducts().includes(
-                                  "Liver Detox"
-                                )}
-                              >
-                                Liver Detox
-                              </MenuItem>
+                              {productList.map((productItem, idx) => (
+                                <MenuItem
+                                  key={idx}
+                                  value={productItem.product_name}
+                                  disabled={getSelectedProducts().includes(productItem.product_name)}
+                                >
+                                  {productItem.product_name}
+                                </MenuItem>
+                              ))}
                             </Select>
+
+
                           </Grid>
                           <Grid item xs={12} sm={2}>
-                            <CustomLabel htmlFor={`quantity-${index}`} required>
+                            <CustomLabel htmlFor={`product_qty-${index}`} required>
                               Quantity
                             </CustomLabel>
                             <CustomTextField
-                              id={`quantity-${index}`}
-                              name="quantity"
-                              value={product.quantity}
-                              onChange={(e) => handleInputChange(index, e)}
-                              placeholder="quantity"
+                              id={`product_qty-${index}`}
+                              name="product_qty"
+                              value={product.product_qty}
+                              onChange={(e) => {
+                                handleInputChange(index, {
+                                  id: product.id,
+                                  name: e.target.name,
+                                  Pname: product.productName,
+                                  Pprice: product.price,
+                                  product_qty: e.target.value
+                                });
+                              }}
+                              placeholder="product_qty"
                               type="number"
                               fullWidth
                               sx={{ fontFamily: "Poppins, sans-serif" }}
@@ -590,6 +715,8 @@ const CreateOrder = () => {
                   id="orderRemark"
                   name="orderRemark"
                   placeholder="Order Remark"
+                  value={orderRemark}
+                  onChange={(e) => setOrderRemark(e.target.value)}
                   type="text"
                   fullWidth
                   multiline
@@ -757,7 +884,7 @@ const CreateOrder = () => {
               }}
             >
               <Button
-                onClick={orderlist}
+                onClick={createOrder}
                 sx={{
                   padding: "8px 16px",
                   fontSize: "14px",
@@ -803,7 +930,6 @@ const CreateOrder = () => {
               <CloseIcon />
             </IconButton>
           </DialogTitle>
-
           <DialogContent dividers>
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -826,25 +952,31 @@ const CreateOrder = () => {
                   id="call_id"
                   name="call_id"
                   placeholder="Customer Call Id"
+                  onChange={(e) => setCustomerCallId(e.target.value)}
                   type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
               <Grid item xs={6}>
-                <CustomTextField
-                  id="phone"
-                  name="phone"
-                  placeholder="Customer Phone Number"
-                  type="text"
-                  required
-                  fullWidth
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  sx={{ fontFamily: poppins.style.fontFamily }}
-                  error={phoneError}
-                  helperText={phoneError ? "Phone Number is required" : ""}
+                <PhoneInput
+                  international
+                  countryCallingCodeEditable={true}
+                  defaultCountry="IN"
+                  value={phoneCustomer}
+                  onChange={(value) => setPhoneCustomer(value)}
+                  placeholder="Enter phone number"
+                  inputStyle={{
+                    fontFamily: 'Poppins, sans-serif',
+                    width: '100%',
+                    padding: '10px',
+                    border: phoneError ? '1px solid red' : '1px solid #ccc',
+                    borderRadius: '4px',
+                  }}
                 />
+                {phoneError && (
+                  <FormHelperText error>Phone Number must start with '+91'</FormHelperText>
+                )}
               </Grid>
               <Grid item xs={6}>
                 <FormControl fullWidth error={paymentModeError}>
@@ -857,24 +989,24 @@ const CreateOrder = () => {
                     displayEmpty
                     required
                     sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                    fullWidth
                   >
                     <MenuItem value="">Payment Status</MenuItem>
-                    <MenuItem value="true">COD</MenuItem>
-                    <MenuItem value="true">PARTIAL</MenuItem>
-                    <MenuItem value="false">PREPAID</MenuItem>
+                    <MenuItem value="COD">COD</MenuItem>
+                    <MenuItem value="Prepaid">Prepaid</MenuItem>
+                    <MenuItem value="Partial">Partial</MenuItem>
                   </Select>
                   {paymentModeError && (
-                    <FormHelperText>Payment Status is required</FormHelperText>
+                    <FormHelperText error>Payment Status is required</FormHelperText>
                   )}
                 </FormControl>
               </Grid>
             </Grid>
           </DialogContent>
 
+
           <DialogActions>
             <Button
-              onClick={handleSubmit}
+              onClick={checkServiceAndOrderExistOrNot}
               sx={{
                 fontFamily: poppins.style.fontFamily,
                 color: "white",
@@ -911,39 +1043,35 @@ const CreateOrder = () => {
             </IconButton>
           </DialogTitle>
           <DialogContent dividers>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Pickup Pincode
-                </Typography>
-                <FormGroup>
-                  {pincodeData.map((item) => (
-                    <FormControlLabel
-                      key={item.pincode}
-                      control={
-                        <Checkbox
-                          checked={selectedPincodes.includes(item.pincode)}
-                          onChange={() => handlePincodeSelection(item.pincode)}
-                        />
-                      }
-                      label={item.pincode}
-                    />
-                  ))}
-                </FormGroup>
-              </Grid>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Pickup Point</TableCell>
+                    <TableCell>EDD</TableCell>
+                    <TableCell>Address</TableCell>
+                  </TableRow>
+                </TableHead>
 
-              <Grid item xs={6}>
-                <Typography>EDD</Typography>
-                <List>
+                <TableBody>
                   {pincodeData.map((item) => (
-                    <ListItem key={item.pincode}>
-                      <ListItemText primary={item.edd} />
-                    </ListItem>
+                    <TableRow key={item.pickup_id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedPincode === item.pickup_id}
+                          onChange={() => handlePincodeSelection(item.pickup_id)}
+                        />
+                        {item.pickup_point}
+                      </TableCell>
+                      <TableCell>{item.eddtime} in Days</TableCell>
+                      <TableCell>{item.pickup_city || "No address available"}</TableCell>
+                    </TableRow>
                   ))}
-                </List>
-              </Grid>
-            </Grid>
+                </TableBody>
+              </Table>
+            </TableContainer>
           </DialogContent>
+
           <DialogActions>
             <Button
               onClick={handleCloseSecondDialog}
