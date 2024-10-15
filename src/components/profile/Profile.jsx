@@ -101,7 +101,7 @@ const Profile = () => {
               </Typography>
             </Grid>
           </Grid>
-          <Grid item sx={{ display: "flex", gap: 2, textAlign: "center" }}>
+          {/* <Grid item sx={{ display: "flex", gap: 2, textAlign: "center" }}>
             <div>
               <Typography variant="body1" fontSize="23px" color="white">
                 ₹240
@@ -126,7 +126,7 @@ const Profile = () => {
                 Total Delivered
               </Typography>
             </div>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
       <Grid container spacing={2}>

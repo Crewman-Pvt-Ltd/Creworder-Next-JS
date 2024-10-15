@@ -60,7 +60,7 @@ const AddShift = ({ onShiftList }) => {
         <CustomCard>
           <CardContent>
             <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-              Add Department
+              Add Shift
             </Typography>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleSubmit}>

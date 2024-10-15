@@ -70,7 +70,7 @@ const superAdminMenuItems = [
   { text: "Social Login Settings", icon: <LockIcon /> },
   { text: "Theme Settings", icon: <ColorLensIcon /> },
   { text: "Database Backup Settings", icon: <BackupIcon /> },
-  { text: "Maintainance Mode", icon: <LocalShippingIcon /> },
+  { text: "Maintenance Mode", icon: <LocalShippingIcon /> },
   { text: "Pixel Settings", icon: <LocalShippingIcon /> },
   { text: "Shipment Channels", icon: <LocalShippingIcon /> },
   ,

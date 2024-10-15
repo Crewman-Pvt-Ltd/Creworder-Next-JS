@@ -1,12 +1,13 @@
 import React from "react";
 import { Grid } from "@mui/material";
 import Layout from "@/components/Layout";
-import AgentPerformance from "@/components/performance/AgentPerformance";
+
+import AddressVerification from "@/components/performance/AddressVerification";
 const index = () => {
   return (
     <Layout type="admin">
       <Grid>
-        <AgentPerformance />
+        <AddressVerification />
       </Grid>
     </Layout>
   );

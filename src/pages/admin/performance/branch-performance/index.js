@@ -6,7 +6,7 @@ import BranchPerformance from "@/components/performance/BranchPerformance";
 
 const index = () => {
   return (
-    <Layout>
+    <Layout type= "admin">
       <Grid>
         <BranchPerformance />
       </Grid>

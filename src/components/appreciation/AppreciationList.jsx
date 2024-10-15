@@ -195,7 +195,7 @@ const AppreciationList = ({ onAddAppreciation }) => {
                           aria-label="edit"
                           sx={{ color: "#405189" }}
                         >
-                          <Visibility />
+                          {/* <Visibility /> */}
                         </IconButton>
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
