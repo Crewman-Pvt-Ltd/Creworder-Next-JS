@@ -1,43 +1,134 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../customLabel";
 import CustomCard from "../CustomCard";
-import { useRouter } from "next/router";
+import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
+import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
+import { getToken } from "@/utils/getToken";
+import { Poppins } from "next/font/google";
+import axios from "axios";
 import {
   Typography,
   Button,
   Grid,
+  Select,
+  MenuItem,
   TextField,
   CardContent,
   Divider,
 } from "@mui/material";
+import { useRouter } from "next/router";
+import MainApi from "@/api-manage/MainApi";
 
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    document.getElementById("preview").src = e.target.result;
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 
-const EditTicket = ({ ticketData }) => {
+const EditTicket = () => {
   const router = useRouter();
+  const { id } = router.query; // Get the ticket ID from the query string
+  const token = getToken();
 
-  const handleUpdate = () => {
-    router.push("/superadmin/supportticket");
+  const {
+    data: companiesData,
+    isLoading: companiesLoading,
+    error: companiesError,
+  } = useGetAllCompanies();
+  const {
+    data: usersData,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useGetAllUsers();
+
+  const [formData, setFormData] = useState({
+    company: "",
+    subject: "",
+    description: "",
+    type: "",
+    priority: "",
+    agent: "",
+    attachment: null,
+  });
+
+  // Fetch the ticket data by ID
+  useEffect(() => {
+    if (id) {
+      const fetchTicketData = async () => {
+        try {
+          const response = await MainApi.get(`/api/support-tickets/${id}/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const ticketData = response.data;
+          setFormData({
+            company: ticketData.company || "",
+            subject: ticketData.subject || "",
+            description: ticketData.description || "",
+            type: ticketData.type || "",
+            priority: ticketData.priority || "",
+            agent: ticketData.agent || "",
+          });
+        } catch (error) {
+          console.error("Error fetching ticket data", error);
+        }
+      };
+
+      fetchTicketData();
+    }
+  }, [id, token]);
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle file change for attachments
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById("preview").src = e.target.result;
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+      setFormData((prev) => ({ ...prev, attachment: file }));
+    }
+  };
+
+  // Handle form submission for updating the ticket
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
+    });
+
+    try {
+      const response = await MainApi.put(`/api/support-tickets/${id}/`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("Ticket updated successfully", response.data);
+      router.push("/superadmin/supportticket");
+    } catch (error) {
+      console.error("Error updating the ticket", error);
+    }
+  };
 
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
         <CustomCard>
           <CardContent>
-            <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-             Update Ticket Details
+            <Typography
+              className={poppins.className}
+              sx={{ fontSize: "16px", fontWeight: "600" }}
+            >
+              Edit Ticket Details
             </Typography>
             <Divider sx={{ my: 2 }} />
 
@@ -49,32 +140,50 @@ const EditTicket = ({ ticketData }) => {
                 flexDirection: { xs: "column", sm: "row" },
               }}
             >
-              <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="companyname" required>
+              <Grid item xs={12} sm={4}>
+                <CustomLabel htmlFor="company" required>
                   Company Name
                 </CustomLabel>
-                <CustomTextField
-                  id="companyname"
-                  name="companyname"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  required
+                <Select
+                  labelId="company"
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                  value={ticketData?.companyname || ''}
-                />
+                  className={poppins.className}
+                >
+                  <MenuItem value="" disabled>
+                    Select Company
+                  </MenuItem>
+                  {companiesLoading ? (
+                    <MenuItem disabled>Loading...</MenuItem>
+                  ) : companiesError ? (
+                    <MenuItem disabled>Error fetching companies</MenuItem>
+                  ) : (
+                    companiesData?.results.map((company) => (
+                      <MenuItem key={company.id} value={company.id}>
+                        {company.name}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="ticketsubject" required>
+              <Grid item xs={12} sm={8}>
+                <CustomLabel htmlFor="subject" required>
                   Ticket Subject
                 </CustomLabel>
                 <CustomTextField
-                  id="ticketsubject"
-                  name="ticketsubject"
-                  type="ticketsubject"
-                  placeholder="e.g. test@creworder.com"
+                  id="subject"
+                  name="subject"
+                  type="text"
+                  placeholder="e.g. Login Issue"
+                  value={formData.subject}
+                  onChange={handleInputChange}
                   required
                   fullWidth
-                  value={ticketData?.ticketsubject || ''}
                 />
               </Grid>
             </Grid>
@@ -88,35 +197,42 @@ const EditTicket = ({ ticketData }) => {
                 marginTop: "10px",
               }}
             >
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={8}>
                 <CustomLabel htmlFor="description" required>
                   Description
                 </CustomLabel>
                 <TextField
                   id="description"
                   name="description"
-                  placeholder="Description"
+                  placeholder="e.g. Cannot log in with the provided credentials"
+                  type="text"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  required
                   fullWidth
                   multiline
                   rows={4}
-                  value={ticketData?.description || ''}
                 />
               </Grid>
-
-             <Grid item xs={6}>
-                <Typography variant="subtitle1" htmlFor="adminProfile">
+              <Grid item xs={6} sm={4}>
+                <Typography variant="subtitle1" htmlFor="attachment">
                   Upload Attachment
                 </Typography>
                 <div className="custom-file">
                   <input
                     type="file"
                     className="custom-file-input"
-                    id="adminProfile"
-                    name="profileImage"
+                    id="attachment"
+                    name="attachment"
                     onChange={handleFileChange}
                     accept=".jpg,.jpeg,.png"
                   />
                 </div>
+                <img
+                  id="preview"
+                  alt="Preview"
+                  style={{ marginTop: "10px", maxWidth: "100%" }}
+                />
               </Grid>
             </Grid>
 
@@ -133,70 +249,95 @@ const EditTicket = ({ ticketData }) => {
                 <CustomLabel htmlFor="agent" required>
                   Agent
                 </CustomLabel>
-                <CustomTextField
+                <Select
+                  labelId="agent"
                   id="agent"
                   name="agent"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  required
+                  value={formData.agent}
+                  onChange={handleInputChange}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                  value={ticketData?.agent || ''}
-                />
+                >
+                  <MenuItem value="" disabled>
+                    Select Agent
+                  </MenuItem>
+                  {usersLoading ? (
+                    <MenuItem disabled>Loading...</MenuItem>
+                  ) : usersError ? (
+                    <MenuItem disabled>Error fetching users</MenuItem>
+                  ) : (
+                    usersData?.results.map((user) => (
+                      <MenuItem key={user.id} value={user.id}>
+                        {user.username}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="priority" required>
                   Priority
                 </CustomLabel>
-                <CustomTextField
+                <Select
+                  labelId="priority"
                   id="priority"
                   name="priority"
-                  type="priority"
-                  placeholder="e.g. test@creworder.com"
-                  required
+                  value={formData.priority}
+                  onChange={handleInputChange}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                  value={ticketData?.description || ''}
-                />
+                >
+                  <MenuItem value="" disabled>
+                    Select Priority
+                  </MenuItem>
+                  <MenuItem value="urgent">Urgent</MenuItem>
+                  <MenuItem value="high">High</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
+                  <MenuItem value="low">Low</MenuItem>
+                </Select>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="type" required>
                   Type
                 </CustomLabel>
-                <CustomTextField
+                <Select
+                  labelId="type"
                   id="type"
                   name="type"
-                  type="type"
-                  placeholder="e.g. test@creworder.com"
-                  required
+                  value={formData.type}
+                  onChange={handleInputChange}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                   fullWidth
-                  value={ticketData?.type || ''}
-                />
+                >
+                  <MenuItem value="" disabled>
+                    Select Type
+                  </MenuItem>
+                  <MenuItem value="ques">Question</MenuItem>
+                  <MenuItem value="problem">Problem</MenuItem>
+                  <MenuItem value="gen_query">General Query</MenuItem>
+                </Select>
               </Grid>
             </Grid>
 
-            <Grid container justifyContent="flex-end" spacing={2} sx={{ marginTop: "20px" }}>
-              <Grid item>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleUpdate}
-                >
-                  Update
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => {
-                    handleUpdate();
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Grid>
-            </Grid>
-
-            
+            <Button
+              sx={{
+                backgroundColor: "#405189",
+                backgroundImage: "#405189",
+                fontSize: "16px",
+                fontFamily: "Poppins, sans-serif",
+                marginTop: "20px",
+                color: "#fff",
+                "&:hover": {
+                  background: "#1976d2",
+                },
+              }}
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
           </CardContent>
         </CustomCard>
       </Grid>

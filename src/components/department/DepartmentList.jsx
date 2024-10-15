@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import {
   Grid,
   Button,
@@ -10,6 +10,11 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import Edit from '@mui/icons-material/Edit';
@@ -17,16 +22,52 @@ import Delete from '@mui/icons-material/Delete';
 import CustomCard from '../CustomCard';
 import useGetAllDepartments from '@/api-manage/react-query/useGetAllDepartments';
 import { useRouter } from "next/router";
+import MainApi from "@/api-manage/MainApi";
+
 const DepartmentList = ({ onAddDepartment }) => {
   const { data, refetch, isLoading, isError } = useGetAllDepartments();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [departmentToDelete, setDepartmentToDelete] = useState(null);
 
   const handleEdit = (row) => {
     router.push(`/hr/department/editdepartment?id=${row.id}`);
   };
 
   const handleDeleteClick = (id) => {
-    console.log('Delete', id);
+    setDepartmentToDelete(id);
+    setOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const response = await MainApi.delete(`/api/departments/${departmentToDelete}`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.status === 204) {
+        console.log("Department deleted successfully");
+        refetch();
+      } else {
+        console.error("Failed to delete the department");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the department:", error);
+    }
+    setOpen(false);
+    setDepartmentToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpen(false);
+    setDepartmentToDelete(null);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -125,6 +166,23 @@ const DepartmentList = ({ onAddDepartment }) => {
           </CardContent>
         </CustomCard>
       </Grid>
+
+      <Dialog open={open} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete Department</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this department? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
