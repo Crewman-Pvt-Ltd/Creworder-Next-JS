@@ -5,7 +5,7 @@ import NDRPerformance from "@/components/performance/NDRPerformance";
 
 const index = () => {
   return (
-    <Layout>
+    <Layout type="admin">
       <Grid>
         <NDRPerformance />
       </Grid>

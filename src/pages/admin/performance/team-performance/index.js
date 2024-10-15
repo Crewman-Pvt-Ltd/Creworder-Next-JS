@@ -4,7 +4,7 @@ import Layout from "@/components/Layout";
 import TeamPerformance from "@/components/performance/TeamPerformance";
 const index = () => {
   return (
-    <Layout>
+    <Layout type="admin">
       <Grid>
         <TeamPerformance />
       </Grid>
