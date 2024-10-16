@@ -46,7 +46,7 @@
     "react-dom": "^18",
     "react-phone-number-input": "^3.4.8",
     "react-query": "^3.39.3",
-    "react-quill": "^0.0.2",
+    "react-quill": "^2.0.0",
     "react-spinners": "^0.14.1",
     "sweetalert": "^2.1.2",
     "ws": "^8.18.0"

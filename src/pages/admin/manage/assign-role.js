@@ -1,11 +1,12 @@
 import React from 'react'
 import Layout from '@/components/Layout'
-import AssignTl from '@/components/manage/AssignTl';
+
+import AssignRole from '@/components/manage/AssignRole';
 const assigntl = () => {
 
     return (
       <Layout type="admin">
-        <AssignTl />
+        <AssignRole />
       </Layout>
     );
   };

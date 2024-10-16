@@ -24,7 +24,7 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
-const AssignTlList = () => {
+const AssignRoleList = () => {
   const router = useRouter();
   const rows = [
     {
@@ -36,7 +36,7 @@ const AssignTlList = () => {
   ];
 
   const createtl = () => {
-    router.push("/admin/manage/assign-tl");
+    router.push("/admin/manage/assign-role");
   };
 
   return (
@@ -158,4 +158,4 @@ const AssignTlList = () => {
   );
 };
 
-export default AssignTlList;
+export default AssignRoleList;
