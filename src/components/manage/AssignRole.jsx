@@ -11,14 +11,15 @@ import {
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 
-const AssignTl = () => {
+const AssignRole = () => {
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
   // State for holding input values
   const [inputValues, setInputValues] = useState({
     tl: [],
-    agent: [],
+    agent: "",
+    manager: "",
   });
 
   // State for validation errors
@@ -26,14 +27,15 @@ const AssignTl = () => {
 
   // Input change handler to capture user input
   const handleInputChange = (field) => (event) => {
-    setInputValues({ ...inputValues, [field]: event.target.value });
+    const value = field === "agent" ? event.target.value : event.target.value;
+    setInputValues({ ...inputValues, [field]: value });
   };
 
   // Validate form inputs
   const validateForm = () => {
     let tempErrors = {};
     if (!inputValues.tl.length) tempErrors.tl = "At least one TL is required";
-    if (!inputValues.agent.length) tempErrors.agent = "At least one agent is required";
+    if (!inputValues.agent) tempErrors.agent = "Manager is required";
     
     return tempErrors;
   };
@@ -76,19 +78,16 @@ const AssignTl = () => {
               </Typography>
               <Grid container spacing={2}>
 
-
-                 {/* Agent Select with Multi-Select and Checkboxes */}
-                 <Grid item xs={12} sm={4} md={4}>
+                {/* Manager Select with Single Select */}
+                <Grid item xs={12} sm={4} md={4}>
                   <Select
-                    labelId="agent-select-label"
-                    id="agent"
-                    value={inputValues.agent}
-                    onChange={handleInputChange("agent")}
-                    multiple
+                    labelId="manager-select-label"
+                    id="manager"
+                    value={inputValues.manager}
+                    onChange={handleInputChange("manager")}
                     displayEmpty
                     sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
                     fullWidth
-                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select Manager")}
                   >
                     <MenuItem value="" disabled>
                       Select Manager
@@ -99,22 +98,21 @@ const AssignTl = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.agent && (
-                    <FormHelperText>{errors.agent}</FormHelperText>
+                  {errors.manager && (
+                    <FormHelperText>{errors.manager}</FormHelperText>
                   )}
                 </Grid>
-                {/* Agent Select with Multi-Select and Checkboxes */}
+
+                {/* TeamLead Select with Single Select */}
                 <Grid item xs={12} sm={4} md={4}>
                   <Select
-                    labelId="agent-select-label"
-                    id="agent"
-                    value={inputValues.agent}
-                    onChange={handleInputChange("agent")}
-                    multiple
+                    labelId="teamlead-select-label"
+                    id="teamlead"
+                    value={inputValues.manager}
+                    onChange={handleInputChange("teamlead")}
                     displayEmpty
                     sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
                     fullWidth
-                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select TeamLead")}
                   >
                     <MenuItem value="" disabled>
                       Select TeamLead
@@ -125,8 +123,8 @@ const AssignTl = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.agent && (
-                    <FormHelperText>{errors.agent}</FormHelperText>
+                  {errors.teamlead && (
+                    <FormHelperText>{errors.teamlead}</FormHelperText>
                   )}
                 </Grid>
                 
@@ -182,4 +180,4 @@ const AssignTl = () => {
   );
 };
 
-export default AssignTl;
+export default AssignRole;
