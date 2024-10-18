@@ -38,7 +38,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
+import useGetAllOrders from "@/api-manage/react-query/useGetAllOrders";
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
@@ -47,6 +47,8 @@ const OrderList = () => {
   const [startDate, setStartDate] = useState(dayjs(null));
   const [endDate, setEndDate] = useState(dayjs(null));
   const router = useRouter();
+
+  const { data, refetch } = useGetAllOrders();
 
   const createOrder = () => {
     router.push("/admin/orders/createorders");
@@ -99,19 +101,7 @@ const OrderList = () => {
 
   const rows = [
     {
-      id: 1,
-      order_id: "PRXTW987",
-      name: "Shivam",
-      city: "Noida",
-      product: "Weight loss",
-      amount: "2024",
-      agent: "Vikash",
-      status: "Pending",
-      payment_mode: "COD",
-      order_date: "2024-08-01",
-      remark:
-        "You can override the style of the component using one of these customization options.",
-      action: "Edit",
+      
     },
   ];
 
@@ -146,6 +136,8 @@ const OrderList = () => {
     { question: "How likely are you to recommend us?", rating: 0 },
     { question: "What is your overall experience?", rating: 0 },
   ]);
+
+
   return (
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
@@ -467,70 +459,72 @@ const OrderList = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Sr.</TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Sr.</strong> </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order ID
+                    <strong> Order ID</strong>
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Customer Name
+                    <strong>Customer Name</strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>City</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Product</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Amount</TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Agent</TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>City</strong></TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Product</strong></TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Amount</strong></TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Agent</strong></TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order Status
-                    </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Payment Mode
+                    <strong>Order Status</strong>
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      Order Date
+                      <strong>Payment Mode</strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Remark</TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      C.C Call
+                      <strong>Order Date</strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>Action</TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}> <strong>Remark </strong></TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                       <strong>C.C Call</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Action</strong></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
+                {data?.Data.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.id}.
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <Link href={`/admin/orders/order-details/`}>
-                          <b>{row.order_id}</b>
+                       <TableCell sx={{ whiteSpace: "nowrap", cursor: 'pointer' }}>
+                        <Link href={`/admin/orders/order-details?Id=${row.id}`}>
+                        <b>{row.order_id}</b>
                         </Link>
+                        </TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        {row.customer_name}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.name}
+                        {row.customer_city}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.city}
+                      {row.product_details[0]?.product_name}
+                      </TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>{row.total_amount}</TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        {row.order_created_by_username}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.product}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.amount}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.agent}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.status}
-                      </TableCell>
+                        <Button 
+                              variant="contained" 
+                              sx={{ backgroundColor: "orange", color: "black" }}>
+                              {row.order_status_title}
+                        </Button>
+                        </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.payment_mode}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_date}
+                        {row.created_at}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.remark}
+                        {row.order_remark}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         <IconButton aria-label="call" sx={{ color: "green" }}>

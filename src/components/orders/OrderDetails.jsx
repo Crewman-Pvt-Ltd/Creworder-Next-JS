@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Typography,
   Button,
+  Card,
+  CardContent,
+  CardActions,
   Table,
   TableBody,
   TableCell,
@@ -11,9 +14,6 @@ import {
   TableRow,
   Paper,
   Box,
-  Card,
-  CardContent,
-  CardActions,
   CardMedia,
   IconButton,
   Avatar,
@@ -33,37 +33,40 @@ import {
   StepConnector,
   Icon,
 } from "@mui/material";
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import useGetAllOrders from "@/api-manage/react-query/useGetAllOrders";
+import { useRouter } from "next/router";
 import RoomIcon from "@mui/icons-material/Room";
 import CancelIcon from "@mui/icons-material/Cancel";
 import LockIcon from "@mui/icons-material/Lock";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import GiftIcon from "@mui/icons-material/CardGiftcard";
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import { Edit as EditIcon, Delete as DeleteIcon, Star as StarIcon, Padding, Margin } from "@mui/icons-material";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Star as StarIcon,
+  Padding,
+  Margin,
+} from "@mui/icons-material";
 import CustomCard from "../CustomCard";
 import { Poppins } from "next/font/google";
 import CustomTextField from "../CustomTextField";
 import CustomLabel from "../CustomLabel";
-import CreateIcon from '@mui/icons-material/Create';
-import creworder from '../../images/crewordericon.png';
-import PaymentIcon from '@mui/icons-material/Payment';
-import Image from 'next/image';
+import CreateIcon from "@mui/icons-material/Create";
+import creworder from "../../images/crewordericon.png";
+import PaymentIcon from "@mui/icons-material/Payment";
+import Image from "next/image";
 import { px } from "framer-motion";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
+
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
-
 const steps = [
-  {   
+  {
     icon: <LockIcon />,
     status: "Order Placed",
     date: "Wed, 15 Dec 2021",
@@ -107,8 +110,11 @@ const steps = [
   },
 ];
 
-
 const OrderDetails = () => {
+  const { data, refetch } = useGetAllOrders();
+  const router = useRouter();
+  const { Id } = router.query;
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
   const handleTabChange = (event, newValue) => {
@@ -118,7 +124,8 @@ const OrderDetails = () => {
   const rows = [
     {
       id: 1,
-      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620', 
+      image:
+        "https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620",
       name: "Gummsi Gummies",
       color: "Pink",
       size: "M",
@@ -127,47 +134,42 @@ const OrderDetails = () => {
       rating: 5,
       totalAmount: "₹239.98",
     },
-    {
-      id: 2,
-      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620',
-      name: "Gummsi Gummies ",
-      color: "Black",
-      size: "32.5mm",
-      itemPrice: "₹94.99",
-      quantity: 1,
-      rating: 5,
-      totalAmount: "₹94.99",
-    },
-    {
-      id: 3,
-      image: 'https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620',
-      name: "Sleep Easy Gummies",
-      color: "White",
-      size: "350 ml",
-      itemPrice: "₹24.99",
-      quantity: 1,
-      rating: 4,
-      totalAmount: "₹24.99",
-    },
+    
   ];
+  useEffect(() => {
+    if (data?.Data && Id) {
+      const order = data.Data.find((row) => row.id === parseInt(Id));
+      setSelectedOrder(order);
+    }
+  }, [data, Id]);
+  if (!selectedOrder) {
+    return <Typography variant="h6">Order not found or loading...</Typography>;
+  }
 
   return (
-    <Grid container spacing={2} p={3}>     
-      <Grid item xs={12} md={3} sm={3}>  
+    <Grid container spacing={2} p={3}>
+      <Grid item xs={12} md={3} sm={3}>
         <Card sx={{ mb: 2 }}>
-          <CardContent>           
-          <Image 
-            src={creworder}
-            alt="creworder"            
-            />                 
-             <Typography variant="h6" fontWeight="bold">Personal Information</Typography>
-             <Typography variant="body2" padding={1}><b>Name:</b> Rahul Kumar</Typography> 
-             <Typography variant="body2" padding={1}><b>Father's Name:</b> </Typography>
-             <Typography variant="body2" padding={1}><b> Contact:</b> +91- 9876543210</Typography>
-             <Typography variant="body2" padding={1}><b>Email:</b> rahul.kumar@crewman.in</Typography>
+          <CardContent>
+            <Image src={creworder} alt="creworder" />
+            <Typography variant="h6" fontWeight="bold">
+              Personal Information
+            </Typography>
+            <Typography variant="body2" padding={1}>
+              <b>Name:</b> {selectedOrder.customer_name}
+            </Typography>
+            <Typography variant="body2" padding={1}>
+              <b>Father's Name:</b> {selectedOrder.customer_parent_name}
+            </Typography>
+            <Typography variant="body2" padding={1}>
+              <b>Contact:</b> {selectedOrder.customer_phone}
+            </Typography>
+            <Typography variant="body2" padding={1}>
+              <b>Email:</b> {selectedOrder.customer_email}
+            </Typography>
           </CardContent>
           <CardActions>
-          <div>
+            <div>
               <Button
                 className={poppins.className}
                 startIcon={<RoomIcon />}
@@ -175,8 +177,9 @@ const OrderDetails = () => {
                   marginRight: 1,
                   fontSize: "11px",
                   backgroundColor: "#dff0fa",
-                }}>
-               NDR
+                }}
+              >
+                NDR
               </Button>
               <Button
                 className={poppins.className}
@@ -186,7 +189,8 @@ const OrderDetails = () => {
                   marginRight: 1,
                   fontSize: "11px",
                   backgroundColor: "#fde8e4",
-                }}>
+                }}
+              >
                 Account
               </Button>
               <Button
@@ -195,14 +199,14 @@ const OrderDetails = () => {
                 sx={{
                   fontSize: "11px",
                   backgroundColor: "#dff0fa",
-                }}>
-               Edit
+                }}
+              >
+                Edit
               </Button>
             </div>
           </CardActions>
         </Card>
       </Grid>
-
       <Grid item xs={9} md={9} sm={9}>
       <CustomCard>
         <CardContent>
@@ -222,32 +226,26 @@ const OrderDetails = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Image</TableCell>
+                  <TableCell>Images</TableCell>
                     <TableCell>Name</TableCell>
-                    <TableCell>Color</TableCell>
-                    <TableCell>Size</TableCell>
                     <TableCell>Item Price</TableCell>
                     <TableCell>Quantity</TableCell>
                     <TableCell>Total Amount</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
-                    <TableRow key={row.id}>
+                {selectedOrder.product_details.map((item) => (
+                    <TableRow key={item.id}>
                       <TableCell>
-                        <CardMedia
-                          component="img"
-                          image={row.image}
-                          alt={row.name}
-                          sx={{ width: 100, height: 100 }}
+                        <img 
+                          src="https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620" 
+                          style={{ width: "100px" }} 
                         />
                       </TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.color}</TableCell>
-                      <TableCell>{row.size}</TableCell>
-                      <TableCell>{row.itemPrice}</TableCell>
-                      <TableCell>{row.quantity}</TableCell>                     
-                      <TableCell>{row.totalAmount}</TableCell>
+                      <TableCell>{item.product_name}</TableCell>
+                      <TableCell>₹{selectedOrder.gross_amount}</TableCell>
+                      <TableCell>{item.product_qty}</TableCell>                     
+                      <TableCell>₹{item.product_price}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -257,29 +255,30 @@ const OrderDetails = () => {
                     <Box p={2} bgcolor="background.paper" borderRadius={1}>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Sub Total :</Typography>
-                        <Typography style={{marginRight: 35}}>₹359.96</Typography>
+                        <Typography style={{marginRight: 35}}>₹{selectedOrder.total_amount}</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>
                           Discount :
                         </Typography>
-                        <Typography style={{marginRight: 35}}>-₹53.99</Typography>
+                        <Typography style={{marginRight: 35}}>-₹{selectedOrder.discount}</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Shipping Charge :</Typography>
-                        <Typography style={{marginRight: 35}}>₹65.00</Typography>
+                        <Typography style={{marginRight: 35}}>₹{selectedOrder.shipping_charges}</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Estimated Tax :</Typography>
-                        <Typography style={{marginRight: 35}}>₹44.99</Typography>
+                        <Typography style={{marginRight: 35}}>₹{selectedOrder.taxeble_amount}</Typography>
                       </Grid>
                       <Divider sx={{ my: 2 }} />
                       <Grid container justifyContent="space-between" fontWeight="bold">
                         <Typography>Total (USD) :</Typography>
-                        <Typography style={{marginRight: 35}}>₹415.96</Typography>
+                        <Typography style={{marginRight: 35}}>₹{selectedOrder.total_amount}</Typography>
                       </Grid>
                     </Box>
                   </Grid>
+                  
                 </Grid>
                 </TableContainer>
                 </Grid>

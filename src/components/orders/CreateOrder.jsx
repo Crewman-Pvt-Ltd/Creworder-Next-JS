@@ -292,7 +292,7 @@ const CreateOrder = () => {
       "payment_type": 1,
       "payment_status": 1,
       "order_status": 1,
-      "order_created_by": 6,
+      "order_created_by": 7,
       "product_details": products
     });
 
@@ -599,8 +599,7 @@ const CreateOrder = () => {
                                 fontFamily: "Poppins, sans-serif",
                                 height: "50px",
                               }}
-                              fullWidth
-                            >
+                              fullWidth>
                               <MenuItem value="" disabled>
                                 Select Product
                               </MenuItem>
@@ -754,8 +753,7 @@ const CreateOrder = () => {
                       <Grid item xs={6}>
                         <Typography
                           variant="caption"
-                          sx={{ fontFamily: "Poppins, sans-serif", ml: "80px" }}
-                        >
+                          sx={{ fontFamily: "Poppins, sans-serif", ml: "80px" }}>
                           Discount (-₹)
                         </Typography>
                       </Grid>
@@ -766,8 +764,7 @@ const CreateOrder = () => {
                           placeholder="discount amount"
                           type="text"
                           fullWidth
-                          sx={{ fontFamily: "Poppins, sans-serif" }}
-                        />
+                          sx={{ fontFamily: "Poppins, sans-serif" }}/>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -776,8 +773,7 @@ const CreateOrder = () => {
                       <Grid item xs={6}>
                         <Typography
                           variant="caption"
-                          sx={{ fontFamily: "Poppins, sans-serif", ml: "70px" }}
-                        >
+                          sx={{ fontFamily: "Poppins, sans-serif", ml: "70px" }}>
                           Payable Amount (₹)
                         </Typography>
                       </Grid>
