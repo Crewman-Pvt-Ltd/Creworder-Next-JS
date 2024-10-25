@@ -65,7 +65,7 @@ const NoticeList = () => {
 
       if (response.status === 204) {
         console.log("Notice deleted successfully");
-        refetch(); // Refetch the notices to update the list
+        refetch(); 
       } else {
         console.error("Failed to delete the notice");
       }

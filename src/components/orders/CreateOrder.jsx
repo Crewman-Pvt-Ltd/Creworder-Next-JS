@@ -16,6 +16,7 @@ import {
   List,
   ListItem,
   FormControl,
+  TextField,
   Dialog,
   DialogContent,
   DialogActions,
@@ -39,9 +40,8 @@ import { baseApiUrl } from "@/api-manage/ApiRoutes";
 import { getToken } from "@/utils/getToken";
 import axios from "axios";
 import swal from "sweetalert";
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
-
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 
 const poppins = Poppins({
   weight: "500",
@@ -51,26 +51,26 @@ const poppins = Poppins({
 const CreateOrder = () => {
   const token = getToken();
   const router = useRouter();
-  const [customerName, setCustomerName] = useState('')
-  const [customerFatherName, setCustomerFatherName] = useState('')
+  const [customerName, setCustomerName] = useState("");
+  const [customerFatherName, setCustomerFatherName] = useState("");
   const [phoneCustomer, setPhoneCustomer] = useState("");
-  const [customerEmailId, setCustomerEmailId] = useState('')
+  const [customerEmailId, setCustomerEmailId] = useState("");
   const [courseDuration, setCourseDuration] = useState("");
 
   const [postalCode, setPostalCode] = useState("");
   const [locality, setLocality] = useState("");
-  const [cutomerCity, setCutomerCity] = useState('')
-  const [cutomerState, setCutomerState] = useState('')
-  const [cutomerCountry, setCutomerCountry] = useState('India')
-  const [customerAddress, setCustomerAddress] = useState('')
+  const [cutomerCity, setCutomerCity] = useState("");
+  const [cutomerState, setCutomerState] = useState("");
+  const [cutomerCountry, setCutomerCountry] = useState("India");
+  const [customerAddress, setCustomerAddress] = useState("");
 
-  const [productList, setproductList] = useState([])
+  const [productList, setproductList] = useState([]);
   const [products, setProducts] = useState([
     { product: 0, productName: "", product_qty: 1, price: 0, total: 0 },
   ]);
   const [grossAmount, setGrossAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
-  const [payableAmount, setPayableAmount] = useState(0)
+  const [payableAmount, setPayableAmount] = useState(0);
   const [paymentMode, setPaymentMode] = useState("");
   const [paymentType, setPaymentType] = useState("");
   const [codAmount, setCodAmount] = useState(0);
@@ -78,14 +78,14 @@ const CreateOrder = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(true);
   const [isSecondDialogOpen, setIsSecondDialogOpen] = useState(false);
   const [selectedPincodes, setSelectedPincodes] = useState([]);
-  const [pincodeData, setPincodeData] = useState([])
+  const [pincodeData, setPincodeData] = useState([]);
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
   const [customerCallId, setCustomerCallId] = useState(false);
   const [paymentModeError, setPaymentModeError] = useState(false);
   const [selectedPincode, setSelectedPincode] = useState(null);
   const [orderRemark, setOrderRemark] = useState(null);
-  // 
+  //
   const handlePincodeSelection = (pincode) => {
     if (selectedPincode === pincode) {
       setSelectedPincode(null);
@@ -99,28 +99,28 @@ const CreateOrder = () => {
   };
 
   const getProductsList = () => {
-    let data = '';
+    let data = "";
     let config = {
-      method: 'get',
+      method: "get",
       maxBodyLength: Infinity,
       url: `${baseApiUrl}products/`,
       headers: {
-        'Authorization': `Token ${token}`
+        Authorization: `Token ${token}`,
       },
-      data: data
+      data: data,
     };
-    axios.request(config)
+    axios
+      .request(config)
       .then((response) => {
-        setproductList(response.data.results)
+        setproductList(response.data.results);
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
   useEffect(() => {
     getProductsList(true);
   }, []);
-
 
   useEffect(() => {
     setIsDialogOpen(true);
@@ -213,7 +213,7 @@ const CreateOrder = () => {
   };
 
   const checkServiceAndOrderExistOrNot = () => {
-    if (!phoneCustomer || !phoneCustomer.startsWith('+91')) {
+    if (!phoneCustomer || !phoneCustomer.startsWith("+91")) {
       setPhoneError(true);
     } else {
       setPhoneError(false);
@@ -233,20 +233,21 @@ const CreateOrder = () => {
     }
     if (valid) {
       let config = {
-        method: 'get',
+        method: "get",
         maxBodyLength: Infinity,
         url: `${baseApiUrl}check-serviceability/`,
         headers: {
-          'Authorization': `Token ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
         },
         params: {
           pincode: postalCode,
-          mobile: phoneCustomer
-        }
+          mobile: phoneCustomer,
+        },
       };
 
-      axios.request(config)
+      axios
+        .request(config)
         .then((response) => {
           if (response.status === 208) {
             swal({
@@ -256,9 +257,9 @@ const CreateOrder = () => {
               button: "Ok!",
             });
           } else {
-            setPincodeData(response.data.data)
-            setCutomerCity(response.data.data[0].delivery_city)
-            setCutomerState(response.data.data[0].delivery_state)
+            setPincodeData(response.data.data);
+            setCutomerCity(response.data.data[0].delivery_city);
+            setCutomerState(response.data.data[0].delivery_state);
             setIsDialogOpen(false);
             setIsSecondDialogOpen(true);
           }
@@ -267,46 +268,46 @@ const CreateOrder = () => {
           console.log(error);
         });
     }
-  }
+  };
   const createOrder = () => {
-    if(!customerName){
-      
+    if (!customerName) {
     }
-    const axios = require('axios');
+    const axios = require("axios");
     let data = JSON.stringify({
-      "network_ip": `192.168.1.1`,
-      "customer_name": `${customerName}`,
-      "customer_phone": `${phoneCustomer}`,
-      "customer_address": `${customerAddress}`,
-      "customer_postal": `${postalCode}`,
-      "customer_city": `${cutomerCity}`,
-      "customer_country": `${cutomerCountry}`,
-      "total_amount": payableAmount,
-      "gross_amount": grossAmount,
-      "discount": discount,
-      "prepaid_amount": partialPayment,
-      "order_remark": orderRemark,
-      "repeat_order": 0,
-      "is_booked": 1,
-      "customer_state": 1,
-      "payment_type": 1,
-      "payment_status": 1,
-      "order_status": 1,
-      "order_created_by": 7,
-      "product_details": products
+      network_ip: `192.168.1.1`,
+      customer_name: `${customerName}`,
+      customer_phone: `${phoneCustomer}`,
+      customer_address: `${customerAddress}`,
+      customer_postal: `${postalCode}`,
+      customer_city: `${cutomerCity}`,
+      customer_country: `${cutomerCountry}`,
+      total_amount: payableAmount,
+      gross_amount: grossAmount,
+      discount: discount,
+      prepaid_amount: partialPayment,
+      order_remark: orderRemark,
+      repeat_order: 0,
+      is_booked: 1,
+      customer_state: 1,
+      payment_type: 1,
+      payment_status: 1,
+      order_status: 1,
+      order_created_by: 7,
+      product_details: products,
     });
 
     let config = {
-      method: 'post',
+      method: "post",
       maxBodyLength: Infinity,
       url: `${baseApiUrl}orders/`,
       headers: {
-        'Authorization': `Token ${token}`,
-        'Content-Type': 'application/json'
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
       },
-      data: data
+      data: data,
     };
-    axios.request(config)
+    axios
+      .request(config)
       .then((response) => {
         if (response.status === 201) {
           swal({
@@ -316,7 +317,6 @@ const CreateOrder = () => {
             button: "Ok",
           });
           router.push("/admin/orders");
-
         }
       })
       .catch((error) => {
@@ -327,7 +327,6 @@ const CreateOrder = () => {
           button: "Ok",
         });
       });
-
   };
   return (
     <Grid container spacing={2} p={3}>
@@ -586,12 +585,16 @@ const CreateOrder = () => {
                               onChange={(e) => {
                                 const selectedValue = e.target.value;
                                 const selectedname = e.target.name;
-                                const selectedProduct = productList.find(item => item.product_name === selectedValue);
+                                const selectedProduct = productList.find(
+                                  (item) => item.product_name === selectedValue
+                                );
                                 handleInputChange(index, {
                                   id: selectedProduct.id,
                                   name: selectedname,
                                   Pname: selectedValue,
-                                  Pprice: selectedProduct ? selectedProduct.product_price : 0
+                                  Pprice: selectedProduct
+                                    ? selectedProduct.product_price
+                                    : 0,
                                 });
                               }}
                               displayEmpty
@@ -599,7 +602,8 @@ const CreateOrder = () => {
                                 fontFamily: "Poppins, sans-serif",
                                 height: "50px",
                               }}
-                              fullWidth>
+                              fullWidth
+                            >
                               <MenuItem value="" disabled>
                                 Select Product
                               </MenuItem>
@@ -607,17 +611,20 @@ const CreateOrder = () => {
                                 <MenuItem
                                   key={idx}
                                   value={productItem.product_name}
-                                  disabled={getSelectedProducts().includes(productItem.product_name)}
+                                  disabled={getSelectedProducts().includes(
+                                    productItem.product_name
+                                  )}
                                 >
                                   {productItem.product_name}
                                 </MenuItem>
                               ))}
                             </Select>
-
-
                           </Grid>
                           <Grid item xs={12} sm={2}>
-                            <CustomLabel htmlFor={`product_qty-${index}`} required>
+                            <CustomLabel
+                              htmlFor={`product_qty-${index}`}
+                              required
+                            >
                               Quantity
                             </CustomLabel>
                             <CustomTextField
@@ -630,7 +637,7 @@ const CreateOrder = () => {
                                   name: e.target.name,
                                   Pname: product.productName,
                                   Pprice: product.price,
-                                  product_qty: e.target.value
+                                  product_qty: e.target.value,
                                 });
                               }}
                               placeholder="product_qty"
@@ -753,7 +760,8 @@ const CreateOrder = () => {
                       <Grid item xs={6}>
                         <Typography
                           variant="caption"
-                          sx={{ fontFamily: "Poppins, sans-serif", ml: "80px" }}>
+                          sx={{ fontFamily: "Poppins, sans-serif", ml: "80px" }}
+                        >
                           Discount (-₹)
                         </Typography>
                       </Grid>
@@ -764,7 +772,8 @@ const CreateOrder = () => {
                           placeholder="discount amount"
                           type="text"
                           fullWidth
-                          sx={{ fontFamily: "Poppins, sans-serif" }}/>
+                          sx={{ fontFamily: "Poppins, sans-serif" }}
+                        />
                       </Grid>
                     </Grid>
                   </Grid>
@@ -773,7 +782,8 @@ const CreateOrder = () => {
                       <Grid item xs={6}>
                         <Typography
                           variant="caption"
-                          sx={{ fontFamily: "Poppins, sans-serif", ml: "70px" }}>
+                          sx={{ fontFamily: "Poppins, sans-serif", ml: "70px" }}
+                        >
                           Payable Amount (₹)
                         </Typography>
                       </Grid>
@@ -955,23 +965,38 @@ const CreateOrder = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <PhoneInput
-                  international
-                  countryCallingCodeEditable={true}
-                  defaultCountry="IN"
-                  value={phoneCustomer}
-                  onChange={(value) => setPhoneCustomer(value)}
-                  placeholder="Enter phone number"
-                  inputStyle={{
-                    fontFamily: 'Poppins, sans-serif',
-                    width: '100%',
-                    padding: '10px',
-                    border: phoneError ? '1px solid red' : '1px solid #ccc',
-                    borderRadius: '4px',
+                <div
+                  style={{
+                    border: phoneError ? "1px solid red" : "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "10px",
+                    width: "100%",
+                    boxSizing: "border-box",
                   }}
-                />
+                >
+                  <PhoneInput
+                    international
+                    countryCallingCodeEditable={true}
+                    defaultCountry="IN"
+                    value={phoneCustomer}
+                    onChange={(value) => setPhoneCustomer(value)}
+                    inputStyle={{
+                      width: "100%",
+
+                      fontFamily: "Poppins, sans-serif",
+                      padding: 0,
+                    }}
+                    buttonStyle={{
+                      border: "none",
+                      background: "transparent",
+                    }}
+                    placeholder="Enter phone number"
+                  />
+                </div>
                 {phoneError && (
-                  <FormHelperText error>Phone Number must start with '+91'</FormHelperText>
+                  <FormHelperText error>
+                    Phone Number must start with '+91'
+                  </FormHelperText>
                 )}
               </Grid>
               <Grid item xs={6}>
@@ -992,13 +1017,14 @@ const CreateOrder = () => {
                     <MenuItem value="Partial">Partial</MenuItem>
                   </Select>
                   {paymentModeError && (
-                    <FormHelperText error>Payment Status is required</FormHelperText>
+                    <FormHelperText error>
+                      Payment Status is required
+                    </FormHelperText>
                   )}
                 </FormControl>
               </Grid>
             </Grid>
           </DialogContent>
-
 
           <DialogActions>
             <Button
@@ -1055,12 +1081,16 @@ const CreateOrder = () => {
                       <TableCell>
                         <Checkbox
                           checked={selectedPincode === item.pickup_id}
-                          onChange={() => handlePincodeSelection(item.pickup_id)}
+                          onChange={() =>
+                            handlePincodeSelection(item.pickup_id)
+                          }
                         />
                         {item.pickup_point}
                       </TableCell>
                       <TableCell>{item.eddtime} in Days</TableCell>
-                      <TableCell>{item.pickup_city || "No address available"}</TableCell>
+                      <TableCell>
+                        {item.pickup_city || "No address available"}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
