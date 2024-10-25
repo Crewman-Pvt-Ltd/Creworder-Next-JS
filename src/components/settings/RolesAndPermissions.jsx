@@ -577,20 +577,40 @@ const RolesAndPermissions = () => {
               </TableHead>
               <TableBody>
                 {[
+                  { name: "Total Order" },
+                  { name: "Running" },
+                  { name: "No Response" },
+                  { name: "Rejected" },
+                  { name: "Accepted" },
+                  { name: "Future Order" },
+                  { name: "Pending Order" },
+                  { name: "Accepted Pending" },
+                  { name: "Intransit" },
+                  { name: "Reattempted" },
+                  { name: "Intransit RTO" },
+                  { name: "NDR" },
+                  { name: "Out For Delivery" },
+                  { name: "Develivered Ordered" },
+                  { name: "Running" },
+                  { name: "Payment Not Received" },
                   { name: "Agent" },
                   { name: "Show All Order status Tiles" },
                   { name: "Team view" },
                   { name: "All, Own, Team" },
                   { name: "Notis Followup" },
+                  { name: "Team Order List" },
                 ].map((permission, index) => (
                   <TableRow key={index}>
                     <TableCell>{permission.name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue="All" size="small">
+                        <Select defaultValue="All" size="small" sx={{
+                          width: "75%",
+                        }}>
                           <MenuItem value="All">All</MenuItem>
                           <MenuItem value="Owned">Owned</MenuItem>
-                          <MenuItem value="none">None</MenuItem>
+                          <MenuItem value="manager">Manager</MenuItem>
+                          <MenuItem value="team-lead">Team Lead</MenuItem>
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -601,7 +621,7 @@ const RolesAndPermissions = () => {
           </StyledTableContainer>
         )}
 
-        {/* Tab Content for "Dashboard" */}
+        
         {activeTab === 3 && isAdmin && (
           <StyledTableContainer>
             <Table>
