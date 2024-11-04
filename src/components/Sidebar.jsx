@@ -100,7 +100,7 @@ const HoverableNavItem = ({
   );
 };
 
-  const Sidebar = ({ isOpen, type }) => {
+const Sidebar = ({ isOpen, type }) => {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -471,6 +471,16 @@ const HoverableNavItem = ({
             icon={<EmailIcon />}
             active={currentPath === "/superadmin/form-enquiry"}
             onClick={() => handleItemClick("/superadmin/form-enquiry")}
+          ></HoverableNavItem>
+        )}
+
+        {type == "superadmin" && (
+          <HoverableNavItem
+            isOpen={isOpen}
+            name="Banner"
+            icon={<NotificationsIcon />}
+            active={currentPath === "/superadmin/banner"}
+            onClick={() => handleItemClick("/superadmin/banner")}
           ></HoverableNavItem>
         )}
       </Box>

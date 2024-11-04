@@ -14,7 +14,7 @@ import ScoreIcon from "@mui/icons-material/Score";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { usePermissions } from "@/contexts/PermissionsContext";
 import { useRouter } from "next/router";
-import Performance from "./Performance";
+import UserAttendance from "./UserAttendance";
 const Profile = () => {
   const router = useRouter();
   const { permissionsData } = usePermissions();
@@ -168,7 +168,7 @@ const Profile = () => {
                 />
               }
               iconPosition="start"
-              label="Performance"
+              label="Attendance"
               sx={{
                 textTransform: "none",
                 bgcolor: activeTab === 1 ? "#fff" : "transparent",
@@ -209,7 +209,7 @@ const Profile = () => {
                   <Box
                     sx={
                       {
-                        //  marginRight:"10px",
+                         marginRight:"10px",
                       }
                     }
                   >
@@ -284,15 +284,12 @@ const Profile = () => {
                 </Box>
               )}
             </Grid>
-            <Grid item xs={12} sm={12} md={12}>
-              {activeTab === 1 && (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12} md={12}>
-                    <Performance />
-                  </Grid>
-                </Grid>
-              )}
-            </Grid>
+
+            {activeTab === 1 && (
+              <Grid item xs={12} sm={12} md={12}>
+                <UserAttendance />
+              </Grid>
+            )}
 
             {activeTab === 2 && (
               <Box>{/* QC Score-related content here */}</Box>
