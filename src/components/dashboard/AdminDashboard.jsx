@@ -11,9 +11,13 @@ import UpgradeAccount from "../UpgradeAccount";
 import ScheduleOrderChart from "../ScheduleOrderChart";
 import Checklist from "../Checklist";
 import { DateRangePicker } from "@nextui-org/date-picker";
+import Banner from "../banner/Banner";
 
 const AdminDashboard = () => {
-  const [dateRange, setDateRange] = useState({ startDate: null, endDate: null }); // State for date range
+  const [dateRange, setDateRange] = useState({
+    startDate: null,
+    endDate: null,
+  }); // State for date range
 
   const tilesTypes = ["Running Order", "Pending", "Repeat Order", "Rejected"];
   const tiles = [
@@ -29,9 +33,9 @@ const AdminDashboard = () => {
     "rto",
   ];
   const LightButton = styled(Button)({
-    backgroundColor: '#cc0e0e',
+    backgroundColor: "#cc0e0e",
     "&:hover": {
-      backgroundColor: '#cc0e0e',
+      backgroundColor: "#cc0e0e",
     },
   });
 
@@ -46,7 +50,7 @@ const AdminDashboard = () => {
   }
 
   const typetiles = ["Running", "intransit", "Accepted", "noresponse"];
-  
+
   const handleDateRangeChange = (range) => {
     setDateRange(range);
     console.log("Selected Range:", range); // You can handle the date range as needed
@@ -121,6 +125,10 @@ const AdminDashboard = () => {
             </Grid>
           </Grid>
 
+          <Grid item xs={12} sm={12} md={12}>
+            <Banner />
+          </Grid>
+
           <Grid item xs={12} sm={12} md={5}>
             <Grid container spacing={3}>
               <Grid item>
@@ -181,7 +189,6 @@ const AdminDashboard = () => {
         </Grid>
       </Grid>
 
-
       <Grid item>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12}>
@@ -189,9 +196,6 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
       </Grid>
-
-
-
     </Grid>
   );
 };
