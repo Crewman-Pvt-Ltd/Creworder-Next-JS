@@ -201,21 +201,28 @@ const OrderDetails = () => {
             Order Information
             <Divider></Divider>
             </Typography>
-          <Typography variant="body2" padding={1}>
+            <Typography variant="body2" padding={.5}>
               <b>OrderId:</b> {selectedOrder.order_id}
             </Typography>
-            <Typography variant="body2" padding={1}>
+            <Typography variant="body2" padding={.5}>
               <b>Gross Amount:</b> ₹{selectedOrder.gross_amount}
             </Typography>
-            <Typography variant="body2" padding={1}>
-              <b>Discount:</b> {selectedOrder.discount}
+            <Typography variant="body2" padding={.5}>
+              <b>Discount:</b> ₹{selectedOrder.discount}
             </Typography>
-            <Typography variant="body2" padding={1}>
-              <b>Email:</b> {selectedOrder.customer_email}
+            <Typography variant="body2" padding={.5}>
+              <b>Total Amount:</b> ₹{selectedOrder.total_amount}
+            </Typography>
+            <Typography variant="body2" padding={.5}>
+              <b>Prepaid Amount:</b> ₹{selectedOrder.prepaid_amount}
+            </Typography>
+            <Typography variant="body2" padding={.5}>
+              <b>Payment type:</b> {selectedOrder.payment_type}
+            </Typography>
+            <Typography variant="body2" padding={.5}>
+              <b>COD Payable:</b> {selectedOrder.payment_type}
             </Typography>
           </CardContent>
-
-
         </Card>
       </Grid>
       <Grid item xs={9} md={9} sm={9}>
@@ -261,42 +268,6 @@ const OrderDetails = () => {
                   ))}
                 </TableBody>
               </Table>
-              <Grid container justifyContent="flex-end">
-                  <Grid item xs={6}>
-                    <Box p={2} bgcolor="background.paper" borderRadius={1}>
-                      <Grid container justifyContent="space-between" mb={1}>
-                        <Typography>Sub Total :</Typography>
-                        <Typography style={{marginRight: 35}}>₹{selectedOrder.gross_amount}</Typography>
-                      </Grid>
-                      <Grid container justifyContent="space-between" mb={1}>
-                        <Typography>
-                          Discount :
-                        </Typography>
-                        <Typography style={{marginRight: 35}}>-₹{selectedOrder.discount}</Typography>
-                      </Grid>
-                      <Grid container justifyContent="space-between" mb={1}>
-                        <Typography>
-                          Prepaid Amount :
-                        </Typography>
-                        <Typography style={{marginRight: 35}}>-₹{selectedOrder.prepaid_amount}</Typography>
-                      </Grid>
-                      <Grid container justifyContent="space-between" mb={1}>
-                        <Typography>Shipping Charge :</Typography>
-                        <Typography style={{marginRight: 35}}>₹{selectedOrder.shipping_charges}</Typography>
-                      </Grid>
-                      <Grid container justifyContent="space-between" mb={1}>
-                        <Typography>Estimated Tax :</Typography>
-                        <Typography style={{marginRight: 35}}>₹{selectedOrder.taxeble_amount}</Typography>
-                      </Grid>
-                      <Divider sx={{ my: 2 }} />
-                      <Grid container justifyContent="space-between" fontWeight="bold">
-                        <Typography>Total (USD) :</Typography>
-                        <Typography style={{marginRight: 35}}>₹{selectedOrder.total_amount}</Typography>
-                      </Grid>
-                    </Box>
-                  </Grid>
-                  
-                </Grid>
                 </TableContainer>
                 </Grid>
               </Grid>
