@@ -278,7 +278,7 @@ const OrderList = () => {
                   Select Agent
                 </MenuItem>
                 <MenuItem value={1}>Suspended</MenuItem>
-                <MenuItem value={2}>InActive</MenuItem>
+                <MenuItem value={2}>Active</MenuItem>
               </Select>
             </Grid>
 

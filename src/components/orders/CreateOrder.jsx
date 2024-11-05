@@ -965,6 +965,7 @@ const CreateOrder = () => {
                 />
               </Grid>
               <Grid item xs={6}>
+<<<<<<< Updated upstream
                 <div
                   style={{
                     border: phoneError ? "1px solid red" : "1px solid #ccc",
@@ -972,6 +973,22 @@ const CreateOrder = () => {
                     padding: "10px",
                     width: "100%",
                     boxSizing: "border-box",
+=======
+                <PhoneInput
+                  international
+                  className="CustomTextField"
+                  countryCallingCodeEditable={true}
+                  defaultCountry="IN"
+                  value={phoneCustomer}
+                  onChange={(value) => setPhoneCustomer(value)}
+                  placeholder="Enter phone number"
+                  inputStyle={{
+                    fontFamily: 'Poppins, sans-serif',
+                    width: '100%',
+                    padding: '10px',
+                    border: phoneError ? '1px solid red' : '1px solid #ccc',
+                    borderRadius: '4px',
+>>>>>>> Stashed changes
                   }}
                 >
                   <PhoneInput

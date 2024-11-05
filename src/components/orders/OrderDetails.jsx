@@ -153,21 +153,12 @@ const OrderDetails = () => {
           <CardContent>
             <Image src={creworder} alt="creworder" />
             <Typography variant="h6" fontWeight="bold">
-              Personal Information
+            {selectedOrder.customer_name}
             </Typography>
-            <Typography variant="body2" padding={1}>
-              <b>Name:</b> {selectedOrder.customer_name}
-            </Typography>
-            <Typography variant="body2" padding={1}>
-              <b>Father's Name:</b> {selectedOrder.customer_parent_name}
-            </Typography>
-            <Typography variant="body2" padding={1}>
-              <b>Contact:</b> {selectedOrder.customer_phone}
-            </Typography>
-            <Typography variant="body2" padding={1}>
-              <b>Email:</b> {selectedOrder.customer_email}
-            </Typography>
+           
           </CardContent>
+
+
           <CardActions>
             <div>
               <Button
@@ -205,6 +196,26 @@ const OrderDetails = () => {
               </Button>
             </div>
           </CardActions>
+          <CardContent>
+          <Typography variant="h6" fontWeight="bold">
+            Order Information
+            <Divider></Divider>
+            </Typography>
+          <Typography variant="body2" padding={1}>
+              <b>OrderId:</b> {selectedOrder.order_id}
+            </Typography>
+            <Typography variant="body2" padding={1}>
+              <b>Gross Amount:</b> ₹{selectedOrder.gross_amount}
+            </Typography>
+            <Typography variant="body2" padding={1}>
+              <b>Discount:</b> {selectedOrder.discount}
+            </Typography>
+            <Typography variant="body2" padding={1}>
+              <b>Email:</b> {selectedOrder.customer_email}
+            </Typography>
+          </CardContent>
+
+
         </Card>
       </Grid>
       <Grid item xs={9} md={9} sm={9}>
@@ -226,11 +237,11 @@ const OrderDetails = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                  <TableCell>Images</TableCell>
+                    <TableCell>Images</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Item Price</TableCell>
                     <TableCell>Quantity</TableCell>
-                    <TableCell>Total Amount</TableCell>
+                    <TableCell>Payble Amount</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -245,7 +256,7 @@ const OrderDetails = () => {
                       <TableCell>{item.product_name}</TableCell>
                       <TableCell>₹{selectedOrder.gross_amount}</TableCell>
                       <TableCell>{item.product_qty}</TableCell>                     
-                      <TableCell>₹{item.product_price}</TableCell>
+                      <TableCell>₹{selectedOrder.total_amount}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -255,13 +266,19 @@ const OrderDetails = () => {
                     <Box p={2} bgcolor="background.paper" borderRadius={1}>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Sub Total :</Typography>
-                        <Typography style={{marginRight: 35}}>₹{selectedOrder.total_amount}</Typography>
+                        <Typography style={{marginRight: 35}}>₹{selectedOrder.gross_amount}</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>
                           Discount :
                         </Typography>
                         <Typography style={{marginRight: 35}}>-₹{selectedOrder.discount}</Typography>
+                      </Grid>
+                      <Grid container justifyContent="space-between" mb={1}>
+                        <Typography>
+                          Prepaid Amount :
+                        </Typography>
+                        <Typography style={{marginRight: 35}}>-₹{selectedOrder.prepaid_amount}</Typography>
                       </Grid>
                       <Grid container justifyContent="space-between" mb={1}>
                         <Typography>Shipping Charge :</Typography>
@@ -291,10 +308,10 @@ const OrderDetails = () => {
               <Card sx={{ mb: 2 }}>
                 <CardContent>   
                 <Typography variant="h6" fontWeight="bold">Personal Information</Typography>
-                  <Typography variant="body2" padding={1}><b>Name:</b> Rahul Kumar</Typography> 
-                  <Typography variant="body2" padding={1}><b>Father's Name:</b> </Typography>
-                  <Typography variant="body2"padding={1}><b>Alternate Contact:</b> +91- 9876543210</Typography>
-                  <Typography variant="body2"padding={1}><b>Email:</b> rahul.kumar@crewman.in</Typography>
+                  <Typography variant="body2" padding={1}><b>Name:</b> {selectedOrder.customer_name}</Typography> 
+                  <Typography variant="body2" padding={1}><b>Father's Name:</b> {selectedOrder.customer_parent_name}</Typography>
+                  <Typography variant="body2"padding={1}><b>Alternate Contact:</b> {selectedOrder.customer_phone}</Typography>
+                  <Typography variant="body2"padding={1}><b>Email:</b> {selectedOrder.customer_email}</Typography>
                 </CardContent>
               </Card>
             </Grid>
@@ -302,10 +319,10 @@ const OrderDetails = () => {
               <Card sx={{ mb: 2 }}>
                 <CardContent>  
                 <Typography variant="h6" fontWeight="bold">Address Information</Typography>
-                <Typography variant="body2" padding={1}><b>Address:</b> Sector 63, Noida</Typography>
-                <Typography variant="body2" padding={1}><b>PostalCode:</b> 201304</Typography>
-                <Typography variant="body2" padding={1}><b>City:</b> Noida</Typography>
-                <Typography variant="body2" padding={1}><b>State:</b> Uttar Pradesh</Typography>
+                <Typography variant="body2" padding={1}><b>Address:</b> {selectedOrder.customer_address}</Typography>
+                <Typography variant="body2" padding={1}><b>PostalCode:</b> {selectedOrder.customer_postal}</Typography>
+                <Typography variant="body2" padding={1}><b>City:</b> {selectedOrder.customer_city}</Typography>
+                <Typography variant="body2" padding={1}><b>State:</b> {selectedOrder.customer_country}</Typography>
                 </CardContent>
               </Card>
             </Grid>
@@ -412,17 +429,17 @@ const OrderDetails = () => {
               <CardContent>
                 {/* Date */}
                 <Typography sx={{ fontSize: '16px', fontWeight: 'bold', mb: 1, marginTop: '30px' }}>
-                  2024-08-31 16:37:27
+                {selectedOrder.last_upated_at}
                 </Typography>
 
                 {/* Marked By */}
                 <Typography sx={{ fontSize: '14px', color: '#6c757d', mb: 0.5 }}>
-                  <strong>Marked By:</strong> Ajay
+                  <strong>Marked By:</strong> {selectedOrder.last_action_by_name}
                 </Typography>
 
                 {/* Remark */}
                 <Typography sx={{ fontSize: '14px', color: '#6c757d' }}>
-                  <strong>Remark:</strong>
+                  <strong>Remark:</strong> {selectedOrder.order_remark}
                 </Typography>
               </CardContent>
             </Card>
