@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { usePermissions } from "@/contexts/PermissionsContext";
 
-const CreateBranch = () => {
+  const CreateBranch = () => {
   const router = useRouter();
   const { permissionsData } = usePermissions();
   console.log("Permission Data", permissionsData);

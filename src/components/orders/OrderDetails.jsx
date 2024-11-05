@@ -60,7 +60,6 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import Image from "next/image";
 import { px } from "framer-motion";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
-
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
@@ -109,8 +108,7 @@ const steps = [
     description: [],
   },
 ];
-
-const OrderDetails = () => {
+  const OrderDetails = () => {
   const { data, refetch } = useGetAllOrders();
   const router = useRouter();
   const { Id } = router.query;
@@ -120,7 +118,6 @@ const OrderDetails = () => {
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
-
   const rows = [
     {
       id: 1,
@@ -133,18 +130,17 @@ const OrderDetails = () => {
       quantity: 2,
       rating: 5,
       totalAmount: "₹239.98",
-    },
-    
+    },    
   ];
   useEffect(() => {
     if (data?.Data && Id) {
       const order = data.Data.find((row) => row.id === parseInt(Id));
       setSelectedOrder(order);
     }
-  }, [data, Id]);
-  if (!selectedOrder) {
-    return <Typography variant="h6">Order not found or loading...</Typography>;
-  }
+    }, [data, Id]);
+    if (!selectedOrder) {
+      return <Typography variant="h6">Order not found or loading...</Typography>;
+    }
 
   return (
     <Grid container spacing={2} p={3}>
@@ -154,11 +150,8 @@ const OrderDetails = () => {
             <Image src={creworder} alt="creworder" />
             <Typography variant="h6" fontWeight="bold">
             {selectedOrder.customer_name}
-            </Typography>
-           
+            </Typography>           
           </CardContent>
-
-
           <CardActions>
             <div>
               <Button
@@ -169,8 +162,7 @@ const OrderDetails = () => {
                   fontSize: "11px",
                   backgroundColor: "#dff0fa",
                 }}
-              >
-                NDR
+              >NDR
               </Button>
               <Button
                 className={poppins.className}
@@ -181,8 +173,7 @@ const OrderDetails = () => {
                   fontSize: "11px",
                   backgroundColor: "#fde8e4",
                 }}
-              >
-                Account
+              >Account
               </Button>
               <Button
                 className={poppins.className}
@@ -191,8 +182,7 @@ const OrderDetails = () => {
                   fontSize: "11px",
                   backgroundColor: "#dff0fa",
                 }}
-              >
-                Edit
+              >Edit
               </Button>
             </div>
           </CardActions>

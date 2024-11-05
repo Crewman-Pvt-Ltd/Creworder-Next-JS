@@ -27,6 +27,7 @@ import Rating from "@mui/material/Rating";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import Link from "next/link";
+import { format } from 'date-fns';
 import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
@@ -521,7 +522,7 @@ const OrderList = () => {
                         {row.payment_mode}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.created_at}
+                        {format(new Date(row.created_at), 'yyyy-MM-dd HH:mm:ss')}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.order_remark}
