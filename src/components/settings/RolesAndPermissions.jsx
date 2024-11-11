@@ -584,7 +584,7 @@ const RolesAndPermissions = () => {
                   { name: "Accepted" },
                   { name: "Future Order" },
                   { name: "Pending Order" },
-                  { name: "Accepted Pending" },
+                  { name: "Ready to Ship" },
                   { name: "Intransit" },
                   { name: "Reattempted" },
                   { name: "Intransit RTO" },

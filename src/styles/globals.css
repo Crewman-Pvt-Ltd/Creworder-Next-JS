@@ -47,3 +47,51 @@ body{
  .tablehead {
     font-weight: 700; /* Set font weight to 700 for all table headers */
   }
+
+  .flatpickr-calendar {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    color: #405189;
+  }
+  
+  /* Header styling */
+  .flatpickr-months .flatpickr-month {
+    color: #405189;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .flatpickr-prev-month,
+  .flatpickr-next-month {
+    color: #405189;
+  }
+  
+  /* Days of the week header */
+  .flatpickr-weekday {
+    color: #405189;
+    font-weight: bold;
+  }
+  
+  /* Selected date style */
+  .flatpickr-day.selected,
+  .flatpickr-day.startRange,
+  .flatpickr-day.endRange {
+    background-color: #405189 !important; /* Matches color in your screenshot */
+    color: #fff !important;
+    border-radius: 50%; /* Rounded selection indicator */
+  }
+  
+  /* Hover effect for dates */
+  .flatpickr-day:hover {
+    background-color: #d4dff7;
+    color: #405189;
+  }
+  
+  /* Disable past/future dates if needed (optional) */
+  .flatpickr-day.disabled {
+    color: #ccc;
+    background: #f8f8f8;
+    cursor: not-allowed;
+  }

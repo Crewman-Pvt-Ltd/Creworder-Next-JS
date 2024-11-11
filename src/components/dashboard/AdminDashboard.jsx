@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect, useRef } from "react";
 import { Grid, Typography, styled, Button } from "@mui/material";
 import Tile from "../Tile";
 import TopSellers from "../TopSellers";
@@ -12,12 +13,29 @@ import ScheduleOrderChart from "../ScheduleOrderChart";
 import Checklist from "../Checklist";
 import { DateRangePicker } from "@nextui-org/date-picker";
 import Banner from "../banner/Banner";
-
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const AdminDashboard = () => {
-  const [dateRange, setDateRange] = useState({
-    startDate: null,
-    endDate: null,
-  }); // State for date range
+  const dateRef = useRef(null);
+
+  useEffect(() => {
+    
+    const today = new Date();
+
+    
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y", 
+      defaultDate: [today, today], 
+    });
+
+    return () => {
+    
+      flatpickrInstance.destroy();
+    };
+  }, []);
+
 
   const tilesTypes = ["Running Order", "Pending", "Repeat Order", "Rejected"];
   const tiles = [
@@ -51,10 +69,7 @@ const AdminDashboard = () => {
 
   const typetiles = ["Running", "intransit", "Accepted", "noresponse"];
 
-  const handleDateRangeChange = (range) => {
-    setDateRange(range);
-    console.log("Selected Range:", range); // You can handle the date range as needed
-  };
+ 
 
   return (
     <Grid
@@ -69,7 +84,7 @@ const AdminDashboard = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={12} md={7}>
+              <Grid item xs={12} sm={12} md={8}>
                 <Typography
                   sx={{
                     fontSize: "20px",
@@ -92,25 +107,60 @@ const AdminDashboard = () => {
                 </Typography>
               </Grid>
 
-              <Grid item xs={12} sm={10} md={5}>
+              <Grid item xs={12} sm={10} md={4}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={9}>
-                    {/* <DateRangePicker
-                      visibleMonths={2}
-                      onChange={handleDateRangeChange}
+                  <Grid item xs={12} sm={6} md={8}>
+                    <div
                       style={{
+                        padding: "8px",
+                        borderRadius: "4px",
+                        position: "relative",
                         backgroundColor: "#fff",
-                        color: "blue",
-                       
                       }}
-                      popoverProps={{
-                        style: {
-                          backgroundColor: "#fff",
-                        },
-                      }}
-                    /> */}
+                    >
+                      <input
+                        ref={dateRef}
+                        type="text"
+                        placeholder="Select date range"
+                        style={{
+                          padding: "5px",
+                          borderRadius: "4px",
+                          color: "#333",
+                          width: "100%",
+                          fontSize:"15px",
+                          border: "none", 
+                          outline: "none", 
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = "none"; 
+                          e.target.style.outline = "none"; 
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = "none"; 
+                          e.target.style.outline = "none"; 
+                        }}
+                      />
+
+                      <CalendarMonthIcon
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          fontSize: "35px",
+                          color: "white",
+                          // width:"35px",
+                          // height:"35px",
+                          right: "1px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          backgroundColor: "#405189",
+                          padding: "4px",
+                        }}
+                      />
+                    </div>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
+
+                  <Grid item xs={12} sm={6} md={4}>
                     <LightButton
                       variant="contained"
                       sx={{

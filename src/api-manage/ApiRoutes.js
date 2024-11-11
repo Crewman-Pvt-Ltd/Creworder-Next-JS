@@ -24,6 +24,7 @@ export const holidays = '/api/holidays/';
 export const menu = '/api/menu/';
 export const auth_role_group = '/api/auth-role-group/';
 export const submenu = '/api/submenu/';
+export const top_buying_state = '/api/top-buying-state/';
 export const pickup_point = '/api/pick-up-point/';
 export const get_notice_users = '/api/specific-users/';
 export const get_username_suggestions = '/api/username-suggestions/';
