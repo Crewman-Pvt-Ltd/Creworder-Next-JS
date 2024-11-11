@@ -14,6 +14,7 @@ import {
   Select,
   Box,
   IconButton,
+  TextField,
   TableFooter,
   TablePagination,
   FormControl,
@@ -28,6 +29,10 @@ import CustomTextField from "../CustomTextField";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 import { DateRangePicker } from "@nextui-org/date-picker";
 
 const poppins = Poppins({
@@ -35,6 +40,8 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 const CourseOrder = () => {
+  const [startDate, setStartDate] = useState(dayjs(null));
+  const [endDate, setEndDate] = useState(dayjs(null));
   const router = useRouter();
 
   const createOrder = () => {
@@ -62,6 +69,14 @@ const CourseOrder = () => {
   // Handle change for courseDuration
   const handleagent = (event) => {
     setagent(event.target.value);
+  };
+
+  const handleStartDateChange = (newValue) => {
+    setStartDate(newValue);
+  };
+
+  const handleEndDateChange = (newValue) => {
+    setEndDate(newValue);
   };
 
   const [agentname, setagentname] = useState("");
@@ -116,23 +131,17 @@ const CourseOrder = () => {
                   textTransform: "capitalize",
                   color: "black",
                   marginLeft: "30px",
-                }}
-              >
+                }}>
                 Course Orders
               </Typography>
             </Grid>            
           </Grid>
-        </CustomCard>
-      </Grid>
-
-      <Grid item xs={12}>
-        <CustomCard padding="13px">
+       
           <Grid
             container
             spacing={1}
             justifyContent="space-between"
-            alignItems="center"
-          >
+            alignItems="center">
             <Grid item xs={12} sm={3}>
               <CustomLabel htmlFor="order_id" required>
                 Order Id.
@@ -185,7 +194,7 @@ const CourseOrder = () => {
                 value={product}
                 onChange={handleproduct}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -208,7 +217,7 @@ const CourseOrder = () => {
                 value={payment}
                 onChange={handlepayment}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
                 fullWidth
               >
                 <MenuItem value="" disabled>
@@ -231,9 +240,8 @@ const CourseOrder = () => {
                 value={agent}
                 onChange={handleagent}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                fullWidth>
                 <MenuItem value="" disabled>
                   Select Agent
                 </MenuItem>
@@ -253,9 +261,8 @@ const CourseOrder = () => {
                 value={agentname}
                 onChange={handleagentname}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                fullWidth>
                 <MenuItem value="" disabled>
                   Select Agent Name
                 </MenuItem>
@@ -276,9 +283,8 @@ const CourseOrder = () => {
                 value={teamlead}
                 onChange={handleteamlead}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                fullWidth>
                 <MenuItem value="" disabled>
                   Select Team Lead
                 </MenuItem>
@@ -287,7 +293,7 @@ const CourseOrder = () => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <CustomLabel htmlFor="state" required>
                 State
               </CustomLabel>
@@ -298,9 +304,8 @@ const CourseOrder = () => {
                 value={state}
                 onChange={handlestate}
                 displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                fullWidth>
                 <MenuItem value="" disabled>
                   Select State
                 </MenuItem>
@@ -310,23 +315,59 @@ const CourseOrder = () => {
               </Select>
             </Grid>
            
-            <Grid item xs={12} sm={4} style={{ backgroundColor: "#fff" }}>
-              <CustomLabel htmlFor="dateRange" required>
-                Date Range
-              </CustomLabel>
-              <DateRangePicker 
-                label="Stay duration" 
-                visibleMonths={2} 
-                style={{
-            
-                  backgroundColor: '#fff',
-                }}
-                popoverProps={{
-                  style: {
-                    backgroundColor: '#fff', 
-                  },
-                }}
-              />
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <CustomLabel htmlFor="Start Date">Start Date</CustomLabel>
+                <DatePicker
+                  label="Start Date"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+                          {
+                            borderColor: "#212121",
+                            height: "55px",
+                          },
+                        "& .MuiFormLabel-root.Mui-error": {
+                          color: "#212121",
+                        },
+                      }}/>
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
+
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <CustomLabel htmlFor="End Date">End Date</CustomLabel>
+                <DatePicker
+                  label="End Date"
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+                          {
+                            borderColor: "#212121",
+                            height: "55px",
+                          },
+                        "& .MuiFormLabel-root.Mui-error": {
+                          color: "#212121",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={3}>
               <Button
@@ -341,8 +382,7 @@ const CourseOrder = () => {
                     backgroundColor: "#334a6c",
                   },
                   fontFamily: poppins.style.fontFamily,
-                }}
-              >
+                }}>
                 Submit
               </Button>
             </Grid>
@@ -353,16 +393,14 @@ const CourseOrder = () => {
       <Grid item xs={12}>
         <CustomCard>
           <Box
-            sx={{
+              sx={{
               display: "grid",
               gridTemplateRows: "auto 1fr auto",
               maxHeight: "400px",
-            }}
-          >
+            }}>
             <TableContainer
               component={Paper}
-              sx={{ overflowY: "auto", maxHeight: "340px" }}
-            >
+              sx={{ overflowY: "auto", maxHeight: "340px" }}>
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -440,8 +478,7 @@ const CourseOrder = () => {
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          sx={{ color: "#FF0000" }}
-                        >
+                          sx={{ color: "#FF0000" }}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
