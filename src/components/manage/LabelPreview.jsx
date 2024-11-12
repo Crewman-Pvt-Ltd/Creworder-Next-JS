@@ -1,38 +1,19 @@
 import React from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-} from "@mui/material";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Box, Typography, Divider, Grid,TableContainer ,Table ,TableBody ,TableRow ,TableCell } from "@mui/material";
 
-const LabelPreview = () => {
-  const router = useRouter();
-  const [selectedOrders, setSelectedOrders] = useState([]);
-
-  useEffect(() => {
-    if (router.query.selectedRows) {
-      const parsedOrders = JSON.parse(router.query.selectedRows); // Parse the selected rows data from query
-      setSelectedOrders(parsedOrders);
-    }
-  }, [router.query]);
-
+const LabelPreview = ({ selectedOrders }) => {
   const renderLabelBox = (order) => (
     <Box
       key={order.id}
       sx={{
         border: "2px solid #000",
         padding: 2,
-        width: "auto",
+        width: "100%",
+        height: "90%",
         bgcolor: "#f9f9f9",
-        marginBottom: 4, // Add margin between labels
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
       }}
     >
       <Grid container spacing={2}>
@@ -64,8 +45,8 @@ const LabelPreview = () => {
           </Typography>
         </Grid>
         <Grid item xs={12} md={6}>
-          <img
-            src="https://www.pngall.com/wp-content/uploads/2/Barcode-PNG-Images.png"
+        <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2zmm39pKpY2coD0De8cWvlLdZUBzHE9z8Ie7Yu0RiygKZAaAvT5yb2mXvqwj-E5DePhE&usqp=CAU"
             alt="AWB Product Code"
             style={{ maxWidth: "80%", height: "auto" }}
           />
@@ -138,9 +119,18 @@ const LabelPreview = () => {
   );
 
   return (
-    <div>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr", // Two columns per row
+        gridTemplateRows: "1fr 1fr",    // Two rows per page
+        gap: 2,
+        width: "440mm", // A4 width
+        height: "430mm", // A4 height
+      }}
+    >
       {selectedOrders.map((order) => renderLabelBox(order))}
-    </div>
+    </Box>
   );
 };
 

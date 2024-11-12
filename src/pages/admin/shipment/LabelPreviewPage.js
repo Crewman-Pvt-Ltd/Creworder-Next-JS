@@ -1,23 +1,46 @@
-// pages/LabelPreviewPage.js
-import React from "react";
+import React, { useRef } from "react";
 import { useRouter } from "next/router";
+import { Box, Button } from "@mui/material";
 import LabelPreview from "@/components/manage/LabelPreview";
-import { Box } from "@mui/material"; // Import Box from MUI
+import { useReactToPrint } from "react-to-print";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+
 const LabelPreviewPage = () => {
   const router = useRouter();
-  const { selectedRows } = router.query; // Get selected rows from query
-  // Parse selected rows from the query string
+  const { selectedRows } = router.query;
   const rows = JSON.parse(selectedRows || "[]");
+  const printRef = useRef();
+
+  // Download PDF with exact dimensions
+  const handleDownloadPDF = async () => {
+    const canvas = await html2canvas(printRef.current, {
+      scale: 2, // Increase resolution
+      useCORS: true,
+    });
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgData = canvas.toDataURL("image/png");
+
+    pdf.addImage(imgData, "PNG", 0, 0, 210, 297); // Full A4 size
+    pdf.save("Labels.pdf");
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+    documentTitle: "Labels",
+  });
+
   return (
-    <Box 
-      sx={{ 
-        width: '600px', // Set the desired width
-        margin: '0 auto', // Center the component
-        padding: 2, // Optional padding
-        boxShadow: 3 // Optional shadow for depth
-      }}
-    >
-      <LabelPreview open={true} selectedRows={rows} />
+    <Box>
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+        
+        <Button variant="contained" onClick={handleDownloadPDF}>
+          Download as PDF
+        </Button>
+      </Box>
+      <Box ref={printRef} sx={{ padding: 2 }}>
+        <LabelPreview selectedOrders={rows} />
+      </Box>
     </Box>
   );
 };
