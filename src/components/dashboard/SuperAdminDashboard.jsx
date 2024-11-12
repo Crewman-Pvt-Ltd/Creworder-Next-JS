@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Typography, useTheme } from "@mui/material";
-import Tile from "../Tile";
+import SuperTile from "../SuperTile";
 import CompanyDetailsdashboard from "../CompanyDetailsDashboard";
 import CompanyRegistrationGraph from "../CompanyRegistrationGraph";
 
@@ -58,7 +58,7 @@ const SuperAdminDashboard = () => {
         <Grid container spacing={2}>
           {tilesTypes.map((type, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <Tile height="120px" padding="20px 20px" type={type} />
+              <SuperTile height="120px" padding="20px 20px" type={type} />
             </Grid>
           ))}
         </Grid>
