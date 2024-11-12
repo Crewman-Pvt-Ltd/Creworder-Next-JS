@@ -164,7 +164,7 @@ const AdminDashboard = () => {
                     <LightButton
                       variant="contained"
                       sx={{
-                        padding: "10px",
+                        padding: "14px",
                       }}
                     >
                       ClockIn
