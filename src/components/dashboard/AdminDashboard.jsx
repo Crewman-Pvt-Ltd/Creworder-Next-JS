@@ -109,56 +109,55 @@ const AdminDashboard = () => {
 
               <Grid item xs={12} sm={10} md={4}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={8}>
-                    <div
-                      style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        position: "relative",
-                        backgroundColor: "#fff",
-                      }}
-                    >
-                      <input
-                        ref={dateRef}
-                        type="text"
-                        placeholder="Select date range"
-                        style={{
-                          padding: "5px",
-                          borderRadius: "4px",
-                          color: "#333",
-                          width: "100%",
-                          fontSize:"15px",
-                          border: "none", 
-                          outline: "none", 
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.border = "none"; 
-                          e.target.style.outline = "none"; 
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.border = "none"; 
-                          e.target.style.outline = "none"; 
-                        }}
-                      />
+                <Grid item xs={12} sm={6} md={8}>
+      <div
+        style={{
+          padding: "8px",
+          borderRadius: "4px",
+          position: "relative",
+          backgroundColor: "#fff",
+        }}
+      >
+        <input
+          ref={dateRef}
+          type="text"
+          placeholder="Select date range"
+          style={{
+            padding: "5px",
+            borderRadius: "4px",
+            color: "#333",
+            width: "100%",
+            fontSize: "15px",
+            border: "none",
+            outline: "none",
+          }}
+          onFocus={(e) => {
+            e.target.style.border = "none";
+            e.target.style.outline = "none";
+          }}
+          onBlur={(e) => {
+            e.target.style.border = "none";
+            e.target.style.outline = "none";
+          }}
+        />
 
-                      <CalendarMonthIcon
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          fontSize: "35px",
-                          color: "white",
-                          // width:"35px",
-                          // height:"35px",
-                          right: "1px",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                          backgroundColor: "#405189",
-                          padding: "4px",
-                        }}
-                      />
-                    </div>
-                  </Grid>
+        <CalendarMonthIcon
+          style={{
+            position: "absolute",
+            top: "50%",
+            transform: "translateY(-50%)",
+            fontSize: "35px",
+            color: "white",
+            right: "1px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            backgroundColor: "#405189",
+            padding: "4px",
+          }}
+          onClick={() => dateRef.current.focus()} // This will focus the input
+        />
+      </div>
+    </Grid>
 
                   <Grid item xs={12} sm={6} md={4}>
                     <LightButton

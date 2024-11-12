@@ -54,6 +54,32 @@ const ReadyToDispatch = () => {
       order_date: "2024-08-31",
       action: "Edit",
     },
+    {
+      id: 3,
+      order_id: "PRXTW987",
+      name: "Shivam",
+      city: "Noida",
+      product: "Weight loss",
+      amount: "2024",
+      status: "Pending",
+      payment_mode: "COD",
+      awb: "AWBNMBR98334433",
+      order_date: "2024-08-01",
+      action: "Edit",
+    },
+    {
+      id: 4,
+      order_id: "PRXTW003",
+      name: "Shivam sain",
+      city: "Noida",
+      product: "Weight Gain",
+      amount: "2024",
+      status: "Pending",
+      payment_mode: "Prepaid",
+      awb: "AWBNMBR98334443",
+      order_date: "2024-08-31",
+      action: "Edit",
+    },
   ];
   const [selectedRows, setSelectedRows] = useState([]);
   const handleRowSelect = (id) => {
