@@ -17,8 +17,6 @@ import {
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 import { Poppins } from "next/font/google";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import PrintIcon from "@mui/icons-material/Print";
 import CancelIcon from "@mui/icons-material/Cancel";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -31,8 +29,6 @@ const poppins = Poppins({
 
 const SchedulePickup = () => {
   const router = useRouter();
-
-  // Sample rows data
   const rows = [
     {
       id: 1,
@@ -62,10 +58,8 @@ const SchedulePickup = () => {
     },
   ];
 
-  // State for selected rows
   const [selectedRows, setSelectedRows] = useState([]);
 
-  // Toggle selection for a single row
   const handleRowSelect = (id) => {
     setSelectedRows((prevSelected) =>
       prevSelected.includes(id)
@@ -74,7 +68,6 @@ const SchedulePickup = () => {
     );
   };
 
-  // Handle select all checkbox
   const handleSelectAll = (event) => {
     if (event.target.checked) {
       setSelectedRows(rows.map((row) => row.id));
@@ -83,35 +76,30 @@ const SchedulePickup = () => {
     }
   };
 
-  // Check if a specific row is selected
   const isRowSelected = (id) => selectedRows.includes(id);
 
-  // Print label for selected orders
   const handlePrintLabel = () => {
     if (selectedRows.length === 0) {
-      alert("Please select at least one row to print the label."); // Alert if no rows are selected
+      alert("Please select at least one row to print the label."); 
       return;
     }
     const selectedRowsData = rows.filter((row) => selectedRows.includes(row.id));
-    const url = `/admin/shipment/LabelPreviewPage?selectedRows=${JSON.stringify(selectedRowsData)}`; // Prepare URL with selected rows
-    window.open(url, "_blank"); // Open in a new tab
+    const url = `/admin/shipment/LabelPreviewPage?selectedRows=${JSON.stringify(selectedRowsData)}`;
+    window.open(url, "_blank");
   };
 
   return (
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
-        {/* Top Action Bar */}
         <Toolbar
           sx={{
             display: "flex",
             justifyContent: "space-between",
             backgroundColor: "#f5f5f5",
             padding: "10px",
-          }}
-             >
+          }}>
           <Typography
-            sx={{ fontWeight: "600", fontSize: "18px", whiteSpace: "nowrap" }}
-          >
+            sx={{ fontWeight: "600", fontSize: "18px", whiteSpace: "nowrap" }}>
             {selectedRows.length} selected
           </Typography>
           <div>   
@@ -119,34 +107,28 @@ const SchedulePickup = () => {
               <Button
                 startIcon={<PrintIcon />}
                 sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}
-                onClick={handlePrintLabel} // Print Label onClick event
-              >
+                onClick={handlePrintLabel} >
                 Print Label
               </Button>
             </Tooltip>
             <Tooltip title="Print Invoice">
-              <Button
-               
+              <Button               
                 startIcon={<PrintIcon />}
-                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}
-              >
+                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}>
                 Print Invoice
               </Button>
             </Tooltip>
             <Tooltip title="Schedule Pickup">
-              <Button
-               
+              <Button               
                 startIcon={<LocalShippingIcon />}
-                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}
-              >
+                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}>
                 Schedule Pickup
               </Button>
             </Tooltip>
             <Tooltip title="Cancel Order">
               <Button                
                 startIcon={<CancelIcon />}
-                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}
-              >
+                sx={{ marginRight: "10px", backgroundColor: "white", border: "2px solid #405189", padding: "8px 16px" }}>
                 Cancel
               </Button>
             </Tooltip>
@@ -159,8 +141,7 @@ const SchedulePickup = () => {
               display: "grid",
               gridTemplateRows: "auto 1fr auto",
               maxHeight: "400px",
-            }}
-          >
+            }}>
             <Typography
               sx={{
                 fontWeight: "600",
@@ -169,16 +150,12 @@ const SchedulePickup = () => {
                 textTransform: "capitalize",
                 color: "black",
                 margin: "20px",
-              }}
-            >
+              }}>
                Schedule Pickup
             </Typography>
-
-            {/* Table */}
             <TableContainer
               component={Paper}
-              sx={{ overflowY: "auto", maxHeight: "340px" }}
-            >
+              sx={{ overflowY: "auto", maxHeight: "340px" }}>
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -190,8 +167,7 @@ const SchedulePickup = () => {
                           selectedRows.length < rows.length
                         }
                         checked={selectedRows.length === rows.length}
-                        onChange={handleSelectAll}
-                      />
+                        onChange={handleSelectAll}/>
                     </TableCell>
                     <TableCell className="tablehead">Sr.</TableCell>
                     <TableCell className="tablehead">Order ID</TableCell>
@@ -201,7 +177,6 @@ const SchedulePickup = () => {
                     <TableCell className="tablehead">Payment Mode</TableCell>
                     <TableCell className="tablehead">AWB</TableCell>
                     <TableCell className="tablehead">Order Date</TableCell>
-                    {/* <TableCell className="tablehead">Action</TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -211,14 +186,12 @@ const SchedulePickup = () => {
                       selected={isRowSelected(row.id)}
                       sx={{
                         "&.Mui-selected": { backgroundColor: "#e0e0e0" },
-                      }}
-                    >
+                      }}>
                       <TableCell padding="checkbox">
                         <Checkbox
                           color="primary"
                           checked={isRowSelected(row.id)}
-                          onChange={() => handleRowSelect(row.id)}
-                        />
+                          onChange={() => handleRowSelect(row.id)}/>
                       </TableCell>
                       <TableCell>{row.id}</TableCell>
                       <TableCell>{row.order_id}</TableCell>

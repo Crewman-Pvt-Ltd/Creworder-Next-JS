@@ -27,6 +27,7 @@ export const submenu = '/api/submenu/';
 export const top_buying_state = '/api/top-buying-state/';
 export const pickup_point = '/api/pick-up-point/';
 export const get_notice_users = '/api/specific-users/';
+export const get_dashboard_tiles = '/api/user-dashboard-tiles/';
 export const get_username_suggestions = '/api/username-suggestions/';
 export const baseApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL+"/api/";
 export const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;

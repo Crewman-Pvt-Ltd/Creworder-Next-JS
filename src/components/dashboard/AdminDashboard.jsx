@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Grid, Typography, styled, Button } from "@mui/material";
 import Tile from "../Tile";
 import TopSellers from "../TopSellers";
@@ -15,41 +14,46 @@ import { DateRangePicker } from "@nextui-org/date-picker";
 import Banner from "../banner/Banner";
 import Flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import useGetAllDashboardTiles from "@/api-manage/react-query/useGetAllDashboardTiles";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+
 const AdminDashboard = () => {
   const dateRef = useRef(null);
+  //  const [tilesTypes, setTilesTypes] = useState([]);
+  const [tilesTypes, setTilesTypes] = useState([]);
 
   useEffect(() => {
-    
     const today = new Date();
-
-    
     const flatpickrInstance = Flatpickr(dateRef.current, {
       mode: "range",
-      dateFormat: "d M, Y", 
-      defaultDate: [today, today], 
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
     });
 
     return () => {
-    
       flatpickrInstance.destroy();
     };
   }, []);
 
+  const { data, isLoading, error } = useGetAllDashboardTiles();
+  useEffect(() => {
+    if (data?.data && Object.keys(data.data).length) {
+      const newTilesTypes = Object.entries(data.data).map(([key, value]) => ({
+        title:
+          key
+            .split("_")
+            .map((word, index) => word.charAt(0).toUpperCase() + word.slice(1))
+            .slice(0, -2)
+            .join(" ") + " Order",
+        count: value,
+        imageUrl: "https://affiman.com/login/resources/assets/icons/orderProcess.png",
+      }));
+      setTilesTypes(newTilesTypes);
+    }
+  }, [data]);
 
-  const tilesTypes = ["Running Order", "Pending", "Repeat Order", "Rejected"];
-  const tiles = [
-    "Running",
-    "intransit",
-    "Accepted",
-    "noresponse",
-    "total",
-    "future",
-    "noresponse",
-    "intransit",
-    "delivered",
-    "rto",
-  ];
+  console.log(tilesTypes);
+
   const LightButton = styled(Button)({
     backgroundColor: "#cc0e0e",
     "&:hover": {
@@ -66,10 +70,6 @@ const AdminDashboard = () => {
   } else {
     greeting = "Good Evening";
   }
-
-  const typetiles = ["Running", "intransit", "Accepted", "noresponse"];
-
- 
 
   return (
     <Grid
@@ -109,6 +109,7 @@ const AdminDashboard = () => {
 
               <Grid item xs={12} sm={10} md={4}>
                 <Grid container spacing={2}>
+<<<<<<< Updated upstream
                 <Grid item xs={12} sm={6} md={8}>
       <div
         style={{
@@ -158,6 +159,56 @@ const AdminDashboard = () => {
         />
       </div>
     </Grid>
+=======
+                  <Grid item xs={12} sm={6} md={8}>
+                    <div
+                      style={{
+                        padding: "8px",
+                        borderRadius: "4px",
+                        position: "relative",
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      <input
+                        ref={dateRef}
+                        type="text"
+                        placeholder="Select date range"
+                        style={{
+                          padding: "5px",
+                          borderRadius: "4px",
+                          color: "#333",
+                          width: "100%",
+                          fontSize: "15px",
+                          border: "none",
+                          outline: "none",
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = "none";
+                          e.target.style.outline = "none";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = "none";
+                          e.target.style.outline = "none";
+                        }}
+                      />
+
+                      <CalendarMonthIcon
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          fontSize: "35px",
+                          color: "white",
+                          right: "1px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          backgroundColor: "#405189",
+                          padding: "4px",
+                        }}
+                      />
+                    </div>
+                  </Grid>
+>>>>>>> Stashed changes
 
                   <Grid item xs={12} sm={6} md={4}>
                     <LightButton
@@ -177,56 +228,37 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={12} md={12}>
             <Banner />
           </Grid>
-
-          <Grid item xs={12} sm={12} md={5}>
-            <Grid container spacing={3}>
-              <Grid item>
-                <UpgradeAccount />
-              </Grid>
-              {tilesTypes.map((type, index) => (
-                <Grid item xs={12} sm={6} md={6} key={index}>
-                  <Tile height="130px" padding="10px 10px" type={type} />
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
-          <Grid item xs={12} md={4} sm={12}>
-            <InvoicesChart />
-          </Grid>
-          <Grid item xs={12} md={3} sm={12}>
-            <Charttwo />
-          </Grid>
         </Grid>
       </Grid>
 
       <Grid item>
         <Grid container spacing={1}>
-          {tiles.map((type, index) => (
-            <Grid item xs={12} sm={6} md={2.4} key={index} mt={1}>
-              <Tile height="120px" padding="20px 20px" type={type} />
+          {tilesTypes.map((tile, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index} mt={1}>
+              <Tile
+                title={tile.title}
+                count={tile.count}
+                imageUrl={tile.imageUrl}
+               />
             </Grid>
           ))}
         </Grid>
       </Grid>
+
       <Grid item>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={5}>
-            <Grid container spacing={1}>
-              {typetiles.map((type, index) => (
-                <Grid item xs={12} sm={6} md={6} key={index}>
-                  <Tile height="130px" padding="20px 20px" type={type} />
-                </Grid>
-              ))}
-            </Grid>
+        <Grid item xs={12} md={4} sm={12}>
+            <InvoicesChart />
           </Grid>
-          <Grid item xs={12} md={3} sm={12}>
-            <ScheduleOrderChart />
+          <Grid item xs={12} md={4} sm={12}>
+            <Charttwo />
           </Grid>
           <Grid item xs={12} md={4} sm={12}>
             <ReferalInvite />
           </Grid>
         </Grid>
       </Grid>
+
       <Grid item>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={5}>
