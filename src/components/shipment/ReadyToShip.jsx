@@ -497,6 +497,7 @@ const ReadyToShip = () => {
         </Grid>
       </Grid>
 
+
       {/* Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Selected Shipment Channels</DialogTitle>
@@ -512,12 +513,10 @@ const ReadyToShip = () => {
               <FormControlLabel control={<Checkbox />} label="Blue Dart" />
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* Updated Button with text */}
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleSubmit}
-              >
+                onClick={handleSubmit}>
                 Submit
               </Button>
             </Grid>
@@ -529,6 +528,10 @@ const ReadyToShip = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+
+
+
     </Grid>
   );
 };
