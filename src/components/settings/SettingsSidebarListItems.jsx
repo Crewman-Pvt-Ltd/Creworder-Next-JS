@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   List,
@@ -49,10 +49,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
-const poppins = Poppins({
-  weight: "300",
-  subsets: ["latin"],
-});
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import IPAccess from "./IPAccess";
 import LeadSettings from "./LeadSettings";
@@ -62,50 +58,96 @@ import BankDetails from "./BankDetails";
 import PixelSettings from "./PixelSettings";
 import QCSettings from "./QCSettings";
 import SuperadminShipmentChannels from "../shipmentchannels/SuperadminShipmentChannels";
-const superAdminMenuItems = [
-  { text: "App Settings", icon: <SettingsIcon /> },
-  { text: "Notification Settings", icon: <NotificationsIcon /> },
-  { text: "Payment Credentials", icon: <PaymentIcon /> },
-  { text: "Finance Settings", icon: <AccountBalanceIcon /> },
-  { text: "Social Login Settings", icon: <LockIcon /> },
-  { text: "Theme Settings", icon: <ColorLensIcon /> },
-  { text: "Database Backup Settings", icon: <BackupIcon /> },
-  { text: "Maintenance Mode", icon: <LocalShippingIcon /> },
-  { text: "Pixel Settings", icon: <LocalShippingIcon /> },
-  { text: "Shipment Channels", icon: <LocalShippingIcon /> },
-  ,
-];
+import { baseApiUrl } from "@/api-manage/ApiRoutes";
+import { getToken } from "@/utils/getToken";
+import axios from "axios";
 
-const adminMenuItems = [
-  { text: "Admin Settings", icon: <SettingsIcon /> },
-  { text: "Branch", icon: <PeopleAltIcon /> },
+const poppins = Poppins({
+  weight: "300",
+  subsets: ["latin"],
+});
 
-  { text: "Courier Service", icon: <ShippingIcon /> },
-  { text: "Telephonic Channels", icon: <PhoneIcon /> },
-  { text: "Shipment Channels", icon: <LocalShippingIcon /> },
-  { text: "Email Settings", icon: <EmailIcon /> },
-  { text: "Order Status", icon: <AssignmentIcon /> },
-  { text: "QC Setting", icon: <QuestionAnswerIcon /> },
-  { text: "Lead Setting", icon: <ManageAccountsIcon /> },
+const iconDict = {
+  SettingsIcon: <SettingsIcon />,
+  NotificationsIcon: <NotificationsIcon />,
+  PaymentIcon: <PaymentIcon />,
+  AccountBalanceIcon: <AccountBalanceIcon />,
+  LockIcon: <LockIcon />,
+  ColorLensIcon: <ColorLensIcon />,
+  BackupIcon: <BackupIcon />,
+  LocalShippingIcon: <LocalShippingIcon />,
+  PeopleAltIcon: <PeopleAltIcon />,
+  ShippingIcon: <ShippingIcon />,
+  PhoneIcon: <PhoneIcon />,
+  EmailIcon: <EmailIcon />,
+  AssignmentIcon: <AssignmentIcon />,
+  QuestionAnswerIcon: <QuestionAnswerIcon />,
+  ManageAccountsIcon: <ManageAccountsIcon />,
+  PrivacyTipIcon: <PrivacyTipIcon />,
+  PlaceIcon: <PlaceIcon />,
+  ListIcon: <ListIcon />,
+  ChecklistIcon: <ChecklistIcon />,
+  AssuredWorkloadIcon: <AssuredWorkloadIcon />,
+  ReceiptIcon: <ReceiptIcon />,
+};
 
-  { text: "IP Access", icon: <PrivacyTipIcon /> },
-  { text: "Pickup Point", icon: <PlaceIcon /> },
-  { text: "Roles List", icon: <ListIcon /> },
-];
-const commonMenuItems = [
-  { text: "Permission Setting", icon: <ChecklistIcon /> },
-  { text: "Bank Details", icon: <AssuredWorkloadIcon /> },
+const componentDict = {
+  AppSettings: <AppSettings />,
+  NotificationSettings: <NotificationSettings />,
+  PaymentCredentials: <PaymentCredentials />,
+  FinanceSettings: <FinanceSettings />,
+  SocialLoginSettings: <SocialLoginSettings />,
+  ThemeSettings: <ThemeSettings />,
+  DatabaseBackupSettings: <DatabaseBackupSettings />,
+  MaintainanceMode: <MaintainanceMode />,
+  PixelSettings: <PixelSettings />,
+  AdminSettings: <AdminSettings />,
+  Branch: <Branch />,
+  CourierServiceList: <CourierServiceList />,
+  TelephonicChannelsList: <TelephonicChannelsList />,
+  ShipmentChannelsList: <ShipmentChannelsList />,
+  SuperadminShipmentChannels: <SuperadminShipmentChannels />,
+  OrderStatus: <OrderStatus />,
+  QCSettings: <QCSettings />,
+  LeadSettings: <LeadSettings />,
+  RolesList: <RolesList />,
+  BankDetails: <BankDetails />,
+  RolesAndPermissions: <RolesAndPermissions />,
+  EInvoiceSettings: <EInvoiceSettings />,
+  PickupPoint: <PickupPoint />,
+  EmailSettings: <EmailSettings />,
+  IPAccess: <IPAccess />,
+};
 
-  { text: "E-Invoice Settings", icon: <ReceiptIcon /> },
-];
 const SettingsSidebarListItems = ({ type }) => {
-  const defaultState = type == "superadmin" ? "App Settings" : "Admin Settings";
+  const defaultState = type === "superadmin" ? "App Settings" : "Admin Settings";
   const [selectedItem, setSelectedItem] = useState(defaultState);
+  const [settingMenu, setSettingMenu] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleItemClick = (item) => {
-    setSelectedItem(item.text);
+    setSelectedItem(item.name);
   };
-  const userType = "superadmin";
+
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      try {
+        const response = await axios.get(`${baseApiUrl}setting_menu/`, {
+          headers: { Authorization: `Token ${getToken()}` },
+        });
+        setSettingMenu(response.data);
+        console.log(response.data)
+      } catch (error) {
+        console.error(error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMenuData();
+  }, []);
+
   return (
     <Grid container spacing={1}>
       <Grid
@@ -156,96 +198,14 @@ const SettingsSidebarListItems = ({ type }) => {
         <Box
           sx={{
             overflowY: "scroll",
-            height: "80vh",
+            height: "100%",
             backgroundColor: "white",
             boxShadow: "2px 0 5px rgba(0,0,0,0.1)",
             padding: 1,
           }}
         >
           <List>
-            {type == "superadmin" &&
-              superAdminMenuItems.map((item, index) => (
-                <ListItem
-                  button
-                  key={index}
-                  onClick={() => handleItemClick(item)}
-                  sx={{
-                    borderRadius: 1,
-                    mb: 1,
-                    transition: "all 0.3s ease",
-                    backgroundColor:
-                      selectedItem === item.text ? "#d7defabf" : "transparent",
-                    "&:hover": {
-                      backgroundColor: "#f5f5f5",
-                      transform: "translateX(5px)",
-                      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <ListItemIcon
-                      sx={{
-                        minWidth: "auto",
-                        color: "#405189",
-                      }}
-                    >
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      sx={{
-                        fontFamily: poppins.style.fontFamily,
-                        color: "#405189",
-                        fontWeight: 500,
-                        letterSpacing: "0.5px",
-                        transition: "color 0.3s ease",
-                      }}
-                    />
-                  </Box>
-                </ListItem>
-              ))}
-            {type == "admin" &&
-              adminMenuItems.map((item, index) => (
-                <ListItem
-                  button
-                  key={index}
-                  onClick={() => handleItemClick(item)}
-                  sx={{
-                    borderRadius: 1,
-                    mb: 1,
-                    transition: "all 0.3s ease",
-                    backgroundColor:
-                      selectedItem === item.text ? "#d7defabf" : "transparent",
-                    "&:hover": {
-                      backgroundColor: "#f5f5f5",
-                      transform: "translateX(5px)",
-                      boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                    },
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <ListItemIcon
-                      sx={{
-                        minWidth: "auto",
-                        color: "#405189",
-                      }}
-                    >
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.text}
-                      sx={{
-                        fontFamily: poppins.style.fontFamily,
-                        color: "#405189",
-                        fontWeight: 500,
-                        letterSpacing: "0.5px",
-                        transition: "color 0.3s ease",
-                      }}
-                    />
-                  </Box>
-                </ListItem>
-              ))}
-            {commonMenuItems.map((item, index) => (
+            {settingMenu.map((item, index) => (
               <ListItem
                 button
                 key={index}
@@ -255,7 +215,7 @@ const SettingsSidebarListItems = ({ type }) => {
                   mb: 1,
                   transition: "all 0.3s ease",
                   backgroundColor:
-                    selectedItem === item.text ? "#d7defabf" : "transparent",
+                    selectedItem === item.name ? "#d7defabf" : "transparent",
                   "&:hover": {
                     backgroundColor: "#f5f5f5",
                     transform: "translateX(5px)",
@@ -270,10 +230,10 @@ const SettingsSidebarListItems = ({ type }) => {
                       color: "#405189",
                     }}
                   >
-                    {item.icon}
+                    {iconDict[item.icon]}
                   </ListItemIcon>
                   <ListItemText
-                    primary={item.text}
+                    primary={item.name}
                     sx={{
                       fontFamily: poppins.style.fontFamily,
                       color: "#405189",
@@ -288,81 +248,13 @@ const SettingsSidebarListItems = ({ type }) => {
           </List>
         </Box>
       </Grid>
-      <Grid
-        item
-        xs={9.5}
-        sx={{
-          height: "90vh",
-          overflowY: "scroll",
-          backgroundColor: "#f5f7fa",
-        }}
-      >
+      <Grid item xs={9.5} sx={{ height: "94vh", overflowY: "scroll", backgroundColor: "#f5f7fa", }}>
         <Box p={2}>
-          {type == "superadmin" && selectedItem === "App Settings" && (
-            <AppSettings />
+          {settingMenu.map((item) =>
+            (type === item.for_user || item.for_user === "both") && selectedItem === item.name
+              ? componentDict[item.component_name]
+              : null
           )}
-          {type == "superadmin" && selectedItem === "Notification Settings" && (
-            <NotificationSettings />
-          )}
-          {type == "superadmin" && selectedItem === "Payment Credentials" && (
-            <PaymentCredentials />
-          )}
-          {type == "superadmin" && selectedItem === "Finance Settings" && (
-            <FinanceSettings />
-          )}
-          {type == "superadmin" && selectedItem === "Social Login Settings" && (
-            <SocialLoginSettings />
-          )}
-          {type == "superadmin" && selectedItem === "Theme Settings" && (
-            <ThemeSettings />
-          )}
-          {type == "superadmin" &&
-            selectedItem === "Database Backup Settings" && (
-              <DatabaseBackupSettings />
-            )}
-          {type == "superadmin" && selectedItem === "Maintainance Mode" && (
-            <MaintainanceMode />
-          )}
-          {type == "superadmin" && selectedItem === "Pixel Settings" && (
-            <PixelSettings />
-          )}
-          {type == "admin" && selectedItem === "Admin Settings" && (
-            <AdminSettings />
-          )}
-          {type == "admin" && selectedItem === "Branch" && <Branch />}
-
-          {type == "admin" && selectedItem === "Courier Service" && (
-            <CourierServiceList />
-          )}
-          {type == "admin" && selectedItem === "Telephonic Channels" && (
-            <TelephonicChannelsList />
-          )}
-          {type == "admin" && selectedItem === "Shipment Channels" && (
-            <ShipmentChannelsList />
-          )}
-            {type == "superadmin" && selectedItem === "Shipment Channels" && (
-            <SuperadminShipmentChannels />
-          )}
-          {type == "admin" && selectedItem === "Order Status" && (
-            <OrderStatus />
-          )}
-          {type == "admin" && selectedItem === "QC Setting" && <QCSettings />}
-          {type == "admin" && selectedItem === "Lead Setting" && (
-            <LeadSettings />
-          )}
-          {type == "admin" && selectedItem === "Roles List" && <RolesList />}
-          {selectedItem === "Bank Details" && <BankDetails />}
-          {selectedItem === "Permission Setting" && <RolesAndPermissions />}
-
-          {selectedItem === "E-Invoice Settings" && <EInvoiceSettings />}
-
-          {type == "admin" && selectedItem === "Pickup Point" && (
-            <PickupPoint />
-          )}
-          {type == "admin" && selectedItem === "Email Settings" && (
-            <EmailSettings />
-          )}
-          {type == "admin" && selectedItem === "IP Access" && <IPAccess />}
         </Box>
       </Grid>
     </Grid>
