@@ -57,7 +57,6 @@ const RolesAndPermissions = () => {
   const [orderStatusList, setOrderStatuslist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
 
   const isSuperAdmin = permissionsData?.role === "superadmin";
   const isAdmin = permissionsData?.role === "admin";
@@ -98,31 +97,26 @@ const RolesAndPermissions = () => {
         }
       });
       setsideBarDataList(newSideBarData);
-
-      // Fetch product data
-      const productResponse = await axios.get(`${baseApiUrl}products/`, {
-        headers: { Authorization: `Token ${token}` },
-      });
-      setProductNameData(productResponse.data)
-      setProductNamelist(productResponse.data.map((item) => item.product_name));
-
-      // Fetch setting menu data
-      const settingResponse = await axios.get(`${baseApiUrl}setting_menu/`, {
-        headers: { Authorization: `Token ${getToken()}` },
-      });
+      const [productResponse, settingResponse, statusResponse] = await Promise.all([
+        axios.get(`${baseApiUrl}products/`, {
+          headers: { Authorization: `Token ${token}` },
+        }),
+        axios.get(`${baseApiUrl}setting_menu/`, {
+          headers: { Authorization: `Token ${getToken()}` },
+        }),
+        axios.get(`${baseApiUrl}order_status/`, {
+          headers: { Authorization: `Token ${getToken()}` },
+        }),
+      ]);
+      setProductNameData(productResponse.data);
+      const productNamelist = productResponse.data.map((item) => item.product_name);
+      setProductNamelist(productNamelist);
       setSettingName(settingResponse.data);
-
-      // Fetch setting menu data
-      const statusResponse = await axios.get(`${baseApiUrl}order_status/`, {
-        headers: { Authorization: `Token ${getToken()}` },
-      });
       setOrderStatus(statusResponse.data);
-      setOrderStatuslist(productResponse.data.map((item) => item.product_name));
+      const orderStatusList = statusResponse.data.map((item) => item.name);
+      setOrderStatuslist(orderStatusList);
 
-      // Fetch permission dictionary
       const nameList = newSideBarData.map((item) => item.name).concat(productNamelist).concat(orderStatusList);
-
-      console.log(nameList)
       const permissionsResponse = await axios.post(`${baseApiUrl}get-permission-ids/`, {
         name_list: nameList,
       }, {
