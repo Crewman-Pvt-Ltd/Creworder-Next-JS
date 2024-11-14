@@ -1,0 +1,29 @@
+.preloader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full viewport height */
+    background-color: #f0f0f0; /* Light background color */
+    color: #333; /* Text color */
+    font-family: Arial, sans-serif; /* Font style */
+}
+
+.spinner {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #3498db; /* Blue color */
+    border-radius: 50%;
+    width: 60px; /* Width of the spinner */
+    height: 60px; /* Height of the spinner */
+    animation: spin 1s linear infinite; /* Animation for spinning effect */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+p {
+    margin-top: 20px; /* Space between spinner and text */
+    font-size: 18px; /* Text size */
+}
