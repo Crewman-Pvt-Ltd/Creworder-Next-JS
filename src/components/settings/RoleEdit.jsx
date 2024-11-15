@@ -59,6 +59,7 @@ const RoleEdit = ({ roleId }) => {
   const [permissionListPrv, setPermissionListPrv] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [permissionMapping, setPermissionMapping] = useState({});
 
   const isSuperAdmin = permissionsData?.role === "superadmin";
   const isAdmin = permissionsData?.role === "admin";
@@ -171,9 +172,15 @@ const RoleEdit = ({ roleId }) => {
   useEffect(() => {
     fetchAllData();
   }, []);
-
-  const makePermissionJson = async (id) => {
+  const makePermissionJson = async (id, name = null) => {
     try {
+      if (name != null) {
+        setPermissionMapping((prev) => ({
+          ...prev,
+          [name]: id,
+        }));
+      }
+
       setPermissionList((prevItems) => [...prevItems, id]);
     } catch (error) {
       console.error("Error creating permission object:", error);
@@ -181,7 +188,8 @@ const RoleEdit = ({ roleId }) => {
   };
 
   const createRole = async () => {
-    const permissionData = permissionList.filter((item) => typeof item === "number");
+    const permissionValues = Object.values(permissionMapping);
+    const permissionData = permissionValues.filter((item) => typeof item === "number");
     const data = {
       group: {
         name: roleName
@@ -215,7 +223,7 @@ const RoleEdit = ({ roleId }) => {
       );
     }
   };
-
+  console.log(permissionMapping)
   const getPrevPermissionId = (tabName, permsnName = null, name) => {
     const defaultResult = "N";
     const permissionConfigs = {
@@ -432,13 +440,15 @@ const RoleEdit = ({ roleId }) => {
                         < TableCell >
                           <FormControl fullWidth sx={{ width: 120 }
                           }>
+                            {/* {makePermissionJson(getPrevPermissionId("role", "add", permission.name.replace(/ /g, "_").toLowerCase()), `${permission.name.replace(/ /g, "_").toLowerCase()}_add`)} */}
                             <Select
                               defaultValue={getPrevPermissionId("role", "add", permission.name.replace(/ /g, "_").toLowerCase())}
                               size="small"
-                              onChange={(event) => makePermissionJson(event.target.value)}
+                              onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_add`)
+                              }
                             >
                               <MenuItem value="N" > NO </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem
                                 value={permissionDict[`add_${permission.name.replace(/ /g, "_").toLowerCase()}`]}
                               >
                                 YES
@@ -448,13 +458,15 @@ const RoleEdit = ({ roleId }) => {
                         </TableCell>
                         < TableCell >
                           <FormControl fullWidth sx={{ width: 120 }}>
-                            <Select defaultValue={getPrevPermissionId("role", "change", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value)}>
+                            {/* {makePermissionJson(getPrevPermissionId("role", "change", permission.name.replace(/ /g, "_").toLowerCase()), `${permission.name.replace(/ /g, "_").toLowerCase()}_change`)} */}
+                            <Select defaultValue={getPrevPermissionId("role", "change", permission.name.replace(/ /g, "_").toLowerCase())} size="small"
+                              onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_change`)}>
                               <MenuItem value="N" > None </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem 
                                 value={permissionDict[`change_own_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>
                                 Owned
                               </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem 
                                 value={permissionDict[`change_all_${permission.name.replace(/ /g, "_").toLowerCase()}`]}
                               >
                                 All
@@ -464,15 +476,16 @@ const RoleEdit = ({ roleId }) => {
                         </TableCell>
                         < TableCell >
                           <FormControl fullWidth sx={{ width: 120 }}>
-                            <Select defaultValue={getPrevPermissionId("role", "view", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value)}
+                            <Select defaultValue={getPrevPermissionId("role", "view", permission.name.replace(/ /g, "_").toLowerCase())} size="small"
+                              onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_view`)}
                             >
                               <MenuItem value="N" > None </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem 
                                 value={permissionDict[`view_own_${permission.name.replace(/ /g, "_").toLowerCase()}`]}
                               >
                                 Owned
                               </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem 
                                 value={permissionDict[`view_all_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>
                                 All
                               </MenuItem>
@@ -481,15 +494,16 @@ const RoleEdit = ({ roleId }) => {
                         </TableCell>
                         < TableCell >
                           <FormControl fullWidth sx={{ width: 120 }}>
-                            <Select defaultValue={getPrevPermissionId("role", "delete", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value)}
+                            <Select defaultValue={getPrevPermissionId("role", "delete", permission.name.replace(/ /g, "_").toLowerCase())} size="small"
+                              onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_delete`)}
                             >
                               <MenuItem value="N" > None </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem
                                 value={permissionDict[`delete_own_${permission.name.replace(/ /g, "_").toLowerCase()}`]}
                               >
                                 Owned
                               </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem
                                 value={permissionDict[`delete_all_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>
                                 All
                               </MenuItem>
@@ -498,15 +512,16 @@ const RoleEdit = ({ roleId }) => {
                         </TableCell>
                         < TableCell >
                           <FormControl fullWidth sx={{ width: 120 }}>
-                            <Select defaultValue={getPrevPermissionId("role", "export", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value)}
+                            <Select defaultValue={getPrevPermissionId("role", "export", permission.name.replace(/ /g, "_").toLowerCase())} size="small"
+                              onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_export`)}
                             >
                               <MenuItem value="N" > None </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem
                                 value={permissionDict[`export_own_${permission.name.replace(/ /g, "_").toLowerCase()}`]}
                               >
                                 Owned
                               </MenuItem>
-                              < MenuItem key={permission.name.replace(/ /g, "_").toLowerCase()}
+                              < MenuItem
                                 value={permissionDict[`export_all_${permission.name.replace(/ /g, "_").toLowerCase()}`]}
                               >
                                 All
@@ -520,7 +535,8 @@ const RoleEdit = ({ roleId }) => {
                             sx={{ width: 120 }}
                             onChange={(event) => makePermissionJson(permission.name, "extra", event.target.value)}
                           >
-                            <Select defaultValue={getPrevPermissionId("role", "extra", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value)}
+                            <Select defaultValue={getPrevPermissionId("role", "extra", permission.name.replace(/ /g, "_").toLowerCase())} size="small"
+                              onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_extra`)}
                             >
                               <MenuItem value="N" > None </MenuItem>
                               {
@@ -565,7 +581,9 @@ const RoleEdit = ({ roleId }) => {
                     <TableCell>{permission.name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue={getPrevPermissionId("order_details", null, permission.name.replace(/ /g, "_").toLowerCase())} size="small">
+                        <Select defaultValue={getPrevPermissionId("order_details", null, permission.name.replace(/ /g, "_").toLowerCase())} size="small"
+                          onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_order_details`)}
+                        >
                           <MenuItem value={permissionDict[`order_details_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>YES</MenuItem>
                           <MenuItem value="N">NO</MenuItem>
                         </Select>
@@ -617,7 +635,10 @@ const RoleEdit = ({ roleId }) => {
                       <FormControl fullWidth>
                         <Select defaultValue={getPrevPermissionId("dashboard_tiles", "dashboard", permission.name.replace(/ /g, "_").toLowerCase())} size="small" sx={{
                           width: "75%",
-                        }}>
+
+                        }}
+                          onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_dashboard_tiles`)}
+                        >
                           <MenuItem value="N">NO</MenuItem>
                           <MenuItem value={permissionDict[`view_all_dashboard_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>ALL</MenuItem>
                           <MenuItem value={permissionDict[`view_own_dashboard_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>OWN</MenuItem>
@@ -652,9 +673,7 @@ const RoleEdit = ({ roleId }) => {
                     <TableCell>{permission.name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue={getPrevPermissionId("setting", "add", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) =>
-                          makePermissionJson(event.target.value)
-                        }>
+                        <Select defaultValue={getPrevPermissionId("setting", "add", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_setting_add`)}>
                           <MenuItem value="N">NO</MenuItem>
                           <MenuItem value={permissionDict[`settings_add_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>YES</MenuItem>
                         </Select>
@@ -662,9 +681,7 @@ const RoleEdit = ({ roleId }) => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue={getPrevPermissionId("setting", "change", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) =>
-                          makePermissionJson(event.target.value)
-                        }>
+                        <Select defaultValue={getPrevPermissionId("setting", "change", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_setting_change`)}>
                           <MenuItem value="N">NO</MenuItem>
                           <MenuItem value={permissionDict[`settings_change_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>YES</MenuItem>
                         </Select>
@@ -672,9 +689,7 @@ const RoleEdit = ({ roleId }) => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue={getPrevPermissionId("setting", "view", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) =>
-                          makePermissionJson(event.target.value)
-                        }>
+                        <Select defaultValue={getPrevPermissionId("setting", "view", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_setting_view`)}>
                           <MenuItem value="N">NO</MenuItem>
                           <MenuItem value={permissionDict[`settings_view_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>YES</MenuItem>
                         </Select>
@@ -682,9 +697,7 @@ const RoleEdit = ({ roleId }) => {
                     </TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue={getPrevPermissionId("setting", "delete", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) =>
-                          makePermissionJson(event.target.value)
-                        }>
+                        <Select defaultValue={getPrevPermissionId("setting", "delete", permission.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value, `${permission.name.replace(/ /g, "_").toLowerCase()}_setting_delete`)}>
                           <MenuItem value="N">NO</MenuItem>
                           <MenuItem value={permissionDict[`settings_delete_${permission.name.replace(/ /g, "_").toLowerCase()}`]}>YES</MenuItem>
                         </Select>
@@ -713,9 +726,7 @@ const RoleEdit = ({ roleId }) => {
                     <TableCell>{product.product_name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue={getPrevPermissionId("products", null, product.product_name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) =>
-                          makePermissionJson(event.target.value)
-                        }>
+                        <Select defaultValue={getPrevPermissionId("products", null, product.product_name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value, `${product.product_name.replace(/ /g, "_").toLowerCase()}_products`)}>
                           <MenuItem value="N">NO</MenuItem>
                           <MenuItem value={permissionDict[`product_can_work_on_this_${product.product_name.replace(/ /g, "_").toLowerCase()}`]}>YES</MenuItem>
                         </Select>
@@ -742,9 +753,7 @@ const RoleEdit = ({ roleId }) => {
                     <TableCell>{orderSatatusData.name}</TableCell>
                     <TableCell>
                       <FormControl fullWidth>
-                        <Select defaultValue={getPrevPermissionId("order_status", null, orderSatatusData.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) =>
-                          makePermissionJson(event.target.value)
-                        }>
+                        <Select defaultValue={getPrevPermissionId("order_status", null, orderSatatusData.name.replace(/ /g, "_").toLowerCase())} size="small" onChange={(event) => makePermissionJson(event.target.value, `${orderSatatusData.name.replace(/ /g, "_").toLowerCase()}_order_status`)}>
                           <MenuItem value="N">NO</MenuItem>
                           <MenuItem value={permissionDict[`order_status_can_work_on_this_${orderSatatusData.name.replace(/ /g, "_").toLowerCase()}`]}>YES</MenuItem>
                         </Select>
