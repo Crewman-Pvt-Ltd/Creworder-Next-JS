@@ -261,19 +261,19 @@ const EmployeesList = ({ onAddEmployees }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Employee ID</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Email</TableCell>
+                    <TableCell><b>ID</b></TableCell>
+                    <TableCell><b>Employee ID</b></TableCell>
+                    <TableCell><b>Name</b></TableCell>
+                    <TableCell><b>Email</b></TableCell>
                     {/* <TableCell>User Role</TableCell> */}
-                    <TableCell>Status</TableCell>
-                    <TableCell>Action</TableCell>
+                    <TableCell><b>Status</b></TableCell>
+                    <TableCell><b>Action</b></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                 {data?.results?.map((row, index) => (
                     <TableRow key={row.id}>
-                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{index + 1}.</TableCell>
                       <TableCell>{row.profile?.employee_id}</TableCell>
                       <TableCell sx={{ display: "flex", alignItems: "center" }}>
                         <Avatar src={row.profile?.profile_image} sx={{ marginRight: 2 }} />
@@ -290,8 +290,7 @@ const EmployeesList = ({ onAddEmployees }) => {
                       <TableCell>
                         <Chip
                           label={row?.profile?.status == "1" ? "Active" : "Inactive"}
-                          size="large"
-                        />
+                          size="large"/>
                       </TableCell>
 
 
@@ -303,8 +302,7 @@ const EmployeesList = ({ onAddEmployees }) => {
                               onClick={() =>
                                 handleToggleStatus(row.id, "Suspended")
                               }
-                              sx={{ color: "#DC3545" }}
-                            >
+                              sx={{ color: "#DC3545" }}>
                               <CancelIcon />
                             </IconButton>
                           </Tooltip>
@@ -315,20 +313,15 @@ const EmployeesList = ({ onAddEmployees }) => {
                               onClick={() =>
                                 handleToggleStatus(row.id, "Approved")
                               }
-                              sx={{ color: "#28A745" }}
-                            >
+                              sx={{ color: "#28A745" }}>
                               <CheckCircleIcon />
                             </IconButton>
                           </Tooltip>
                         )}
-
-
-
                       <Tooltip title="Change Password">
                           <IconButton
                             aria-label="change password"
-                            sx={{ color: "blue" }}
-                          >
+                            sx={{ color: "blue" }}>
                             <LockOpenIcon sx={{ marginRight: "8px" }} />
                           </IconButton>
                         </Tooltip>
@@ -336,8 +329,7 @@ const EmployeesList = ({ onAddEmployees }) => {
                         <Tooltip title="Force Logout">
                           <IconButton
                             aria-label="force logout"
-                            sx={{ color: "#FF0000" }}
-                          >
+                            sx={{ color: "#FF0000" }}>
                             <LogoutIcon sx={{ marginRight: "8px" }} />
                           </IconButton>
                         </Tooltip>
@@ -353,8 +345,7 @@ const EmployeesList = ({ onAddEmployees }) => {
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
-                          sx={{ color: "#e74c3c" }}
-                        >
+                          sx={{ color: "#e74c3c" }}>
                           <Delete />
                         </IconButton>
                         </Tooltip>

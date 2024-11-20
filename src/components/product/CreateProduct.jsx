@@ -43,10 +43,11 @@ const CreateProduct = () => {
   const [weight, setWeight] = useState("");
   const [price, setPrice] = useState("");
   const [hsnCode, setHsnCode] = useState("");
+  const [inventoryLocation, setInventoryLocation] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const { data, refetch } = useGetAllCategories();
-  const [color, setColor] = useState("#FF5733"); // Default color
+  const [color, setColor] = useState("#FF5733");
 
   const handleCreateProduct = async () => {
     const token = await getToken();
@@ -138,7 +139,7 @@ const CreateProduct = () => {
                   value={description}
                   onChange={handleDescriptionChange}
                   placeholder="Enter product description"
-                  style={{ height: "200px", marginBottom: "20px" }}
+                  style={{ height: "150px", marginBottom: "20px" }}
                 />
               </Grid>
 
@@ -173,6 +174,7 @@ const CreateProduct = () => {
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
+
               <Grid item xs={12} sm={3} sx={{ marginTop: "16px" }}>
                 <CustomLabel htmlFor="weight" required>
                   Weight
@@ -250,6 +252,22 @@ const CreateProduct = () => {
                   type="text"
                   value={hsnCode}
                   onChange={handleInputChange(setHsnCode)}
+                  fullWidth
+                  sx={{ fontFamily: poppins.style.fontFamily }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <CustomLabel htmlFor="inventory_location" required>
+                  Inventory Locations
+                </CustomLabel>
+                <CustomTextField
+                  id="inventory_location"
+                  name="inventory_location"
+                  placeholder="Inventory Location"
+                  type="text"
+                  value={inventoryLocation}
+                  onChange={handleInputChange(setInventoryLocation)}
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />

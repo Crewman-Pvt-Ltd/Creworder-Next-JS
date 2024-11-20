@@ -14,7 +14,8 @@ import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import { usePermissions } from "@/contexts/PermissionsContext";
-const CreateTarget = () => {
+
+const EditTarget = () => {
   const router = useRouter();
   const [inputValues, setInputValues] = useState({
     agent: "",
@@ -216,4 +217,4 @@ const CreateTarget = () => {
   );
 };
 
-export default CreateTarget;
+export default EditTarget;

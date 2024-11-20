@@ -202,10 +202,10 @@ const BranchListPage = ({ onAddBranch }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Branch Name</TableCell>
-                  <TableCell>Branch Address</TableCell>
-                  <TableCell>Action</TableCell>
+                  <TableCell><b>ID</b></TableCell>
+                  <TableCell><b>Branch Name</b></TableCell>
+                  {/* <TableCell>Branch Address</TableCell> */}
+                  <TableCell><b>Action</b></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -213,7 +213,7 @@ const BranchListPage = ({ onAddBranch }) => {
                   <TableRow key={branch.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{branch.name}</TableCell>
-                    <TableCell>{branch.address}</TableCell>
+                    {/* <TableCell>{branch.address}</TableCell> */}
                     <TableCell>
                       <IconButton onClick={() => handleEditClick(branch.id)} aria-label="edit" sx={{ color: "green" }}>
                         <Edit />

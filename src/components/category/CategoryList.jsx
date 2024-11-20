@@ -56,11 +56,14 @@ const CategoryList = () => {
       if (!token) {
         throw new Error("No authentication token found.");
       }
-      const response = await MainApi.delete(`/api/category/${categoryToDelete}`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      const response = await MainApi.delete(
+        `/api/category/${categoryToDelete}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
 
       if (response.status === 204) {
         console.log("Category deleted successfully");
@@ -109,50 +112,45 @@ const CategoryList = () => {
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
-        <Grid container sx={{ marginBottom: "10px" }}>
-          <Grid item xs={12}>
-            <CustomCard padding="13px">
-              <Grid container justifyContent="space-between" alignItems="center">
-                <Grid item>
-                  <Typography
-                    sx={{
-                      fontWeight: "600",
-                      fontSize: "20px",
-                      whiteSpace: "nowrap",
-                      textTransform: "capitalize",
-                      color: "black",
-                      marginLeft: "30px",
-                    }}
-                  >
-                    All Categories
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Button
-                    onClick={handleCreateCategory}
-                    sx={{
-                      padding: "8px",
-                      fontSize: "14px",
-                      backgroundColor: "#405189",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#334a6c",
-                      },
-                      borderRadius: "30px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <AddIcon sx={{ fontSize: 15 }} />
-                    Add Category
-                  </Button>
-                </Grid>
-              </Grid>
-            </CustomCard>
+        <CustomCard padding="13px">
+          <Grid container justifyContent="space-between" alignItems="center">
+            <Grid item>
+              <Typography
+                sx={{
+                  fontWeight: "600",
+                  fontSize: "20px",
+                  whiteSpace: "nowrap",
+                  textTransform: "capitalize",
+                  color: "black",
+                  marginLeft: "30px",
+                }}
+              >
+                All Categories
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                onClick={handleCreateCategory}
+                sx={{
+                  padding: "8px",
+                  fontSize: "14px",
+                  backgroundColor: "#405189",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#334a6c",
+                  },
+                  borderRadius: "30px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <AddIcon sx={{ fontSize: 15 }} />
+                Add Category
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-
+        </CustomCard>
         <CustomCard>
           <CardContent>
             {error ? (
@@ -176,10 +174,12 @@ const CategoryList = () => {
                       <TableRow key={row.id}>
                         <DataCell>{index + 1}.</DataCell>
                         <DataCell>{row.name}</DataCell>
-                        <DataCell>{row.status === 1 ? "Active" : "Inactive"}</DataCell>
                         <DataCell>
-                        <img
-                            src={`${BASE_URL}${row.image}`} 
+                          {row.status === 1 ? "Active" : "Inactive"}
+                        </DataCell>
+                        <DataCell>
+                          <img
+                            src={`${BASE_URL}${row.image}`}
                             alt={row.name}
                             height={100}
                             width={100}
@@ -191,7 +191,8 @@ const CategoryList = () => {
                           <IconButton
                             onClick={() => handleEdit(row.id)}
                             aria-label="edit"
-                            sx={{ color: "green" }}>
+                            sx={{ color: "green" }}
+                          >
                             <EditIcon sx={{ color: "green" }} />
                           </IconButton>
                           <IconButton sx={{ color: "red" }}>
@@ -220,7 +221,7 @@ const CategoryList = () => {
           onClose={handleDeleteCancel}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
-            >
+        >
           <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">

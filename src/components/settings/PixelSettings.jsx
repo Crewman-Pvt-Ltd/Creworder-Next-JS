@@ -1,10 +1,14 @@
-import React from "react";
-import { CardContent, Grid, Button, MenuItem, Divider, TableHead, Table, TableBody, TableContainer, TableRow, IconButton, Typography, TableCell } from "@mui/material";
+import React, { useState } from "react";
+import {
+  CardContent,
+  Grid,
+  Button,
+  Typography,
+} from "@mui/material";
 import CustomCard from "../CustomCard";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import { Poppins } from "next/font/google";
-import { Edit, Delete } from "@mui/icons-material";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -12,7 +16,38 @@ const poppins = Poppins({
 });
 
 const PixelSettings = ({ onAdd, onEdit }) => {
+  const [formValues, setFormValues] = useState({
+    google_analytics: "",
+    meta: "",
+    other: "",
+  });
 
+  const [errors, setErrors] = useState({
+    google_analytics: false,
+    meta: false,
+    other: false,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    const newErrors = {
+      google_analytics: formValues.google_analytics.trim() === "",
+      meta: formValues.meta.trim() === "",
+      other: formValues.other.trim() === "",
+    };
+
+    setErrors(newErrors);
+    if (!newErrors.google_analytics && !newErrors.meta && !newErrors.other) {
+      console.log("Form submitted successfully:", formValues);
+    }
+  };
 
   return (
     <Grid container spacing={2}>
@@ -31,46 +66,61 @@ const PixelSettings = ({ onAdd, onEdit }) => {
 
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="google_analytics" required>
-                 Google Analytics
+                  <b>Google Analytics</b>
                 </CustomLabel>
                 <CustomTextField
                   id="google_analytics"
                   name="google_analytics"
                   type="text"
                   placeholder=""
+                  value={formValues.google_analytics}
+                  onChange={handleChange}
                   required
+                  multiline
+                  rows={8}
                   fullWidth
+                  error={errors.google_analytics} 
+                  helperText={errors.google_analytics && "This field is required"} 
                 />
               </Grid>
 
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="meta" required>
-                  Meta
+                  <b>Meta Pixel Code</b>
                 </CustomLabel>
                 <CustomTextField
-                  id="meta" 
+                  id="meta"
                   name="meta"
                   type="text"
-                //   placeholder="Re-enter"
+                  value={formValues.meta}
+                  onChange={handleChange}
                   required
+                  multiline
+                  rows={8}
                   fullWidth
+                  error={errors.meta} 
+                  helperText={errors.meta && "This field is required"} 
                 />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="other" required>
-                  Other
+                  <b>Other Pixel Code</b>
                 </CustomLabel>
                 <CustomTextField
                   id="other"
                   name="other"
                   type="text"
-                //   placeholder="Re-enter"
+                  value={formValues.other}
+                  onChange={handleChange}
                   required
+                  multiline
+                  rows={8}
                   fullWidth
+                  error={errors.other} 
+                  helperText={errors.other && "This field is required"}
                 />
               </Grid>
-
-              
 
               <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
@@ -78,16 +128,15 @@ const PixelSettings = ({ onAdd, onEdit }) => {
                     backgroundColor: "#405189",
                     color: "white",
                   }}
+                  onClick={handleSubmit}
                 >
-                  Save
+                  Submit
                 </Button>
               </Grid>
             </Grid>
           </CardContent>
         </CustomCard>
       </Grid>
-
-      
     </Grid>
   );
 };

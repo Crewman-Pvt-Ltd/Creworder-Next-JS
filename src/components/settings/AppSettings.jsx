@@ -19,10 +19,12 @@ import {
   Box,
 } from "@mui/material";
 import CustomLabel from "../CustomLabel";
+
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
+
 const commonFormControlStyles = {
   height: "40px",
 };
@@ -48,11 +50,32 @@ const AppSettings = () => {
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
-  const [isChecked, setIsChecked] = useState(false);
 
+  const [dateFormat, setDateFormat] = useState("MM/DD/YYYY");
+  const [timeFormat, setTimeFormat] = useState("12-hour");
+  const [defaultTimezone, setDefaultTimezone] = useState("GMT+1");
+  const [defaultCurrency, setDefaultCurrency] = useState("USD");
+  const [language, setLanguage] = useState("English");
+  const [datatableRowLimit, setDatatableRowLimit] = useState("10");
+  const [sessionDriver, setSessionDriver] = useState("file");
+
+  const [isChecked, setIsChecked] = useState(false);
   const handleChange = (event) => {
     setIsChecked(event.target.checked);
   };
+
+  const handleDateFormatChange = (event) => setDateFormat(event.target.value);
+  const handleTimeFormatChange = (event) => setTimeFormat(event.target.value);
+  const handleTimezoneChange = (event) =>
+    setDefaultTimezone(event.target.value);
+  const handleCurrencyChange = (event) =>
+    setDefaultCurrency(event.target.value);
+  const handleLanguageChange = (event) => setLanguage(event.target.value);
+  const handleDatatableRowLimitChange = (event) =>
+    setDatatableRowLimit(event.target.value);
+  const handleSessionDriverChange = (event) =>
+    setSessionDriver(event.target.value);
+
   return (
     <CustomCard>
       <CardContent>
@@ -62,7 +85,6 @@ const AppSettings = () => {
           <Tab className={poppins.className} label="Google Map Settings" />
         </Tabs>
         <Divider sx={{ my: 2 }} />
-
         {activeTab === 0 && (
           <Box>
             <Grid container spacing={2}>
@@ -75,7 +97,8 @@ const AppSettings = () => {
                     labelId="date_format_label"
                     id="date_format"
                     name="date_format"
-                    defaultValue=""
+                    value={dateFormat}
+                    onChange={handleDateFormatChange}
                     sx={commonSelectStyles}
                   >
                     <MenuItem value="MM/DD/YYYY">MM/DD/YYYY</MenuItem>
@@ -93,7 +116,8 @@ const AppSettings = () => {
                     labelId="time_format_label"
                     id="time_format"
                     name="time_format"
-                    defaultValue=""
+                    value={timeFormat}
+                    onChange={handleTimeFormatChange}
                     sx={commonSelectStyles}
                   >
                     <MenuItem value="12-hour">12-hour</MenuItem>
@@ -110,7 +134,8 @@ const AppSettings = () => {
                     labelId="default_timezone_label"
                     id="default_timezone"
                     name="default_timezone"
-                    defaultValue=""
+                    value={defaultTimezone}
+                    onChange={handleTimezoneChange}
                     sx={commonSelectStyles}
                   >
                     <MenuItem value="GMT+1">GMT+1</MenuItem>
@@ -128,7 +153,8 @@ const AppSettings = () => {
                     labelId="default_currency_label"
                     id="default_currency"
                     name="default_currency"
-                    defaultValue=""
+                    value={defaultCurrency}
+                    onChange={handleCurrencyChange}
                     sx={commonSelectStyles}
                   >
                     <MenuItem value="USD">USD</MenuItem>
@@ -146,7 +172,8 @@ const AppSettings = () => {
                     labelId="language_label"
                     id="language"
                     name="language"
-                    defaultValue=""
+                    value={language}
+                    onChange={handleLanguageChange}
                     sx={commonSelectStyles}
                   >
                     <MenuItem value="English">English</MenuItem>
@@ -164,7 +191,8 @@ const AppSettings = () => {
                     labelId="datatable_row_limit_label"
                     id="datatable_row_limit"
                     name="datatable_row_limit"
-                    defaultValue=""
+                    value={datatableRowLimit}
+                    onChange={handleDatatableRowLimitChange}
                     sx={commonSelectStyles}
                   >
                     <MenuItem value="10">10</MenuItem>
@@ -182,7 +210,8 @@ const AppSettings = () => {
                     labelId="session_driver_label"
                     id="session_driver"
                     name="session_driver"
-                    defaultValue=""
+                    value={sessionDriver}
+                    onChange={handleSessionDriverChange}
                     sx={commonSelectStyles}
                   >
                     <MenuItem value="file">File</MenuItem>
@@ -198,7 +227,12 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography className={poppins.className} sx={smallLabelStyles}>App Debug</Typography>
+                        <Typography
+                          className={poppins.className}
+                          sx={smallLabelStyles}
+                        >
+                          App Debug
+                        </Typography>
                       }
                       sx={checkboxStyles}
                     />
@@ -207,7 +241,10 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography  className={poppins.className} sx={smallLabelStyles}>
+                        <Typography
+                          className={poppins.className}
+                          sx={smallLabelStyles}
+                        >
                           App Update
                         </Typography>
                       }
@@ -218,7 +255,10 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography  className={poppins.className} sx={smallLabelStyles}>
+                        <Typography
+                          className={poppins.className}
+                          sx={smallLabelStyles}
+                        >
                           Enable Cache
                         </Typography>
                       }
@@ -229,7 +269,10 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography className={poppins.className} sx={smallLabelStyles}>
+                        <Typography
+                          className={poppins.className}
+                          sx={smallLabelStyles}
+                        >
                           Company Need Approval
                         </Typography>
                       }
@@ -240,14 +283,18 @@ const AppSettings = () => {
                     <FormControlLabel
                       control={<Checkbox />}
                       label={
-                        <Typography className={poppins.className} sx={smallLabelStyles}>
+                        <Typography
+                          className={poppins.className}
+                          sx={smallLabelStyles}
+                        >
                           On Email Verification
                         </Typography>
                       }
                       sx={checkboxStyles}
                     />
                   </Grid>
-                </Grid> <Divider sx={{ my: 2 }} />
+                </Grid>
+                <Divider sx={{ my: 2 }} />
                 <Grid container spacing={2}>
                   <Grid
                     item
@@ -266,8 +313,9 @@ const AppSettings = () => {
                         />
                       }
                     />
-
-                    <Typography  className={poppins.className} >Maintainance Mode</Typography>
+                    <Typography className={poppins.className}>
+                      Maintenance Mode
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -286,7 +334,8 @@ const AppSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }} className={poppins.className}
+                  }}
+                  className={poppins.className}
                 >
                   Save
                 </Button>
@@ -299,7 +348,11 @@ const AppSettings = () => {
           <Box>
             <Grid container spacing={6}>
               <Grid item xs={12} sm={4} md={6}>
-                <CustomLabel className={poppins.className} htmlFor="maxfiesize" required>
+                <CustomLabel
+                  className={poppins.className}
+                  htmlFor="maxfiesize"
+                  required
+                >
                   Max File Size Upload
                 </CustomLabel>
                 <CustomTextField
@@ -312,7 +365,11 @@ const AppSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel className={poppins.className} htmlFor="maxnumfileupload" required>
+                <CustomLabel
+                  className={poppins.className}
+                  htmlFor="maxnumfileupload"
+                  required
+                >
                   Max Number of File For Upload
                 </CustomLabel>
                 <CustomTextField
@@ -325,7 +382,11 @@ const AppSettings = () => {
               </Grid>
 
               <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel className={poppins.className} htmlFor="maxnumfileupload" required>
+                <CustomLabel
+                  className={poppins.className}
+                  htmlFor="maxnumfileupload"
+                  required
+                >
                   Max Number of File For Upload
                 </CustomLabel>
                 <CustomTextField
@@ -351,7 +412,8 @@ const AppSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }} className={poppins.className}
+                  }}
+                  className={poppins.className}
                 >
                   Save
                 </Button>
@@ -374,6 +436,8 @@ const AppSettings = () => {
                     placeholder="e.g. Ahdteu56XXXXXXXXXXXXXXXXXXXX"
                     type="text"
                     fullWidth
+                    multiline
+                    row={10}
                   />
                 </FormControl>
               </Grid>
@@ -392,7 +456,8 @@ const AppSettings = () => {
                     "&:hover": {
                       backgroundColor: "#405189",
                     },
-                  }} className={poppins.className}
+                  }}
+                  className={poppins.className}
                 >
                   Save
                 </Button>
