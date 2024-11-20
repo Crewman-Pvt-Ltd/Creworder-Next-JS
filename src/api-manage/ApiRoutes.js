@@ -26,6 +26,7 @@ export const auth_role_group = '/api/auth-role-group/';
 export const submenu = '/api/submenu/';
 export const top_buying_state = '/api/top-buying-state/';
 export const pickup_point = '/api/pick-up-point/';
+export const user_target = '/api/user-target/';
 export const get_notice_users = '/api/specific-users/';
 export const get_dashboard_tiles = '/api/user-dashboard-tiles/';
 export const get_username_suggestions = '/api/username-suggestions/';

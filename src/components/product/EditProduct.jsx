@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import { getToken } from "@/utils/getToken";
 import MainApi from "@/api-manage/MainApi";
+import useGetAllCategories from "@/api-manage/react-query/useGetAllCategories";
 
 // Importing the Poppins font with weight 500
 const poppins = Poppins({
@@ -25,6 +26,7 @@ const poppins = Poppins({
 const EditProduct = () => {
   const router = useRouter();
   const { id } = router.query;
+  const { data, refetch } = useGetAllCategories();
 
   const [product, setProduct] = useState({
     product_name: "",
@@ -270,11 +272,11 @@ const EditProduct = () => {
                   <MenuItem value="" disabled>
                     Select Category
                   </MenuItem>
-                  <MenuItem value="1">Weight Gain</MenuItem>
-                  <MenuItem value="2">Weight Loss</MenuItem>
-                  <MenuItem value="3">Women's Wellness</MenuItem>
-                  <MenuItem value="4">Man Wellness</MenuItem>
-                  <MenuItem value="5">Diabetes Cure</MenuItem>
+                  {data?.Data?.map((row, index) => (
+                    <MenuItem key={row.id} value={row.id}>
+                      {row.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </Grid>
 
@@ -319,19 +321,16 @@ const EditProduct = () => {
                     Select Status
                   </MenuItem>
                   {/* Ensure values here match the backend */}
-                  <MenuItem value="1">Active</MenuItem>
-                  <MenuItem value="1">Inactive</MenuItem>
+                  <MenuItem value={1}>Active</MenuItem>
+                  <MenuItem value={0}>Inactive</MenuItem>
                 </Select>
-              </Grid>            
+              </Grid>
 
               <Grid item xs={4}>
                 <Typography variant="body2" sx={{ marginBottom: 2 }}>
                   Upload Product Image:
                 </Typography>
-                <img src={product.product_image}
-                height={150}
-                width={150}
-                />
+                <img src={product.product_image} height={150} width={150} />
                 <input
                   type="file"
                   accept="image/*"

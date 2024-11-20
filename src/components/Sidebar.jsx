@@ -106,6 +106,11 @@ const Sidebar = ({ isOpen, type }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [sideBarDataList, setsideBarDataList] = useState({});
   const [openMenu, setOpenMenu] = useState({});
+  const [isTechOpen, setTechOpen] = useState(false);
+
+  const handleTechClick = () => {
+    setTechOpen((prev) => !prev);
+  };
 
   const fetchData = async () => {
     try {
@@ -289,13 +294,55 @@ const Sidebar = ({ isOpen, type }) => {
           return null;
         })}
 
-        {type == "superadmin" && (
+        {/* Tech Menu */}
+        {type === "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}
-            name="Menu"
+            name={
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <span>Menu</span>
+                <IconButton
+                  size="small"
+                  onClick={handleTechClick}
+                  sx={{
+                    color: "white",
+                    marginLeft: "70px",
+                  }}
+                >
+                  {isTechOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </span>
+            }
             icon={<AppsIcon />}
-            onClick={() => handleItemClick("/superadmin/menu")}
-          />
+            active={currentPath.startsWith("/tech")}
+            onClick={handleTechClick}
+          >
+            <Collapse in={isTechOpen}>
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/superadmin/menu")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Main Menu" />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => handleItemClick("/superadmin/submenu")}
+                  sx={{ pl: 4 }}
+                >
+                  <ListItemText primary="Sub Menu" />
+                </ListItem>
+              </List>
+            </Collapse>
+          </HoverableNavItem>
         )}
 
         {type == "superadmin" && (
@@ -327,6 +374,7 @@ const Sidebar = ({ isOpen, type }) => {
             onClick={() => handleItemClick("/notice-board")}
           ></HoverableNavItem>
         )}
+
         {type == "superadmin" && (
           <HoverableNavItem
             isOpen={isOpen}

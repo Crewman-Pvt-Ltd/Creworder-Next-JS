@@ -23,8 +23,8 @@ import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
 import Edit from "@mui/icons-material/Edit";
 import Delete from "@mui/icons-material/Delete";
 import CustomCard from "../CustomCard";
-import KeyOffIcon from '@mui/icons-material/KeyOff';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import KeyOffIcon from "@mui/icons-material/KeyOff";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import {
   Add as AddIcon,
@@ -52,7 +52,6 @@ const DeletedEmployees = ({ onAddEmployees }) => {
   const handleViewChange = (event) => {
     setSelectedView(event.target.value);
   };
-
 
   const handleEdit = (row) => {
     router.push(`/hr/employees/editemployee?id=${row.id}`);
@@ -210,45 +209,55 @@ const DeletedEmployees = ({ onAddEmployees }) => {
           <ImportExportIcon sx={{ fontSize: 20 }} />
           Export
         </Button>
-        <a href="/hr/employees/lockedemployees" style={{ textDecoration: "none" }}><Button
-          sx={{
-            padding: "8px 16px",
-            fontSize: "14px",
-            border: "2px solid #405189",
-            color: "#405189",
-            backgroundColor: "white",
-            "&:hover": {
-              backgroundColor: "#f0f0f0",
-            },
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            textTransform: "none",
-          }}
+        <a
+          href="/hr/employees/lockedemployees"
+          style={{ textDecoration: "none" }}
         >
-          <KeyOffIcon sx={{ fontSize: 20 }} />
-          Locked Users
-        </Button></a>
+          <Button
+            sx={{
+              padding: "8px 16px",
+              fontSize: "14px",
+              border: "2px solid #405189",
+              color: "#405189",
+              backgroundColor: "white",
+              "&:hover": {
+                backgroundColor: "#f0f0f0",
+              },
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              textTransform: "none",
+            }}
+          >
+            <KeyOffIcon sx={{ fontSize: 20 }} />
+            Locked Users
+          </Button>
+        </a>
 
-        <a href="/hr/employees/deletedemployees" style={{ textDecoration: "none" }}><Button
-          sx={{
-            padding: "8px 16px",
-            fontSize: "14px",
-            border: "2px solid #405189",
-            color: "#405189",
-            backgroundColor: "white",
-            "&:hover": {
-              backgroundColor: "#f0f0f0",
-            },
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            textTransform: "none",
-          }}
+        <a
+          href="/hr/employees/deletedemployees"
+          style={{ textDecoration: "none" }}
         >
-          <DeleteForeverIcon sx={{ fontSize: 20 }} />
-          Deleted Users
-        </Button></a>
+          <Button
+            sx={{
+              padding: "8px 16px",
+              fontSize: "14px",
+              border: "2px solid #405189",
+              color: "#405189",
+              backgroundColor: "white",
+              "&:hover": {
+                backgroundColor: "#f0f0f0",
+              },
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              textTransform: "none",
+            }}
+          >
+            <DeleteForeverIcon sx={{ fontSize: 20 }} />
+            Deleted Users
+          </Button>
+        </a>
       </Grid>
       <Grid item xs={12} sm={12} md={12} m={2}>
         <CustomCard>
@@ -261,21 +270,23 @@ const DeletedEmployees = ({ onAddEmployees }) => {
                     <TableCell>Employee ID</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Email</TableCell>
-                    {/* <TableCell>User Role</TableCell> */}
                     <TableCell>Status</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {data?.results?.map((row, index) => (
+                  {data?.results?.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{row.profile?.employee_id}</TableCell>
                       <TableCell sx={{ display: "flex", alignItems: "center" }}>
-                        <Avatar src={row.profile?.profile_image} sx={{ marginRight: 2 }} />
-                          <Typography sx={{ fontSize: "14px", color: "black" }}>
-                            {row.first_name} {row.last_name}
-                          </Typography>
+                        <Avatar
+                          src={row.profile?.profile_image}
+                          sx={{ marginRight: 2 }}
+                        />
+                        <Typography sx={{ fontSize: "14px", color: "black" }}>
+                          {row.first_name} {row.last_name}
+                        </Typography>
                       </TableCell>
                       <TableCell>{row.email}</TableCell>
                       {/* <TableCell>
@@ -285,13 +296,14 @@ const DeletedEmployees = ({ onAddEmployees }) => {
                       </TableCell> */}
                       <TableCell>
                         <Chip
-                          label={row?.profile?.status == "1" ? "Active" : "Inactive"}
+                          label={
+                            row?.profile?.status == "1" ? "Active" : "Inactive"
+                          }
                           size="large"
-                         
                         />
                       </TableCell>
                       <TableCell>
-                      {row.status === "Approved" ? (
+                        {row.status === "Approved" ? (
                           <Tooltip title="Suspend">
                             <IconButton
                               aria-label="suspend"
@@ -316,7 +328,7 @@ const DeletedEmployees = ({ onAddEmployees }) => {
                             </IconButton>
                           </Tooltip>
                         )}
-                      <Tooltip title="Change Password">
+                        <Tooltip title="Change Password">
                           <IconButton
                             aria-label="change password"
                             sx={{ color: "blue" }}
@@ -334,24 +346,24 @@ const DeletedEmployees = ({ onAddEmployees }) => {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Edit">
-                        <IconButton
-                              onClick={() => handleEdit(row)}
-                              aria-label="edit"
-                              sx={{ color: "green" }}>
-                              <Edit />
+                          <IconButton
+                            onClick={() => handleEdit(row)}
+                            aria-label="edit"
+                            sx={{ color: "green" }}
+                          >
+                            <Edit />
                           </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete">
-                        <IconButton
-                          onClick={() => handleDeleteClick(row.id)}
-                          aria-label="delete"
-                          sx={{ color: "#e74c3c" }}
-                        >
-                          <Delete />
-                        </IconButton>
                         </Tooltip>
-                      </TableCell>   
-
+                        <Tooltip title="Delete">
+                          <IconButton
+                            onClick={() => handleDeleteClick(row.id)}
+                            aria-label="delete"
+                            sx={{ color: "#e74c3c" }}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

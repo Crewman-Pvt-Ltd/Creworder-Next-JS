@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useGetAllMenu from "@/api-manage/react-query/useGetAllMenu";
+import useGetAllSubmenu from "@/api-manage/react-query/useGetAllSubmenu";
 import { useRouter } from "next/router";
 import {
   Grid,
@@ -31,24 +31,24 @@ const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
-const MenuList = () => {
+const SubMenuList = () => {
   const router = useRouter();
-  const { data, refetch } = useGetAllMenu();
+  const { data, refetch } = useGetAllSubmenu();
 
   const [open, setOpen] = useState(false);
-  const [menuToDelete, setMenuToDelete] = useState(null);
+  const [submenuToDelete, setSubMenuToDelete] = useState(null);
   const [viewMenu, setViewMenu] = useState(null);
 
   const handleEdit = (id) => {
-    router.push(`/superadmin/menu/editmenu?id=${id}`);
+    router.push(`/superadmin/submenu/editsubmenu?id=${id}`);
   };
 
   const handleCreateMenu = () => {
-    router.push("/superadmin/menu/createmenu");
+    router.push("/superadmin/submenu/createsubmenu");
   };
 
   const handleDeleteClick = (id) => {
-    setMenuToDelete(id);
+    setSubMenuToDelete(id);
     setOpen(true);
   };
 
@@ -59,7 +59,7 @@ const MenuList = () => {
         throw new Error("No authentication token found.");
       }
 
-      const response = await MainApi.delete(`/api/menu/${menuToDelete}/`, {
+      const response = await MainApi.delete(`/api/submenu/${submenuToDelete}/`, {
         headers: {
           Authorization: `Token ${token}`,
         },
@@ -75,12 +75,12 @@ const MenuList = () => {
       console.error("An error occurred while deleting the module:", error);
     }
     setOpen(false);
-    setMenuToDelete(null);
+    setSubMenuToDelete(null);
   };
 
   const handleDeleteCancel = () => {
     setOpen(false);
-    setMenuToDelete(null);
+    setSubMenuToDelete(null);
   };
 
   const HeaderCell = (props) => (
@@ -146,10 +146,9 @@ const MenuList = () => {
                   }}
                   className={poppins.className}
                 >
-                  Menu List
+                 Sub Menu List
                 </Typography>
                 <Grid item display="flex" gap={1} sx={{ marginRight: 2 }}>
-                  
                   <Button
                     onClick={handleCreateMenu}
                     sx={{
@@ -167,8 +166,27 @@ const MenuList = () => {
                     className={poppins.className}
                   >
                     <AddIcon sx={{ fontSize: 20 }} />
-                    Create Menu
+                    Create Submenu
                   </Button>
+                  {/* <Button
+                    onClick={handleCreateMenu}
+                    sx={{
+                      padding: "8px 16px",
+                      fontSize: "14px",
+                      backgroundColor: "#405189",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#334a6c",
+                      },
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                    className={poppins.className}
+                  >
+                    <AddIcon sx={{ fontSize: 20 }} />
+                    Create Menu
+                  </Button> */}
                 </Grid>
               </Grid>
             </Grid>
@@ -180,7 +198,7 @@ const MenuList = () => {
                     <TableRow>
                       <HeaderCell className={poppins.className}>ID</HeaderCell>
                       <HeaderCell className={poppins.className}>
-                        Menu
+                        SubMenu
                       </HeaderCell>
                       <HeaderCell className={poppins.className}>
                         Icon
@@ -257,4 +275,4 @@ const MenuList = () => {
   );
 };
 
-export default MenuList;
+export default SubMenuList;

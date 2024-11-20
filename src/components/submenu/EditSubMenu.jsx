@@ -6,7 +6,7 @@ import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/mater
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 
-const EditMenu = () => {
+const EditSubMenu = () => {
   const router = useRouter();
   const { id } = router.query;
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ const EditMenu = () => {
             throw new Error("No authentication token found.");
           }
 
-          const response = await MainApi.get(`/api/menu/${id}`, {
+          const response = await MainApi.get(`/api/submenu/${id}`, {
             headers: {
               Authorization: `Token ${token}`,
             },
@@ -73,6 +73,8 @@ const EditMenu = () => {
       if (!token) {
         throw new Error("No authentication token found.");
       }
+
+      // Create a payload with only the fields that have changed
       const updatedFields = {};
       for (const key in formData) {
         if (formData[key] !== initialData[key]) {
@@ -80,7 +82,7 @@ const EditMenu = () => {
         }
       }
 
-      const response = await MainApi.patch(`/api/menu/${id}/`, updatedFields, {
+      const response = await MainApi.patch(`/api/submenu/${id}/`, updatedFields, {
         headers: {
           Authorization: `Token ${token}`,
           "Content-Type": "application/json",
@@ -88,14 +90,14 @@ const EditMenu = () => {
       });
 
       if (response.status === 200) {
-        console.log("Menu updated successfully");
-        router.push("/superadmin/menu");
+        console.log("SubMenu updated successfully");
+        router.push("/superadmin/submenu");
       } else {
-        setError("Failed to update the menu");
+        setError("Failed to update the Submenu");
       }
     } catch (error) {
-      console.error("An error occurred while updating the menu:", error);
-      setError("An error occurred while updating the menu");
+      console.error("An error occurred while updating the Submenu:", error);
+      setError("An error occurred while updating the Submenu");
     }
   };
 
@@ -114,7 +116,7 @@ const EditMenu = () => {
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Edit Menu
+                Edit SubMenu
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -122,7 +124,7 @@ const EditMenu = () => {
               <Grid container spacing={2} sx={{ marginTop: 2 }}>
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="name" required>
-                    Menu Name
+                    SubMenu Name
                   </CustomLabel>
                   <CustomTextField
                     id="name"
@@ -194,4 +196,4 @@ const EditMenu = () => {
   );
 };
 
-export default EditMenu;
+export default EditSubMenu;

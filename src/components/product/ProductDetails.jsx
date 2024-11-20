@@ -12,69 +12,91 @@ import {
   Avatar,
 } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import Rating from "@mui/material/Rating";
+import useGetAllProduct from "@/api-manage/react-query/useGetAllProduct";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import EventIcon from '@mui/icons-material/Event';
-import gummsi from "../../images/product-521132.webp";
-import gummsi2 from "../../images/61fnbgodePL.jpg";
-
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EventIcon from "@mui/icons-material/Event";
 const ProductDetails = () => {
+  const { data, refetch } = useGetAllProduct();
   const [activeTab, setActiveTab] = useState(0);
   const [activeImage, setActiveImage] = useState(0);
-  const [rating, setRating] = useState(4.5); // Example rating value
-
+  const [rating, setRating] = useState(4.5);
+  const router = useRouter();
+  const { Id } = router.query;
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  const images = [gummsi, gummsi2, gummsi]; // Replace with actual image sources
+  const [productImages, setProductImages] = useState([]);
 
-  // Auto-carousel for images
+  useEffect(() => {
+    if (selectedProduct) {
+      const images = [selectedProduct.product_image];
+      setProductImages(images);
+    }
+  }, [selectedProduct]);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveImage((prevActiveImage) => (prevActiveImage + 1) % images.length);
-    }, 3000); // Change image every 3 seconds
+      setActiveImage((prevActiveImage) => (prevActiveImage + 1) % productImages.length);
+    }, 3000);
     return () => clearInterval(interval);
-  }, [images.length]);
+  }, [productImages.length]);
+
+  useEffect(() => {
+    if (data?.results && Id) {
+      const Product = data.results.find((row) => row.id === parseInt(Id));
+      setSelectedProduct(Product);
+    }
+  }, [data, Id]);
+
+  if (!selectedProduct) {
+    return <Typography variant="h6">Product not found.</Typography>;
+  }
 
   return (
     <Grid container spacing={2} p={3}>
-      {/* Left Section: Product Image and Thumbnails */}
       <Grid item xs={12} md={4}>
         <Card sx={{ mb: 2, p: 2 }}>
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <ArrowBackIosNewIcon
               onClick={() =>
-                setActiveImage((activeImage - 1 + images.length) % images.length)
+                setActiveImage((activeImage - 1 + productImages.length) % productImages.length)
               }
               sx={{ cursor: "pointer" }}
             />
-            <Image src={images[activeImage]} alt="product" layout="responsive" />
+            <Image
+              src={productImages[activeImage]}
+              alt="product"
+              layout="responsive"
+              width={600}
+              height={600}
+            />
             <ArrowForwardIosIcon
-              onClick={() => setActiveImage((activeImage + 1) % images.length)}
+              onClick={() => setActiveImage((activeImage + 1) % productImages.length)}
               sx={{ cursor: "pointer" }}
             />
           </Box>
           <Box display="flex" justifyContent="center" mt={2}>
-            {/* Thumbnail Images */}
-            {images.map((img, index) => (
+            {productImages.map((img, index) => (
               <Avatar
                 key={index}
-                src={img.src}
+                src={img}
                 alt="thumbnail"
                 variant="square"
                 sx={{
                   width: 50,
                   height: 50,
                   mx: 0.5,
-                  border:
-                    index === activeImage ? "2px solid #000" : "1px solid #ccc",
+                  border: index === activeImage ? "2px solid #000" : "1px solid #ccc",
                   cursor: "pointer",
                 }}
                 onClick={() => setActiveImage(index)}
@@ -84,16 +106,11 @@ const ProductDetails = () => {
         </Card>
       </Grid>
 
-      {/* Right Section: Product Details */}
       <Grid item xs={12} md={8}>
         <Card>
           <CardContent>
-            {/* Product Header */}
             <Typography variant="h5" fontWeight="bold">
-              Gummsi Gummies
-            </Typography>
-            <Typography variant="subtitle1" color="text.secondary">
-              Regulate Sleep Cycle | Promotes Relaxation
+              {selectedProduct.product_name}
             </Typography>
             <Box display="flex" alignItems="center" mt={1}>
               <Rating value={rating} precision={0.1} readOnly />
@@ -103,7 +120,6 @@ const ProductDetails = () => {
             </Box>
             <Divider sx={{ my: 2 }} />
 
-            {/* Pricing and Stock Information with Icons */}
             <Grid container spacing={2}>
               <Grid item xs={12} sm={4}>
                 <Card variant="outlined">
@@ -111,10 +127,12 @@ const ProductDetails = () => {
                     <Box display="flex" alignItems="center">
                       <ShoppingCartIcon sx={{ mr: 1 }} />
                       <Typography variant="h6" fontWeight="bold">
-                      SKU:
+                        SKU:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">SFC-WL</Typography>
+                    <Typography variant="body1">
+                      {selectedProduct.product_sku}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -127,7 +145,9 @@ const ProductDetails = () => {
                         Price:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">₹120.40</Typography>
+                    <Typography variant="body1">
+                      ₹{selectedProduct.product_price}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -137,24 +157,28 @@ const ProductDetails = () => {
                     <Box display="flex" alignItems="center">
                       <Inventory2Icon sx={{ mr: 1 }} />
                       <Typography variant="h6" fontWeight="bold">
-                      Quantity:
+                        Quantity:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">500</Typography>
+                    <Typography variant="body1">
+                      {selectedProduct.product_quantity}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
-             
+
               <Grid item xs={12} sm={4}>
                 <Card variant="outlined">
                   <CardContent>
                     <Box display="flex" alignItems="center">
                       <AttachMoneyIcon sx={{ mr: 1 }} />
                       <Typography variant="h6" fontWeight="bold">
-                      GST:
+                        GST:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">0%</Typography>
+                    <Typography variant="body1">
+                      {selectedProduct.product_gst_percent}%
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -164,10 +188,14 @@ const ProductDetails = () => {
                     <Box display="flex" alignItems="center">
                       <CheckCircleIcon sx={{ mr: 1 }} />
                       <Typography variant="h6" fontWeight="bold">
-                      In Stock:
+                        In Stock:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">Available</Typography>
+                    <Typography variant="body1">
+                      {selectedProduct.product_availability === 1
+                        ? "Out of Stock"
+                        : "In Stock"}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -180,14 +208,16 @@ const ProductDetails = () => {
                         Created Date:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">03 Aaugust 2024</Typography>
+                    <Typography variant="body1">
+                      {new Date(selectedProduct.product_created)
+                        .toISOString()
+                        .split("T")[0]}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
-              
             </Grid>
 
-            {/* Size and Color Options */}
             <Box mt={2}>
               <Typography variant="h6" fontWeight="bold">
                 Sizes:
@@ -205,86 +235,63 @@ const ProductDetails = () => {
               </Box>
             </Box>
 
-            <Box mt={2}>
-              <Typography variant="h6" fontWeight="bold">
-                Colors:
-              </Typography>
-              <Box display="flex" mt={1}>
-                {["#000", "#f00", "#0f0", "#00f", "#ff0", "#f0f", "#0ff"].map(
-                  (color) => (
-                    <Box
-                      key={color}
-                      sx={{
-                        width: 24,
-                        height: 24,
-                        backgroundColor: color,
-                        borderRadius: "50%",
-                        border: "1px solid #ccc",
-                        mr: 1,
-                        cursor: "pointer",
-                      }}
-                    ></Box>
-                  )
-                )}
-              </Box>
-            </Box>
-
-            {/* Product Description */}
             <Box mt={3}>
               <Typography variant="h6" fontWeight="bold">
                 Description:
               </Typography>
-              <Typography variant="body2" color="text.secondary" style={{fontsize: '20px'}}>
-                Tommy Hilfiger men striped pink sweatshirt. Crafted with cotton.
-                Material composition is 100% organic cotton. This is one of the
-                world's leading designer lifestyle brands and is internationally
-                recognized for celebrating the essence of classic American cool
-                style, featuring preppy with a twist designs.
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                style={{ fontsize: "20px" }}
+              >
+                {selectedProduct.product_description}
               </Typography>
             </Box>
 
-            {/* Specification and Reviews Tabs */}
             <Tabs value={activeTab} onChange={handleTabChange} sx={{ mt: 3 }}>
-            <b><Tab label="Specification" /></b>
-            <b><Tab label="Details" /></b>
+              <b>
+                <Tab label="Specification" />
+              </b>
             </Tabs>
             <Divider sx={{ my: 2 }} />
-
-            {/* Specification Content */}
             {activeTab === 0 && (
-               <Box>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Typography variant="body2">
-                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                <b>Category:</b> T-Shirt
-              </Typography>
-              <Typography variant="body2">
-                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                <b>Brand:</b> Tommy Hilfiger
-              </Typography>
-              <Typography variant="body2">
-                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                <b>Color:</b> Blue
-              </Typography>
-              <Typography variant="body2">
-                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                <b>Material:</b> Cotton
-              </Typography>
-              <Typography variant="body2">
-                <CheckCircleIcon fontSize="small" color="success" style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                <b>Weight:</b> 140 Gram
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
-            )}
-            {activeTab === 1 && (
               <Box>
-                <Typography variant="body2">
-                  {/* Add more detailed product information here */}
-                  This is the details section.
-                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Typography variant="body2">
+                      <CheckCircleIcon
+                        fontSize="small"
+                        color="success"
+                        style={{ verticalAlign: "middle", marginRight: 4 }}
+                      />
+                      <b>Product Id:</b> {selectedProduct.product_id}
+                    </Typography>
+                    <Typography variant="body2">
+                      <CheckCircleIcon
+                        fontSize="small"
+                        color="success"
+                        style={{ verticalAlign: "middle", marginRight: 4 }}
+                      />
+                      <b>SKU:</b> {selectedProduct.product_sku}
+                    </Typography>
+                    <Typography variant="body2">
+                      <CheckCircleIcon
+                        fontSize="small"
+                        color="success"
+                        style={{ verticalAlign: "middle", marginRight: 4 }}
+                      />
+                      <b>HSN Code:</b> {selectedProduct.product_hsn_number}
+                    </Typography>
+                    <Typography variant="body2">
+                      <CheckCircleIcon
+                        fontSize="small"
+                        color="success"
+                        style={{ verticalAlign: "middle", marginRight: 4 }}
+                      />
+                      <b>Material:</b> {selectedProduct.product_gst_percent}%
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Box>
             )}
           </CardContent>

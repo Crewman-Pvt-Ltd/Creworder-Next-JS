@@ -27,28 +27,24 @@ const submenuiconsList = [
   { value: 'arrow', icon: <ArrowRightAltIcon /> },
 ];
 
-const CreateMenu = () => {
+const CreateSubMenu = () => {
   const router = useRouter();
   const { data: menuData } = useGetAllMenu(); 
-  
-  const [menuFormData, setMenuFormData] = useState({
+  const [submenuFormData, setSubmenuFormData] = useState({
     name: "",
+    menu: "",
     icon: "", 
     url: "",
-    user: 1,
   });
-
-  const [menuErrors, setMenuErrors] = useState({});
   const [submenuErrors, setSubmenuErrors] = useState({});
-
-  const validateMenuForm = (data) => {
+  const validateSubmenuForm = (data) => {
     let formErrors = {};
     Object.keys(data).forEach((key) => {
       if (!data[key]) { 
         formErrors[key] = "This field is required";
       }
     });
-    setMenuErrors(formErrors);
+    setSubmenuErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
@@ -78,8 +74,9 @@ const CreateMenu = () => {
     }
   };
 
-  const handleMenuSubmit = async () => {
-    if (validateMenuForm(menuFormData)) {
+  
+  const handleSubmenuSubmit = async () => {
+    if (validateSubmenuForm(submenuFormData)) {
       try {
         const token = getToken();
         if (!token) {
@@ -87,11 +84,11 @@ const CreateMenu = () => {
         }
 
         const form = new FormData();
-        Object.keys(menuFormData).forEach((key) => {
-          form.append(key, menuFormData[key]);
+        Object.keys(submenuFormData).forEach((key) => {
+          form.append(key, submenuFormData[key]);
         });
 
-        const response = await MainApi.post("/api/menu/", form, {
+        const response = await MainApi.post("/api/submenu/", form, {
           headers: {
             Authorization: `Token ${token}`,
             "Content-Type": "multipart/form-data",
@@ -99,72 +96,95 @@ const CreateMenu = () => {
         });
 
         if (response.status === 201) {
-          router.push("/superadmin/menu");
+          router.push("/superadmin/submenu");
         }
       } catch (error) {
-        console.error("Error submitting menu form:", error.response?.data || error.message);
+        console.error("Error submitting submenu form:", error.response?.data || error.message);
       }
     }
   };
 
-  
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12} sm={12} md={12}>
-        <Card>
+
+        <Card sx={{ marginTop: 2 }}>
           <CardContent>
             <Grid item>
               <Typography className={poppins.className} sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Add Menu
+                Add Sub Menu
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={2} sx={{ marginTop: 2 }}>
               <Grid item xs={12} sm={3} md={3}>
-                <CustomLabel htmlFor="name" required>
-                  Menu
+                <CustomLabel htmlFor="submenu" required>
+                  Sub Menu
                 </CustomLabel>
                 <CustomTextField
-                  id="name"
-                  name="name"
+                  id="submenu"
+                  name="submenu"
                   placeholder="Name"
                   type="text"
-                  value={menuFormData.name}
-                  onChange={(e) => handleInputChange('menu', "name", e.target.value)}
-                  error={!!menuErrors.name}
-                  helperText={menuErrors.name}
+                  value={submenuFormData.name}
+                  onChange={(e) => handleInputChange('submenu', "name", e.target.value)}
+                  error={!!submenuErrors.name}
+                  helperText={submenuErrors.name}
                   required
                   fullWidth
                 />
               </Grid>
 
               <Grid item xs={12} sm={3} md={3}>
-                <FormControl fullWidth required error={!!menuErrors.icon}>
+                <FormControl fullWidth required error={!!submenuErrors.menu}>
+                  <CustomLabel htmlFor="menu" required>
+                    Menu
+                  </CustomLabel>
+                  <Select
+                    id="menu"
+                    name="menu"
+                    value={submenuFormData.menu}
+                    onChange={(e) => handleInputChange('submenu', "menu", e.target.value)}
+                    label="Menu"
+                    sx={{ height: "40px" }}
+                  >
+                    {menuData?.map((menu) => (
+                      <MenuItem key={menu.id} value={menu.id}>
+                        {menu.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {submenuErrors.menu && <Typography color="error">{submenuErrors.menu}</Typography>}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={3} md={3}>
+                <FormControl fullWidth required error={!!submenuErrors.icon}>
                   <CustomLabel htmlFor="icon" required>
                     Icon
                   </CustomLabel>
                   <Select
                     id="icon"
                     name="icon"
-                    value={menuFormData.icon}
-                    onChange={(e) => handleInputChange('menu', "icon", e.target.value)}
+                    value={submenuFormData.icon}
+                    onChange={(e) => handleInputChange('submenu', "icon", e.target.value)}
                     label="Icon"
                     sx={{ height: "40px" }}
                   >
-                    {iconsList.map((icon) => (
+                    {submenuiconsList.map((icon) => (
                       <MenuItem key={icon.value} value={icon.value} sx={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           {icon.icon}
-                          <Typography sx={{ ml: 1 }}>{icon.label}</Typography>
+                          
                         </div>
                       </MenuItem>
                     ))}
                   </Select>
-                  {menuErrors.icon && <Typography color="error">{menuErrors.icon}</Typography>}
+                  {submenuErrors.icon && <Typography color="error">{submenuErrors.icon}</Typography>}
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={6}>
+              <Grid item xs={12} sm={3} md={3}>
                 <CustomLabel htmlFor="url" required>
                   URL
                 </CustomLabel>
@@ -172,18 +192,18 @@ const CreateMenu = () => {
                   id="url"
                   name="url"
                   type="text"
-                  value={menuFormData.url}
-                  onChange={(e) => handleInputChange('menu', "url", e.target.value)}
+                  value={submenuFormData.url}
+                  onChange={(e) => handleInputChange('submenu', "url", e.target.value)}
                   placeholder="URL"
-                  error={!!menuErrors.url}
-                  helperText={menuErrors.url}
+                  error={!!submenuErrors.url}
+                  helperText={submenuErrors.url}
                   required
                   fullWidth
                 />
               </Grid>
             </Grid>
 
-            <Grid item xs={12} sm={12} md={12} sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
+            <Grid item  xs={12} sm={12} md={12} sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
               <Button
                 sx={{
                   padding: "8px 16px",
@@ -195,7 +215,7 @@ const CreateMenu = () => {
                     backgroundColor: "#334a6c",
                   },
                 }}
-                onClick={handleMenuSubmit}
+                onClick={handleSubmenuSubmit}
                 className={poppins.className}
               >
                 Save
@@ -203,11 +223,9 @@ const CreateMenu = () => {
             </Grid>
           </CardContent>
         </Card>
-
-
       </Grid>
     </Grid>
   );
 };
 
-export default CreateMenu;
+export default CreateSubMenu;
