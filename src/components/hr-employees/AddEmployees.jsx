@@ -504,7 +504,9 @@ const AddEmployees = () => {
                 </Grid>
               </Grid>
 
-              <Typography sx={{ fontSize: "18px", fontWeight: "600", mt: "10px" }}>
+              <Typography
+                sx={{ fontSize: "18px", fontWeight: "600", mt: "10px" }}
+              >
                 User Details
               </Typography>
               <Divider sx={{ my: 2 }} />

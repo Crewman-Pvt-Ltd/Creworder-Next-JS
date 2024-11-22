@@ -1,186 +1,349 @@
-import React from "react";
-import { CardContent, Grid, Button, MenuItem, Divider, TableHead, Table, TableBody, TableContainer, TableRow, IconButton, Typography, TableCell } from "@mui/material";
-import CustomCard from "../CustomCard";
-import CustomLabel from "../CustomLabel";
-import CustomTextField from "../CustomTextField";
-import { Poppins } from "next/font/google";
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  Grid,
+  Button,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
+import { usePermissions } from "@/contexts/PermissionsContext";
 
-const poppins = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
+const AddBankDetails = () => {
+  const [inputValues, setInputValues] = useState({
+    account_number: "",
+    reenter_account_no: "",
+    account_type: "",
+    account_holder_name: "",
+    ifsc_code: "",
+    bank_name: "",
+    branch_name: "",
+    priority: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [bankDetails, setBankDetails] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [bankDetailToDelete, setBankDetailToDelete] = useState(null);
 
-const AddBankDetails = ({ onAdd, onEdit }) => {
-  const bankList = [
-    { id: 1, bankName: "ICICI", accountNumber: "987654321234", beneficiaryName: "ABC" },
-    { id: 2, bankName: "SBI", accountNumber: "987654321234", beneficiaryName: "XYZ" },
-  ];
+  const { permissionsData } = usePermissions();
+
+  // Handle form input change
+  const handleInputChange = (field) => (event) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [field]: event.target.value,
+    }));
+  };
+
+  // Form validation
+  const validateForm = () => {
+    const tempErrors = {};
+    if (!inputValues.account_number)
+      tempErrors.account_number = "Account number is required.";
+    if (!inputValues.reenter_account_no)
+      tempErrors.reenter_account_no = "Re-entering account number is required.";
+    if (inputValues.account_number !== inputValues.reenter_account_no)
+      tempErrors.reenter_account_no = "Account numbers do not match.";
+    if (!inputValues.account_type)
+      tempErrors.account_type = "Account type is required.";
+    if (!inputValues.account_holder_name)
+      tempErrors.account_holder_name = "Account holder name is required.";
+    if (!inputValues.ifsc_code) tempErrors.ifsc_code = "IFSC code is required.";
+    if (!inputValues.bank_name) tempErrors.bank_name = "Bank name is required.";
+    if (!inputValues.branch_name)
+      tempErrors.branch_name = "Branch name is required.";
+    if (!inputValues.priority) tempErrors.priority = "Priority is required.";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const payload = {
+      account_number: inputValues.account_number,
+      re_account_number: inputValues.reenter_account_no,
+      account_type: inputValues.account_type,
+      ifsc_code: inputValues.ifsc_code,
+      bank_name: inputValues.bank_name,
+      account_holder_name: inputValues.account_holder_name,
+      branch_name: inputValues.branch_name,
+      priority: inputValues.priority,
+      user: permissionsData?.user?.id,
+      branch: permissionsData?.user?.profile?.branch,
+      company: permissionsData?.user?.profile?.company,
+    };
+
+    try {
+      const token = getToken();
+      if (editMode) {
+        await MainApi.put(`/api/admin-bank-details/${editId}/`, payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        setEditMode(false);
+        setEditId(null);
+        alert("Bank details updated successfully!");
+      } else {
+        await MainApi.post("/api/admin-bank-details/", payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        alert("Bank details added successfully!");
+      }
+      fetchBankDetails();
+      setInputValues({
+        account_number: "",
+        reenter_account_no: "",
+        account_type: "",
+        account_holder_name: "",
+        ifsc_code: "",
+        bank_name: "",
+        branch_name: "",
+        priority: "",
+      });
+    } catch (error) {
+      console.error("An error occurred while saving bank details:", error);
+    }
+  };
+
+  // Fetch bank details
+  const fetchBankDetails = async () => {
+    try {
+      const token = getToken();
+      const response = await MainApi.get("/api/admin-bank-details/", {
+        headers: { Authorization: `Token ${token}` },
+      });
+      setBankDetails(response.data.results);
+    } catch (error) {
+      console.error("Failed to fetch bank details:", error);
+    }
+  };
+
+  // Edit bank details
+  const handleEditClick = (id, detail) => {
+    setInputValues({
+      account_number: detail.account_number,
+      reenter_account_no: detail.re_account_number,
+      account_type: detail.account_type,
+      account_holder_name: detail.account_holder_name,
+      ifsc_code: detail.ifsc_code,
+      bank_name: detail.bank_name,
+      branch_name: detail.branch_name,
+      priority: detail.priority,
+    });
+    setEditMode(true);
+    setEditId(id);
+  };
+
+  // Delete bank details
+  const handleDeleteClick = (id) => {
+    setBankDetailToDelete(id);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      await MainApi.delete(`/api/admin-bank-details/${bankDetailToDelete}/`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      fetchBankDetails();
+      setOpenDeleteDialog(false);
+      setBankDetailToDelete(null);
+      alert("Bank detail deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete bank details:", error);
+    }
+  };
+
+  // Fetch bank details on mount
+  React.useEffect(() => {
+    fetchBankDetails();
+  }, []);
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={12} md={12}>
-        <CustomCard>
+      {/* Add Bank Details Form */}
+      <Grid item xs={12}>
+        <Card>
           <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography
-                  className={poppins.className}
-                  sx={{ fontSize: "18px", fontWeight: "600" }}
-                >
-                  Add Bank Details
-                </Typography>
-              </Grid>
+            <Typography variant="h6">
+             <b> {editMode ? "Edit Bank Details" : "Add Bank Details"}</b>
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Account Number"
+                    value={inputValues.account_number}
+                    onChange={handleInputChange("account_number")}
+                    error={!!errors.account_number}
+                    helperText={errors.account_number}
+                    fullWidth
+                    required
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Re-enter Account Number"
+                    value={inputValues.reenter_account_no}
+                    onChange={handleInputChange("reenter_account_no")}
+                    error={!!errors.reenter_account_no}
+                    helperText={errors.reenter_account_no}
+                    fullWidth
+                    required
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    select
+                    label="Account Type"
+                    value={inputValues.account_type}
+                    onChange={handleInputChange("account_type")}
+                    error={!!errors.account_type}
+                    helperText={errors.account_type}
+                    fullWidth
+                    required
+                  >
+                    <MenuItem value="saving_account">Saving Account</MenuItem>
+                    <MenuItem value="current_account">Current Account</MenuItem>
+                    <MenuItem value="salary_account">Salary Account</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Account Holder Name"
+                    value={inputValues.account_holder_name}
+                    onChange={handleInputChange("account_holder_name")}
+                    error={!!errors.account_holder_name}
+                    helperText={errors.account_holder_name}
+                    fullWidth
+                    required
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="IFSC Code"
+                    value={inputValues.ifsc_code}
+                    onChange={handleInputChange("ifsc_code")}
+                    error={!!errors.ifsc_code}
+                    helperText={errors.ifsc_code}
+                    fullWidth
+                    required
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Bank Name"
+                    value={inputValues.bank_name}
+                    onChange={handleInputChange("bank_name")}
+                    error={!!errors.bank_name}
+                    helperText={errors.bank_name}
+                    fullWidth
+                    required
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Branch Name"
+                    value={inputValues.branch_name}
+                    onChange={handleInputChange("branch_name")}
+                    error={!!errors.branch_name}
+                    helperText={errors.branch_name}
+                    fullWidth
+                    required
+                  />
+                </Grid>
 
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="account_number" required>
-                  Beneficiary Account Number
-                </CustomLabel>
-                <CustomTextField
-                  id="account_number"
-                  name="account_number"
-                  type="text"
-                  placeholder="Enter Beneficiary Account No"
-                  required
-                  fullWidth
-                />
+                <Grid item xs={6}>
+                  <TextField
+                    select
+                    label="Priority"
+                    value={inputValues.priority}
+                    onChange={handleInputChange("priority")}
+                    error={!!errors.priority}
+                    helperText={errors.priority}
+                    fullWidth
+                    required
+                  >
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                  </TextField>
+                </Grid>
               </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="reenter_account_no" required>
-                  Re-enter Beneficiary Account Number
-                </CustomLabel>
-                <CustomTextField
-                  id="reenter_account_no"
-                  name="reenter_account_no"
-                  type="text"
-                  placeholder="Re-enter"
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="account_type" required>
-                  Beneficiary Account Type
-                </CustomLabel>
-                <CustomTextField
-                  select
-                  id="account_type"
-                  name="account_type"
-                  placeholder="Select account type"
-                  required
-                  fullWidth
-                >
-                  <MenuItem value="savings">Savings Account</MenuItem>
-                  <MenuItem value="current">Current Account</MenuItem>
-                  <MenuItem value="salary">Salary Account</MenuItem>
-                </CustomTextField>
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="benificiary_name" required>
-                  Beneficiary Name
-                </CustomLabel>
-                <CustomTextField
-                  id="benificiary_name"
-                  name="benificiary_name"
-                  type="text"
-                  placeholder="Enter Beneficiary Name"
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="ifsc_code" required>
-                  IFSC Code
-                </CustomLabel>
-                <CustomTextField
-                  id="ifsc_code"
-                  name="ifsc_code"
-                  type="text"
-                  placeholder="Enter IFSC Code"
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="bank_name" required>
-                  Bank Name
-                </CustomLabel>
-                <CustomTextField
-                  id="bank_name"
-                  name="bank_name"
-                  type="text"
-                  placeholder="Enter Bank Name"
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="branch_name" required>
-                  Branch Name
-                </CustomLabel>
-                <CustomTextField
-                  id="branch_name"
-                  name="branch_name"
-                  type="text"
-                  placeholder="Enter Branch Name"
-                  required
-                  fullWidth
-                />
-              </Grid>
-
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button
-                  sx={{
-                    backgroundColor: "#405189",
-                    color: "white",
-                  }}
-                >
-                  Save
-                </Button>
-              </Grid>
-            </Grid>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2 }}
+              >
+                {editMode ? "Update" : "Save"}
+              </Button>
+            </form>
           </CardContent>
-        </CustomCard>
+        </Card>
       </Grid>
 
+      {/* Bank Details Table */}
       <Grid item xs={12}>
-        <CustomCard>
+        <Card>
           <CardContent>
-            <Grid container display="flex" justifyContent="space-between" alignItems="center">
-              <Typography sx={{ fontWeight: "600", fontSize: "20px", textTransform: "capitalize", color: "black" }} className={poppins.className}>
-                Bank Detail List
-              </Typography>
-            </Grid>
-            <Divider sx={{ my: 2 }} />
+            <Typography variant="h6">
+              <b>Bank Details</b>
+            </Typography>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell className={poppins.className}>ID</TableCell>
-                    <TableCell className={poppins.className}>Bank Name</TableCell>
-                    <TableCell className={poppins.className}>Bank Account Number</TableCell>
-                    <TableCell className={poppins.className}>Beneficiary Name</TableCell>
-                    <TableCell className={poppins.className}>Action</TableCell>
+                    <TableCell>Account No.</TableCell>
+                    <TableCell>Account Type</TableCell>
+                    <TableCell>IFSC Code</TableCell>
+                    <TableCell>Bank Name</TableCell>
+                    <TableCell>Branch Name</TableCell>
+                    <TableCell>Priority</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {bankList.map((bank) => (
-                    <TableRow key={bank.id}>
-                      <TableCell className={poppins.className}>{bank.id}</TableCell>
-                      <TableCell className={poppins.className}>{bank.bankName}</TableCell>
-                      <TableCell className={poppins.className}>{bank.accountNumber}</TableCell>
-                      <TableCell className={poppins.className}>{bank.beneficiaryName}</TableCell>
+                  {bankDetails.map((detail) => (
+                    <TableRow key={detail.id}>
+                      <TableCell>{detail.account_number}</TableCell>
+                      <TableCell>{detail.account_type}</TableCell>
+                      <TableCell>{detail.ifsc_code}</TableCell>
+                      <TableCell>{detail.bank_name}</TableCell>
+                      <TableCell>{detail.branch_name}</TableCell>
+                      <TableCell>{detail.priority}</TableCell>
                       <TableCell>
-                        <IconButton aria-label="edit" sx={{ color: "green" }} onClick={() => onEdit(bank)}>
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleEditClick(detail.id, detail)}
+                        >
                           <Edit />
                         </IconButton>
-                        <IconButton aria-label="delete" sx={{ color: "red" }}>
+                        <IconButton
+                          color="secondary"
+                          onClick={() => handleDeleteClick(detail.id)}
+                        >
                           <Delete />
                         </IconButton>
                       </TableCell>
@@ -190,8 +353,29 @@ const AddBankDetails = ({ onAdd, onEdit }) => {
               </Table>
             </TableContainer>
           </CardContent>
-        </CustomCard>
+        </Card>
       </Grid>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this bank detail?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

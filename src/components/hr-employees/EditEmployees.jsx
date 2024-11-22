@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
+import CustomLabel from "../CustomLabel";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
@@ -27,8 +27,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { get_username_suggestions } from "@/api-manage/ApiRoutes";
-
-const EditEmployee = () => {
+  const EditEmployee = () => {
   const { data: branchData, refetch: branchRefetch } = useGetAllBranches();
   const { data: departmentData, refetch: departmentRefetch } =
     useGetAllDepartments();
@@ -107,7 +106,6 @@ const EditEmployee = () => {
 
       const compareFields = (formData, originalData) => {
         const updatedFields = {};
-
         for (const key in formData) {
           if (typeof formData[key] === "object" && formData[key] !== null) {
             const nestedUpdatedFields = compareFields(
@@ -121,7 +119,6 @@ const EditEmployee = () => {
             updatedFields[key] = formData[key];
           }
         }
-
         return updatedFields;
       };
 
@@ -136,7 +133,7 @@ const EditEmployee = () => {
 
       if (response.status === 200) {
         console.log("Employee updated successfully");
-         router.push("/hr/employees");
+        router.push("/hr/employees");
       } else {
         console.error("Failed to update the employee");
         setError("Failed to update the employee");
@@ -165,7 +162,7 @@ const EditEmployee = () => {
 
           if (response.status === 200) {
             const employeeData = response.data;
-            setEmployees(employeeData); // Initialize employees with fetched data
+            setEmployees(employeeData);
             setFormData(employeeData);
           } else {
             console.error("Failed to fetch the Agent");
@@ -522,13 +519,11 @@ const EditEmployee = () => {
               User Details
             </Typography>
             <Divider sx={{ my: 2 }} />
-
             <Grid container spacing={2} mt={2}>
               <Grid item xs={12} md={4}>
                 <CustomLabel htmlFor="username" required>
                   Username:
                 </CustomLabel>
-
                 <CustomTextField
                   id="username"
                   name="username"
@@ -581,8 +576,8 @@ const EditEmployee = () => {
                 <RadioGroup
                   aria-label="loginAllowed"
                   name="loginAllowed"
-                  value={String(formData?.profile?.login_allowed)} // Convert boolean to string
-                  onChange={(e) => handleRadioChange(e, "login_allowed")} // Modify onChange
+                  value={String(formData?.profile?.login_allowed)}
+                  onChange={(e) => handleRadioChange(e, "login_allowed")}
                   row
                 >
                   <FormControlLabel
@@ -619,4 +614,3 @@ const EditEmployee = () => {
 };
 
 export default EditEmployee;
-
