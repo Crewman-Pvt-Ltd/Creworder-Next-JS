@@ -59,9 +59,7 @@ const OrderList = () => {
   const handlestate = (event) => {
     setstate(event.target.value);
   };
-  const handleEdit = () => {
-    router.push("/admin/orders/editorders");
-  };
+
   const [product, setproduct] = useState("");
 
   const handleproduct = (event) => {
@@ -137,7 +135,9 @@ const OrderList = () => {
     { question: "How likely are you to recommend us?", rating: 0 },
     { question: "What is your overall experience?", rating: 0 },
   ]);
-
+  const handleEdit = (id) => {
+    router.push(`/admin/orders/editorders?id=${id}`);
+  };
 
   return (
     <Grid container spacing={2} p={3}>
@@ -533,9 +533,14 @@ const OrderList = () => {
                         </IconButton>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon onClick={handleEdit} />
-                        </IconButton>
+                       
+                        <IconButton
+                            onClick={() => handleEdit(row.id)}
+                            aria-label="edit"
+                            sx={{ color: "green" }}
+                          >
+                            <EditIcon sx={{ color: "green" }} />
+                          </IconButton>
                         <IconButton
                           aria-label="delete"
                           sx={{ color: "#FF0000" }}
