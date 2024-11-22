@@ -112,7 +112,7 @@ const CreateOrder = () => {
     axios
       .request(config)
       .then((response) => {
-        setproductList(response.data.results);
+        setproductList(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -288,7 +288,7 @@ const CreateOrder = () => {
       order_remark: orderRemark,
       repeat_order: 0,
       is_booked: 1,
-      customer_state: 1,
+      customer_state: `${cutomerState}`,
       payment_type: 1,
       payment_status: 1,
       order_status: 1,

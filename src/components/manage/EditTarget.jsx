@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Typography,
@@ -17,86 +17,101 @@ import { usePermissions } from "@/contexts/PermissionsContext";
 
 const EditTarget = () => {
   const router = useRouter();
+  const { id } = router.query;
   const [inputValues, setInputValues] = useState({
     agent: "",
     month: "",
     dailytarget: "",
     weeklytarget: "",
-    monthlytarget: "",
-    quartelytarget: "",
     amountInTerms: "",
     productInTerms: "",
   });
   const [errors, setErrors] = useState({});
-  const { data, refetch } = useGetAllEmployees();
+  const { data } = useGetAllEmployees();
   const { permissionsData } = usePermissions();
-  // Input change handler
+
+  useEffect(() => {
+    if (id) {
+      const fetchTargetDetails = async () => {
+        try {
+          const token = getToken();
+          const response = await MainApi.get(`/api/user-target/${id}/`, {
+            headers: { Authorization: `Token ${token}` },
+          });
+          const targetData = response.data;
+          setInputValues({
+            agent: targetData.user,
+            month: targetData.month,
+            dailytarget: targetData.daily_target,
+            weeklytarget: targetData.weekly_target || "",
+            amountInTerms: targetData.target_amount || "",
+            productInTerms: targetData.target_order || "",
+          });
+        } catch (error) {
+          console.error("Failed to fetch target details:", error);
+          alert("An error occurred while fetching the target details.");
+        }
+      };
+
+      fetchTargetDetails();
+    }
+  }, [id]);
+
   const handleInputChange = (field) => (event) => {
     setInputValues({ ...inputValues, [field]: event.target.value });
   };
 
-  // Validate form inputs
   const validateForm = () => {
     let tempErrors = {};
     if (!inputValues.agent) tempErrors.agent = "Agent is required";
     if (!inputValues.month) tempErrors.month = "Month is required";
-    if (!inputValues.dailytarget) tempErrors.dailytarget = "Daily target is required";
-    if (!inputValues.weeklytarget) tempErrors.weeklytarget = "Weekly target is required";
-    if (!inputValues.amountInTerms) tempErrors.amountInTerms = "Amount target is required";
-    if (!inputValues.productInTerms) tempErrors.productInTerms = "Product target is required";
+    if (!inputValues.dailytarget)
+      tempErrors.dailytarget = "Daily target is required";
+    if (!inputValues.amountInTerms)
+      tempErrors.amountInTerms = "Amount target is required";
+    if (!inputValues.productInTerms)
+      tempErrors.productInTerms = "Product target is required";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
     if (!validateForm()) return;
 
-    // Prepare the payload
     const payload = {
-      user_id: inputValues.agent,
+      user: inputValues.agent,
       branch: permissionsData?.user?.profile?.branch,
       company: permissionsData?.user?.profile?.company,
       daily_target: inputValues.dailytarget,
       weekly_target: inputValues.weeklytarget,
-      monthly_target: inputValues.monthlytarget,
-      quartely_target: inputValues.quartelytarget,
-      interm_amount: inputValues.amountInTerms,
-      interm_product: inputValues.productInTerms,
-      target_amount: inputValues.dailytarget,
+      target_amount: inputValues.amountInTerms,
+      target_order: inputValues.productInTerms,
       month: inputValues.month,
-     };
+    };
 
     try {
       const token = getToken();
-
-      if (!token) {
-        alert("User authentication token is missing.");
-        return;
-      }
-
-      const response = await MainApi.post("/api/user-target/", payload, {
+      const response = await MainApi.patch(`http://127.0.0.1:8000/api/user-target/${id}/`, payload, {
         headers: {
           Authorization: `Token ${token}`,
         },
       });
 
-      if (response.status === 201) {
-        router.push("/target-list");
+      if (response.status === 200) {
+        alert("Target updated successfully!");
+        router.push("/admin/manage/target-list");
       } else {
-        console.error("Unexpected server response", response);
-        alert("An error occurred while creating the target.");
+        alert("Failed to update the target.");
       }
     } catch (error) {
       if (error.response) {
         console.error("Error response:", error.response.data);
-        alert(error.response.data.message || "Failed to create target. Please try again.");
+        alert(error.response.data.message || "Failed to update target.");
       } else {
-        console.error("Error creating target:", error.message);
-        alert("Failed to create target. Please try again.");
+        console.error("Error updating target:", error.message);
+        alert("Failed to update target.");
       }
     }
   };
@@ -118,18 +133,17 @@ const EditTarget = () => {
                   marginLeft: "10px",
                 }}
               >
-                Create Targets
+                Edit Targets
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={4} md={4}>
                   <Select
-                    labelId="agent-select-label"
                     id="agent"
                     value={inputValues.agent}
                     onChange={handleInputChange("agent")}
                     displayEmpty
                     fullWidth
-                    sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
+                    sx={{ height: "55px" }}
                   >
                     <MenuItem value="" disabled>
                       Select Agent
@@ -147,31 +161,40 @@ const EditTarget = () => {
 
                 <Grid item xs={12} sm={4} md={4}>
                   <Select
-                    labelId="month-select-label"
                     id="month"
                     value={inputValues.month}
                     onChange={handleInputChange("month")}
                     displayEmpty
                     fullWidth
-                    sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
+                    sx={{ height: "55px" }}
                   >
                     <MenuItem value="" disabled>
                       Select Month
                     </MenuItem>
-                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(
-                      (month, index) => (
-                        <MenuItem key={index} value={month.toLowerCase()}>
-                          {month}
-                        </MenuItem>
-                      )
-                    )}
+                    {[
+                      "January",
+                      "February",
+                      "March",
+                      "April",
+                      "May",
+                      "June",
+                      "July",
+                      "August",
+                      "September",
+                      "October",
+                      "November",
+                      "December",
+                    ].map((month, index) => (
+                      <MenuItem key={index} value={month.toLowerCase()}>
+                        {month}
+                      </MenuItem>
+                    ))}
                   </Select>
                   {errors.month && (
                     <FormHelperText error>{errors.month}</FormHelperText>
                   )}
                 </Grid>
 
-                {/* Other fields */}
                 {[
                   { label: "Daily Target", field: "dailytarget" },
                   { label: "Weekly Target", field: "weeklytarget" },
@@ -185,7 +208,6 @@ const EditTarget = () => {
                       onChange={handleInputChange(field)}
                       fullWidth
                       type="number"
-                      sx={{ height: "55px" }}
                     />
                     {errors[field] && (
                       <FormHelperText error>{errors[field]}</FormHelperText>
@@ -196,15 +218,10 @@ const EditTarget = () => {
               <Button
                 onClick={handleSubmit}
                 sx={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
+                  marginTop: "20px",
                   backgroundColor: "#405189",
                   color: "white",
-                  marginTop: "20px",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
+                  "&:hover": { backgroundColor: "#334a6c" },
                 }}
               >
                 Submit

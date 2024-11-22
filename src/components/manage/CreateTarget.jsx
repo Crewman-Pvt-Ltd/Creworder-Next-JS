@@ -14,6 +14,7 @@ import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import { usePermissions } from "@/contexts/PermissionsContext";
+
 const CreateTarget = () => {
   const router = useRouter();
   const [inputValues, setInputValues] = useState({
@@ -21,14 +22,14 @@ const CreateTarget = () => {
     month: "",
     dailytarget: "",
     weeklytarget: "",
-    monthlytarget: "",
-    quartelytarget: "",
+    target_order: "",
     amountInTerms: "",
     productInTerms: "",
   });
   const [errors, setErrors] = useState({});
-  const { data, refetch } = useGetAllEmployees();
+  const { data } = useGetAllEmployees();
   const { permissionsData } = usePermissions();
+
   // Input change handler
   const handleInputChange = (field) => (event) => {
     setInputValues({ ...inputValues, [field]: event.target.value });
@@ -41,8 +42,8 @@ const CreateTarget = () => {
     if (!inputValues.month) tempErrors.month = "Month is required";
     if (!inputValues.dailytarget) tempErrors.dailytarget = "Daily target is required";
     if (!inputValues.weeklytarget) tempErrors.weeklytarget = "Weekly target is required";
+    if (!inputValues.target_order) tempErrors.target_order = "Product target is required";
     if (!inputValues.amountInTerms) tempErrors.amountInTerms = "Amount target is required";
-    if (!inputValues.productInTerms) tempErrors.productInTerms = "Product target is required";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
@@ -51,23 +52,21 @@ const CreateTarget = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
     if (!validateForm()) return;
 
     // Prepare the payload
     const payload = {
-      user_id: inputValues.agent,
+      user: inputValues.agent,
       branch: permissionsData?.user?.profile?.branch,
       company: permissionsData?.user?.profile?.company,
       daily_target: inputValues.dailytarget,
       weekly_target: inputValues.weeklytarget,
-      monthly_target: inputValues.monthlytarget,
-      quartely_target: inputValues.quartelytarget,
+      target_order: inputValues.target_order,
       interm_amount: inputValues.amountInTerms,
       interm_product: inputValues.productInTerms,
-      target_amount: inputValues.dailytarget,
+      target_amount: inputValues.dailytarget, // Assuming daily target as the total target
       month: inputValues.month,
-     };
+    };
 
     try {
       const token = getToken();
@@ -84,7 +83,8 @@ const CreateTarget = () => {
       });
 
       if (response.status === 201) {
-        router.push("/target-list");
+        alert("Target created successfully!");
+        router.push("/admin/manage/target-list");
       } else {
         console.error("Unexpected server response", response);
         alert("An error occurred while creating the target.");
@@ -139,9 +139,7 @@ const CreateTarget = () => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.agent && (
-                    <FormHelperText error>{errors.agent}</FormHelperText>
-                  )}
+                  {errors.agent && <FormHelperText error>{errors.agent}</FormHelperText>}
                 </Grid>
 
                 <Grid item xs={12} sm={4} md={4}>
@@ -157,26 +155,32 @@ const CreateTarget = () => {
                     <MenuItem value="" disabled>
                       Select Month
                     </MenuItem>
-                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(
-                      (month, index) => (
-                        <MenuItem key={index} value={month.toLowerCase()}>
-                          {month}
-                        </MenuItem>
-                      )
-                    )}
+                    {[
+                      "January",
+                      "February",
+                      "March",
+                      "April",
+                      "May",
+                      "June",
+                      "July",
+                      "August",
+                      "September",
+                      "October",
+                      "November",
+                      "December",
+                    ].map((month, index) => (
+                      <MenuItem key={index} value={month.toLowerCase()}>
+                        {month}
+                      </MenuItem>
+                    ))}
                   </Select>
-                  {errors.month && (
-                    <FormHelperText error>{errors.month}</FormHelperText>
-                  )}
+                  {errors.month && <FormHelperText error>{errors.month}</FormHelperText>}
                 </Grid>
 
-                {/* Other fields */}
-                {[
-                  { label: "Daily Target", field: "dailytarget" },
+                {[{ label: "Daily Target", field: "dailytarget" },
                   { label: "Weekly Target", field: "weeklytarget" },
                   { label: "In Terms of Amount", field: "amountInTerms" },
-                  { label: "In Terms of Product", field: "productInTerms" },
-                ].map(({ label, field }) => (
+                  { label: "In Terms of Product", field: "target_order" }].map(({ label, field }) => (
                   <Grid item xs={12} sm={4} md={4} key={field}>
                     <TextField
                       label={label}
@@ -186,9 +190,7 @@ const CreateTarget = () => {
                       type="number"
                       sx={{ height: "55px" }}
                     />
-                    {errors[field] && (
-                      <FormHelperText error>{errors[field]}</FormHelperText>
-                    )}
+                    {errors[field] && <FormHelperText error>{errors[field]}</FormHelperText>}
                   </Grid>
                 ))}
               </Grid>
