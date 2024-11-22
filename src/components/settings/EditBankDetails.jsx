@@ -1,22 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { CardContent, Grid, Button, MenuItem, Typography } from "@mui/material";
 import CustomCard from "../CustomCard";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import { Poppins } from "next/font/google";
+import axios from "axios";
+import { baseApiUrl } from "@/api-manage/ApiRoutes";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
 });
 
-const EditBankDetails = ({ onAddBank }) => {
+const EditBankDetails = ({ id }) => {
+  console.log(id);
+  const [bankDetails, setBankDetails] = useState(null);
+  const [accountNumer, setAccountNumer] = useState('');
   const handleSave = () => {
-   
     onAddBank();
   };
 
+  useEffect(() => {
+    const fetchBankDetails = async () => {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${baseApiUrl}permissions/${name}/`,
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      };
+
+      try {
+        const response = await axios.request(config);
+        console.log("Bank Details:", JSON.stringify(response.data));
+        setBankDetails(response.data); 
+        setAccountNumer(response.data['account_number'])
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchBankDetails();
+
+  }, []);
+
   return (
+
     <Grid container spacing={2}>
       <Grid item xs={12} sm={12} md={12}>
         <CustomCard>
@@ -25,8 +54,7 @@ const EditBankDetails = ({ onAddBank }) => {
               <Grid item xs={12} sm={12} md={12}>
                 <Typography
                   className={poppins.className}
-                  sx={{ fontSize: "18px", fontWeight: "600" }}
-                >
+                  sx={{ fontSize: "18px", fontWeight: "600" }}>
                   Edit Bank Details
                 </Typography>
               </Grid>
@@ -40,6 +68,7 @@ const EditBankDetails = ({ onAddBank }) => {
                   id="account_number"
                   name="account_number"
                   type="text"
+                  value={accountNumer}
                   placeholder="Enter Beneficiary Account No"
                   required
                   fullWidth
@@ -131,14 +160,19 @@ const EditBankDetails = ({ onAddBank }) => {
                 />
               </Grid>
 
-           
-              <Grid item xs={12} sm={12} md={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                sx={{ display: "flex", justifyContent: "flex-end" }}
+              >
                 <Button
                   sx={{
                     backgroundColor: "#405189",
                     color: "white",
                   }}
-                  onClick={handleSave} 
+                  onClick={handleSave}
                 >
                   Save
                 </Button>

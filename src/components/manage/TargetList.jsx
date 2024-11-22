@@ -22,7 +22,7 @@ import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
+import { Visibility, Edit, Delete } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { format } from "date-fns";
 import useGetAllUserTargets from "@/api-manage/react-query/useGetAllUserTargets";
@@ -64,7 +64,7 @@ const TargetList = () => {
 
       if (response.status === 204) {
         console.log("Target deleted successfully");
-        refetch(); // Refresh the data after deletion
+        refetch();
       } else {
         console.error("Failed to delete the target");
       }
@@ -78,6 +78,10 @@ const TargetList = () => {
   const handleDeleteCancel = () => {
     setOpen(false);
     setTargetToDelete(null);
+  };
+
+  const handleEdit = (id) => {
+    router.push(`/admin/manage/edit-target?id=${id}`);
   };
 
   return (
@@ -168,8 +172,12 @@ const TargetList = () => {
                       </TableCell>
                       <TableCell>
                         <Box sx={{ display: "flex", gap: "8px" }}>
-                          <IconButton color="primary">
-                            <EditIcon />
+                        <IconButton
+                            onClick={() => handleEdit(row.id)}
+                            aria-label="edit"
+                            sx={{ color: "green" }}
+                          >
+                            <Edit />
                           </IconButton>
                           <IconButton
                             onClick={() => handleDeleteClick(row.id)}
