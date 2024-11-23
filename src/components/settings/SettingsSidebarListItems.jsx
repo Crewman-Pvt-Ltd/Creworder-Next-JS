@@ -120,7 +120,7 @@ const componentDict = {
 };
 
 const SettingsSidebarListItems = ({ type }) => {
-  const defaultState = type === "superadmin" ? "App Settings" : "Admin Settings";
+  const defaultState = "Admin Settings"; // Default state is set to "Admin Settings"
   const [selectedItem, setSelectedItem] = useState(defaultState);
   const [settingMenu, setSettingMenu] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -137,7 +137,13 @@ const SettingsSidebarListItems = ({ type }) => {
           headers: { Authorization: `Token ${getToken()}` },
         });
         setSettingMenu(response.data);
-        console.log(response.data)
+
+        // Set default item if Admin Settings exists
+        if (response.data.some((menu) => menu.name === "Admin Settings")) {
+          setSelectedItem("Admin Settings");
+        } else if (response.data.length) {
+          setSelectedItem(response.data[0].name); // Fallback to first menu item if Admin Settings isn't available
+        }
       } catch (error) {
         console.error(error);
         setError(error);
@@ -248,10 +254,19 @@ const SettingsSidebarListItems = ({ type }) => {
           </List>
         </Box>
       </Grid>
-      <Grid item xs={9.5} sx={{ height: "94vh", overflowY: "scroll", backgroundColor: "#f5f7fa", }}>
+      <Grid
+        item
+        xs={9.5}
+        sx={{
+          height: "94vh",
+          overflowY: "scroll",
+          backgroundColor: "#f5f7fa",
+        }}
+      >
         <Box p={2}>
           {settingMenu.map((item) =>
-            (type === item.for_user || item.for_user === "both") && selectedItem === item.name
+            (type === item.for_user || item.for_user === "both") &&
+            selectedItem === item.name
               ? componentDict[item.component_name]
               : null
           )}

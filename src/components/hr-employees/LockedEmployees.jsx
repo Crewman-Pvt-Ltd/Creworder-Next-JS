@@ -152,7 +152,7 @@ const LockedEmployees = ({ onAddEmployees }) => {
           <AddIcon sx={{ fontSize: 20 }} />
           Add Employee
         </Button>
-        <Button
+        {/* <Button
           sx={{
             padding: "8px 16px",
             fontSize: "14px",
@@ -170,7 +170,7 @@ const LockedEmployees = ({ onAddEmployees }) => {
         >
           <AddIcon sx={{ fontSize: 20 }} />
           Invite Employee
-        </Button>
+        </Button> */}
         <Button
           sx={{
             padding: "8px 16px",
