@@ -4,24 +4,10 @@ import {
   Typography,
   Divider,
   CardContent,
-  Checkbox,
-  FormHelperText,
-  FormGroup,
   Button,
-  FormControlLabel,
-  TextField,
-  ListItemText,
   IconButton,
   Select,
   MenuItem,
-  List,
-  ListItem,
-  FormControl,
-  InputLabel,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 import CustomLabel from "../CustomLabel";
@@ -30,8 +16,10 @@ import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
-import CloseIcon from "@mui/icons-material/Close";
-
+import { baseApiUrl } from "@/api-manage/ApiRoutes";
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
+import axios from "axios";
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
@@ -39,17 +27,75 @@ const poppins = Poppins({
 
 const EditOrder = () => {
   const router = useRouter();
+  const { id } = router.query;
+  const token = getToken();
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
+  const [formData, setFormData] = useState({
+    customer_name: "",
+    customer_parent_name: "",
+    customer_phone: "",
+    customer_email: "",
+    customer_postal: "",
+    customer_city: "",
+    customer_state: "",
+    customer_country: "",
+    customer_address: "",
+    order_remark: "",
+  });
+
+  useEffect(() => {
+    if (id) {
+      const fetchOrderData = async () => {
+        try {
+          const token = getToken();
+          if (!token) {
+            throw new Error("No authentication token found.");
+          }
+          const response = await MainApi.get(`/api/orders/${id}`, {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          });
+          if (response.status === 200) {
+            const orderData = response.data?.Data?.[0];
+            console.log(orderData);
+            setFormData({
+              customer_name: orderData?.customer_name || "",
+              customer_parent_name: orderData?.customer_parent_name || "",
+              customer_phone: orderData?.customer_phone || "",
+              customer_email: orderData?.customer_email || "",
+              customer_postal: orderData?.customer_postal || "",
+              customer_city: orderData?.customer_city || "",
+              customer_state: orderData?.customer_state || "",
+              customer_country: orderData?.customer_country || "",
+              customer_address: orderData?.customer_address || "",
+              order_remark: orderData?.order_remark || "",
+            });
+            setCourseDuration(orderData?.course_duration || "");
+            setLocality(orderData?.locality || "");
+            setProducts(
+              orderData?.products || [
+                { productName: "", quantity: 1, price: 0, total: 0 },
+              ]
+            );
+          } else {
+            console.log("Error: Could not fetch order data.");
+          }
+        } catch (error) {
+          console.error("Error fetching order data:", error.message);
+        }
+      };
+
+      fetchOrderData();
+    }
+  }, [id]);
 
   const orderlist = () => {
     router.push("/admin/orders");
   };
 
   const [courseDuration, setCourseDuration] = useState("");
-  const [paymentMode, setPaymentMode] = useState("");
   const [locality, setLocality] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
-  const [isSecondDialogOpen, setIsSecondDialogOpen] = useState(false);
-  const [selectedPincodes, setSelectedPincodes] = useState([]);
   const [products, setProducts] = useState([
     { productName: "", quantity: 1, price: 0, total: 0 },
   ]);
@@ -59,66 +105,29 @@ const EditOrder = () => {
   const [codAmount, setCodAmount] = useState(0);
   const [paymentType, setPaymentType] = useState("");
   const [partialPayment, setPartialPayment] = useState(0);
-  const [postalCode, setPostalCode] = useState("");
-  const [postalCodeError, setPostalCodeError] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [phoneError, setPhoneError] = useState(false);
-
-  const [paymentModeError, setPaymentModeError] = useState(false);
-
-  const handlePincodeSelection = (pincode) => {
-    if (selectedPincodes.includes(pincode)) {
-      setSelectedPincodes(selectedPincodes.filter((item) => item !== pincode));
-    } else {
-      setSelectedPincodes([...selectedPincodes, pincode]);
-    }
+  const getProductsList = () => {
+    let data = "";
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}products/`,
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+      data: data,
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        setproductList(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-
-  const handleSubmit = () => {
-    let valid = true;
-
-    if (!postalCode) {
-      setPostalCodeError(true);
-      valid = false;
-    } else {
-      setPostalCodeError(false);
-    }
-
-    if (!phone) {
-      setPhoneError(true);
-      valid = false;
-    } else {
-      setPhoneError(false);
-    }
-
-    if (!paymentMode) {
-      setPaymentModeError(true);
-      valid = false;
-    } else {
-      setPaymentModeError(false);
-    }
-
-    if (valid) {
-      console.log("Form submitted successfully!");
-      setIsDialogOpen(false);
-      setIsSecondDialogOpen(true);
-    }
-  };
-
-  const handleCloseSecondDialog = () => {
-    setIsSecondDialogOpen(false);
-  };
-  const pincodeData = [
-    { pincode: "123433", edd: "2 Day" },
-    { pincode: "423256", edd: "3 Day" },
-    { pincode: "782329", edd: "4 Day" },
-  ];
-
-  const prices = {
-    "Weight Loss": 3000,
-    "Kidney Detox": 4000,
-    "Liver Detox": 5000,
-  };
+  useEffect(() => {
+    getProductsList(true);
+  }, []);
 
   useEffect(() => {
     setIsDialogOpen(true);
@@ -130,11 +139,9 @@ const EditOrder = () => {
       0
     );
     setGrossAmount(totalGross);
-
-    let totalPayable = totalGross - discount;
+    var totalPayable = totalGross - discount;
     if (totalPayable < 0) totalPayable = 0;
     setPayableAmount(totalPayable);
-
     if (paymentType === "Partial") {
       const codAmount = totalPayable - partialPayment;
       setCodAmount(codAmount > 0 ? codAmount : 0);
@@ -147,19 +154,13 @@ const EditOrder = () => {
     setCourseDuration(event.target.value);
   };
 
-  const handlePaymentMode = (event) => {
-    setPaymentMode(event.target.value);
-  };
-
   const handlelocality = (event) => {
     setLocality(event.target.value);
   };
-
   const handleInputChange = (index, e) => {
     const { name, value } = e.target;
     const updatedProducts = [...products];
     updatedProducts[index][name] = value;
-
     if (name === "productName") {
       updatedProducts[index].price = prices[value] || 0;
     }
@@ -214,10 +215,6 @@ const EditOrder = () => {
     return products.map((product) => product.productName);
   };
 
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
-
   return (
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
@@ -242,38 +239,42 @@ const EditOrder = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="Full Name" required>
+                <CustomLabel htmlFor="customer_name" required>
                   Customer Name
                 </CustomLabel>
                 <CustomTextField
-                  id="name"
-                  name="name"
+                  id="customer_name"
+                  name="customer_name"
+                  value={formData.customer_name}
+                  onChange={handleInputChange}
                   placeholder="Full Name"
-                  type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="fathername" required>
+                <CustomLabel htmlFor="customer_parent_name" required>
                   Customer Father Name
                 </CustomLabel>
                 <CustomTextField
-                  id="fathername"
-                  name="fathername"
+                  id="customer_parent_name"
+                  name="customer_parent_name"
+                  value={formData.father_name}
+                  onChange={handleInputChange}
                   placeholder="Father's Name"
-                  type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="phone" required>
+                <CustomLabel htmlFor="customer_phone" required>
                   Customer Phone
                 </CustomLabel>
                 <CustomTextField
-                  id="phone"
-                  name="phone"
+                  id="customer_phone"
+                  name="customer_phone"
+                  value={formData.customer_phone}
+                  onChange={handleInputChange}
                   placeholder="+91-987XXXXXXXX"
                   type="text"
                   fullWidth
@@ -281,14 +282,15 @@ const EditOrder = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="email" required>
+                <CustomLabel htmlFor="customer_email" required>
                   Customer Email
                 </CustomLabel>
                 <CustomTextField
-                  id="email"
-                  name="email"
+                  id="customer_email"
+                  name="customer_email"
+                  value={formData.customer_email}
+                  onChange={handleInputChange}
                   placeholder="Email-ID"
-                  type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
@@ -330,13 +332,15 @@ const EditOrder = () => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <CustomLabel htmlFor="postalcode" required>
+                <CustomLabel htmlFor="customer_postal" required>
                   Postal Code
                 </CustomLabel>
                 <CustomTextField
-                  id="postalcode"
-                  name="postalcode"
+                  id="customer_postal"
+                  name="customer_postal"
                   placeholder="Postalcode"
+                  value={formData.customer_postal}
+                  onChange={handleInputChange}
                   type="text"
                   fullWidth
                   inputProps={{ readOnly: true }}
@@ -366,12 +370,14 @@ const EditOrder = () => {
                 </Select>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="city" required>
+                <CustomLabel htmlFor="customer_city" required>
                   City
                 </CustomLabel>
                 <CustomTextField
-                  id="city"
-                  name="city"
+                  id="customer_city"
+                  name="customer_city"
+                  value={formData.customer_city}
+                  onChange={handleInputChange}
                   placeholder="City"
                   type="text"
                   fullWidth
@@ -381,12 +387,14 @@ const EditOrder = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="state" required>
+                <CustomLabel htmlFor="customer_state" required>
                   State
                 </CustomLabel>
                 <CustomTextField
-                  id="state"
-                  name="state"
+                  id="customer_state"
+                  name="customer_state"
+                  value={formData.customer_state}
+                  onChange={handleInputChange}
                   placeholder="State"
                   type="text"
                   fullWidth
@@ -402,6 +410,8 @@ const EditOrder = () => {
                 <CustomTextField
                   id="country"
                   name="country"
+                  value={formData.customer_country}
+                  onChange={handleInputChange}
                   placeholder="Country"
                   type="text"
                   fullWidth
@@ -411,12 +421,14 @@ const EditOrder = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <CustomLabel htmlFor="address" required>
+                <CustomLabel htmlFor="customer_address" required>
                   Address
                 </CustomLabel>
                 <CustomTextField
-                  id="address"
-                  name="address"
+                  id="customer_address"
+                  name="customer_address"
+                  value={formData.customer_address}
+                  onChange={handleInputChange}
                   placeholder="Full Address"
                   type="text"
                   fullWidth
@@ -570,12 +582,14 @@ const EditOrder = () => {
               </Grid>
 
               <Grid item xs={12} sm={6} mt={5}>
-                <CustomLabel htmlFor="orderRemark" required>
+                <CustomLabel htmlFor="order_remark" required>
                   Order Remark:
                 </CustomLabel>
                 <CustomTextField
-                  id="orderRemark"
-                  name="orderRemark"
+                  id="order_remark"
+                  name="order_remark"
+                  value={formData.order_remark}
+                  onChange={handleInputChange}
                   placeholder="Order Remark"
                   type="text"
                   fullWidth
@@ -763,8 +777,6 @@ const EditOrder = () => {
           </CardContent>
         </CustomCard>
       </Grid>
-
-    
     </Grid>
   );
 };
