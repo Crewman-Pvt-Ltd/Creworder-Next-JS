@@ -116,7 +116,9 @@ const CompanyDetailsdashboard = ({ type }) => {
   const { title, headers, mapRow } = configuration[type] || {};
   if (!title) return null;
 
-  const rows = (data && Array.isArray(data) ? Object.entries(data).map(mapRow) : []);
+  // Check if `data` is an array; otherwise, access `data.results` if needed
+  const rows = (data && Array.isArray(data) ? data.map(mapRow) : data?.results?.map(mapRow)) || [];
+
   const handleChangePage = (event, newPage) => {
     if (newPage > page && data.next) {
       setUrl(data.next);
@@ -140,7 +142,7 @@ const CompanyDetailsdashboard = ({ type }) => {
         <Table>
           <TableHead>
             <TableRow>
-              {headers.map(header => (
+              {headers.map((header) => (
                 <HeaderCell key={header}>{header}</HeaderCell>
               ))}
             </TableRow>
@@ -157,16 +159,16 @@ const CompanyDetailsdashboard = ({ type }) => {
                     </Typography>
                   </Box>
                 </DataCell>
-                <DataCell>{row.package_name || row.total_user_count || "N/A"}</DataCell>
+                <DataCell>{row.packages || row.totalUsers || "N/A"}</DataCell>
+                <DataCell>{row.date || row.expiryDate || row.paymentDate || "N/A"}</DataCell>
               </TableRow>
             ))}
-       
           </TableBody>
         </Table>
         <TablePagination
           rowsPerPageOptions={[rowsPerPage]}
           component="div"
-          count={data?.count || 0}
+          count={data?.count || rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
