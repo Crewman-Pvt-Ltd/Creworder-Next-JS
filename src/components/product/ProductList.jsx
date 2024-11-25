@@ -125,7 +125,7 @@ const ProductList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.results?.map((row, index) => (
+                  {data?.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.id}.
