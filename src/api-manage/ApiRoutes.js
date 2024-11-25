@@ -31,6 +31,7 @@ export const pickup_point = '/api/pick-up-point/';
 export const user_target = '/api/user-target/';
 export const order_status = '/api/order_status/';
 export const admin_bank_details = '/api/admin-bank-details/';
+export const user_mail_setup = '/api/user-mail-setup/';
 export const get_notice_users = '/api/specific-users/';
 export const get_dashboard_tiles = '/api/user-dashboard-tiles/';
 export const get_username_suggestions = '/api/username-suggestions/';
