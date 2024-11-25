@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Grid,
   Typography,
@@ -26,12 +26,14 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import Flatpickr from "flatpickr";
 import Rating from "@mui/material/Rating";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import Link from "next/link";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
@@ -49,9 +51,22 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 const OrderList = () => {
+  const dateRef = useRef(null);
   const [startDate, setStartDate] = useState(dayjs(null));
   const [endDate, setEndDate] = useState(dayjs(null));
   const router = useRouter();
+  useEffect(() => {
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+    });
+
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
 
   const { data, refetch } = useGetAllOrders();
 
@@ -102,11 +117,7 @@ const OrderList = () => {
 
   const [dateRange, setDateRange] = useState([null, null]);
 
-  const rows = [
-    {
-      
-    },
-  ];
+  const rows = [{}];
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue);
@@ -147,7 +158,7 @@ const OrderList = () => {
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
         <CustomCard padding="13px">
-        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
               <Typography
                 sx={{
@@ -156,14 +167,14 @@ const OrderList = () => {
                   whiteSpace: "nowrap",
                   textTransform: "capitalize",
                   color: "black",
-                  marginLeft: "30px"
+                  marginLeft: "30px",
                 }}
               >
                 Order List
               </Typography>
             </Grid>
             <Grid item>
-            <Button
+              <Button
                 onClick={createOrder}
                 sx={{
                   padding: "8px",
@@ -373,56 +384,74 @@ const OrderList = () => {
                     </Select>
                   </Grid>
 
-                  <Grid item xs={12} sm={3}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <CustomLabel htmlFor="start_date">Start Date</CustomLabel>
-                      <DatePicker
-                        label="Start Date"
-                        value={startDate}
-                        onChange={handleStartDateChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            fullWidth
-                            sx={{ height: "55px" }}
-                          />
-                        )}
+                  <Grid item xs={12} sm={3} md={3}>
+                    <CustomLabel>
+                      Select Date Range
+                    </CustomLabel>
+                    <div
+                      style={{
+                        padding: "8px",
+                        borderRadius: "4px",
+                        border: "1px solid black",
+                        position: "relative",
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      <input
+                        ref={dateRef}
+                        type="text"
+                        placeholder="Select date range"
+                        style={{
+                          padding: "5px",
+                          borderRadius: "4px",
+                          color: "#333",
+                          width: "100%",
+                          fontSize: "15px",
+                          border: "none",
+                          outline: "none",
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = "none";
+                          e.target.style.outline = "none";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = "none";
+                          e.target.style.outline = "none";
+                        }}
                       />
-                    </LocalizationProvider>
-                  </Grid>
 
-                  {/* End Date */}
-                  <Grid item xs={12} sm={3}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <CustomLabel htmlFor="end_date">End Date</CustomLabel>
-                      <DatePicker
-                        label="End Date"
-                        value={endDate}
-                        onChange={handleEndDateChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            fullWidth
-                            sx={{ height: "55px" }}
-                          />
-                        )}
+                      <CalendarMonthIcon
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          fontSize: "35px",
+                          color: "white",
+                          right: "1px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          backgroundColor: "#405189",
+                          padding: "4px",
+                        }}
+                        onClick={() => dateRef.current.focus()} // This will focus the input
                       />
-                    </LocalizationProvider>
+                    </div>
                   </Grid>
-
-                  <Button
-                    sx={{
-                      marginTop: "24px",
-                      padding: "8px 16px",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      backgroundColor: "#405189",
-                      color: "white",
-                      "&:hover": { backgroundColor: "#334a6c" },
-                    }}
-                  >
-                    Submit
-                  </Button>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <Button
+                      sx={{
+                        marginTop: "24px",
+                        padding: "8px 16px",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        backgroundColor: "#405189",
+                        color: "white",
+                        "&:hover": { backgroundColor: "#334a6c" },
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
                 </Grid>
               </AccordionDetails>
             </Accordion>
@@ -446,19 +475,29 @@ const OrderList = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Sr.</strong> </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                    <strong> Order ID</strong>
+                      <strong>Sr.</strong>{" "}
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                    <strong>Customer Name</strong>
+                      <strong> Order ID</strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>City</strong></TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Product</strong></TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Amount</strong></TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Agent</strong></TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                    <strong>Order Status</strong>
+                      <strong>Customer Name</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>City</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Product</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Amount</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Agent</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Order Status</strong>
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       <strong>Payment Mode</strong>
@@ -466,24 +505,31 @@ const OrderList = () => {
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       <strong>Order Date</strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}> <strong>Remark </strong></TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                       <strong>C.C Call</strong>
+                      {" "}
+                      <strong>Remark </strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Action</strong></TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>C.C Call</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Action</strong>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {data?.Data.map((row, index) => (
+                  {data?.Data.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.id}.
                       </TableCell>
-                       <TableCell sx={{ whiteSpace: "nowrap", cursor: 'pointer' }}>
+                      <TableCell
+                        sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                      >
                         <Link href={`/admin/orders/order-details?Id=${row.id}`}>
-                        <b>{row.order_id}</b>
+                          <b>{row.order_id}</b>
                         </Link>
-                        </TableCell>
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.customer_name}
                       </TableCell>
@@ -491,24 +537,30 @@ const OrderList = () => {
                         {row.customer_city}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      {row.product_details[0]?.product_name}
+                        {row.product_details[0]?.product_name}
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>{row.total_amount}</TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        {row.total_amount}
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.order_created_by_username}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <Button 
-                              variant="contained" 
-                              sx={{ backgroundColor: "orange", color: "black" }}>
-                              {row.order_status_title}
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "orange", color: "black" }}
+                        >
+                          {row.order_status_title}
                         </Button>
-                        </TableCell>
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.payment_mode}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {format(new Date(row.created_at), 'yyyy-MM-dd HH:mm:ss')}
+                        {format(
+                          new Date(row.created_at),
+                          "yyyy-MM-dd HH:mm:ss"
+                        )}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.order_remark}
@@ -519,14 +571,13 @@ const OrderList = () => {
                         </IconButton>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                       
                         <IconButton
-                            onClick={() => handleEdit(row.id)}
-                            aria-label="edit"
-                            sx={{ color: "green" }}
-                          >
-                            <EditIcon sx={{ color: "green" }} />
-                          </IconButton>
+                          onClick={() => handleEdit(row.id)}
+                          aria-label="edit"
+                          sx={{ color: "green" }}
+                        >
+                          <EditIcon sx={{ color: "green" }} />
+                        </IconButton>
                         <IconButton
                           aria-label="delete"
                           sx={{ color: "#FF0000" }}
