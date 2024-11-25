@@ -29,6 +29,12 @@ const EditOrder = () => {
   const router = useRouter();
   const { id } = router.query;
   const token = getToken();
+  const [productList, setproductList] = useState([]);
+  const [products, setProducts] = useState([
+    { product: 0, productName: "", product_qty: 1, price: 0, total: 0 },
+  ]);
+
+
   const [isDialogOpen, setIsDialogOpen] = useState(true);
   const [formData, setFormData] = useState({
     customer_name: "",
@@ -96,9 +102,6 @@ const EditOrder = () => {
 
   const [courseDuration, setCourseDuration] = useState("");
   const [locality, setLocality] = useState("");
-  const [products, setProducts] = useState([
-    { productName: "", quantity: 1, price: 0, total: 0 },
-  ]);
   const [discount, setDiscount] = useState(0);
   const [grossAmount, setGrossAmount] = useState(0);
   const [payableAmount, setPayableAmount] = useState(0);
@@ -154,22 +157,27 @@ const EditOrder = () => {
     setCourseDuration(event.target.value);
   };
 
+  const handlePaymentMode = (event) => {
+    setPaymentMode(event.target.value);
+  };
+
   const handlelocality = (event) => {
     setLocality(event.target.value);
   };
+
   const handleInputChange = (index, e) => {
-    const { name, value } = e.target;
+    const { id, name, Pname, Pprice, product_qty } = e;
     const updatedProducts = [...products];
-    updatedProducts[index][name] = value;
+    updatedProducts[index][name] = Pname;
     if (name === "productName") {
-      updatedProducts[index].price = prices[value] || 0;
+      updatedProducts[index].price = Pprice || 0;
+      updatedProducts[index].product = id;
     }
-
-    if (name === "quantity" || name === "productName") {
-      updatedProducts[index].total =
-        updatedProducts[index].price * updatedProducts[index].quantity || 0;
+    if (name === "product_qty") {
+      updatedProducts[index][name] = Number(product_qty);
     }
-
+    updatedProducts[index].total =
+      updatedProducts[index].price * updatedProducts[index].product_qty || 0;
     setProducts(updatedProducts);
   };
 
@@ -187,7 +195,6 @@ const EditOrder = () => {
 
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
-
     if (e.target.value !== "Partial") {
       setPartialPayment(0);
       setCodAmount(payableAmount);
@@ -197,7 +204,7 @@ const EditOrder = () => {
   const addProductField = () => {
     setProducts([
       ...products,
-      { productName: "", quantity: 1, price: 0, total: 0 },
+      { product: 0, productName: "", product_qty: 1, price: 0, total: 0 },
     ]);
   };
 
@@ -208,11 +215,11 @@ const EditOrder = () => {
   };
 
   const isRowFilled = (product) => {
-    return product.productName && product.quantity && product.price;
+    return product.productName && product.product_qty && product.price;
   };
 
   const getSelectedProducts = () => {
-    return products.map((product) => product.productName);
+    return products.map((product) => product.id);
   };
 
   return (
@@ -259,7 +266,7 @@ const EditOrder = () => {
                 <CustomTextField
                   id="customer_parent_name"
                   name="customer_parent_name"
-                  value={formData.father_name}
+                  value={formData.customer_parent_name}
                   onChange={handleInputChange}
                   placeholder="Father's Name"
                   fullWidth
@@ -462,7 +469,21 @@ const EditOrder = () => {
                               id={`product-${index}`}
                               name="productName"
                               value={product.productName}
-                              onChange={(e) => handleInputChange(index, e)}
+                              onChange={(e) => {
+                                const selectedValue = e.target.value;
+                                const selectedname = e.target.name;
+                                const selectedProduct = productList.find(
+                                  (item) => item.product_name === selectedValue
+                                );
+                                handleInputChange(index, {
+                                  id: selectedProduct.id,
+                                  name: selectedname,
+                                  Pname: selectedValue,
+                                  Pprice: selectedProduct
+                                    ? selectedProduct.product_price
+                                    : 0,
+                                });
+                              }}
                               displayEmpty
                               sx={{
                                 fontFamily: "Poppins, sans-serif",
@@ -473,42 +494,40 @@ const EditOrder = () => {
                               <MenuItem value="" disabled>
                                 Select Product
                               </MenuItem>
-                              <MenuItem
-                                value="Weight Loss"
-                                disabled={getSelectedProducts().includes(
-                                  "Weight Loss"
-                                )}
-                              >
-                                Weight Loss
-                              </MenuItem>
-                              <MenuItem
-                                value="Kidney Detox"
-                                disabled={getSelectedProducts().includes(
-                                  "Kidney Detox"
-                                )}
-                              >
-                                Kidney Detox
-                              </MenuItem>
-                              <MenuItem
-                                value="Liver Detox"
-                                disabled={getSelectedProducts().includes(
-                                  "Liver Detox"
-                                )}
-                              >
-                                Liver Detox
-                              </MenuItem>
+                              {productList.map((productItem, idx) => (
+                                <MenuItem
+                                  key={idx}
+                                  value={productItem.product_name}
+                                  disabled={getSelectedProducts().includes(
+                                    productItem.product_name
+                                  )}
+                                >
+                                  {productItem.product_name}
+                                </MenuItem>
+                              ))}
                             </Select>
                           </Grid>
                           <Grid item xs={12} sm={2}>
-                            <CustomLabel htmlFor={`quantity-${index}`} required>
+                            <CustomLabel
+                              htmlFor={`product_qty-${index}`}
+                              required
+                            >
                               Quantity
                             </CustomLabel>
                             <CustomTextField
-                              id={`quantity-${index}`}
-                              name="quantity"
-                              value={product.quantity}
-                              onChange={(e) => handleInputChange(index, e)}
-                              placeholder="quantity"
+                              id={`product_qty-${index}`}
+                              name="product_qty"
+                              value={product.product_qty}
+                              onChange={(e) => {
+                                handleInputChange(index, {
+                                  id: product.id,
+                                  name: e.target.name,
+                                  Pname: product.productName,
+                                  Pprice: product.price,
+                                  product_qty: e.target.value,
+                                });
+                              }}
+                              placeholder="product_qty"
                               type="number"
                               fullWidth
                               sx={{ fontFamily: "Poppins, sans-serif" }}
