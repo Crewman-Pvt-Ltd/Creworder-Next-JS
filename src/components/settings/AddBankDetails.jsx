@@ -21,6 +21,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import swal from "sweetalert"; // Import SweetAlert
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import { usePermissions } from "@/contexts/PermissionsContext";
@@ -45,7 +46,6 @@ const AddBankDetails = () => {
 
   const { permissionsData } = usePermissions();
 
-  // Handle form input change
   const handleInputChange = (field) => (event) => {
     setInputValues((prevValues) => ({
       ...prevValues,
@@ -53,7 +53,6 @@ const AddBankDetails = () => {
     }));
   };
 
-  // Form validation
   const validateForm = () => {
     const tempErrors = {};
     if (!inputValues.account_number)
@@ -75,7 +74,6 @@ const AddBankDetails = () => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -100,14 +98,24 @@ const AddBankDetails = () => {
         await MainApi.put(`/api/admin-bank-details/${editId}/`, payload, {
           headers: { Authorization: `Token ${token}` },
         });
+        swal({
+          title: "Bank Details Updated",
+          text: "Successfully updated bank details!",
+          icon: "success",
+          button: "Ok",
+        });
         setEditMode(false);
         setEditId(null);
-        alert("Bank details updated successfully!");
       } else {
         await MainApi.post("/api/admin-bank-details/", payload, {
           headers: { Authorization: `Token ${token}` },
         });
-        alert("Bank details added successfully!");
+        swal({
+          title: "Bank Details Added",
+          text: "Successfully added new bank details!",
+          icon: "success",
+          button: "Ok",
+        });
       }
       fetchBankDetails();
       setInputValues({
@@ -121,11 +129,16 @@ const AddBankDetails = () => {
         priority: "",
       });
     } catch (error) {
+      swal({
+        title: "Action Failed",
+        text: "Failed to save bank details!",
+        icon: "error",
+        button: "Ok",
+      });
       console.error("An error occurred while saving bank details:", error);
     }
   };
 
-  // Fetch bank details
   const fetchBankDetails = async () => {
     try {
       const token = getToken();
@@ -138,7 +151,6 @@ const AddBankDetails = () => {
     }
   };
 
-  // Edit bank details
   const handleEditClick = (id, detail) => {
     setInputValues({
       account_number: detail.account_number,
@@ -154,7 +166,6 @@ const AddBankDetails = () => {
     setEditId(id);
   };
 
-  // Delete bank details
   const handleDeleteClick = (id) => {
     setBankDetailToDelete(id);
     setOpenDeleteDialog(true);
@@ -167,18 +178,29 @@ const AddBankDetails = () => {
         headers: { Authorization: `Token ${token}` },
       });
       fetchBankDetails();
+      swal({
+        title: "Bank Details Deleted",
+        text: "Successfully deleted bank details!",
+        icon: "success",
+        button: "Ok",
+      });
       setOpenDeleteDialog(false);
       setBankDetailToDelete(null);
-      alert("Bank detail deleted successfully!");
     } catch (error) {
+      swal({
+        title: "Action Failed",
+        text: "Failed to delete bank details!",
+        icon: "error",
+        button: "Ok",
+      });
       console.error("Failed to delete bank details:", error);
     }
   };
 
-  // Fetch bank details on mount
   React.useEffect(() => {
     fetchBankDetails();
   }, []);
+
 
   return (
     <Grid container spacing={2}>

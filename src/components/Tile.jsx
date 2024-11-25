@@ -67,7 +67,7 @@ const Tile = ({ title, count, imageUrl, height, padding }) => {
               <img
                 src={imageUrl}
                 alt={title}
-                style={{ width: "70px", height: "70px", marginRight: "8px" }} />
+                style={{ width: "50px", height: "50px", marginRight: "0px", marginTop: "30px" }} />
             </Grid>
           </Grid>
         </Grid>

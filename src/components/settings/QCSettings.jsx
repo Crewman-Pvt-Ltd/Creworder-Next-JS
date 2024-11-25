@@ -1,164 +1,236 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
+  Card,
   CardContent,
   Grid,
   Button,
-  Divider,
-  TableHead,
   Table,
   TableBody,
-  TableContainer,
-  TableRow,
-  IconButton,
-  Typography,
   TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  IconButton,
   Dialog,
-  DialogContent,
   DialogActions,
+  MenuItem,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   TextField,
 } from "@mui/material";
-import CustomCard from "../CustomCard";
-import { Poppins } from "next/font/google";
+import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
 import { Edit, Delete } from "@mui/icons-material";
-
-const poppins = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
+import { usePermissions } from "@/contexts/PermissionsContext";
 
 const QCSettings = () => {
-  const [open, setOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [question, setQuestion] = useState("");
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const { data: branchData } = useGetAllBranches();
+  const [inputValues, setInputValues] = useState({
+    question: "",
+    branch: "",
+  });
+  const [errors, setErrors] = useState({});
+  const [qcList, setQcList] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
-  const [qcSettingsList, setQCSettingsList] = useState([
-    {
-      id: 1,
-      qcSettings:
-        "It is a long established fact that a reader will be distracted by the readable text.",
-    },
-    {
-      id: 2,
-      qcSettings:
-        "Default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.",
-    },
-    {
-      id: 3,
-      qcSettings:
-        "Consectetur from a Lorem Ipsum passage, going through the cites.",
-    },
-  ]);
+  const { permissionsData } = usePermissions();
 
-  const handleClickOpen = () => {
-    setIsEditing(false); // Not in editing mode
-    setQuestion(""); // Clear input for new question
-    setOpen(true); // Open dialog
+  // Handle input field changes
+  const handleInputChange = (field) => (event) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [field]: event.target.value,
+    }));
   };
 
-  const handleEdit = (qcSettings) => {
-    setIsEditing(true); // Switch to editing mode
-    setSelectedQuestionId(qcSettings.id); // Store the selected question ID
-    setQuestion(qcSettings.qcSettings); // Pre-fill text field with the selected question
-    setOpen(true); // Open dialog
+  // Validate the form before submission
+  const validateForm = () => {
+    const tempErrors = {};
+    if (!inputValues.question) tempErrors.question = "Question is required.";
+    if (!inputValues.branch) tempErrors.branch = "Branch is required.";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedQuestionId(null); // Reset selected question after closing
-  };
+  // Submit the form (add or edit QC settings)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  const handleSave = () => {
-    if (isEditing) {
-      // Update existing question
-      setQCSettingsList((prevList) =>
-        prevList.map((item) =>
-          item.id === selectedQuestionId
-            ? { ...item, qcSettings: question }
-            : item
-        )
-      );
-    } else {
-      // Add new question
-      setQCSettingsList((prevList) => [
-        ...prevList,
-        { id: prevList.length + 1, qcSettings: question },
-      ]);
+    const payload = {
+      question: inputValues.question,
+      branch: inputValues.branch,
+    };
+
+    try {
+      const token = getToken();
+      if (editMode) {
+        await MainApi.put(`/api/qc/${editId}/`, payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        alert("QC updated successfully!");
+      } else {
+        await MainApi.post("/api/qc/", payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        alert("QC added successfully!");
+      }
+      fetchQcList();
+      resetForm();
+    } catch (error) {
+      console.error("Error saving QC settings:", error);
     }
-    handleClose();
   };
+
+  // Fetch QC list from the server
+  const fetchQcList = async () => {
+    try {
+      const token = getToken();
+      const response = await MainApi.get("/api/qc/", {
+        headers: { Authorization: `Token ${token}` },
+      });
+      setQcList(response.data.results);
+    } catch (error) {
+      console.error("Failed to fetch QC settings:", error);
+    }
+  };
+
+  // Reset form and edit mode
+  const resetForm = () => {
+    setInputValues({ question: "", branch: "" });
+    setEditMode(false);
+    setEditId(null);
+  };
+
+  // Handle edit action
+  const handleEditClick = (id, detail) => {
+    setInputValues({
+      question: detail.question,
+      branch: detail.branch,
+    });
+    setEditMode(true);
+    setEditId(id);
+  };
+
+  // Handle delete action
+  const handleDeleteClick = (id) => {
+    setItemToDelete(id);
+    setOpenDeleteDialog(true);
+  };
+
+  // Confirm and delete item
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      await MainApi.delete(`/api/qc/${itemToDelete}/`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      fetchQcList();
+      setOpenDeleteDialog(false);
+      setItemToDelete(null);
+      alert("QC setting deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete QC setting:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchQcList();
+  }, []);
 
   return (
     <Grid container spacing={2}>
+      {/* Add/Edit QC Form */}
       <Grid item xs={12}>
-        <CustomCard>
+        <Card>
           <CardContent>
-            <Grid
-              container
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Typography
-                sx={{
-                  fontWeight: "600",
-                  fontSize: "20px",
-                  textTransform: "capitalize",
-                  color: "black",
-                }}
-                className={poppins.className}
-              >
-                QC List
-              </Typography>
-              <Button
-                sx={{
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#405189",
-                    color: "white",
-                  },
-                }}
-                onClick={handleClickOpen}
-              >
-                Add QC
+            <Typography variant="h6">
+              <b>{editMode ? "Edit QC" : "Add QC"}</b>
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={2}>
+                {/* Question Field */}
+                <Grid item xs={6}>
+                  <TextField
+                    label="Question"
+                    value={inputValues.question}
+                    onChange={handleInputChange("question")}
+                    error={!!errors.question}
+                    helperText={errors.question}
+                    fullWidth
+                    required
+                  />
+                </Grid>
+
+                {/* Branch Dropdown */}
+                <Grid item xs={6}>
+                  <TextField
+                    select
+                    label="Branch"
+                    value={inputValues.branch}
+                    onChange={handleInputChange("branch")}
+                    error={!!errors.branch}
+                    helperText={errors.branch}
+                    fullWidth
+                    required
+                  >
+                    <MenuItem value="" disabled>
+                      Select Branch
+                    </MenuItem>
+                    {branchData?.results.map((row) => (
+                      <MenuItem key={row.id} value={row.id}>
+                        {row.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+              </Grid>
+              <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+                {editMode ? "Update" : "Save"}
               </Button>
-            </Grid>
-            <Divider sx={{ my: 2 }} />
+            </form>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      {/* QC Settings Table */}
+      <Grid item xs={12}>
+        <Card>
+          <CardContent>
+            <Typography variant="h6">
+              <b>QC Settings</b>
+            </Typography>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell className={poppins.className}>ID</TableCell>
-                    <TableCell className={poppins.className}>Question</TableCell>
-                    <TableCell className={poppins.className}>Action</TableCell>
+                    <TableCell>Question</TableCell>
+                    <TableCell>Branch</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {qcSettingsList.map((qcSetting) => (
-                    <TableRow key={qcSetting.id}>
-                      <TableCell className={poppins.className}>
-                        {qcSetting.id}
-                      </TableCell>
-                      <TableCell
-                        className={poppins.className}
-                        sx={{
-                          maxWidth: 300,
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {qcSetting.qcSettings}
-                      </TableCell>
+                  {qcList.map((detail) => (
+                    <TableRow key={detail.id}>
+                      <TableCell>{detail.question}</TableCell>
+                      <TableCell>{detail.branch}</TableCell>
                       <TableCell>
                         <IconButton
-                          aria-label="edit"
-                          sx={{ color: "green" }}
-                          onClick={() => handleEdit(qcSetting)} // Open dialog for editing
+                          color="primary"
+                          onClick={() => handleEditClick(detail.id, detail)}
                         >
                           <Edit />
                         </IconButton>
-                        <IconButton aria-label="delete" sx={{ color: "red" }}>
+                        <IconButton
+                          color="secondary"
+                          onClick={() => handleDeleteClick(detail.id)}
+                        >
                           <Delete />
                         </IconButton>
                       </TableCell>
@@ -168,33 +240,26 @@ const QCSettings = () => {
               </Table>
             </TableContainer>
           </CardContent>
-        </CustomCard>
-
-        {/* Dialog for Add/Edit Questions */}
-        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-          <DialogContent>
-            <Typography variant="h5" sx={{ fontWeight: "600", mb: 2 }}>
-              {isEditing ? "Edit Question" : "Add Question"}
-            </Typography>
-            <TextField
-              label="Question"
-              fullWidth
-              variant="outlined"
-              value={question}
-              multiline
-              onChange={(e) => setQuestion(e.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="secondary">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} color="primary">
-              {isEditing ? "Update" : "Save"}
-            </Button>
-          </DialogActions>
-        </Dialog>
+        </Card>
       </Grid>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this QC setting?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

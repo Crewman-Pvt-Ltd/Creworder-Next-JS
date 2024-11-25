@@ -10,6 +10,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Paper,
   Select,
   Box,
@@ -24,6 +27,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import Link from "next/link";
@@ -59,9 +63,7 @@ const OrderList = () => {
   const handlestate = (event) => {
     setstate(event.target.value);
   };
-  const handleEdit = () => {
-    router.push("/admin/orders/editorders");
-  };
+
   const [product, setproduct] = useState("");
 
   const handleproduct = (event) => {
@@ -137,7 +139,9 @@ const OrderList = () => {
     { question: "How likely are you to recommend us?", rating: 0 },
     { question: "What is your overall experience?", rating: 0 },
   ]);
-
+  const handleEdit = (id) => {
+    router.push(`/admin/orders/editorders?id=${id}`);
+  };
 
   return (
     <Grid container spacing={2} p={3}>
@@ -180,267 +184,249 @@ const OrderList = () => {
               </Button>
             </Grid>
           </Grid>
-          <Grid
-            container
-            spacing={1}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="order_id">Order Id.</CustomLabel>
-              <CustomTextField
-                id="order_id"
-                name="order_id"
-                placeholder="e.g. PRO34XP"
-                type="text"
-                fullWidth
-                sx={{ height: "50px" }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="awb_no">AWB No.</CustomLabel>
-              <CustomTextField
-                id="awb_no"
-                name="awb_no"
-                placeholder="e.g. AWBNo987"
-                type="text"
-                fullWidth
-                sx={{ height: "50px" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="phone">Phone No.</CustomLabel>
-              <CustomTextField
-                id="phone"
-                name="phone"
-                placeholder="e.g. 9876543221"
-                type="text"
-                fullWidth
-                sx={{ height: "50px" }}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="product">Product Name</CustomLabel>
-              <Select
-                labelId="product"
-                id="product"
-                name="product"
-                value={product}
-                onChange={handleproduct}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Product
-                </MenuItem>
-                <MenuItem value={1}>Kidney Detox</MenuItem>
-                <MenuItem value={2}>Weight Loss</MenuItem>
-                <MenuItem value={3}>Weight Gain</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="payment">Payment Type</CustomLabel>
-              <Select
-                labelId="payment"
-                id="payment"
-                name="payment"
-                value={payment}
-                onChange={handlepayment}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Payment
-                </MenuItem>
-                <MenuItem value={1}>COD</MenuItem>
-                <MenuItem value={2}>Prepaid</MenuItem>
-                <MenuItem value={3}>Parttial</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Status">Agent Status</CustomLabel>
-              <Select
-                labelId="Agent Status"
-                id="agent"
-                name="agent"
-                value={agent}
-                onChange={handleagent}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Agent
-                </MenuItem>
-                <MenuItem value={1}>Suspended</MenuItem>
-                <MenuItem value={2}>Active</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Agent Name">Agent Name</CustomLabel>
-              <Select
-                labelId="Agent Name"
-                id="agentname"
-                name="agentname"
-                value={agentname}
-                onChange={handleagentname}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Agent Name
-                </MenuItem>
-                <MenuItem value={1}>Admin</MenuItem>
-                <MenuItem value={2}>TL</MenuItem>
-                <MenuItem value={2}>Omni</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Team Lead">Team Lead</CustomLabel>
-              <Select
-                labelId="Team Lead"
-                id="teamlead"
-                name="teamlead"
-                value={teamlead}
-                onChange={handleteamlead}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Team Lead
-                </MenuItem>
-                <MenuItem value={2}>TL</MenuItem>
-                <MenuItem value={3}>Omni</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="state">State</CustomLabel>
-              <Select
-                labelId="state"
-                id="state"
-                name="state"
-                value={state}
-                onChange={handlestate}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select State
-                </MenuItem>
-                <MenuItem value={1}>Delhi</MenuItem>
-                <MenuItem value={2}>Uttar Pradesh</MenuItem>
-                <MenuItem value={3}>West Bengal</MenuItem>
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="Order Status">Order Status</CustomLabel>
-              <Select
-                labelId="Order Status"
-                id="status"
-                name="status"
-                value={status}
-                onChange={handlestatus}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Order Status
-                </MenuItem>
-                <MenuItem value={1}>Suspended</MenuItem>
-                <MenuItem value={2}>Active</MenuItem>
-                <MenuItem value={3}>InActive</MenuItem>
-                <MenuItem value={4}>Delete</MenuItem>
-              </Select>
-            </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="Start Date">Start Date</CustomLabel>
-                <DatePicker
-                  label="Start Date"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
+          <div>
+            {/* Accordion for Order Details */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Order Details</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={1}>
+                  {/* Order ID */}
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="order_id">Order Id.</CustomLabel>
+                    <CustomTextField
+                      id="order_id"
+                      name="order_id"
+                      placeholder="e.g. PRO34XP"
+                      type="text"
                       fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "55px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
+                      sx={{ height: "50px" }}
                     />
-                  )}
-                />
-              </LocalizationProvider>
-            </Grid>
+                  </Grid>
 
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="End Date">End Date</CustomLabel>
-                <DatePicker
-                  label="End Date"
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
+                  {/* AWB Number */}
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="awb_no">AWB No.</CustomLabel>
+                    <CustomTextField
+                      id="awb_no"
+                      name="awb_no"
+                      placeholder="e.g. AWBNo987"
+                      type="text"
                       fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "55px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
+                      sx={{ height: "50px" }}
                     />
-                  )}
-                />
-              </LocalizationProvider>
-            </Grid>
+                  </Grid>
 
-            <Grid item xs={12} sm={3}>
-              <Button
-                sx={{
-                  marginTop: "24px",
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "#405189",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#334a6c",
-                  },
-                  fontFamily: poppins.style.fontFamily,
-                }}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </Grid>
+                  {/* Phone Number */}
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="phone">Phone No.</CustomLabel>
+                    <CustomTextField
+                      id="phone"
+                      name="phone"
+                      placeholder="e.g. 9876543221"
+                      type="text"
+                      fullWidth
+                      sx={{ height: "50px" }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="product">Product Name</CustomLabel>
+                    <Select
+                      id="product"
+                      name="product"
+                      value={product}
+                      onChange={handleproduct}
+                      displayEmpty
+                      sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Product
+                      </MenuItem>
+                      <MenuItem value={1}>Kidney Detox</MenuItem>
+                      <MenuItem value={2}>Weight Loss</MenuItem>
+                      <MenuItem value={3}>Weight Gain</MenuItem>
+                    </Select>
+                  </Grid>
+
+                  {/* Payment Type */}
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="payment">Payment Type</CustomLabel>
+                    <Select
+                      id="payment"
+                      name="payment"
+                      value={payment}
+                      onChange={handlepayment}
+                      displayEmpty
+                      sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Payment
+                      </MenuItem>
+                      <MenuItem value={1}>COD</MenuItem>
+                      <MenuItem value={2}>Prepaid</MenuItem>
+                      <MenuItem value={3}>Partial</MenuItem>
+                    </Select>
+                  </Grid>
+
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="agent">Agent Status</CustomLabel>
+                    <Select
+                      id="agent"
+                      name="agent"
+                      value={agent}
+                      onChange={handleagent}
+                      displayEmpty
+                      sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Agent
+                      </MenuItem>
+                      <MenuItem value={1}>Suspended</MenuItem>
+                      <MenuItem value={2}>Active</MenuItem>
+                    </Select>
+                  </Grid>
+
+                  {/* Agent Name */}
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="agentname">Agent Name</CustomLabel>
+                    <Select
+                      id="agentname"
+                      name="agentname"
+                      value={agentname}
+                      onChange={handleagentname}
+                      displayEmpty
+                      sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Agent Name
+                      </MenuItem>
+                      <MenuItem value={1}>Admin</MenuItem>
+                      <MenuItem value={2}>TL</MenuItem>
+                      <MenuItem value={3}>Omni</MenuItem>
+                    </Select>
+                  </Grid>
+
+                  {/* Team Lead */}
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="teamlead">Team Lead</CustomLabel>
+                    <Select
+                      id="teamlead"
+                      name="teamlead"
+                      value={teamlead}
+                      onChange={handleteamlead}
+                      displayEmpty
+                      sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Team Lead
+                      </MenuItem>
+                      <MenuItem value={2}>TL</MenuItem>
+                      <MenuItem value={3}>Omni</MenuItem>
+                    </Select>
+                  </Grid>
+
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="state">State</CustomLabel>
+                    <Select
+                      id="state"
+                      name="state"
+                      value={state}
+                      onChange={handlestate}
+                      displayEmpty
+                      sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select State
+                      </MenuItem>
+                      <MenuItem value={1}>Delhi</MenuItem>
+                      <MenuItem value={2}>Uttar Pradesh</MenuItem>
+                      <MenuItem value={3}>West Bengal</MenuItem>
+                    </Select>
+                  </Grid>
+
+                  {/* Order Status */}
+                  <Grid item xs={12} sm={3}>
+                    <CustomLabel htmlFor="status">Order Status</CustomLabel>
+                    <Select
+                      id="status"
+                      name="status"
+                      value={status}
+                      onChange={handlestatus}
+                      displayEmpty
+                      sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>
+                        Select Order Status
+                      </MenuItem>
+                      <MenuItem value={1}>Suspended</MenuItem>
+                      <MenuItem value={2}>Active</MenuItem>
+                      <MenuItem value={3}>Inactive</MenuItem>
+                      <MenuItem value={4}>Deleted</MenuItem>
+                    </Select>
+                  </Grid>
+
+                  <Grid item xs={12} sm={3}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <CustomLabel htmlFor="start_date">Start Date</CustomLabel>
+                      <DatePicker
+                        label="Start Date"
+                        value={startDate}
+                        onChange={handleStartDateChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            fullWidth
+                            sx={{ height: "55px" }}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+
+                  {/* End Date */}
+                  <Grid item xs={12} sm={3}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <CustomLabel htmlFor="end_date">End Date</CustomLabel>
+                      <DatePicker
+                        label="End Date"
+                        value={endDate}
+                        onChange={handleEndDateChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            fullWidth
+                            sx={{ height: "55px" }}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+
+                  <Button
+                    sx={{
+                      marginTop: "24px",
+                      padding: "8px 16px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      backgroundColor: "#405189",
+                      color: "white",
+                      "&:hover": { backgroundColor: "#334a6c" },
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+          </div>
         </CustomCard>
       </Grid>
 
@@ -533,9 +519,14 @@ const OrderList = () => {
                         </IconButton>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <IconButton aria-label="edit" sx={{ color: "#007BFF" }}>
-                          <EditIcon onClick={handleEdit} />
-                        </IconButton>
+                       
+                        <IconButton
+                            onClick={() => handleEdit(row.id)}
+                            aria-label="edit"
+                            sx={{ color: "green" }}
+                          >
+                            <EditIcon sx={{ color: "green" }} />
+                          </IconButton>
                         <IconButton
                           aria-label="delete"
                           sx={{ color: "#FF0000" }}
