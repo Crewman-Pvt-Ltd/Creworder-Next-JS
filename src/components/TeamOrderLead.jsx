@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   CardContent,
@@ -26,148 +26,50 @@ import PeopleIcon from "@mui/icons-material/People";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import { baseApiUrl } from "@/api-manage/ApiRoutes";
+import { getToken } from "@/utils/getToken";
+import axios from "axios";
+import swal from "sweetalert";
 const TeamLead = () => {
-  const [filter, setFilter] = useState("TL");
+  const token = getToken();
+  const [filter, setFilter] = useState(6);
+  const [teamLeadData, setTeamLeadData] = useState({})
+  const [teamLeadDetails, setTeamLeadDetails] = useState([])
+  const [agentDetailsData , setAgentDetailsData] = useState([])
+  const [products, setproducts] = useState([])
+
   const handleChange = (event) => {
     setFilter(event.target.value);
+    getFilteredProducts()
   };
 
   const getButtonColor = (status) => {
     return status === "Absent" ? "error" : "success";
   };
 
-  const tlProducts = [
-    {
-      image:
-        "https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-2.png",
-      name: "Rahul Kumar",
-      date: "Web Developer",
-      status: "Absent",
-      orders: 62,
-      accepted: 76,
-      rejected: 45,
-      noresponse: 89,
-      targets: 510,
-      progress: 10,
-    },
-    {
-      image:
-        "https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-2.png",
-      name: "Shivam Kumar",
-      date: "Web Developer",
-      status: "Present",
-      orders: 34,
-      accepted: 76,
-      rejected: 45,
-      noresponse: 89,
-      targets: 120,
-      progress: 25, // Progress in percentage
-    },
-    {
-      image:
-        "https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-2.png",
-      name: "Priya Singh",
-      date: "Web Developer",
-      status: "Absent",
-      orders: 62,
-      accepted: 50,
-      rejected: 51,
-      noresponse: 59,
-      targets: 510,
-      progress: 50,
-    },
-  ];
-
-  const agentProducts = [
-    {
-      image:
-        "https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-8.png",
-      name: "Ravendra kr",
-      date: "Dev",
-      status: "Present",
-      orders: 34,
-      accepted: 76,
-      rejected: 45,
-      noresponse: 89,
-      targets: 120,
-      progress: 30,
-    },
-    {
-      image:
-        "https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-8.png",
-      name: "Siva",
-      date: "Dev",
-      status: "Absent",
-      orders: 34,
-      accepted: 50,
-      rejected: 51,
-      noresponse: 59,
-      targets: 120,
-      progress: 75,
-    },
-  ];
-
-  const managerProducts = [
-    {
-      image:
-        "https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-1.png",
-      name: "Bharti",
-      date: "Marketing",
-      status: "Absent",
-      orders: 80,
-      accepted: 76,
-      rejected: 45,
-      noresponse: 89,
-      targets: 749,
-      progress: 90,
-    },
-    {
-      image:
-        "https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-1.png",
-      name: "Jittu",
-      date: "Digital",
-      status: "Present",
-      orders: 62,
-      accepted: 76,
-      rejected: 45,
-      noresponse: 89,
-      targets: 510,
-      progress: 40,
-    },
-  ];
-
-  // Function to get the right products based on the selected filter
-  const getFilteredProducts = () => {
-    switch (filter) {
-      case "TL":
-        return tlProducts;
-      case "Agent":
-        return agentProducts;
-      case "Manager":
-        return managerProducts;
-      default:
-        return [];
-    }
-  };
-
-  const products = getFilteredProducts();
-
   const metricsData = {
-    TL: {
+    N: {
+      campaignSent: 0,
+      annualProfit: "0",
+      leadConversation: "0",
+      dailyIncome: "0",
+      annualDeals: 0,
+    },
+    11: {
       campaignSent: 197,
       annualProfit: "100",
       leadConversation: "100",
       dailyIncome: "30",
       annualDeals: 2659,
     },
-    Agent: {
+    6: {
       campaignSent: 150,
       annualProfit: "120",
       leadConversation: "120",
       dailyIncome: "35",
       annualDeals: 2000,
     },
-    Manager: {
+    7: {
       campaignSent: 300,
       annualProfit: "130",
       leadConversation: "180",
@@ -217,6 +119,45 @@ const TeamLead = () => {
     },
   ];
 
+  const getTeamLeadData = () => {
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${baseApiUrl}user-dashboard-team-order-list/`,
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        setTeamLeadData(response.data.data)
+        const newDetails = Object.entries(response.data.data).map(([key, value]) => value["teamleadTiles"]);
+        setTeamLeadDetails([...new Set(newDetails)]);
+      })
+      .catch((error) => {
+        console.error("Error fetching team lead data:", error);
+      });
+  };
+
+  useEffect(() => {
+    getTeamLeadData();
+  }, []);
+
+  const getFilteredProducts = () => {
+    const agents = [];
+    Object.entries(teamLeadData[filter]).forEach(([teamLeadID, teamData]) => {
+        if (teamLeadID !== "teamleadTiles") {
+          teamData['image']="https://www.themesbrand.com/velzon/html/master/assets/images/companies/img-2.png"
+          teamData['status']='Present'
+          agents.push(teamData);
+        }
+    });
+    setAgentDetailsData(agents);
+  };
+  console.log(agentDetailsData)
+  // const agentDetails = getFilteredProducts();
   return (
     <CustomCard>
       <CardContent>
@@ -241,9 +182,12 @@ const TeamLead = () => {
               <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
                 <FormControl size="small" sx={{ minWidth: 150 }}>
                   <Select value={filter} onChange={handleChange}>
-                    <MenuItem value="TL">Team Lead</MenuItem>
-                    <MenuItem value="Agent">Agent</MenuItem>
-                    <MenuItem value="Manager">Manager</MenuItem>
+                    <MenuItem value="N">Select Team Lead</MenuItem>
+                    {teamLeadDetails.map((detail, index) => (
+                      <MenuItem key={index} value={detail['lead_id']}>
+                        {detail['teamlead_name']}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Box>
@@ -302,7 +246,7 @@ const TeamLead = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {products.map((product, index) => (
+                {agentDetailsData.map((product, index) => (
                   <TableRow key={index}>
                     <TableCell>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -328,7 +272,7 @@ const TeamLead = () => {
                               color: "#888888",
                             }}
                           >
-                            {product.date}
+                            {product.total_order}
                           </Typography>
                         </Box>
                       </Box>
@@ -342,16 +286,16 @@ const TeamLead = () => {
                         {product.status}{" "}
                       </Button>
                     </TableCell>
-                    <TableCell align="right">{product.orders}</TableCell>
-                    <TableCell align="right">{product.accepted}</TableCell>
-                    <TableCell align="right">{product.rejected}</TableCell>
-                    <TableCell align="right">{product.noresponse}</TableCell>
-                    <TableCell align="right">{product.targets}</TableCell>
+                    <TableCell align="right">{product.total_order}</TableCell>
+                    <TableCell align="right">{product.accepted_order}</TableCell>
+                    <TableCell align="right">{product.rejected_order}</TableCell>
+                    <TableCell align="right">{product.no_response}</TableCell>
+                    <TableCell align="right">{product.total_order}</TableCell>
                     <TableCell align="right">
                       <Box sx={{ width: "100%", position: "relative" }}>
                         <LinearProgress
                           variant="determinate"
-                          value={product.progress}
+                          value={product.total_order}
                           sx={{
                             height: 8,
                             borderRadius: 5,
@@ -370,7 +314,7 @@ const TeamLead = () => {
                             fontWeight: "bold",
                           }}
                         >
-                          {product.progress}%
+                          {product.total_order}%
                         </Typography>
                       </Box>
                     </TableCell>

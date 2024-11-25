@@ -57,6 +57,8 @@ const RolesAndPermissions = () => {
   const [orderStatusList, setOrderStatuslist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [permissionMapping, setPermissionMapping] = useState({});
+
 
   const isSuperAdmin = permissionsData?.role === "superadmin";
   const isAdmin = permissionsData?.role === "admin";
@@ -148,7 +150,9 @@ const RolesAndPermissions = () => {
   };
 
   const createRole = async () => {
-    const permissionData = permissionList.filter((item) => typeof item === "number");
+    // const permissionData = permissionList.filter((item) => typeof item === "number");
+    const permissionValues = Object.values(permissionMapping);
+    const permissionData = permissionValues.filter((item) => typeof item === "number");
     const data = {
       group: {
         name: roleName,

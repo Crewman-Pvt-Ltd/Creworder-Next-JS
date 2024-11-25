@@ -85,7 +85,7 @@ const CreateOrder = () => {
   const [paymentModeError, setPaymentModeError] = useState(false);
   const [selectedPincode, setSelectedPincode] = useState(null);
   const [orderRemark, setOrderRemark] = useState(null);
-  //
+  
   const handlePincodeSelection = (pincode) => {
     if (selectedPincode === pincode) {
       setSelectedPincode(null);
