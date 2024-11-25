@@ -23,24 +23,31 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import EventIcon from "@mui/icons-material/Event";
+
 const ProductDetails = () => {
-  const { data, refetch } = useGetAllProduct();
+  const { data, refetch } = useGetAllProduct(); 
   const [activeTab, setActiveTab] = useState(0);
   const [activeImage, setActiveImage] = useState(0);
   const [rating, setRating] = useState(4.5);
   const router = useRouter();
   const { Id } = router.query;
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [productImages, setProductImages] = useState([]);
+
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  const [productImages, setProductImages] = useState([]);
+  useEffect(() => {
+    if (data && Id) {
+      // Directly filter data by product ID
+      setSelectedProduct(data.find((product) => product.id === parseInt(Id)));
+    }
+  }, [data, Id]);
 
   useEffect(() => {
     if (selectedProduct) {
-      const images = [selectedProduct.product_image];
-      setProductImages(images);
+      setProductImages([selectedProduct.product_image]);
     }
   }, [selectedProduct]);
 
@@ -50,13 +57,6 @@ const ProductDetails = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, [productImages.length]);
-
-  useEffect(() => {
-    if (data?.results && Id) {
-      const Product = data.results.find((row) => row.id === parseInt(Id));
-      setSelectedProduct(Product);
-    }
-  }, [data, Id]);
 
   if (!selectedProduct) {
     return <Typography variant="h6">Product not found.</Typography>;
@@ -120,7 +120,8 @@ const ProductDetails = () => {
             </Box>
             <Divider sx={{ my: 2 }} />
 
-            <Grid container spacing={2}>
+         {/* Product Information */}
+         <Grid container spacing={2}>
               <Grid item xs={12} sm={4}>
                 <Card variant="outlined">
                   <CardContent>
@@ -130,9 +131,7 @@ const ProductDetails = () => {
                         SKU:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">
-                      {selectedProduct.product_sku}
-                    </Typography>
+                    <Typography variant="body1">{selectedProduct.product_sku}</Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -145,9 +144,7 @@ const ProductDetails = () => {
                         Price:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">
-                      ₹{selectedProduct.product_price}
-                    </Typography>
+                    <Typography variant="body1">₹{selectedProduct.product_price}</Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -160,13 +157,10 @@ const ProductDetails = () => {
                         Quantity:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">
-                      {selectedProduct.product_quantity}
-                    </Typography>
+                    <Typography variant="body1">{selectedProduct.product_quantity}</Typography>
                   </CardContent>
                 </Card>
               </Grid>
-
               <Grid item xs={12} sm={4}>
                 <Card variant="outlined">
                   <CardContent>
@@ -176,9 +170,7 @@ const ProductDetails = () => {
                         GST:
                       </Typography>
                     </Box>
-                    <Typography variant="body1">
-                      {selectedProduct.product_gst_percent}%
-                    </Typography>
+                    <Typography variant="body1">{selectedProduct.product_gst_percent}%</Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -192,9 +184,7 @@ const ProductDetails = () => {
                       </Typography>
                     </Box>
                     <Typography variant="body1">
-                      {selectedProduct.product_availability === 1
-                        ? "Out of Stock"
-                        : "In Stock"}
+                      {selectedProduct.product_availability === 1 ? "Out of Stock" : "In Stock"}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -209,91 +199,65 @@ const ProductDetails = () => {
                       </Typography>
                     </Box>
                     <Typography variant="body1">
-                      {new Date(selectedProduct.product_created)
-                        .toISOString()
-                        .split("T")[0]}
+                      {new Date(selectedProduct.product_created).toISOString().split("T")[0]}
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             </Grid>
-
-            <Box mt={2}>
+              {/* Sizes */}
+              <Box mt={2}>
               <Typography variant="h6" fontWeight="bold">
                 Sizes:
               </Typography>
               <Box display="flex" mt={1}>
                 {["S", "M", "L", "XL"].map((size) => (
-                  <Button
-                    key={size}
-                    variant="outlined"
-                    sx={{ mr: 1, textTransform: "none" }}
-                  >
+                  <Button key={size} variant="outlined" sx={{ mr: 1, textTransform: "none" }}>
                     {size}
                   </Button>
                 ))}
               </Box>
             </Box>
 
-            <Box mt={3}>
+             {/* Description */}
+             <Box mt={3}>
               <Typography variant="h6" fontWeight="bold">
                 Description:
               </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
-                style={{ fontsize: "20px" }}
+                style={{ fontSize: "18px" }}
               >
                 {selectedProduct.product_description}
               </Typography>
             </Box>
-
+            {/* Tabs */}
             <Tabs value={activeTab} onChange={handleTabChange} sx={{ mt: 3 }}>
-              <b>
-                <Tab label="Specification" />
-              </b>
+              <Tab label="Specification" />
             </Tabs>
             <Divider sx={{ my: 2 }} />
             {activeTab === 0 && (
               <Box>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Typography variant="body2">
-                      <CheckCircleIcon
-                        fontSize="small"
-                        color="success"
-                        style={{ verticalAlign: "middle", marginRight: 4 }}
-                      />
-                      <b>Product Id:</b> {selectedProduct.product_id}
-                    </Typography>
-                    <Typography variant="body2">
-                      <CheckCircleIcon
-                        fontSize="small"
-                        color="success"
-                        style={{ verticalAlign: "middle", marginRight: 4 }}
-                      />
-                      <b>SKU:</b> {selectedProduct.product_sku}
-                    </Typography>
-                    <Typography variant="body2">
-                      <CheckCircleIcon
-                        fontSize="small"
-                        color="success"
-                        style={{ verticalAlign: "middle", marginRight: 4 }}
-                      />
-                      <b>HSN Code:</b> {selectedProduct.product_hsn_number}
-                    </Typography>
-                    <Typography variant="body2">
-                      <CheckCircleIcon
-                        fontSize="small"
-                        color="success"
-                        style={{ verticalAlign: "middle", marginRight: 4 }}
-                      />
-                      <b>Material:</b> {selectedProduct.product_gst_percent}%
-                    </Typography>
-                  </Grid>
-                </Grid>
+                <Typography variant="body2">
+                  <CheckCircleIcon
+                    fontSize="small"
+                    color="success"
+                    style={{ verticalAlign: "middle", marginRight: 4 }}
+                  />
+                  <b>Product Id:</b> {selectedProduct.product_id}
+                </Typography>
+                <Typography variant="body2">
+                  <CheckCircleIcon
+                    fontSize="small"
+                    color="success"
+                    style={{ verticalAlign: "middle", marginRight: 4 }}
+                  />
+                  <b>HSN Code:</b> {selectedProduct.product_hsn_number}
+                </Typography>
               </Box>
             )}
+            
           </CardContent>
         </Card>
       </Grid>
