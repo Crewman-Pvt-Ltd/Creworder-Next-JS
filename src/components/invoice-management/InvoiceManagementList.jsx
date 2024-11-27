@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Grid,
   Typography,
@@ -14,11 +14,11 @@ import {
   Select,
   Box,
   IconButton,
-  TableFooter,
-  TablePagination,
-  FormControl,
-  TextField
+  TextField,
 } from "@mui/material";
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
@@ -39,6 +39,19 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 const InvoiceManagementList = () => {
+  const dateRef = useRef(null);
+  useEffect(() => {
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+    });
+
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
   const token = getToken();
   const router = useRouter();
   const [startDate, setStartDate] = useState(dayjs(null));
@@ -345,59 +358,59 @@ const InvoiceManagementList = () => {
                 <MenuItem value={4}>Delete</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="Start Date">Start Date</CustomLabel>
-                <DatePicker
-                
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "55px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs} >
-              <CustomLabel htmlFor="End Date">End Date</CustomLabel>
-                <DatePicker
-                  // label="End Date"
-                  value={endDate}
-                  onChange={handleEndDateChange}                 
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "55px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
+            <Grid item xs={12} sm={3} md={3}>
+              <CustomLabel htmlFor="date_range" required>
+                Date Range
+              </CustomLabel>
+              <Grid
+                container
+                alignItems="center"
+                style={{
+                  backgroundColor: "#fff",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid black",
+                }}
+              >
+                <Grid item xs={11}>
+                  <input
+                    ref={dateRef}
+                    id="date_range"
+                    type="text"
+                    placeholder="Select date range"
+                    style={{
+                      padding: "5px",
+                      borderRadius: "4px",
+                      color: "#333",
+                      width: "100%",
+                      fontSize: "15px",
+                      border: "none",
+                      outline: "none",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.border = "none";
+                      e.target.style.outline = "none";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.border = "none";
+                      e.target.style.outline = "none";
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={1} container justifyContent="center">
+                  <CalendarMonthIcon
+                    style={{
+                      fontSize: "35px",
+                      color: "white",
+                      backgroundColor: "#405189",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                      padding: "4px",
+                    }}
+                    onClick={() => dateRef.current.focus()} // Focuses the input field
+                  />
+                </Grid>
+              </Grid>
             </Grid>
 
             <Grid item xs={12} sm={4}>
@@ -522,7 +535,6 @@ const InvoiceManagementList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-           
           </Box>
         </CustomCard>
       </Grid>

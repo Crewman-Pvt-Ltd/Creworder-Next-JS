@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect, useRef  } from "react";
 import {
   Grid,
   Typography,
@@ -32,12 +32,28 @@ import { DateRangePicker } from "@nextui-org/date-picker";
 import { getToken } from "@/utils/getToken";
 import axios from "axios";
 import { parse } from "json2csv";
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
 const Order = () => {
+  const dateRef = useRef(null);
+  useEffect(() => {
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+    });
+
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
   const token = getToken();
   const router = useRouter();
   const [status, setstatus] = useState("");
@@ -174,22 +190,60 @@ const Order = () => {
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Grid item xs={12} sm={5} style={{ backgroundColor: "#fff" }}>
-                  <CustomLabel htmlFor="dateRange" required>
-                    Date Range
-                  </CustomLabel>
-                  <DateRangePicker
-                    visibleMonths={2}
-                    style={{
-                      backgroundColor: "#fff",
-                    }}
-                    popoverProps={{
-                      style: {
-                        backgroundColor: "#fff",
-                      },
-                    }}
-                  />
-                </Grid>
+                <Grid item xs={12} sm={3} md={3}>
+          <CustomLabel htmlFor="date_range" required>
+            Date Range
+          </CustomLabel>
+          <Grid
+            container
+            alignItems="center"
+            style={{
+              backgroundColor: "#fff",
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid black",
+            }}
+          >
+            <Grid item xs={11}>
+              <input
+                ref={dateRef}
+                id="date_range"
+                type="text"
+                placeholder="Select date range"
+                style={{
+                  padding: "5px",
+                  borderRadius: "4px",
+                  color: "#333",
+                  width: "100%",
+                  fontSize: "15px",
+                  border: "none",
+                  outline: "none",
+                }}
+                onFocus={(e) => {
+                  e.target.style.border = "none";
+                  e.target.style.outline = "none";
+                }}
+                onBlur={(e) => {
+                  e.target.style.border = "none";
+                  e.target.style.outline = "none";
+                }}
+              />
+            </Grid>
+            <Grid item xs={1} container justifyContent="center">
+              <CalendarMonthIcon
+                style={{
+                  fontSize: "35px",
+                  color: "white",
+                  backgroundColor: "#405189",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  padding: "4px",
+                }}
+                onClick={() => dateRef.current.focus()} // Focuses the input field
+              />
+            </Grid>
+          </Grid>
+        </Grid>
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="status" required>
                     Order Status
