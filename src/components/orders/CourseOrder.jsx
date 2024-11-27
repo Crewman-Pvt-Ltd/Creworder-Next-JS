@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Grid,
   Typography,
@@ -14,90 +14,70 @@ import {
   Select,
   Box,
   IconButton,
-  TextField,
-  TableFooter,
-  TablePagination,
-  FormControl,
 } from "@mui/material";
-import {
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-} from "@mui/icons-material";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
 import CustomCard from "../CustomCard";
-import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-import { DateRangePicker } from "@nextui-org/date-picker";
-
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const poppins = Poppins({
   weight: "500",
   subsets: ["latin"],
 });
 const CourseOrder = () => {
-  const [startDate, setStartDate] = useState(dayjs(null));
-  const [endDate, setEndDate] = useState(dayjs(null));
-  const router = useRouter();
+  const dateRef = useRef(null);
+  useEffect(() => {
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+    });
 
-  const createOrder = () => {
-    router.push("/admin/orders/createorders");
-  };
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
+
   const [state, setstate] = useState("");
-  // Handle change for courseDuration
+
   const handlestate = (event) => {
     setstate(event.target.value);
   };
 
   const [product, setproduct] = useState("");
-  // Handle change for courseDuration
+
   const handleproduct = (event) => {
     setproduct(event.target.value);
   };
 
   const [payment, setpayment] = useState("");
-  // Handle change for courseDuration
+
   const handlepayment = (event) => {
     setpayment(event.target.value);
   };
 
   const [agent, setagent] = useState("");
-  // Handle change for courseDuration
+
   const handleagent = (event) => {
     setagent(event.target.value);
   };
 
-  const handleStartDateChange = (newValue) => {
-    setStartDate(newValue);
-  };
-
-  const handleEndDateChange = (newValue) => {
-    setEndDate(newValue);
-  };
-
   const [agentname, setagentname] = useState("");
-  // Handle change for courseDuration
+
   const handleagentname = (event) => {
     setagentname(event.target.value);
   };
 
   const [teamlead, setteamlead] = useState("");
-  // Handle change for courseDuration
+
   const handleteamlead = (event) => {
     setteamlead(event.target.value);
   };
-
-  const [status, setstatus] = useState("");
-  // Handle change for courseDuration
-  const handlestatus = (event) => {
-    setstatus(event.target.value);
-  };
-
-  const [dateRange, setDateRange] = useState([null, null]);
 
   const rows = [
     {
@@ -119,30 +99,26 @@ const CourseOrder = () => {
 
   return (
     <Grid container spacing={2} p={3}>
-      <Grid item xs={12}>
+      <Grid item xs={12} sm={12} md={12}>
         <CustomCard padding="13px">
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-              <Typography
-                sx={{
-                  fontWeight: "600",
-                  fontSize: "20px",
-                  whiteSpace: "nowrap",
-                  textTransform: "capitalize",
-                  color: "black",
-                  marginLeft: "30px",
-                }}>
-                Course Orders
-              </Typography>
-            </Grid>            
+          <Grid item xs={12} sm={12} md={12}>
+            <Typography
+              sx={{
+                fontWeight: "600",
+                fontSize: "20px",
+              }}
+            >
+              Course Orders
+            </Typography>
           </Grid>
-       
+
           <Grid
             container
             spacing={1}
             justifyContent="space-between"
-            alignItems="center">
-            <Grid item xs={12} sm={3}>
+            alignItems="center"
+          >
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="order_id" required>
                 Order Id.
               </CustomLabel>
@@ -156,7 +132,7 @@ const CourseOrder = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="awb_no" required>
                 AWB No.
               </CustomLabel>
@@ -169,7 +145,7 @@ const CourseOrder = () => {
                 sx={{ fontFamily: poppins.style.fontFamily }}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="phone" required>
                 Phone No.
               </CustomLabel>
@@ -183,7 +159,7 @@ const CourseOrder = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="product" required>
                 Product Name
               </CustomLabel>
@@ -206,7 +182,7 @@ const CourseOrder = () => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="payment" required>
                 Payment Type
               </CustomLabel>
@@ -229,7 +205,7 @@ const CourseOrder = () => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="Agent Status" required>
                 Agent Status
               </CustomLabel>
@@ -241,7 +217,8 @@ const CourseOrder = () => {
                 onChange={handleagent}
                 displayEmpty
                 sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth>
+                fullWidth
+              >
                 <MenuItem value="" disabled>
                   Select Agent
                 </MenuItem>
@@ -250,7 +227,7 @@ const CourseOrder = () => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="Agent Name" required>
                 Agent Name
               </CustomLabel>
@@ -262,7 +239,8 @@ const CourseOrder = () => {
                 onChange={handleagentname}
                 displayEmpty
                 sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth>
+                fullWidth
+              >
                 <MenuItem value="" disabled>
                   Select Agent Name
                 </MenuItem>
@@ -272,7 +250,7 @@ const CourseOrder = () => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} md={3}>
               <CustomLabel htmlFor="Team Lead" required>
                 Team Lead
               </CustomLabel>
@@ -284,7 +262,8 @@ const CourseOrder = () => {
                 onChange={handleteamlead}
                 displayEmpty
                 sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth>
+                fullWidth
+              >
                 <MenuItem value="" disabled>
                   Select Team Lead
                 </MenuItem>
@@ -293,83 +272,87 @@ const CourseOrder = () => {
               </Select>
             </Grid>
 
-            <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="state" required>
-                State
-              </CustomLabel>
-              <Select
-                labelId="state"
-                id="state"
-                name="state"
-                value={state}
-                onChange={handlestate}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
-                fullWidth>
-                <MenuItem value="" disabled>
-                  Select State
-                </MenuItem>
-                <MenuItem value={1}>Delhi</MenuItem>
-                <MenuItem value={2}>Uttar Pradesh</MenuItem>
-                <MenuItem value={3}>West Bengal</MenuItem>
-              </Select>
-            </Grid>
-           
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="Start Date">Start Date</CustomLabel>
-                <DatePicker
-                  label="Start Date"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "55px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}/>
-                  )}
-                />
-              </LocalizationProvider>
-            </Grid>
+            <Grid item container xs={12} spacing={1} sm={12} md={12}>
+              <Grid item xs={12} sm={3} md={3}>
+                <CustomLabel htmlFor="state" required>
+                  State
+                </CustomLabel>
+                <Select
+                  labelId="state"
+                  id="state"
+                  name="state"
+                  value={state}
+                  onChange={handlestate}
+                  displayEmpty
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }}
+                  fullWidth
+                >
+                  <MenuItem value="" disabled>
+                    Select State
+                  </MenuItem>
+                  <MenuItem value={1}>Delhi</MenuItem>
+                  <MenuItem value={2}>Uttar Pradesh</MenuItem>
+                  <MenuItem value={3}>West Bengal</MenuItem>
+                </Select>
+              </Grid>
 
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="End Date">End Date</CustomLabel>
-                <DatePicker
-                  label="End Date"
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "55px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
+              <Grid item xs={12} sm={3} md={3}>
+                <CustomLabel htmlFor="date_range" required>
+                  Date Range
+                </CustomLabel>
+                <Grid
+                  container
+                  alignItems="center"
+                  style={{
+                    backgroundColor: "#fff",
+                    padding: "8px",
+                    borderRadius: "4px",
+                    border: "1px solid black",
+                  }}
+                >
+                  <Grid item xs={11}>
+                    <input
+                      ref={dateRef}
+                      id="date_range"
+                      type="text"
+                      placeholder="Select date range"
+                      style={{
+                        padding: "5px",
+                        borderRadius: "4px",
+                        color: "#333",
+                        width: "100%",
+                        fontSize: "15px",
+                        border: "none",
+                        outline: "none",
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.border = "none";
+                        e.target.style.outline = "none";
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.border = "none";
+                        e.target.style.outline = "none";
                       }}
                     />
-                  )}
-                />
-              </LocalizationProvider>
+                  </Grid>
+                  <Grid item xs={1} container justifyContent="center">
+                    <CalendarMonthIcon
+                      style={{
+                        fontSize: "35px",
+                        color: "white",
+                        backgroundColor: "#405189",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        padding: "4px",
+                      }}
+                      onClick={() => dateRef.current.focus()} // Focuses the input field
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={3}>
+
+            <Grid item xs={12} sm={12} md={12}>
               <Button
                 sx={{
                   marginTop: "24px",
@@ -382,7 +365,8 @@ const CourseOrder = () => {
                     backgroundColor: "#334a6c",
                   },
                   fontFamily: poppins.style.fontFamily,
-                }}>
+                }}
+              >
                 Submit
               </Button>
             </Grid>
@@ -393,14 +377,16 @@ const CourseOrder = () => {
       <Grid item xs={12}>
         <CustomCard>
           <Box
-              sx={{
+            sx={{
               display: "grid",
               gridTemplateRows: "auto 1fr auto",
               maxHeight: "400px",
-            }}>
+            }}
+          >
             <TableContainer
               component={Paper}
-              sx={{ overflowY: "auto", maxHeight: "340px" }}>
+              sx={{ overflowY: "auto", maxHeight: "340px" }}
+            >
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -478,7 +464,8 @@ const CourseOrder = () => {
                         </IconButton>
                         <IconButton
                           aria-label="delete"
-                          sx={{ color: "#FF0000" }}>
+                          sx={{ color: "#FF0000" }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -486,7 +473,7 @@ const CourseOrder = () => {
                   ))}
                 </TableBody>
               </Table>
-            </TableContainer>           
+            </TableContainer>
           </Box>
         </CustomCard>
       </Grid>

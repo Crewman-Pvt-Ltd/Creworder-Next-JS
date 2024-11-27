@@ -9,7 +9,7 @@ const LabelPreview = ({ selectedOrders }) => {
         border: "2px solid #000",
         padding: 2,
         width: "100%",
-        height: "90%",
+        height: "100%",
         bgcolor: "#f9f9f9",
         display: "flex",
         flexDirection: "column",
@@ -124,8 +124,8 @@ const LabelPreview = ({ selectedOrders }) => {
         display: "grid",
         gridTemplateColumns: "1fr 1fr", // Two columns per row
         gridTemplateRows: "1fr 1fr",    // Two rows per page
-        gap: 2,
-        width: "440mm", // A4 width
+        gap: 1,
+        width: "395mm", // A4 width
         height: "430mm", // A4 height
       }}
     >

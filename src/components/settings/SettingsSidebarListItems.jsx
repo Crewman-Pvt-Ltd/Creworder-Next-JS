@@ -32,7 +32,7 @@ import ColorLensIcon from "@mui/icons-material/ColorLens";
 import BackupIcon from "@mui/icons-material/Backup";
 import SearchIcon from "@mui/icons-material/Search";
 import RolesAndPermissions from "./RolesAndPermissions";
-import CourierServiceList from "../courierservice/CourierServiceList";
+import CourierService from "../courierservice/CourierService";
 import TelephonicChannelsList from "../telephonicchannels/TelephonicChannelsList";
 import ShipmentChannelsList from "../shipmentchannels/ShipmentChannelsList";
 import AdminSettings from "./AdminSettings";
@@ -60,6 +60,7 @@ import SuperadminShipmentChannels from "../shipmentchannels/SuperadminShipmentCh
 import { baseApiUrl } from "@/api-manage/ApiRoutes";
 import { getToken } from "@/utils/getToken";
 import axios from "axios";
+
 
 const poppins = Poppins({
   weight: "300",
@@ -102,7 +103,7 @@ const componentDict = {
   PixelSettings: <PixelSettings />,
   AdminSettings: <AdminSettings />,
   Branch: <Branch />,
-  CourierServiceList: <CourierServiceList />,
+  CourierService: <CourierService />,
   TelephonicChannelsList: <TelephonicChannelsList />,
   ShipmentChannelsList: <ShipmentChannelsList />,
   SuperadminShipmentChannels: <SuperadminShipmentChannels />,

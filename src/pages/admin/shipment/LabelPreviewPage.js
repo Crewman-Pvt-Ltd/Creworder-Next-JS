@@ -20,10 +20,25 @@ const LabelPreviewPage = () => {
     });
     const pdf = new jsPDF("p", "mm", "a4");
     const imgData = canvas.toDataURL("image/png");
-
+  
     pdf.addImage(imgData, "PNG", 0, 0, 210, 297); // Full A4 size
-    pdf.save("Labels.pdf");
+  
+    // Generate filename with current date and time
+    const now = new Date();
+    const formattedDate = now
+      .toLocaleString("en-GB", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+      .replace(/[\s:/]/g, "-"); // Replace spaces and colons for filename safety
+  
+    pdf.save(`Labels_${formattedDate}.pdf`);
   };
+  
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
