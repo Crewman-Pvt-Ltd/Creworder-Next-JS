@@ -52,7 +52,6 @@ import PrivacyTipIcon from "@mui/icons-material/PrivacyTip";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import IPAccess from "./IPAccess";
 import LeadSettings from "./LeadSettings";
-
 import RolesList from "./RolesList";
 import BankDetails from "./BankDetails";
 import PixelSettings from "./PixelSettings";
@@ -120,7 +119,7 @@ const componentDict = {
 };
 
 const SettingsSidebarListItems = ({ type }) => {
-  const defaultState = "Admin Settings"; // Default state is set to "Admin Settings"
+  const defaultState = "Admin Settings";
   const [selectedItem, setSelectedItem] = useState(defaultState);
   const [settingMenu, setSettingMenu] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -137,12 +136,10 @@ const SettingsSidebarListItems = ({ type }) => {
           headers: { Authorization: `Token ${getToken()}` },
         });
         setSettingMenu(response.data);
-
-        // Set default item if Admin Settings exists
         if (response.data.some((menu) => menu.name === "Admin Settings")) {
           setSelectedItem("Admin Settings");
         } else if (response.data.length) {
-          setSelectedItem(response.data[0].name); // Fallback to first menu item if Admin Settings isn't available
+          setSelectedItem(response.data[0].name);
         }
       } catch (error) {
         console.error(error);

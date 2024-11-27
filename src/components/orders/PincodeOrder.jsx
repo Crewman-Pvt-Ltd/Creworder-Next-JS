@@ -4,10 +4,29 @@ import {
   Typography,
   Divider,
   CardContent,
+  Checkbox,
+  FormHelperText,
+  FormGroup,
   Button,
+  FormControlLabel,
+  ListItemText,
   IconButton,
   Select,
-  MenuItem,  
+  MenuItem,
+  List,
+  ListItem,
+  FormControl,
+  TextField,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 import CustomLabel from "../CustomLabel";
@@ -32,6 +51,7 @@ const poppins = Poppins({
 const PincodeOrder = () => {
   const token = getToken();
   const router = useRouter();
+  
   const [customerName, setCustomerName] = useState("");
   const [customerFatherName, setCustomerFatherName] = useState("");
   const [phoneCustomer, setPhoneCustomer] = useState("");
@@ -66,7 +86,7 @@ const PincodeOrder = () => {
   const [paymentModeError, setPaymentModeError] = useState(false);
   const [selectedPincode, setSelectedPincode] = useState(null);
   const [orderRemark, setOrderRemark] = useState(null);
-  //
+  
   const handlePincodeSelection = (pincode) => {
     if (selectedPincode === pincode) {
       setSelectedPincode(null);
@@ -74,12 +94,10 @@ const PincodeOrder = () => {
       setSelectedPincode(pincode);
     }
   };
-
   const [AgentId, setAgentId] = useState("");
   const handleAgentId = (event) => {
     setAgentId(event.target.value);
   };
-
   const handleCloseSecondDialog = () => {
     setIsSecondDialogOpen(false);
   };
@@ -98,7 +116,7 @@ const PincodeOrder = () => {
     axios
       .request(config)
       .then((response) => {
-        setproductList(response.data.results);
+        setproductList(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -272,9 +290,9 @@ const PincodeOrder = () => {
       discount: discount,
       prepaid_amount: partialPayment,
       order_remark: orderRemark,
-      repeat_order: 0,
+      repeat_order: 1,
       is_booked: 1,
-      customer_state: 1,
+      customer_state: `${cutomerState}`,
       payment_type: 1,
       payment_status: 1,
       order_status: 1,
@@ -326,38 +344,38 @@ const PincodeOrder = () => {
                 fontFamily: poppins.style.fontFamily,
               }}
             >
-              Create PIN Code Order
+              Add Pincode Orders
             </Typography>
             <Divider sx={{ my: 2 }} />
+
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography sx={{ fontFamily: poppins.style.fontFamily }}>
                   Personal Details :
                 </Typography>
               </Grid>
-
               <Grid item xs={12} sm={4}>
-                <CustomLabel htmlFor="name" required>
-                  Agent ID
-                </CustomLabel>
-                <Select
-                  labelId="Agent Id"
-                  id="AgentId"
-                  name="AgentId"
-                  value={AgentId}
-                  onChange={handleAgentId}
-                  displayEmpty // This makes the empty string display as the placeholder
-                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
-                  fullWidth
-                >
-                  <MenuItem value="" disabled>
-                    Select Agent
-                  </MenuItem>
-                  <MenuItem value={1}>Shivam</MenuItem>
-                  <MenuItem value={2}>Truevital</MenuItem>
-                  <MenuItem value={3}>Crewmans</MenuItem>
-                </Select>
-              </Grid>
+              <CustomLabel htmlFor="name" required>
+                Agent ID
+              </CustomLabel>
+              <Select
+                labelId="Agent Id"
+                id="AgentId"
+                name="AgentId"
+                value={AgentId}
+                onChange={handleAgentId}
+                displayEmpty // This makes the empty string display as the placeholder
+                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
+                fullWidth
+              >
+                <MenuItem value="" disabled>
+                  Select Agent
+                </MenuItem>
+                <MenuItem value={1}>Shivam</MenuItem>
+                <MenuItem value={2}>Truevital</MenuItem>
+                <MenuItem value={3}>Crewmans</MenuItem>
+              </Select>
+            </Grid>
 
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="Full Name" required>
@@ -398,11 +416,11 @@ const PincodeOrder = () => {
                   name="phone"
                   value={phoneCustomer}
                   onChange={(e) => setPhoneCustomer(e.target.value)}
-                  inputProps={{ maxLength: 13 }}
                   placeholder="+91987XXXXXXXX"
                   type="text"
                   fullWidth
-                  // style={{ backgroundColor: "#eeeeee" }}
+                  inputProps={{ readOnly: true }}
+                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -416,7 +434,7 @@ const PincodeOrder = () => {
                   placeholder="Email-ID"
                   value={customerEmailId}
                   onChange={(e) => setCustomerEmailId(e.target.value)}
-                  type="email"
+                  type="text"
                   fullWidth
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
@@ -459,6 +477,7 @@ const PincodeOrder = () => {
               </Grid>
 
               {/* Address Details Fields */}
+
               <Grid item xs={12} sm={6}>
                 <CustomLabel htmlFor="postalcode" required>
                   Postal Code
@@ -470,8 +489,8 @@ const PincodeOrder = () => {
                   value={postalCode}
                   type="text"
                   fullWidth
-                  onChange={(e) => setPostalCode(e.target.value)}
-                  inputProps={{ maxLength: 6 }} // Limit to 6 characters
+                  inputProps={{ readOnly: true }}
+                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -509,6 +528,8 @@ const PincodeOrder = () => {
                   onChange={(e) => setCutomerCity(e.target.value)}
                   type="text"
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -524,6 +545,8 @@ const PincodeOrder = () => {
                   onChange={(e) => setCutomerState(e.target.value)}
                   type="text"
                   fullWidth
+                  inputProps={{ readOnly: true }}
+                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -913,6 +936,7 @@ const PincodeOrder = () => {
         </CustomCard>
       </Grid>
 
+    
     </Grid>
   );
 };
