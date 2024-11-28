@@ -127,6 +127,7 @@ const PickupAddressList = ({ onAddPickup, onEditPickup }) => {
         );
         console.log("Updated Data: ", response.data);
         setOpenDialog(false);
+        window.location.reload();
       } catch (error) {
         console.error("Error updating data: ", error);
       }

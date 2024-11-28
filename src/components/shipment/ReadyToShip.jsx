@@ -38,8 +38,10 @@ import "flatpickr/dist/flatpickr.min.css";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns"; // Use date-fns for date formatting
+import { format } from "date-fns"; 
 import axios from "axios";
+import MainApi from "@/api-manage/MainApi"; 
+import { getToken } from "@/utils/getToken";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -56,7 +58,7 @@ const ReadyToShip = () => {
   const [state, setState] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
+  const [openDialog, setOpenDialog] = useState(false);
   const router = useRouter();
   const [pickupPoint, setPickupPoint] = useState("");
   const [dateRange, setDateRange] = useState("");
@@ -145,11 +147,11 @@ const ReadyToShip = () => {
   };
 
   const handleApply = () => {
-    setOpenDialog(true); // Open the dialog when Apply is clicked
+    setOpenDialog(true); 
   };
 
   const handleCloseDialog = () => {
-    setOpenDialog(false); // Close the dialog
+    setOpenDialog(false); 
   };
 
   const handleSubmit = () => {
@@ -171,39 +173,33 @@ const ReadyToShip = () => {
       const formattedEnd = format(end, "yyyy-MM-dd");
       const range = `${formattedStart} ${formattedEnd}`;
       setFormattedRange(range);
-      console.log("Formatted Date Range:", range); // Log the formatted range
+      console.log("Formatted Date Range:", range); 
     }
   };
 
-const submitFilter = () => {
-  console.log(formattedRange);
-
-  // Make the axios request with the formatted range
-  let data = JSON.stringify({
-    "date_range": formattedRange,
-  });
-
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'http://127.0.0.1:8000/api/filter-orders/',
-    headers: {
-      'Authorization': 'Token 14879295452dc35b141d6192b65ad3fd2fcd23dd',
-      'Content-Type': 'application/json',
-      'Cookie': 'csrftoken=t6HKYjj0bqAjpc1lANlZxbiwS1kD4KxI',
-    },
-    data: data,
+  const submitFilter = async () => {
+    try {
+      const token = await getToken();
+      const data = {
+        date_range: formattedRange,
+      };
+      const response = await MainApi.post(
+        `/api/filter-orders/`,
+        data,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json", 
+          },
+          maxBodyLength: Infinity,
+        }
+      );
+      setFilteredRows(response.data.results);
+      console.log("Response Data:", response.data);
+    } catch (error) {
+      console.error("Error during filter request:", error);
+    }
   };
-
-  axios.request(config)
-    .then((response) => {
-      setFilteredRows(response.data.results)
-      console.log("Response Data:", JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log("Error:", error);
-    });
-};
 
   return (
     <Grid container spacing={2} p={3}>
