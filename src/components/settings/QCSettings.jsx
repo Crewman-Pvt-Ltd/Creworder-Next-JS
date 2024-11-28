@@ -95,7 +95,13 @@ const QCSettings = () => {
       const response = await MainApi.get("/api/qc/", {
         headers: { Authorization: `Token ${token}` },
       });
-      setQcList(response.data.results);
+      const qcData = response.data.results.map((qcItem) => {
+        const branchName =
+          branchData?.results.find((branch) => branch.id === qcItem.branch)
+            ?.name || "Unknown";
+        return { ...qcItem, branchName };
+      });
+      setQcList(qcData);
     } catch (error) {
       console.error("Failed to fetch QC settings:", error);
     }
@@ -142,7 +148,7 @@ const QCSettings = () => {
 
   useEffect(() => {
     fetchQcList();
-  }, []);
+  }, [branchData]);
 
   return (
     <Grid container spacing={2}>
@@ -219,7 +225,7 @@ const QCSettings = () => {
                   {qcList.map((detail) => (
                     <TableRow key={detail.id}>
                       <TableCell>{detail.question}</TableCell>
-                      <TableCell>{detail.branch}</TableCell>
+                      <TableCell>{detail.branchName}</TableCell>
                       <TableCell>
                         <IconButton
                           color="primary"
