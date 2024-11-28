@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Grid,
   Typography,
@@ -29,10 +29,17 @@ import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns"; // Use date-fns for date formatting
+import axios from "axios";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -43,6 +50,7 @@ const poppins = Poppins({
 });
 
 const ReadyToShip = () => {
+  const dateRef = useRef(null);
   const [startDate, setStartDate] = useState(dayjs(null));
   const [endDate, setEndDate] = useState(dayjs(null));
   const [state, setState] = useState("");
@@ -51,9 +59,12 @@ const ReadyToShip = () => {
   const [openDialog, setOpenDialog] = useState(false); // State for dialog visibility
   const router = useRouter();
   const [pickupPoint, setPickupPoint] = useState("");
+  const [dateRange, setDateRange] = useState("");
   const handlePickupPoint = (event) => {
     setPickupPoint(event.target.value);
   };
+  const [selectedDateRange, setSelectedDateRange] = useState([null, null]);
+  const [formattedRange, setFormattedRange] = useState("");
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue);
@@ -142,9 +153,57 @@ const ReadyToShip = () => {
   };
 
   const handleSubmit = () => {
-    console.log('Form submitted');
+    console.log("Form submitted");
     handleCloseDialog();
   };
+  const handleDate = (e) => {
+    const value = e.target.value;
+    setSelectedDateRange(value);
+    console.log(value);
+  };
+
+  const handleDateChange = (dates) => {
+    const [start, end] = dates;
+    setSelectedDateRange(dates);
+
+    if (start && end) {
+      const formattedStart = format(start, "yyyy-MM-dd");
+      const formattedEnd = format(end, "yyyy-MM-dd");
+      const range = `${formattedStart} ${formattedEnd}`;
+      setFormattedRange(range);
+      console.log("Formatted Date Range:", range); // Log the formatted range
+    }
+  };
+
+const submitFilter = () => {
+  console.log(formattedRange);
+
+  // Make the axios request with the formatted range
+  let data = JSON.stringify({
+    "date_range": formattedRange,
+  });
+
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'http://127.0.0.1:8000/api/filter-orders/',
+    headers: {
+      'Authorization': 'Token 14879295452dc35b141d6192b65ad3fd2fcd23dd',
+      'Content-Type': 'application/json',
+      'Cookie': 'csrftoken=t6HKYjj0bqAjpc1lANlZxbiwS1kD4KxI',
+    },
+    data: data,
+  };
+
+  axios.request(config)
+    .then((response) => {
+      setFilteredRows(response.data.results)
+      console.log("Response Data:", JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log("Error:", error);
+    });
+};
 
   return (
     <Grid container spacing={2} p={3}>
@@ -283,60 +342,44 @@ const ReadyToShip = () => {
                   </Select>
                 </Grid>
 
-                <Grid item xs={12} sm={3}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <CustomLabel htmlFor="Start Date">Start Date</CustomLabel>
-                    <DatePicker
-                      label="Start Date"
-                      value={startDate}
-                      onChange={handleStartDateChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                              {
-                                borderColor: "#212121",
-                                height: "55px",
-                              },
-                            "& .MuiFormLabel-root.Mui-error": {
-                              color: "#212121",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </LocalizationProvider>
-                </Grid>
-
-                <Grid item xs={12} sm={3}>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <CustomLabel htmlFor="End Date">End Date</CustomLabel>
-                    <DatePicker
-                      label="End Date"
-                      value={endDate}
-                      onChange={handleEndDateChange}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                              {
-                                borderColor: "#212121",
-                                height: "55px",
-                              },
-                            "& .MuiFormLabel-root.Mui-error": {
-                              color: "#212121",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </LocalizationProvider>
+                <Grid item xs={12} sm={3} md={3}>
+                  <CustomLabel htmlFor="date_range" required>
+                    Date Range
+                  </CustomLabel>
+                  <Grid
+                    container
+                    alignItems="center"
+                    style={{
+                      backgroundColor: "#fff",
+                      padding: "8px",
+                      borderRadius: "4px",
+                      border: "1px solid black",
+                    }}
+                  >
+                    <Grid item xs={11}>
+                      <DatePicker
+                        selected={selectedDateRange[0]}
+                        startDate={selectedDateRange[0]}
+                        endDate={selectedDateRange[1]}
+                        onChange={handleDateChange}
+                        selectsRange
+                        inline
+                        placeholderText="Select date range"
+                      />
+                    </Grid>
+                    <Grid item xs={1} container justifyContent="center">
+                      <CalendarMonthIcon
+                        style={{
+                          fontSize: "35px",
+                          color: "white",
+                          backgroundColor: "#405189",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          padding: "4px",
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
 
                 <Grid item xs={12} sm={3}>
@@ -353,7 +396,7 @@ const ReadyToShip = () => {
                       },
                       fontFamily: poppins.style.fontFamily,
                     }}
-                    onClick={filterDataByDate}
+                    onClick={submitFilter}
                   >
                     Submit
                   </Button>
@@ -426,10 +469,10 @@ const ReadyToShip = () => {
                           </TableCell>
                           <TableCell>{row.id}</TableCell>
                           <TableCell>{row.order_id}</TableCell>
-                          <TableCell>{row.name}</TableCell>
-                          <TableCell>{row.city}</TableCell>
-                          <TableCell>{row.product}</TableCell>
-                          <TableCell>{row.order_date}</TableCell>
+                          <TableCell>{row.customer_name}</TableCell>
+                          <TableCell>{row.customer_city}</TableCell>
+                          <TableCell>{row.order_wayBill}</TableCell>
+                          <TableCell>{row.created_at}</TableCell>
                         </TableRow>
                       ))
                     ) : (
@@ -497,7 +540,6 @@ const ReadyToShip = () => {
         </Grid>
       </Grid>
 
-
       {/* Dialog */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Selected Shipment Channels</DialogTitle>
@@ -516,7 +558,8 @@ const ReadyToShip = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleSubmit}>
+                onClick={handleSubmit}
+              >
                 Submit
               </Button>
             </Grid>
@@ -528,10 +571,6 @@ const ReadyToShip = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
-
-
-
     </Grid>
   );
 };
