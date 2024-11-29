@@ -26,6 +26,7 @@ export const auth_role_group = '/api/auth-role-group/';
 export const submenu = '/api/submenu/';
 export const ip = '/api/add-ip-forlogin/';
 export const qc = '/api/qc/';
+export const pixel_code = '/api/pixel-code/';
 export const courier_service = '/api/courier-service/';
 export const top_buying_state = '/api/top-buying-state/';
 export const pickup_point = '/api/pick-up-point/';
