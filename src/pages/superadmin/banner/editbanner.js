@@ -4,9 +4,9 @@ import Layout from "@/components/Layout";
 import { usePermissions } from "@/contexts/PermissionsContext";
 
 import Loader from "@/components/Loader";
-import Banner from "@/components/banner/Banner";
+import EditBannerLayout from "@/components/banner/EditBanner";
 
-const Index = () => {
+const EditBanner = () => {
   const { permissionsData, permissionLoading } = usePermissions();
   const router = useRouter();
 
@@ -15,18 +15,15 @@ const Index = () => {
       router.push("/login");
     }
   }, [permissionLoading, permissionsData, router]);
-
   if (permissionLoading) return <Loader />;
-
   if (permissionsData?.role === "superadmin") {
     return (
       <Layout type="superadmin">
-        <Banner />
+        <EditBannerLayout />
       </Layout>
     );
   }
-
   return null;
 };
 
-export default Index;
+export default EditBanner;

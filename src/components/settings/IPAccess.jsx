@@ -42,7 +42,6 @@ const IPAccess = () => {
 
   const { permissionsData } = usePermissions();
 
-  
   const handleInputChange = (field) => (event) => {
     setInputValues((prevValues) => ({
       ...prevValues,
@@ -50,7 +49,6 @@ const IPAccess = () => {
     }));
   };
 
- 
   const validateForm = () => {
     const tempErrors = {};
     if (!inputValues.ip_from) tempErrors.ip_from = "Login place is required.";
@@ -59,7 +57,6 @@ const IPAccess = () => {
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,7 +91,6 @@ const IPAccess = () => {
     }
   };
 
- 
   const fetchIPDetails = async () => {
     try {
       const token = getToken();
@@ -107,7 +103,6 @@ const IPAccess = () => {
     }
   };
 
-
   const handleEditClick = (id, detail) => {
     setInputValues({
       ip_from: detail.ip_from,
@@ -118,7 +113,6 @@ const IPAccess = () => {
     setEditId(id);
   };
 
- 
   const handleDeleteClick = (id) => {
     setIPToDelete(id);
     setOpenDeleteDialog(true);
@@ -139,7 +133,11 @@ const IPAccess = () => {
     }
   };
 
-  
+  const getBranchName = (branchId) => {
+    const branch = branchData?.results.find((b) => b.id === branchId);
+    return branch ? branch.name : "Unknown";
+  };
+
   useEffect(() => {
     fetchIPDetails();
   }, []);
@@ -238,7 +236,7 @@ const IPAccess = () => {
                     <TableRow key={detail.id}>
                       <TableCell>{detail.ip_from}</TableCell>
                       <TableCell>{detail.ip_address}</TableCell>
-                      <TableCell>{detail.branch}</TableCell>
+                      <TableCell>{getBranchName(detail.branch)}</TableCell>
                       <TableCell>
                         <IconButton
                           color="primary"
