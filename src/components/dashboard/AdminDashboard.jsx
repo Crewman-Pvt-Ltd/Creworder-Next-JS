@@ -193,7 +193,18 @@ const AdminDashboard = () => {
             </Grid>
           ))}
         </Grid>
+      <Grid container spacing={1}>
+        {tilesTypes.map((tile, index) => (
+          <Grid item xs={12} sm={6} md={2.4} key={index} mt={1}>
+            <Tile
+              title={tile.title}
+              count={tile.count}
+              imageUrl={tile.imageUrl}
+            />
+          </Grid>
+        ))}
       </Grid>
+    </Grid>
 
       <Grid item>
         <Grid container spacing={2}>
