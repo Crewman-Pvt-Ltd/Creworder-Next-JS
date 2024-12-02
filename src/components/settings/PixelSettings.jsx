@@ -54,9 +54,12 @@ const PixelSettings = () => {
   // Validate the form before submission
   const validateForm = () => {
     const tempErrors = {};
-    if (!inputValues.google_analytics_code) tempErrors.google_analytics_code = "google_analytics_code is required.";
-    if (!inputValues.meta_pexel_code) tempErrors.meta_pexel_code = "meta_pexel_code is required.";
-    if (!inputValues.other_pexel_code) tempErrors.other_pexel_code = "other_pexel_code is required.";
+    if (!inputValues.google_analytics_code)
+      tempErrors.google_analytics_code = "google_analytics_code is required.";
+    if (!inputValues.meta_pexel_code)
+      tempErrors.meta_pexel_code = "meta_pexel_code is required.";
+    if (!inputValues.other_pexel_code)
+      tempErrors.other_pexel_code = "other_pexel_code is required.";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
@@ -69,7 +72,7 @@ const PixelSettings = () => {
     const payload = {
       google_analytics_code: inputValues.google_analytics_code,
       meta_pexel_code: inputValues.meta_pexel_code,
-      other_pexel_code: inputValues.other_pexel_code
+      other_pexel_code: inputValues.other_pexel_code,
     };
 
     try {
@@ -92,7 +95,6 @@ const PixelSettings = () => {
     }
   };
 
- 
   const fetchPixelSettings = async () => {
     try {
       const token = getToken();
@@ -107,7 +109,11 @@ const PixelSettings = () => {
 
   // Reset form and edit mode
   const resetForm = () => {
-    setInputValues({ google_analytics_code: "", meta_pexel_code: "",other_pexel_code: "" });
+    setInputValues({
+      google_analytics_code: "",
+      meta_pexel_code: "",
+      other_pexel_code: "",
+    });
     setEditMode(false);
     setEditId(null);
   };
@@ -123,13 +129,14 @@ const PixelSettings = () => {
     setEditId(id);
   };
 
-  // Handle delete action
+  
   const handleDeleteClick = (id) => {
     setItemToDelete(id);
     setOpenDeleteDialog(true);
+    setDataSaved(true);
   };
 
-  // Confirm and delete item
+
   const handleDeleteConfirm = async () => {
     try {
       const token = getToken();
@@ -151,7 +158,7 @@ const PixelSettings = () => {
 
   return (
     <Grid container spacing={2}>
-      {/* Add/Edit Pixel Form */}
+     
       <Grid item xs={12}>
         <Card>
           <CardContent>
@@ -160,7 +167,6 @@ const PixelSettings = () => {
             </Typography>
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
-             
                 <Grid item xs={4}>
                   <TextField
                     label="Google Analytics"
@@ -186,18 +192,23 @@ const PixelSettings = () => {
                   />
                 </Grid>
                 <Grid item xs={4}>
-                <TextField
-                  label="Other Pixel Code"
-                  value={inputValues.other_pexel_code}
-                  onChange={handleInputChange("other_pexel_code")}
-                  error={!!errors.other_pexel_code}
-                  helperText={errors.other_pexel_code}
-                  fullWidth
-                  required
-                />
+                  <TextField
+                    label="Other Pixel Code"
+                    value={inputValues.other_pexel_code}
+                    onChange={handleInputChange("other_pexel_code")}
+                    error={!!errors.other_pexel_code}
+                    helperText={errors.other_pexel_code}
+                    fullWidth
+                    required
+                  />
+                </Grid>
               </Grid>
-              </Grid>
-              <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2 }}
+              >
                 {editMode ? "Update" : "Save"}
               </Button>
             </form>
@@ -205,7 +216,7 @@ const PixelSettings = () => {
         </Card>
       </Grid>
 
-      {/* Pixel Settings Table */}
+      
       <Grid item xs={12}>
         <Card>
           <CardContent>
@@ -216,22 +227,22 @@ const PixelSettings = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                  <TableCell>Google Analytics</TableCell>
+                    <TableCell>Google Analytics</TableCell>
                     <TableCell>Meta Pixel Code</TableCell>
                     <TableCell>Other Pixel Code</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {data?.map((row, index) => (
+                  {data?.map((row) => (
                     <TableRow key={row.id}>
-                    <TableCell>{row.google_analytics_code}</TableCell>
+                      <TableCell>{row.google_analytics_code}</TableCell>
                       <TableCell>{row.meta_pexel_code}</TableCell>
                       <TableCell>{row.other_pexel_code}</TableCell>
                       <TableCell>
                         <IconButton
                           color="primary"
-                          onClick={() => handleEditClick(row.id, detail)}
+                          onClick={() => handleEditClick(row.id, row)} 
                         >
                           <Edit />
                         </IconButton>
@@ -252,7 +263,10 @@ const PixelSettings = () => {
       </Grid>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+      >
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
