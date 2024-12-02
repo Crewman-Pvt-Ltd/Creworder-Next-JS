@@ -26,7 +26,7 @@ import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import useGetAllPixelCode from "@/api-manage/react-query/useGetAllPixelCode";
 import { usePermissions } from "@/contexts/PermissionsContext";
-
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 const PixelSettings = () => {
   const { data, refetch } = useGetAllPixelCode();
   const [inputValues, setInputValues] = useState({
@@ -129,14 +129,13 @@ const PixelSettings = () => {
     setEditId(id);
   };
 
-  
+  // Handle delete action
   const handleDeleteClick = (id) => {
     setItemToDelete(id);
     setOpenDeleteDialog(true);
-    setDataSaved(true);
   };
 
-
+  // Confirm and delete item
   const handleDeleteConfirm = async () => {
     try {
       const token = getToken();
@@ -158,7 +157,7 @@ const PixelSettings = () => {
 
   return (
     <Grid container spacing={2}>
-     
+      {/* Add/Edit Pixel Form */}
       <Grid item xs={12}>
         <Card>
           <CardContent>
@@ -168,39 +167,99 @@ const PixelSettings = () => {
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>
                 <Grid item xs={4}>
-                  <TextField
-                    label="Google Analytics"
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "4px",
+                      fontSize: "0.875rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Google Analytics
+                  </label>
+                  <TextareaAutosize
                     value={inputValues.google_analytics_code}
                     onChange={handleInputChange("google_analytics_code")}
-                    error={!!errors.google_analytics_code}
-                    helperText={errors.google_analytics_code}
-                    fullWidth
-                    required
+                    style={{
+                      width: "100%",
+                      borderRadius: "4px",
+                      border: "1px solid rgba(0, 0, 0, 0.23)",
+                      padding: "8px",
+                      fontSize: "1rem",
+                      outline: "none",
+                      resize: "none",
+                    }}
+                    minRows={1} // Minimum height
                   />
+                  {errors.google_analytics_code && (
+                    <span style={{ color: "#d32f2f", fontSize: "0.75rem" }}>
+                      {errors.google_analytics_code}
+                    </span>
+                  )}
                 </Grid>
 
-                {/* Branch Dropdown */}
                 <Grid item xs={4}>
-                  <TextField
-                    label="Meta Pixel Code"
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "4px",
+                      fontSize: "0.875rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Meta Pixel Code
+                  </label>
+                  <TextareaAutosize
                     value={inputValues.meta_pexel_code}
                     onChange={handleInputChange("meta_pexel_code")}
-                    error={!!errors.meta_pexel_code}
-                    helperText={errors.meta_pexel_code}
-                    fullWidth
-                    required
+                    style={{
+                      width: "100%",
+                      borderRadius: "4px",
+                      border: "1px solid rgba(0, 0, 0, 0.23)",
+                      padding: "8px",
+                      fontSize: "1rem",
+                      outline: "none",
+                      resize: "none",
+                    }}
+                    minRows={1}
                   />
+                  {errors.meta_pexel_code && (
+                    <span style={{ color: "#d32f2f", fontSize: "0.75rem" }}>
+                      {errors.meta_pexel_code}
+                    </span>
+                  )}
                 </Grid>
+
                 <Grid item xs={4}>
-                  <TextField
-                    label="Other Pixel Code"
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "4px",
+                      fontSize: "0.875rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Other Pixel Code
+                  </label>
+                  <TextareaAutosize
                     value={inputValues.other_pexel_code}
                     onChange={handleInputChange("other_pexel_code")}
-                    error={!!errors.other_pexel_code}
-                    helperText={errors.other_pexel_code}
-                    fullWidth
-                    required
+                    style={{
+                      width: "100%",
+                      borderRadius: "4px",
+                      border: "1px solid rgba(0, 0, 0, 0.23)",
+                      padding: "8px",
+                      fontSize: "1rem",
+                      outline: "none",
+                      resize: "none",
+                    }}
+                    minRows={1}
                   />
+                  {errors.other_pexel_code && (
+                    <span style={{ color: "#d32f2f", fontSize: "0.75rem" }}>
+                      {errors.other_pexel_code}
+                    </span>
+                  )}
                 </Grid>
               </Grid>
               <Button
@@ -216,7 +275,7 @@ const PixelSettings = () => {
         </Card>
       </Grid>
 
-      
+      {/* Pixel Settings Table */}
       <Grid item xs={12}>
         <Card>
           <CardContent>
@@ -242,7 +301,7 @@ const PixelSettings = () => {
                       <TableCell>
                         <IconButton
                           color="primary"
-                          onClick={() => handleEditClick(row.id, row)} 
+                          onClick={() => handleEditClick(row.id, row)} // Pass the correct data (row)
                         >
                           <Edit />
                         </IconButton>
