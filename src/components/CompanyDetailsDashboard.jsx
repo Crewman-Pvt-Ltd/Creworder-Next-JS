@@ -55,7 +55,7 @@ const configuration = {
   },
   mostUsers: {
     title: "Companies with Most Users",
-    headers: ["#", "Company Name", "Total Users", "Employees", "Clients"],
+    headers: ["#", "Company Name", "Total Users", "Employees"],
     mapRow: ({ id, company_image, name, total_users, employees, clients }, index) => ({
       id,
       company_image,
@@ -89,7 +89,7 @@ const configuration = {
   },
   packageCompanyCount: {
     title: "Package Company Count",
-    headers: ["#", "Name", "Total Companies"],
+    headers: ["#", "Name", "Total Companies", "Total Companies"],
     mapRow: ({ id, company_image, name, total_companies }) => ({
       id,
       company_image,
@@ -116,7 +116,6 @@ const CompanyDetailsdashboard = ({ type }) => {
   const { title, headers, mapRow } = configuration[type] || {};
   if (!title) return null;
 
-  // Check if `data` is an array; otherwise, access `data.results` if needed
   const rows = (data && Array.isArray(data) ? data.map(mapRow) : data?.results?.map(mapRow)) || [];
 
   const handleChangePage = (event, newPage) => {

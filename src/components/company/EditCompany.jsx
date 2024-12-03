@@ -35,6 +35,7 @@ const EditCompany = () => {
     company_website: "",
     company_address: "",
     package_name: "",
+    package: "",
     payment_mode: "",
     amount: "",
     paymentDate: "",
@@ -100,7 +101,6 @@ const EditCompany = () => {
     const { name, value } = e.target;
 
     if (name === "payment_mode") {
-      // Handle payment mode change separately
       handlePaymentMode(e);
     } else {
       setFormData(prevFormData => ({
@@ -143,7 +143,29 @@ const EditCompany = () => {
       setError("An error occurred while updating the company");
     }
   };
-
+  const addKeyToFormData = (pdata) => {
+    console.log(pdata); 
+    
+    let amountp
+    const selectedPackage1 = data?.find((pkg) => pkg.id === pdata.package);
+    console.log(selectedPackage1)
+    if(pdata.payment_mode=='month'){
+       amountp=selectedPackage1.monthly_price
+    }
+    if(pdata.payment_mode=='quarter'){
+       amountp=selectedPackage1.quarterly_price
+    }
+    if(pdata.payment_mode=='annual'){
+       amountp=selectedPackage1.annual_price
+    }
+    console.log(selectedPackage1);
+    
+    setFormData((prevData) => ({
+      ...prevData,
+      amount: amountp,
+    }));
+  };
+    
   useEffect(() => {
     if (id) {
       const fetchCompany = async () => {
@@ -153,7 +175,6 @@ const EditCompany = () => {
           if (!token) {
             throw new Error("No authentication token found.");
           }
-
           const response = await MainApi.get(`/api/companies/${id}`, {
             headers: {
               Authorization: `Token ${token}`,
@@ -162,6 +183,7 @@ const EditCompany = () => {
 
           if (response.status === 200) {
             setFormData(response.data);
+            addKeyToFormData(response.data);
           } else {
             console.error("Failed to fetch the company");
             setError("Failed to fetch the company");
@@ -177,7 +199,8 @@ const EditCompany = () => {
       fetchCompany();
     }
   }, [id]);
-
+  // console.log(formData)
+  // console.log(data)
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12}>
@@ -311,6 +334,7 @@ const EditCompany = () => {
             </Typography>
 
             <Grid container spacing={2}>
+
             <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="package" required>
                     Package Name
@@ -319,6 +343,7 @@ const EditCompany = () => {
                   name="package"
                    sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
                    onChange={handlePackageChange}
+                   value={formData.package}
                   >
                     <MenuItem value="" disabled>
                       Select Package
@@ -336,6 +361,7 @@ const EditCompany = () => {
                     )}
                   </Select>
                 </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="payment_mode" required>
                     Payment Mode
@@ -368,7 +394,7 @@ const EditCompany = () => {
                   fullWidth
                   value={formData.amount}
                   readOnly
-                />
+                /> 
               </Grid>
             </Grid>
 

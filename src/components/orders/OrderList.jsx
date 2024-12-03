@@ -27,11 +27,12 @@ import {
   DialogActions,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
+import { Tooltip } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import Link from "next/link";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 import CallIcon from "@mui/icons-material/Call";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
@@ -102,11 +103,7 @@ const OrderList = () => {
 
   const [dateRange, setDateRange] = useState([null, null]);
 
-  const rows = [
-    {
-      
-    },
-  ];
+  const rows = [{}];
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue);
@@ -143,11 +140,16 @@ const OrderList = () => {
     router.push(`/admin/orders/editorders?id=${id}`);
   };
 
+  const getFirst20Words = (text) => {
+    const words = text.split(" "); // Split the text by spaces
+    return words.length > 20 ? words.slice(0, 20).join(" ") : text; // Return the first 20 words or the entire text if it's less than 20
+  };
+
   return (
     <Grid container spacing={2} p={3}>
       <Grid item xs={12}>
         <CustomCard padding="13px">
-        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
               <Typography
                 sx={{
@@ -156,14 +158,14 @@ const OrderList = () => {
                   whiteSpace: "nowrap",
                   textTransform: "capitalize",
                   color: "black",
-                  marginLeft: "30px"
+                  marginLeft: "30px",
                 }}
               >
                 Order List
               </Typography>
             </Grid>
             <Grid item>
-            <Button
+              <Button
                 onClick={createOrder}
                 sx={{
                   padding: "8px",
@@ -446,19 +448,29 @@ const OrderList = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Sr.</strong> </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                    <strong> Order ID</strong>
+                      <strong>Sr.</strong>{" "}
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                    <strong>Customer Name</strong>
+                      <strong> Order ID</strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>City</strong></TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Product</strong></TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Amount</strong></TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Agent</strong></TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                    <strong>Order Status</strong>
+                      <strong>Customer Name</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>City</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Product</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Amount</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Agent</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Order Status</strong>
                     </TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       <strong>Payment Mode</strong>
@@ -466,24 +478,31 @@ const OrderList = () => {
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       <strong>Order Date</strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}> <strong>Remark </strong></TableCell>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                       <strong>C.C Call</strong>
+                      {" "}
+                      <strong>Remark </strong>
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}><strong>Action</strong></TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>C.C Call</strong>
+                    </TableCell>
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      <strong>Action</strong>
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {data?.Data.map((row, index) => (
+                  {data?.Data.map((row, index) => (
                     <TableRow key={row.id}>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.id}.
                       </TableCell>
-                       <TableCell sx={{ whiteSpace: "nowrap", cursor: 'pointer' }}>
+                      <TableCell
+                        sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                      >
                         <Link href={`/admin/orders/order-details?Id=${row.id}`}>
-                        <b>{row.order_id}</b>
+                          <b>{row.order_id}</b>
                         </Link>
-                        </TableCell>
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.customer_name}
                       </TableCell>
@@ -491,27 +510,42 @@ const OrderList = () => {
                         {row.customer_city}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      {row.product_details[0]?.product_name}
+                        {row.product_details[0]?.product_name}
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>{row.total_amount}</TableCell>
+                      <TableCell sx={{ whiteSpace: "nowrap" }}>
+                        {row.total_amount}
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.order_created_by_username}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        <Button 
-                              variant="contained" 
-                              sx={{ backgroundColor: "orange", color: "black" }}>
-                              {row.order_status_title}
+                        <Button
+                          variant="contained"
+                          sx={{ backgroundColor: "orange", color: "black" }}
+                        >
+                          {row.order_status_title}
                         </Button>
-                        </TableCell>
+                      </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         {row.payment_mode}
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {format(new Date(row.created_at), 'yyyy-MM-dd HH:mm:ss')}
+                        {format(
+                          new Date(row.created_at),
+                          "yyyy-MM-dd HH:mm:ss"
+                        )}
                       </TableCell>
-                      <TableCell sx={{ whiteSpace: "nowrap" }}>
-                        {row.order_remark}
+                      <TableCell
+                        sx={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          maxWidth: "300px",
+                        }}
+                      >
+                        <Tooltip title={row.order_remark} arrow>
+                          <span>{getFirst20Words(row.order_remark)}</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
                         <IconButton aria-label="call" sx={{ color: "green" }}>
@@ -519,14 +553,13 @@ const OrderList = () => {
                         </IconButton>
                       </TableCell>
                       <TableCell sx={{ whiteSpace: "nowrap" }}>
-                       
                         <IconButton
-                            onClick={() => handleEdit(row.id)}
-                            aria-label="edit"
-                            sx={{ color: "green" }}
-                          >
-                            <EditIcon sx={{ color: "green" }} />
-                          </IconButton>
+                          onClick={() => handleEdit(row.id)}
+                          aria-label="edit"
+                          sx={{ color: "green" }}
+                        >
+                          <EditIcon sx={{ color: "green" }} />
+                        </IconButton>
                         <IconButton
                           aria-label="delete"
                           sx={{ color: "#FF0000" }}
@@ -553,7 +586,7 @@ const OrderList = () => {
             {questions.map((q, index) => (
               <Box key={index} sx={{ marginBottom: 3 }}>
                 <Typography variant="h6">
-                  {index + 1}. {q.question} {/* Add ID here */}
+                  {index + 1}. {q.question}
                 </Typography>
                 <Rating
                   name={`rating-${index}`}
