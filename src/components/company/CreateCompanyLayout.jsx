@@ -54,7 +54,7 @@ const CreateCompanyLayout = () => {
 
     const handlePackageChange = (e) => {
       const {value} = e.target;
-      data?.results.forEach(element => {
+      data?.forEach(element => {
         if(element.id == value){
           setPackages(element);
           setFormData({
@@ -74,7 +74,7 @@ const CreateCompanyLayout = () => {
       else if (value == "quarter"){
         frequency = "quarterly_price"
       }
-      else if (value == "half"){
+      else if (value == "annual"){
         frequency = "annual_price"
       }
       const amt = packages[frequency];
@@ -164,7 +164,6 @@ const CreateCompanyLayout = () => {
                 Add Company
               </Typography>
               <Divider sx={{ my: 2 }} />
-
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="name" required>
@@ -206,12 +205,13 @@ const CreateCompanyLayout = () => {
                     id="company_phone"
                     name="company_phone"
                     type="tel"
-                    placeholder="1234567890"
+                    placeholder="e.g +919xxxxxxxx000"
                     fullWidth
                     value={formData.company_phone}
                     onChange={handleInputChange}
                     error={!!formErrors.company_phone}
                     helperText={formErrors.company_phone}
+                    inputProps={{ maxLength: 13 }}
                   />
                 </Grid>
               </Grid>
@@ -249,6 +249,8 @@ const CreateCompanyLayout = () => {
                     onChange={handleInputChange}
                     error={!!formErrors.company_address}
                     helperText={formErrors.company_address}
+                    multiline
+                    rows={3}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -335,8 +337,6 @@ const CreateCompanyLayout = () => {
                   </Select>
                 </Grid>
 
-
-
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="amount" required>
                     Amount
@@ -345,7 +345,7 @@ const CreateCompanyLayout = () => {
                     id="amount"
                     name="amount"
                     type="number"
-                    placeholder="e.g. 500"
+                    placeholder="e.g. +91-9800 XXXXX2"
                     fullWidth
                     readOnly
                     value={packageAmount}
@@ -445,6 +445,7 @@ const CreateCompanyLayout = () => {
                     onChange={handleInputChange}
                     error={!!formErrors.contact}
                     helperText={formErrors.contact}
+                    inputProps={{ maxLength: 13 }}
                   />
                 </Grid>
               </Grid>
