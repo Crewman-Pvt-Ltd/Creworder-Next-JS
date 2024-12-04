@@ -116,7 +116,6 @@ const Sidebar = ({ isOpen, type }) => {
     try {
       const data = await fetchSideBarData();
       setsideBarDataList(data);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching sidebar data:", error);
     }
