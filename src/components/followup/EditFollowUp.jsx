@@ -1,11 +1,5 @@
-import React, { useState } from "react";
-import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
-import { useRouter } from "next/router";
-import { getToken } from "@/utils/getToken";
-import MainApi from "@/api-manage/MainApi";
-import { usePermissions } from "@/contexts/PermissionsContext";
-import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import CustomCard from "../CustomCard";
 import {
   Typography,
   Button,
@@ -13,10 +7,18 @@ import {
   Card,
   CardContent,
   Divider,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
+import CustomTextField from "../CustomTextField";
+import CustomLabel from "../CustomLabel";
+import MainApi from "@/api-manage/MainApi";
+import { useRouter } from "next/router";
+import { getToken } from "@/utils/getToken";
+import { usePermissions } from "@/contexts/PermissionsContext";
 
-const CreateFollowUp = () => {
-  const router = useRouter();
+const EditFollowUp = () => {
   const { permissionsData } = usePermissions();
   const [formData, setFormData] = useState({
     customer_name: "",
@@ -27,63 +29,85 @@ const CreateFollowUp = () => {
     call_id: "",
     description: "",
     user: 1,
-    follow_add_by: permissionsData?.user?.id || "",
+    follow_addedBy: permissionsData?.user?.id || "",
   });
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { id } = router.query; 
+  const token = getToken();
 
-  const validateForm = () => {
-    let formErrors = {};
-    Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
-        formErrors[key] = "This field is required";
-      }
-    });
-    setErrors(formErrors);
-    return Object.keys(formErrors).length === 0;
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [field]: value,
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
     }));
-    if (value) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [field]: "",
-      }));
-    }
+    // console.log("Updated Form Data", formData);
   };
 
-  const handleSubmit = async () => {
 
-    if (validateForm()) {
-      try {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        const token = getToken();
-        if (!token) {
-          throw new Error("No authentication token found.");
-        }
-        const form = new FormData();
-        Object.keys(formData).forEach((key) => {
-          form.append(key, formData[key]);
-        });
+    try {
+      const response = await MainApi.put(`/api/follow-up/${id}/`, formData, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
 
-        const response = await MainApi.post("/api/follow-up/", form, {
-          headers: {
-            Authorization: `Token ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        if (response.status === 201) {
-          router.push("/followup");
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error.response?.data || error.message);
+      if (response.status === 200) {
+        // console.log("data",response.data);
+        router.push("/followup");
+      } else {
+        throw new Error("Error updating FollowUp");
       }
+    } catch (error) {
+      console.error("Error updating FollowUp:", error);
     }
   };
+
+  // Fetch the follow-up data by ID
+  useEffect(() => {
+    if (id) {
+      const fetchFollowUp = async () => {
+        setLoading(true);
+        try {
+          const response = await MainApi.get(`/api/follow-up/${id}/`, {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          });
+          if (response.status === 200) {
+            console.log("data",response.data);
+            setFormData({
+              customer_name: response.data.customer_name,
+              customer_phone: response.data.customer_phone,
+              reminder_date: response.data.reminder_date,
+              follow_status: response.data.follow_status,
+              snooze: response.data.snooze,
+              call_id: response.data.call_id,
+              description: response.data.description,
+              user: response.data.user || 1,
+              follow_addedBy: permissionsData?.user?.id,
+            });
+          } else {
+            throw new Error("Unexpected response from server");
+          }
+        } catch (error) {
+          console.error("Error fetching follow-up data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchFollowUp();
+    }
+  }, [id, token, permissionsData?.user?.id]);
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Grid container sx={{ padding: 3 }}>
@@ -92,7 +116,7 @@ const CreateFollowUp = () => {
           <CardContent>
             <Grid item>
               <Typography sx={{ fontSize: "16px", fontWeight: "600" }}>
-                Add Follow Up
+                Edit Follow Up
               </Typography>
             </Grid>
             <Divider sx={{ my: 2 }} />
@@ -115,11 +139,7 @@ const CreateFollowUp = () => {
                   placeholder="Customer Name"
                   type="text"
                   value={formData.customer_name}
-                  onChange={(e) =>
-                    handleInputChange("customer_name", e.target.value)
-                  }
-                  error={!!errors.customer_name}
-                  helperText={errors.customer_name}
+                  onChange={handleChange}
                   required
                   fullWidth
                 />
@@ -134,16 +154,13 @@ const CreateFollowUp = () => {
                   placeholder="Customer Phone"
                   type="text"
                   value={formData.customer_phone}
-                  onChange={(e) =>
-                    handleInputChange("customer_phone", e.target.value)
-                  }
-                  error={!!errors.customer_phone}
-                  helperText={errors.customer_phone}
+                  onChange={handleChange}
                   required
                   fullWidth
                 />
               </Grid>
             </Grid>
+
             <Grid
               item
               sx={{
@@ -154,7 +171,7 @@ const CreateFollowUp = () => {
               }}
             >
               <Grid item xs={3}>
-                <CustomLabel htmlFor="Call Id" required>
+                <CustomLabel htmlFor="call_id" required>
                   Call Id :
                 </CustomLabel>
                 <CustomTextField
@@ -163,9 +180,7 @@ const CreateFollowUp = () => {
                   placeholder="Call Id"
                   type="text"
                   value={formData.call_id}
-                  onChange={(e) => handleInputChange("call_id", e.target.value)}
-                  error={!!errors.call_id}
-                  helperText={errors.call_id}
+                  onChange={handleChange}
                   required
                   fullWidth
                 />
@@ -176,15 +191,11 @@ const CreateFollowUp = () => {
                 </CustomLabel>
                 <CustomTextField
                   id="reminder_date"
-                  name="Reminder Date"
+                  name="reminder_date"
                   placeholder="Reminder Date and Time"
                   type="datetime-local"
                   value={formData.reminder_date}
-                  onChange={(e) =>
-                    handleInputChange("reminder_date", e.target.value)
-                  }
-                  error={!!errors.reminder_date}
-                  helperText={errors.reminder_date}
+                  onChange={handleChange}
                   required
                   fullWidth
                 />
@@ -195,15 +206,11 @@ const CreateFollowUp = () => {
                   Follow Status :
                 </CustomLabel>
                 <FormControl fullWidth required>
-                 
                   <Select
                     id="follow_status"
                     name="follow_status"
                     value={formData.follow_status}
-                    onChange={(e) =>
-                      handleInputChange("follow_status", e.target.value)
-                    }
-                    error={!!errors.follow_status}
+                    onChange={handleChange}
                   >
                     <MenuItem value="pending">Pending</MenuItem>
                     <MenuItem value="responded">Responded</MenuItem>
@@ -217,13 +224,11 @@ const CreateFollowUp = () => {
                   Snooze :
                 </CustomLabel>
                 <FormControl fullWidth required>
-                 
                   <Select
                     id="snooze"
                     name="snooze"
                     value={formData.snooze}
-                    onChange={(e) => handleInputChange("snooze", e.target.value)}
-                    error={!!errors.snooze}
+                    onChange={handleChange}
                   >
                     <MenuItem value="pending">Pending</MenuItem>
                     <MenuItem value="snooze">Snooze</MenuItem>
@@ -241,21 +246,17 @@ const CreateFollowUp = () => {
                 marginTop: 2,
               }}
             >
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={12}>
                 <CustomLabel htmlFor="description" required>
-                  Description:
+                  Description :
                 </CustomLabel>
                 <CustomTextField
                   id="description"
                   name="description"
+                  placeholder="Description"
                   type="text"
                   value={formData.description}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                  placeholder="description"
-                  error={!!errors.description}
-                  helperText={errors.description}
+                  onChange={handleChange}
                   required
                   fullWidth
                   multiline
@@ -295,4 +296,4 @@ const CreateFollowUp = () => {
   );
 };
 
-export default CreateFollowUp;
+export default EditFollowUp;

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
+import useGetAllFollowUp from "@/api-manage/react-query/useGetAllFollowUP";
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 import {
   Grid,
   Typography,
@@ -9,6 +12,11 @@ import {
   IconButton,
   CardContent,
   TableContainer,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContentText ,
+  DialogContent,
   Table,
   TableHead,
   TableRow,
@@ -16,33 +24,53 @@ import {
   TableBody,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-
-const initialData = [
-  {
-    id: 1,
-    name: "Rahul Kumar",
-    phone: "+91 85952-46884",
-    call_id: "0011",
-    remark: "This setup",
-    reminder_date: "2023-07-14",
-    status: "pending",
-    created: "2023-07-14",
-    
-  },
- 
-];
-
+import {  Edit, Delete } from "@mui/icons-material";
 const FollowUpList = () => {
-  const [data, setData] = useState(initialData);
-const router = useRouter();
+  const { data, refetch } = useGetAllFollowUp();
+  const [open, setOpen] = useState(false);
+  const [followupToDelete, setFollowupToDelete] = useState(null);
+  const router = useRouter();
 
   const handleCreateFollowUp = () => {
     router.push("/followup/createfollowup");
   };
+  const handleEdit = (row) => {
+    router.push(`/followup/editfollowup?id=${row.id}`);
+  };
+  const handleDeleteClick = (id) => {
+    setFollowupToDelete(id);
+    setOpen(true);
+  };
 
-  const handleDelete = (id) => {
-    console.log("Delete", id);
+  const handleDeleteConfirm = async () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+
+      const response = await MainApi.delete(`/api/follow-up/${followupToDelete}`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },    
+      });
+
+      if (response.status === 204) {
+        console.log("FollowUp deleted successfully");
+        refetch();
+      } else {
+        console.error("Failed to delete the followup");
+      }
+    } catch (error) {
+      console.error("An error occurred while deleting the followup:", error);
+    }
+    setOpen(false);
+    setFollowupToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setOpen(false);
+    setFollowupToDelete(null);
   };
 
   const HeaderCell = (props) => (
@@ -121,61 +149,75 @@ const router = useRouter();
             </CustomCard>
           </Grid>
         </Grid>
-       
-            <CustomCard>
-              <CardContent>
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <HeaderCell>ID</HeaderCell>
-                        <HeaderCell>Customer Name</HeaderCell>
-                        <HeaderCell>Customer Phone</HeaderCell>
-                        <HeaderCell>Call ID</HeaderCell>
-                        <HeaderCell>Remark</HeaderCell>
-                        <HeaderCell>Reminder Date</HeaderCell>
-                        <HeaderCell >Status</HeaderCell>
-                        <HeaderCell>Created</HeaderCell>
-                        <HeaderCell>Action</HeaderCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data.map((row, index) => (
-                        <TableRow key={row.id}>
-                          <DataCell>{index + 1}.</DataCell>
-                          <DataCell>{row.name}</DataCell>
-                          <DataCell>{row.phone}</DataCell>
-                          <DataCell>{row.call_id}</DataCell>
-                          <DataCell>{row.remark}</DataCell>
-                          <DataCell>{row.reminder_date}</DataCell>
-                          <DataCell>
-                            <Button
-                              variant="contained"
-                              style={{ backgroundColor: "#213a8b", color: "#fff" }}
-                              // Add your handler function here
-                            >
-                              {row.status}
-                            </Button>
-                          </DataCell>
-                          <DataCell>{row.created}</DataCell>
-                          <TableCell>
-                            <IconButton
-                              onClick={() => handleDelete(row.id)}
-                              aria-label="delete"
-                              sx={{ color: "red" }}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>
-            </CustomCard>
-          </Grid>
-        </Grid>
-     
+
+        <CustomCard>
+          <CardContent>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <HeaderCell>ID</HeaderCell>
+                    <HeaderCell>Customer Name</HeaderCell>
+                    <HeaderCell>Customer Phone</HeaderCell>
+                    <HeaderCell>Call ID</HeaderCell>
+                    <HeaderCell>Reminder Date</HeaderCell>
+                    <HeaderCell>follow_status</HeaderCell>
+                    <HeaderCell>snooze</HeaderCell>
+                    <HeaderCell>Action</HeaderCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data?.results?.map((row, index) => (
+                    <TableRow key={row.id}>
+                      <DataCell>{index + 1}.</DataCell>
+                      <DataCell>{row.customer_name}</DataCell>
+                      <DataCell>{row.customer_phone}</DataCell>
+                      <DataCell>{row.call_id}</DataCell>
+                      <DataCell>{row.reminder_date}</DataCell>
+                      <DataCell>{row.follow_status}</DataCell>
+                      <DataCell>{row.snooze}</DataCell>
+                      
+                      <TableCell>
+                      <IconButton
+                          onClick={() => handleEdit(row)}
+                          aria-label="edit"
+                          sx={{ color: "red" }}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDeleteClick(row.id)}
+                          aria-label="delete"
+                          sx={{ color: 'red' }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </CustomCard>
+      </Grid>
+      <Dialog open={open} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete FollowUp</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this followup? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Grid>
   );
 };
 

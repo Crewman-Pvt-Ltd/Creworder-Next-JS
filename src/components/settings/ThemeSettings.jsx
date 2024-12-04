@@ -9,9 +9,6 @@ import {
   Tooltip,
   IconButton,
   Box,
-  MenuItem,
-  FormControl,
-  Select,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
@@ -27,12 +24,58 @@ const sampleImages = [
 
 const ThemeSettings = () => {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [lightModeLogo, setLightModeLogo] = useState(null);
+  const [darkModeLogo, setDarkModeLogo] = useState(null);
+  const [invoiceLogo, setInvoiceLogo] = useState(null);
+  const [signatureLogo, setSignatureLogo] = useState(null);
+  const handleLightModeChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setLightModeLogo(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
 
+  const handleDarkModeChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setDarkModeLogo(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+  const [logo, setLogo] = useState(null);
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setLogo(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
   const handleTemplateSelect = (index) => {
     setSelectedTemplate(index);
   };
 
+  const handleInvoiceLogoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setInvoiceLogo(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSignatureChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setSignatureLogo(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <CustomCard>
       <CardContent>
@@ -40,17 +83,21 @@ const ThemeSettings = () => {
         <Divider sx={{ my: 2 }} />
 
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={6}>
-            <CustomLabel htmlFor="appname" required>
-              App Name
-            </CustomLabel>
-            <CustomTextField
-              id="appname"
-              name="appname"
-              placeholder="e.g. creworder"
-              type="text"
-              fullWidth
-            />
+          <Grid item xs={12} sm={12} md={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12} md={6}>
+                <CustomLabel htmlFor="appname" required>
+                  App Name
+                </CustomLabel>
+                <CustomTextField
+                  id="appname"
+                  name="appname"
+                  placeholder="e.g. creworder"
+                  type="text"
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} mt={4}>
             <Typography variant="h6" gutterBottom>
@@ -86,12 +133,11 @@ const ThemeSettings = () => {
               ))}
             </Grid>
           </Grid>
-          
           <Grid item xs={12} sm={4} md={4}>
             <Box>
               <Typography variant="body1">
                 Front Website Logo
-                <Tooltip title="Upload your invoice logo here">
+                <Tooltip title="Upload your logo here">
                   <IconButton>
                     <HelpOutlineIcon fontSize="small" />
                   </IconButton>
@@ -102,13 +148,47 @@ const ThemeSettings = () => {
                 justifyContent="center"
                 alignItems="center"
                 height="150px"
-                border="1px dashed grey"
+                border="1px solid grey"
                 borderRadius="4px"
                 mt={2}
+                overflow="hidden"
+                position="relative"
                 sx={{ cursor: "pointer" }}
               >
-                <UploadFileIcon fontSize="large" />
-                <Typography variant="body2">Choose a file</Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    cursor: "pointer",
+                  }}
+                />
+                {logo ? (
+                  <img
+                    src={logo}
+                    alt="Uploaded Logo"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                  >
+                    <UploadFileIcon fontSize="large" />
+                    <Typography variant="body2" color="textSecondary">
+                      Choose a file
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             </Box>
           </Grid>
@@ -130,13 +210,41 @@ const ThemeSettings = () => {
                 border="1px dashed grey"
                 borderRadius="4px"
                 mt={2}
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: "pointer", position: "relative" }}
               >
-                <UploadFileIcon fontSize="large" />
-                <Typography variant="body2">Choose a file</Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLightModeChange}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    cursor: "pointer",
+                  }}
+                />
+                {lightModeLogo ? (
+                  <img
+                    src={lightModeLogo}
+                    alt="Light Mode Logo"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <>
+                    <UploadFileIcon fontSize="large" />
+                    <Typography variant="body2">Choose a file</Typography>
+                  </>
+                )}
               </Box>
             </Box>
           </Grid>
+
+          {/* Dark Mode Logo */}
           <Grid item xs={12} sm={4} md={4}>
             <Box>
               <Typography variant="body1">
@@ -155,13 +263,40 @@ const ThemeSettings = () => {
                 border="1px dashed grey"
                 borderRadius="4px"
                 mt={2}
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: "pointer", position: "relative" }}
               >
-                <UploadFileIcon fontSize="large" />
-                <Typography variant="body2">Choose a file</Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleDarkModeChange}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    cursor: "pointer",
+                  }}
+                />
+                {darkModeLogo ? (
+                  <img
+                    src={darkModeLogo}
+                    alt="Dark Mode Logo"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <>
+                    <UploadFileIcon fontSize="large" />
+                    <Typography variant="body2">Choose a file</Typography>
+                  </>
+                )}
               </Box>
             </Box>
           </Grid>
+
           <Grid item xs={12} sm={6}>
             <Box>
               <Typography variant="body1">
@@ -180,13 +315,41 @@ const ThemeSettings = () => {
                 border="1px dashed grey"
                 borderRadius="4px"
                 mt={2}
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: "pointer", position: "relative" }}
               >
-                <UploadFileIcon fontSize="large" />
-                <Typography variant="body2">Choose a file</Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleInvoiceLogoChange}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    cursor: "pointer",
+                  }}
+                />
+                {invoiceLogo ? (
+                  <img
+                    src={invoiceLogo}
+                    alt="Invoice Logo"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <>
+                    <UploadFileIcon fontSize="large" />
+                    <Typography variant="body2">Choose a file</Typography>
+                  </>
+                )}
               </Box>
             </Box>
           </Grid>
+
+          {/* Authorised Signatory Signature */}
           <Grid item xs={12} sm={6}>
             <Box>
               <Typography variant="body1">
@@ -205,14 +368,39 @@ const ThemeSettings = () => {
                 border="1px dashed grey"
                 borderRadius="4px"
                 mt={2}
-                sx={{ cursor: "pointer" }}
+                sx={{ cursor: "pointer", position: "relative" }}
               >
-                <UploadFileIcon fontSize="large" />
-                <Typography variant="body2">Choose a file</Typography>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSignatureChange}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0,
+                    cursor: "pointer",
+                  }}
+                />
+                {signatureLogo ? (
+                  <img
+                    src={signatureLogo}
+                    alt="Signatory Signature"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <>
+                    <UploadFileIcon fontSize="large" />
+                    <Typography variant="body2">Choose a file</Typography>
+                  </>
+                )}
               </Box>
             </Box>
           </Grid>
-
 
           <Grid item xs={12} sm={12} md={12}>
             <Grid container spacing={2}>
@@ -271,7 +459,7 @@ const ThemeSettings = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={12} mt={2}>
+          {/* <Grid item xs={12} sm={12} md={12} mt={2}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={12}>
                 <Typography
@@ -311,7 +499,7 @@ const ThemeSettings = () => {
                 </div>
               </Grid>
             </Grid>
-          </Grid>
+          </Grid> */}
         </Grid>
 
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
