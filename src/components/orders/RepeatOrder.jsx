@@ -117,7 +117,7 @@ const RepeatOrder = () => {
     axios
       .request(config)
       .then((response) => {
-        setproductList(response.data.results);
+        setproductList(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -248,6 +248,7 @@ const RepeatOrder = () => {
         params: {
           pincode: postalCode,
           mobile: phoneCustomer,
+          re_order:1
         },
       };
 

@@ -243,6 +243,7 @@ const CreateOrder = () => {
         params: {
           pincode: postalCode,
           mobile: phoneCustomer,
+          re_order:0
         },
       };
 

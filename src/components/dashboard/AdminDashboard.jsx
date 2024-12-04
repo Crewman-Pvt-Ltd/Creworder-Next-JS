@@ -19,7 +19,6 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const AdminDashboard = () => {
   const dateRef = useRef(null);
-  //  const [tilesTypes, setTilesTypes] = useState([]);
   const [tilesTypes, setTilesTypes] = useState([]);
 
   useEffect(() => {
@@ -52,9 +51,6 @@ const AdminDashboard = () => {
       setTilesTypes(newTilesTypes);
     }
   }, [data]);
-
-  console.log(tilesTypes);
-
   const LightButton = styled(Button)({
     backgroundColor: "#cc0e0e",
     "&:hover": {

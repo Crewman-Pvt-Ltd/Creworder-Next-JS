@@ -51,7 +51,7 @@ const poppins = Poppins({
 const PincodeOrder = () => {
   const token = getToken();
   const router = useRouter();
-  
+
   const [customerName, setCustomerName] = useState("");
   const [customerFatherName, setCustomerFatherName] = useState("");
   const [phoneCustomer, setPhoneCustomer] = useState("");
@@ -86,7 +86,7 @@ const PincodeOrder = () => {
   const [paymentModeError, setPaymentModeError] = useState(false);
   const [selectedPincode, setSelectedPincode] = useState(null);
   const [orderRemark, setOrderRemark] = useState(null);
-  
+
   const handlePincodeSelection = (pincode) => {
     if (selectedPincode === pincode) {
       setSelectedPincode(null);
@@ -247,6 +247,7 @@ const PincodeOrder = () => {
         params: {
           pincode: postalCode,
           mobile: phoneCustomer,
+          re_order:0,
         },
       };
 
@@ -290,7 +291,7 @@ const PincodeOrder = () => {
       discount: discount,
       prepaid_amount: partialPayment,
       order_remark: orderRemark,
-      repeat_order: 1,
+      repeat_order: 0,
       is_booked: 1,
       customer_state: `${cutomerState}`,
       payment_type: 1,
@@ -355,27 +356,27 @@ const PincodeOrder = () => {
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={4}>
-              <CustomLabel htmlFor="name" required>
-                Agent ID
-              </CustomLabel>
-              <Select
-                labelId="Agent Id"
-                id="AgentId"
-                name="AgentId"
-                value={AgentId}
-                onChange={handleAgentId}
-                displayEmpty // This makes the empty string display as the placeholder
-                sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
-                fullWidth
-              >
-                <MenuItem value="" disabled>
-                  Select Agent
-                </MenuItem>
-                <MenuItem value={1}>Shivam</MenuItem>
-                <MenuItem value={2}>Truevital</MenuItem>
-                <MenuItem value={3}>Crewmans</MenuItem>
-              </Select>
-            </Grid>
+                <CustomLabel htmlFor="name" required>
+                  Agent ID
+                </CustomLabel>
+                <Select
+                  labelId="Agent Id"
+                  id="AgentId"
+                  name="AgentId"
+                  value={AgentId}
+                  onChange={handleAgentId}
+                  displayEmpty // This makes the empty string display as the placeholder
+                  sx={{ fontFamily: "Poppins, sans-serif", height: "50px" }} // Set minHeight
+                  fullWidth
+                >
+                  <MenuItem value="" disabled>
+                    Select Agent
+                  </MenuItem>
+                  <MenuItem value={1}>Shivam</MenuItem>
+                  <MenuItem value={2}>Truevital</MenuItem>
+                  <MenuItem value={3}>Crewmans</MenuItem>
+                </Select>
+              </Grid>
 
               <Grid item xs={12} sm={4}>
                 <CustomLabel htmlFor="Full Name" required>
@@ -419,8 +420,6 @@ const PincodeOrder = () => {
                   placeholder="+91987XXXXXXXX"
                   type="text"
                   fullWidth
-                  inputProps={{ readOnly: true }}
-                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -487,10 +486,15 @@ const PincodeOrder = () => {
                   name="postalcode"
                   placeholder="Postalcode"
                   value={postalCode}
-                  type="text"
+                  type="number"
                   fullWidth
-                  inputProps={{ readOnly: true }}
-                  style={{ backgroundColor: "#eeeeee" }}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value.length <= 6) {
+                      setPostalCode(value);
+                    }
+                  }}
+                  inputProps={{ maxLength: 6 }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -528,8 +532,6 @@ const PincodeOrder = () => {
                   onChange={(e) => setCutomerCity(e.target.value)}
                   type="text"
                   fullWidth
-                  inputProps={{ readOnly: true }}
-                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -545,8 +547,6 @@ const PincodeOrder = () => {
                   onChange={(e) => setCutomerState(e.target.value)}
                   type="text"
                   fullWidth
-                  inputProps={{ readOnly: true }}
-                  style={{ backgroundColor: "#eeeeee" }}
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -561,8 +561,8 @@ const PincodeOrder = () => {
                   type="text"
                   fullWidth
                   value={cutomerCountry}
-                  inputProps={{ readOnly: true }}
-                  style={{ backgroundColor: "#eeeeee" }}
+                  onChange={(e) => setCutomerCountry(e.target.value)}
+
                   sx={{ fontFamily: poppins.style.fontFamily }}
                 />
               </Grid>
@@ -936,7 +936,7 @@ const PincodeOrder = () => {
         </CustomCard>
       </Grid>
 
-    
+
     </Grid>
   );
 };
