@@ -12,57 +12,46 @@ import {
 import CustomCard from "../CustomCard";
 
 const AssignRole = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  // State for holding input values
   const [inputValues, setInputValues] = useState({
-    tl: [],
-    agent: "",
-    manager: "",
+    manager: "", // Single selection for Manager
+    team: "", // Single selection for Team
+    agent: [], // Multiple selection for Agent
   });
 
-  // State for validation errors
   const [errors, setErrors] = useState({});
 
-  // Input change handler to capture user input
   const handleInputChange = (field) => (event) => {
     const value = field === "agent" ? event.target.value : event.target.value;
     setInputValues({ ...inputValues, [field]: value });
   };
 
-  // Validate form inputs
   const validateForm = () => {
     let tempErrors = {};
-    if (!inputValues.tl.length) tempErrors.tl = "At least one TL is required";
-    if (!inputValues.agent) tempErrors.agent = "Manager is required";
-    
+    if (!inputValues.agent.length)
+      tempErrors.agent = "At least one Agent is required";
+    if (!inputValues.manager) tempErrors.manager = "Manager is required";
+    if (!inputValues.team) tempErrors.team = "Team Leader is required";
     return tempErrors;
   };
 
-  // Handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors); // Display validation errors
+      setErrors(formErrors);
     } else {
       setErrors({});
-      // Process form data here (e.g., API call)
       console.log("Form submitted successfully with data: ", inputValues);
-
-      // Open the next tab (replace with the actual URL)
-      window.open("http://www.example.com/next-step", "_blank"); // Opens a new tab
+      window.open("http://www.example.com/next-step", "_blank");
     }
   };
 
   return (
     <Grid container sx={{ padding: 3 }}>
-      <Grid item xs={12} sm={12} md={12}>
+      <Grid item xs={12}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <CustomCard padding="20px">
-              {/* Display Input Fields */}
               <Typography
                 sx={{
                   fontWeight: "500",
@@ -77,9 +66,8 @@ const AssignRole = () => {
                 Assign Role
               </Typography>
               <Grid container spacing={2}>
-
-                {/* Manager Select with Single Select */}
-                <Grid item xs={12} sm={4} md={4}>
+                {/* Manager Dropdown */}
+                <Grid item xs={12} sm={4}>
                   <Select
                     labelId="manager-select-label"
                     id="manager"
@@ -92,67 +80,68 @@ const AssignRole = () => {
                     <MenuItem value="" disabled>
                       Select Manager
                     </MenuItem>
-                    {["Test1", "Test2", "Test3"].map((name) => (
-                      <MenuItem key={name} value={name}>
-                        <ListItemText primary={name} />
+                    {["Manager 1", "Manager 2", "Manager 3"].map((manager) => (
+                      <MenuItem key={manager} value={manager}>
+                        <ListItemText primary={manager} />
                       </MenuItem>
                     ))}
                   </Select>
                   {errors.manager && (
-                    <FormHelperText>{errors.manager}</FormHelperText>
+                    <FormHelperText error>{errors.manager}</FormHelperText>
                   )}
                 </Grid>
 
-                {/* TeamLead Select with Single Select */}
-                <Grid item xs={12} sm={4} md={4}>
+                {/* Team Leader Dropdown */}
+                <Grid item xs={12} sm={4}>
                   <Select
-                    labelId="teamlead-select-label"
-                    id="teamlead"
-                    value={inputValues.manager}
-                    onChange={handleInputChange("teamlead")}
+                    labelId="team-select-label"
+                    id="team"
+                    value={inputValues.team}
+                    onChange={handleInputChange("team")}
                     displayEmpty
                     sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
                     fullWidth
                   >
                     <MenuItem value="" disabled>
-                      Select TeamLead
+                      Select Team Leader
                     </MenuItem>
-                    {["Test1", "Test2", "Test3"].map((name) => (
-                      <MenuItem key={name} value={name}>
-                        <ListItemText primary={name} />
+                    {["Team 1", "Team 2", "Team 3"].map((team) => (
+                      <MenuItem key={team} value={team}>
+                        <ListItemText primary={team} />
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.teamlead && (
-                    <FormHelperText>{errors.teamlead}</FormHelperText>
+                  {errors.team && (
+                    <FormHelperText error>{errors.team}</FormHelperText>
                   )}
                 </Grid>
-                
-                {/* TL Select with Multi-Select and Checkboxes */}
-                <Grid item xs={12} sm={4} md={4}>
+
+                {/* Agent Dropdown */}
+                <Grid item xs={12} sm={4}>
                   <Select
-                    labelId="select-agent"
-                    id="tl"
-                    value={inputValues.tl}
-                    onChange={handleInputChange("tl")}
+                    labelId="agent-select-label"
+                    id="agent"
+                    value={inputValues.agent}
+                    onChange={handleInputChange("agent")}
                     multiple
                     displayEmpty
                     sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
                     fullWidth
-                    renderValue={(selected) => (selected.length ? selected.join(", ") : "Select Agent")}
+                    renderValue={(selected) =>
+                      selected.length ? selected.join(", ") : "Select Agent"
+                    }
                   >
-                    <MenuItem value="" disabled>
-                      Select Agent
-                    </MenuItem>
-                    {["TL 1", "TL 2", "TL 3"].map((tl) => (
-                      <MenuItem key={tl} value={tl}>
-                        <Checkbox checked={inputValues.tl.indexOf(tl) > -1} />
-                        <ListItemText primary={tl} />
+                    {["Agent 1", "Agent 2", "Agent 3"].map((agent) => (
+                      <MenuItem key={agent} value={agent}>
+                        <Checkbox
+                          checked={inputValues.agent.indexOf(agent) > -1}
+                        />
+                        <ListItemText primary={agent} />
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.tl && (
-                    <FormHelperText>{errors.tl}</FormHelperText>
+                  {errors.agent && (
+                    <FormHelperText error>{errors.agent}</FormHelperText>
                   )}
                 </Grid>
               </Grid>

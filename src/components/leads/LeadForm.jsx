@@ -26,8 +26,8 @@ import {
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 import CustomTextField from "@/components/CustomTextField";
 import CustomCard from "../CustomCard";
+
 const LeadForm = () => {
-  // State for enabling/disabling input fields
   const [fields, setFields] = useState({
     nameEnabled: true,
     emailEnabled: false,
@@ -41,7 +41,6 @@ const LeadForm = () => {
     sourceEnabled: false,
   });
 
-  // State for holding input values
   const [inputValues, setInputValues] = useState({
     name: "",
     email: "",
@@ -55,28 +54,21 @@ const LeadForm = () => {
     source: "",
   });
 
-  // State for validation errors
   const [errors, setErrors] = useState({});
-
-  // State for status selection
   const [status, setStatus] = useState("");
 
-  // Toggle switch handler to show/hide input fields
   const handleToggleChange = (field) => (event) => {
     setFields({ ...fields, [field]: event.target.checked });
   };
 
-  // Input change handler to capture user input
   const handleInputChange = (field) => (event) => {
     setInputValues({ ...inputValues, [field]: event.target.value });
   };
 
-  // Handle change for status selection
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
   };
 
-  // Validate form inputs
   const validateForm = () => {
     let formErrors = {};
     if (fields.nameEnabled && !inputValues.name)
@@ -102,7 +94,6 @@ const LeadForm = () => {
     return formErrors;
   };
 
-  // Handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     const formErrors = validateForm();
@@ -110,9 +101,19 @@ const LeadForm = () => {
       setErrors(formErrors);
     } else {
       setErrors({});
-      // Process form data here (e.g., API call)
       console.log("Form submitted successfully with data: ", inputValues);
     }
+  };
+
+  // Generate the JSON format for enabled fields
+  const generateJson = () => {
+    const enabledFields = [];
+    for (let key in fields) {
+      if (fields[key]) {
+        enabledFields.push(key.replace("Enabled", ""));
+      }
+    }
+    return { fields: enabledFields };
   };
 
   return (
@@ -169,7 +170,6 @@ const LeadForm = () => {
         </CustomCard>
       </Grid>
 
-      {/* Preview Section */}
       <Grid item xs={12} md={6}>
         <CustomCard padding="20px">
           <Typography
@@ -185,7 +185,6 @@ const LeadForm = () => {
             Preview
           </Typography>
 
-          {/* Display Input Fields based on Toggle */}
           <Grid container spacing={2}>
             {fields.nameEnabled && (
               <Grid item xs={12}>
@@ -314,96 +313,51 @@ const LeadForm = () => {
               </Grid>
             )}
             {fields.productEnabled && (
-             <Grid item xs={12}>
-             <Select
-               labelId="product-select-label"
-               id="product"
-               name="product"
-               value={inputValues.product}
-               onChange={handleInputChange("product")}
-               displayEmpty
-               fullWidth
-               sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
-               MenuProps={{
-                 PaperProps: {
-                   style: {
-                     maxHeight: 200, // Adjust the dropdown's max height
-                     overflowY: 'auto', // Enable vertical scrolling
-                   },
-                 },
-               }}
-             >
-               <MenuItem value="" disabled>
-                 Select Product
-               </MenuItem>
-               <MenuItem value="1">Weight Loss</MenuItem>
-               <MenuItem value="2">Weight Gain</MenuItem>
-               <MenuItem value="3">Muscle Building</MenuItem>
-               <MenuItem value="4">Energy Boost</MenuItem>
-               <MenuItem value="5">Vitamins & Supplements</MenuItem>
-               <MenuItem value="6">Protein Powders</MenuItem>
-             </Select>
-             {errors.product && (
-               <FormHelperText>{errors.product}</FormHelperText>
-             )}
-           </Grid>
-           
+              <Grid item xs={12}>
+                <TextField
+                  label="Product"
+                  variant="outlined"
+                  fullWidth
+                  value={inputValues.product}
+                  onChange={handleInputChange("product")}
+                  error={!!errors.product}
+                  helperText={errors.product}
+                />
+              </Grid>
             )}
             {fields.sourceEnabled && (
-            <Grid item xs={12} error={!!errors.source}>
-            <Select
-              labelId="source-select-label"
-              id="source"
-              value={inputValues.source}
-              onChange={handleInputChange("source")}
-              displayEmpty
-              fullWidth
-              sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    maxHeight: 200, // Adjust this to control the dropdown height
-                    overflowY: 'auto', // Enable vertical scrolling
-                  },
-                },
-              }}
-            >
-              <MenuItem value="" disabled>
-                Select Lead Source
-              </MenuItem>
-              <MenuItem value="1">Facebook</MenuItem>
-              <MenuItem value="2">Instagram</MenuItem>
-              <MenuItem value="3">Google</MenuItem>
-              <MenuItem value="4">Youtube</MenuItem>
-              <MenuItem value="5">LinkedIn</MenuItem>
-              <MenuItem value="6">Twitter</MenuItem>
-              <MenuItem value="7">Snapchat</MenuItem>
-              <MenuItem value="8">Pinterest</MenuItem>
-            </Select>
-            {errors.source && (
-              <FormHelperText>{errors.source}</FormHelperText>
-            )}
-          </Grid>
-          
+              <Grid item xs={12}>
+                <FormControl fullWidth error={!!errors.source}>
+                  <InputLabel>Source</InputLabel>
+                  <Select
+                    value={inputValues.source}
+                    onChange={handleInputChange("source")}
+                  >
+                    <MenuItem value="Web">Web</MenuItem>
+                    <MenuItem value="Mobile">Mobile</MenuItem>
+                    <MenuItem value="Referral">Referral</MenuItem>
+                  </Select>
+                  <FormHelperText>{errors.source}</FormHelperText>
+                </FormControl>
+              </Grid>
             )}
           </Grid>
 
-          <Button
-            onClick={handleSubmit}
+          <Box
             sx={{
-              padding: "8px 16px",
-              fontSize: "14px",
-              fontWeight: "bold",
-              backgroundColor: "#405189",
-              color: "white",
               marginTop: "20px",
-              "&:hover": {
-                backgroundColor: "#334a6c",
-              },
+              padding: "20px",
+              borderRadius: "5px",
+              backgroundColor: "#f1f1f1",
             }}
           >
-            Save
-          </Button>
+            <Typography variant="h6" component="h3">
+              Form Data (JSON format):
+            </Typography>
+            <Typography sx={{ fontSize: "14px", color: "#333" }}>
+              {JSON.stringify(generateJson(), null, 2)}
+            </Typography>
+          </Box>
         </CustomCard>
       </Grid>
     </Grid>

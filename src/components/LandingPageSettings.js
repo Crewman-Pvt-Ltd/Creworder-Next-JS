@@ -10,6 +10,7 @@ import ReviewsIcon from "@mui/icons-material/Reviews";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Poppins } from "next/font/google";
 import {
   Typography,
@@ -22,11 +23,26 @@ import {
   Tooltip,
   IconButton,
   Button,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@mui/material";
 const poppins = Poppins({
   weight: "300",
   subsets: ["latin"],
 });
+
+const initialData = [
+  {
+    id: 1,
+    heading:
+      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer",
+    created: "2023-07-14",
+  },
+];
 
 const LandingPageSettings = () => {
   const [activeSection, setActiveSection] = useState("slider");
@@ -37,6 +53,7 @@ const LandingPageSettings = () => {
   const [highlightsFile, setHighlightsFile] = useState(null);
   const [clientsFile, setClientsFile] = useState(null);
   const [settingsFile, setSettingsFile] = useState(null);
+  const [data, setData] = useState(initialData);
   const handleSectionChange = (section) => {
     setActiveSection(section);
   };
@@ -60,6 +77,32 @@ const LandingPageSettings = () => {
     }
   };
 
+  const HeaderCell = (props) => (
+    <TableCell
+      sx={{
+        fontSize: "1rem",
+        whiteSpace: "nowrap",
+        fontWeight: "500",
+        textTransform: "capitalize",
+        color: "black",
+      }}
+      {...props}
+    />
+  );
+
+  const DataCell = (props) => (
+    <TableCell
+      sx={{
+        color: "#999999",
+        fontSize: "14px",
+        whiteSpace: "nowrap",
+        fontWeight: "500",
+        textTransform: "capitalize",
+      }}
+      {...props}
+    />
+  );
+
   return (
     <Grid container sx={{ padding: 3 }}>
       <Grid item xs={12} sm={12} md={12}>
@@ -70,7 +113,7 @@ const LandingPageSettings = () => {
                 value={activeSection}
                 onChange={(event, newValue) => handleSectionChange(newValue)}
                 TabIndicatorProps={{
-                  style: { display: "none" }, 
+                  style: { display: "none" },
                 }}
                 sx={{
                   display: "flex",
@@ -380,6 +423,44 @@ const LandingPageSettings = () => {
                         Submit
                       </Button>
                     </Grid>
+
+                    <Grid>
+                      <br></br>
+                      <CustomCard>
+                        <CardContent>
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <HeaderCell>ID</HeaderCell>
+                                  <HeaderCell>Heading</HeaderCell>
+                                  <HeaderCell>Created Date</HeaderCell>
+                                  <HeaderCell>Action</HeaderCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {data.map((row, index) => (
+                                  <TableRow key={row.id}>
+                                    <DataCell>{index + 1}.</DataCell>
+                                    <DataCell>{row.heading}</DataCell>
+                                    <DataCell>{row.created}</DataCell>
+                                    <TableCell>
+                                      <IconButton
+                                        onClick={() => handleDelete(row.id)}
+                                        aria-label="delete"
+                                        sx={{ color: "red" }}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </CustomCard>
+                    </Grid>
                   </>
                 )}
 
@@ -585,6 +666,43 @@ const LandingPageSettings = () => {
                         Submit
                       </Button>
                     </Grid>
+                    <Grid>
+                      <br></br>
+                      <CustomCard>
+                        <CardContent>
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <HeaderCell>ID</HeaderCell>
+                                  <HeaderCell>Heading</HeaderCell>
+                                  <HeaderCell>Created Date</HeaderCell>
+                                  <HeaderCell>Action</HeaderCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {data.map((row, index) => (
+                                  <TableRow key={row.id}>
+                                    <DataCell>{index + 1}.</DataCell>
+                                    <DataCell>{row.heading}</DataCell>
+                                    <DataCell>{row.created}</DataCell>
+                                    <TableCell>
+                                      <IconButton
+                                        onClick={() => handleDelete(row.id)}
+                                        aria-label="delete"
+                                        sx={{ color: "red" }}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </CustomCard>
+                    </Grid>
                   </>
                 )}
 
@@ -717,6 +835,43 @@ const LandingPageSettings = () => {
                         Submit
                       </Button>
                     </Grid>
+                    <Grid>
+                      <br></br>
+                      <CustomCard>
+                        <CardContent>
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <HeaderCell>ID</HeaderCell>
+                                  <HeaderCell>Heading</HeaderCell>
+                                  <HeaderCell>Created Date</HeaderCell>
+                                  <HeaderCell>Action</HeaderCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {data.map((row, index) => (
+                                  <TableRow key={row.id}>
+                                    <DataCell>{index + 1}.</DataCell>
+                                    <DataCell>{row.heading}</DataCell>
+                                    <DataCell>{row.created}</DataCell>
+                                    <TableCell>
+                                      <IconButton
+                                        onClick={() => handleDelete(row.id)}
+                                        aria-label="delete"
+                                        sx={{ color: "red" }}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </CustomCard>
+                    </Grid>
                   </>
                 )}
 
@@ -824,6 +979,43 @@ const LandingPageSettings = () => {
                       >
                         Submit
                       </Button>
+                    </Grid>
+                    <Grid>
+                      <br></br>
+                      <CustomCard>
+                        <CardContent>
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <HeaderCell>ID</HeaderCell>
+                                  <HeaderCell>Heading</HeaderCell>
+                                  <HeaderCell>Created Date</HeaderCell>
+                                  <HeaderCell>Action</HeaderCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {data.map((row, index) => (
+                                  <TableRow key={row.id}>
+                                    <DataCell>{index + 1}.</DataCell>
+                                    <DataCell>{row.heading}</DataCell>
+                                    <DataCell>{row.created}</DataCell>
+                                    <TableCell>
+                                      <IconButton
+                                        onClick={() => handleDelete(row.id)}
+                                        aria-label="delete"
+                                        sx={{ color: "red" }}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </CustomCard>
                     </Grid>
                   </>
                 )}
@@ -933,6 +1125,43 @@ const LandingPageSettings = () => {
                         Submit
                       </Button>
                     </Grid>
+                    <Grid>
+                      <br></br>
+                      <CustomCard>
+                        <CardContent>
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <HeaderCell>ID</HeaderCell>
+                                  <HeaderCell>Heading</HeaderCell>
+                                  <HeaderCell>Created Date</HeaderCell>
+                                  <HeaderCell>Action</HeaderCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {data.map((row, index) => (
+                                  <TableRow key={row.id}>
+                                    <DataCell>{index + 1}.</DataCell>
+                                    <DataCell>{row.heading}</DataCell>
+                                    <DataCell>{row.created}</DataCell>
+                                    <TableCell>
+                                      <IconButton
+                                        onClick={() => handleDelete(row.id)}
+                                        aria-label="delete"
+                                        sx={{ color: "red" }}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </CustomCard>
+                    </Grid>
                   </>
                 )}
 
@@ -1040,6 +1269,43 @@ const LandingPageSettings = () => {
                       >
                         Submit
                       </Button>
+                    </Grid>
+                    <Grid>
+                      <br></br>
+                      <CustomCard>
+                        <CardContent>
+                          <TableContainer>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <HeaderCell>ID</HeaderCell>
+                                  <HeaderCell>Heading</HeaderCell>
+                                  <HeaderCell>Created Date</HeaderCell>
+                                  <HeaderCell>Action</HeaderCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {data.map((row, index) => (
+                                  <TableRow key={row.id}>
+                                    <DataCell>{index + 1}.</DataCell>
+                                    <DataCell>{row.heading}</DataCell>
+                                    <DataCell>{row.created}</DataCell>
+                                    <TableCell>
+                                      <IconButton
+                                        onClick={() => handleDelete(row.id)}
+                                        aria-label="delete"
+                                        sx={{ color: "red" }}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </CustomCard>
                     </Grid>
                   </>
                 )}
