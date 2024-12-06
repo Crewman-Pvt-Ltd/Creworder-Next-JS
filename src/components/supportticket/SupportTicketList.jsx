@@ -127,20 +127,20 @@ const SupportTicketList = () => {
                     <HeaderCell className={poppins.className}>Description</HeaderCell>
                     <HeaderCell className={poppins.className}>Type</HeaderCell>
                     <HeaderCell className={poppins.className}>Priority</HeaderCell>
-                    <HeaderCell className={poppins.className}>Agent</HeaderCell>
+                   
                     <HeaderCell className={poppins.className}>Action</HeaderCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {data?.results.map((row, index) => (
                     <TableRow key={row.id}>
-                      <DataCell className={poppins.className}>{row.id}</DataCell>
+                      <DataCell className={poppins.className}>{index+1}</DataCell>
                       <DataCell className={poppins.className}>{row.ticket_id}</DataCell> 
                       <DataCell className={poppins.className}>{row.subject}</DataCell>
                       <DataCell className={poppins.className}>{row.description}</DataCell>
                       <DataCell className={poppins.className}>{row.type}</DataCell>
                       <DataCell className={poppins.className}>{row.priority}</DataCell>
-                      <DataCell className={poppins.className}>{row.agent?.username || "N/A"}</DataCell> {/* Adjust as needed */}
+                      
                       <TableCell>
                         
                         <IconButton

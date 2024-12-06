@@ -1,29 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import CustomCard from '../CustomCard';
-import {
-  CardContent,
-  Grid,
-  Typography,
-  Divider,
-  Button,
-} from '@mui/material';
-import CustomTextField from '../CustomTextField';
-import CustomLabel from '../CustomLabel';
-import MainApi from '@/api-manage/MainApi';
-import { useRouter } from 'next/router'; 
-import { getToken } from '@/utils/getToken';
+import React, { useState, useEffect } from "react";
+import CustomCard from "../CustomCard";
+import { CardContent, Grid, Typography, Divider, Button } from "@mui/material";
+import CustomTextField from "../CustomTextField";
+import CustomLabel from "../CustomLabel";
+import MainApi from "@/api-manage/MainApi";
+import { useRouter } from "next/router";
+import { getToken } from "@/utils/getToken";
 import { usePermissions } from "@/contexts/PermissionsContext";
-const EditDesignation = ({ onDesignationList }) => {
+const EditDesignation = ({}) => {
   const { permissionsData } = usePermissions();
   const [formData, setFormData] = useState({
     name: "",
     branch: permissionsData?.user?.profile?.branch,
-    parent: ""
   });
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); 
-  const { id } = router.query; // Get the 'id' from the query string
-  const token = getToken(); 
+  const router = useRouter();
+  const { id } = router.query;
+  const token = getToken();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,19 +27,22 @@ const EditDesignation = ({ onDesignationList }) => {
     console.log("Updated Form Data", formData);
   };
 
-  // Handle form submission to update the shift
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await MainApi.patch(`/api/designations/${id}/`, formData, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      const response = await MainApi.patch(
+        `/api/designations/${id}/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
 
-      if (response.status === 200) {       
-        router.push('/hr/designation');
+      if (response.status === 200) {
+        router.push("/hr/designation");
       } else {
         throw new Error("Error updating Designation");
       }
@@ -55,8 +51,7 @@ const EditDesignation = ({ onDesignationList }) => {
     }
   };
 
-// Fetch the shift data by ID
-useEffect(() => {
+  useEffect(() => {
     if (id) {
       const fetchShift = async () => {
         setLoading(true);
@@ -82,7 +77,7 @@ useEffect(() => {
           setLoading(false);
         }
       };
-  
+
       fetchShift();
     }
   }, [id, token]);
@@ -113,23 +108,17 @@ useEffect(() => {
                     onChange={handleChange}
                   />
                 </Grid>
-
-                <Grid item xs={12} sm={6} md={6}>
-                  <CustomLabel htmlFor="parentDesignation" required>
-                    Parent Designation
-                  </CustomLabel>
-                  <CustomTextField
-                    id="parentDesignation"
-                    name="parent"
-                    type="text"
-                    fullWidth
-                    value={formData.parent}
-                    onChange={handleChange}
-                  />
-                </Grid>
               </Grid>
 
-              <Grid item xs={12} sx={{ marginTop: 2, display: "flex", justifyContent: "flex-end" }}>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  marginTop: 2,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button
                   type="submit"
                   sx={{

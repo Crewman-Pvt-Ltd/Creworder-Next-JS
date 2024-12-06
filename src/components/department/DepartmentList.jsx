@@ -15,12 +15,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import Edit from '@mui/icons-material/Edit';
-import Delete from '@mui/icons-material/Delete';
-import CustomCard from '../CustomCard';
-import useGetAllDepartments from '@/api-manage/react-query/useGetAllDepartments';
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import Edit from "@mui/icons-material/Edit";
+import Delete from "@mui/icons-material/Delete";
+import CustomCard from "../CustomCard";
+import useGetAllDepartments from "@/api-manage/react-query/useGetAllDepartments";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
 
@@ -46,11 +46,14 @@ const DepartmentList = ({ onAddDepartment }) => {
         throw new Error("No authentication token found.");
       }
 
-      const response = await MainApi.delete(`/api/departments/${departmentToDelete}`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      const response = await MainApi.delete(
+        `/api/departments/${departmentToDelete}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
 
       if (response.status === 204) {
         console.log("Department deleted successfully");
@@ -75,21 +78,21 @@ const DepartmentList = ({ onAddDepartment }) => {
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
-      <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
+      <Grid item xs={12} sx={{ display: "flex", gap: 2 }}>
         <Button
           onClick={onAddDepartment}
           sx={{
-            padding: '8px 16px',
-            fontSize: '14px',
-            backgroundColor: '#405189',
-            color: 'white',
-            '&:hover': {
-              backgroundColor: '#334a6c',
+            padding: "8px 16px",
+            fontSize: "14px",
+            backgroundColor: "#405189",
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#334a6c",
             },
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 1,
-            textTransform: 'none',
+            textTransform: "none",
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
@@ -97,18 +100,18 @@ const DepartmentList = ({ onAddDepartment }) => {
         </Button>
         <Button
           sx={{
-            padding: '8px 16px',
-            fontSize: '14px',
-            border: '2px solid #405189',
-            color: '#405189',
-            backgroundColor: 'white',
-            '&:hover': {
-              backgroundColor: '#f0f0f0',
+            padding: "8px 16px",
+            fontSize: "14px",
+            border: "2px solid #405189",
+            color: "#405189",
+            backgroundColor: "white",
+            "&:hover": {
+              backgroundColor: "#f0f0f0",
             },
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 1,
-            textTransform: 'none',
+            textTransform: "none",
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
@@ -124,7 +127,7 @@ const DepartmentList = ({ onAddDepartment }) => {
                   <TableRow>
                     <TableCell>ID</TableCell>
                     <TableCell>Name</TableCell>
-                    <TableCell>Parent Department</TableCell>
+
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -133,27 +136,23 @@ const DepartmentList = ({ onAddDepartment }) => {
                     <TableRow key={row.id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell
-                        sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
+                        sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}
                       >
                         {row.name}
                       </TableCell>
-                      <TableCell
-                        sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
-                      >
-                        {row.department}
-                      </TableCell>
+
                       <TableCell>
                         <IconButton
                           onClick={() => handleEdit(row)}
                           aria-label="edit"
-                          sx={{ color: 'green' }}
+                          sx={{ color: "green" }}
                         >
                           <Edit />
                         </IconButton>
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
-                          sx={{ color: 'red' }}
+                          sx={{ color: "red" }}
                         >
                           <Delete />
                         </IconButton>
@@ -171,7 +170,8 @@ const DepartmentList = ({ onAddDepartment }) => {
         <DialogTitle>Delete Department</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this department? This action cannot be undone.
+            Are you sure you want to delete this department? This action cannot
+            be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

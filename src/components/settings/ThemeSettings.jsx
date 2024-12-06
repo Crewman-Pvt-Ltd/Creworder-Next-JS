@@ -16,66 +16,52 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import UploadFileIcon from "@mui/icons-material/CloudUpload";
 import CustomLabel from "../CustomLabel";
 import CustomTextField from "../CustomTextField";
-
-const sampleImages = [
-  "https://demo-saas.worksuite.biz/img/square-logo-header.png",
-  "https://demo-saas.worksuite.biz/img/full-logo-header.png",
-];
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
 
 const ThemeSettings = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [lightModeLogo, setLightModeLogo] = useState(null);
-  const [darkModeLogo, setDarkModeLogo] = useState(null);
-  const [invoiceLogo, setInvoiceLogo] = useState(null);
-  const [signatureLogo, setSignatureLogo] = useState(null);
-  const handleLightModeChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setLightModeLogo(reader.result);
-      reader.readAsDataURL(file);
+  const token = getToken();
+  const [formData, setFormData] = useState({
+    name: "",
+    dark_logo: null,
+    light_logo: null,
+    favicon_logo: null,
+    invoice_logo: null,
+    signature: null,
+    primary_color_code: "",
+    page_theme: "light",
+    branch: 6,
+    company: 10,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "file" ? files[0] : value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    Object.keys(formData).forEach((key) => {
+      form.append(key, formData[key]);
+    });
+
+    try {
+      const response = await MainApi.post("/api/theme-setting/", form, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
     }
   };
 
-  const handleDarkModeChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setDarkModeLogo(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-  const [logo, setLogo] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setLogo(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-  const handleTemplateSelect = (index) => {
-    setSelectedTemplate(index);
-  };
-
-  const handleInvoiceLogoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setInvoiceLogo(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSignatureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setSignatureLogo(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
   return (
     <CustomCard>
       <CardContent>
@@ -86,442 +72,164 @@ const ThemeSettings = () => {
           <Grid item xs={12} sm={12} md={12}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12} md={6}>
-                <CustomLabel htmlFor="appname" required>
+                <CustomLabel htmlFor="name" required>
                   App Name
                 </CustomLabel>
                 <CustomTextField
-                  id="appname"
-                  name="appname"
+                  id="name"
+                  name="name"
                   placeholder="e.g. creworder"
                   type="text"
                   fullWidth
+                  value={formData.name}
+                  onChange={handleInputChange}
                 />
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} mt={4}>
-            <Typography variant="h6" gutterBottom>
-              Template
-            </Typography>
-            <Grid container spacing={1}>
-              {sampleImages.map((image, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Box
-                    border={1}
-                    borderColor={
-                      selectedTemplate === index ? "blue" : "grey.300"
-                    }
-                    borderRadius="4px"
-                    p={1}
-                    textAlign="center"
-                    onClick={() => handleTemplateSelect(index)}
-                    sx={{
+
+          
+          {[
+            { label: "Front Website Logo", name: "favicon_logo" },
+            { label: "Light Mode Logo", name: "light_logo" },
+            { label: "Dark Mode Logo", name: "dark_logo" },
+            { label: "Invoice Logo", name: "invoice_logo" },
+            { label: "Authorised Signatory Signature", name: "signature" },
+          ].map((item, index) => (
+            <Grid item xs={12} sm={4} md={4} key={index}>
+              <Box>
+                <Typography variant="body1">
+                  {item.label}
+                  <Tooltip
+                    title={`Upload your ${item.label.toLowerCase()} here`}
+                  >
+                    <IconButton>
+                      <HelpOutlineIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Typography>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="150px"
+                  border="1px dashed grey"
+                  borderRadius="4px"
+                  mt={2}
+                  sx={{ cursor: "pointer", position: "relative" }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name={item.name}
+                    onChange={handleInputChange}
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0,
                       cursor: "pointer",
-                      border:
-                        selectedTemplate === index
-                          ? "2px solid blue"
-                          : "1px solid grey.300",
                     }}
-                  >
+                  />
+                  {formData[item.name] ? (
                     <img
-                      src={image}
-                      alt={`Template ${index + 1}`}
-                      style={{ width: "100%", height: "130px" }}
+                      src={URL.createObjectURL(formData[item.name])}
+                      alt={item.label}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
                     />
-                  </Box>
-                </Grid>
-              ))}
+                  ) : (
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="center"
+                    >
+                      <UploadFileIcon fontSize="large" />
+                      <Typography variant="body2" color="textSecondary">
+                        Choose a file
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
             </Grid>
-          </Grid>
-          <Grid item xs={12} sm={4} md={4}>
-            <Box>
-              <Typography variant="body1">
-                Front Website Logo
-                <Tooltip title="Upload your logo here">
-                  <IconButton>
-                    <HelpOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="150px"
-                border="1px solid grey"
-                borderRadius="4px"
-                mt={2}
-                overflow="hidden"
-                position="relative"
-                sx={{ cursor: "pointer" }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    opacity: 0,
-                    cursor: "pointer",
-                  }}
-                />
-                {logo ? (
-                  <img
-                    src={logo}
-                    alt="Uploaded Logo"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                  >
-                    <UploadFileIcon fontSize="large" />
-                    <Typography variant="body2" color="textSecondary">
-                      Choose a file
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={4} md={4}>
-            <Box>
-              <Typography variant="body1">
-                Light Mode Logo
-                <Tooltip title="Upload the authorised signatory's signature here">
-                  <IconButton>
-                    <HelpOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="150px"
-                border="1px dashed grey"
-                borderRadius="4px"
-                mt={2}
-                sx={{ cursor: "pointer", position: "relative" }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLightModeChange}
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    opacity: 0,
-                    cursor: "pointer",
-                  }}
-                />
-                {lightModeLogo ? (
-                  <img
-                    src={lightModeLogo}
-                    alt="Light Mode Logo"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <>
-                    <UploadFileIcon fontSize="large" />
-                    <Typography variant="body2">Choose a file</Typography>
-                  </>
-                )}
-              </Box>
-            </Box>
-          </Grid>
+          ))}
 
-          {/* Dark Mode Logo */}
-          <Grid item xs={12} sm={4} md={4}>
-            <Box>
-              <Typography variant="body1">
-                Dark Mode Logo
-                <Tooltip title="Upload the authorised signatory's signature here">
-                  <IconButton>
-                    <HelpOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="150px"
-                border="1px dashed grey"
-                borderRadius="4px"
-                mt={2}
-                sx={{ cursor: "pointer", position: "relative" }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleDarkModeChange}
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    opacity: 0,
-                    cursor: "pointer",
-                  }}
-                />
-                {darkModeLogo ? (
-                  <img
-                    src={darkModeLogo}
-                    alt="Dark Mode Logo"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <>
-                    <UploadFileIcon fontSize="large" />
-                    <Typography variant="body2">Choose a file</Typography>
-                  </>
-                )}
-              </Box>
-            </Box>
-          </Grid>
-
+          {/* Color and Theme settings */}
           <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="body1">
-                Invoice Logo
-                <Tooltip title="Upload your invoice logo here">
-                  <IconButton>
-                    <HelpOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="150px"
-                border="1px dashed grey"
-                borderRadius="4px"
-                mt={2}
-                sx={{ cursor: "pointer", position: "relative" }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleInvoiceLogoChange}
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    opacity: 0,
-                    cursor: "pointer",
-                  }}
-                />
-                {invoiceLogo ? (
-                  <img
-                    src={invoiceLogo}
-                    alt="Invoice Logo"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <>
-                    <UploadFileIcon fontSize="large" />
-                    <Typography variant="body2">Choose a file</Typography>
-                  </>
-                )}
-              </Box>
-            </Box>
+            <CustomLabel htmlFor="primary_color_code" required>
+              Primary Color
+            </CustomLabel>
+            <CustomTextField
+              id="primary_color_code"
+              name="primary_color_code"
+              placeholder="e.g. #405189"
+              type="text"
+              fullWidth
+              value={formData.primary_color_code}
+              onChange={handleInputChange}
+            />
           </Grid>
-
-          {/* Authorised Signatory Signature */}
           <Grid item xs={12} sm={6}>
-            <Box>
-              <Typography variant="body1">
-                Authorised Signatory Signature
-                <Tooltip title="Upload the authorised signatory's signature here">
-                  <IconButton>
-                    <HelpOutlineIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Typography>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="150px"
-                border="1px dashed grey"
-                borderRadius="4px"
-                mt={2}
-                sx={{ cursor: "pointer", position: "relative" }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSignatureChange}
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    opacity: 0,
-                    cursor: "pointer",
-                  }}
-                />
-                {signatureLogo ? (
-                  <img
-                    src={signatureLogo}
-                    alt="Signatory Signature"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
+            <CustomLabel htmlFor="page_theme" required>
+              Public Pages Theme
+            </CustomLabel>
+            <div>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.page_theme === "dark"}
+                    onChange={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        page_theme: "dark",
+                      }))
+                    }
                   />
-                ) : (
-                  <>
-                    <UploadFileIcon fontSize="large" />
-                    <Typography variant="body2">Choose a file</Typography>
-                  </>
-                )}
-              </Box>
-            </Box>
+                }
+                label="Dark"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={formData.page_theme === "light"}
+                    onChange={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        page_theme: "light",
+                      }))
+                    }
+                  />
+                }
+                label="Light"
+              />
+            </div>
           </Grid>
-
-          <Grid item xs={12} sm={12} md={12}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="logobgcolor" required>
-                  Login Screen Logo's background Color
-                </CustomLabel>
-                <CustomTextField
-                  id="logobgcolor"
-                  name="logobgcolor"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item xs={12} sm={12} md={12} mt={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12} md={12}>
-                <Typography
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Public Pages Theme
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="primarycolor" required>
-                  Primary Color
-                </CustomLabel>
-                <CustomTextField
-                  id="primarycolor"
-                  name="primarycolor"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="publicpagetheme" required>
-                  Public Pages Theme
-                </CustomLabel>
-                <div style={{}}>
-                  <FormControlLabel
-                    control={<Checkbox name="dark" />}
-                    label="Dark"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name="light" />}
-                    label="Light"
-                  />
-                </div>
-              </Grid>
-            </Grid>
-          </Grid>
-          {/* <Grid item xs={12} sm={12} md={12} mt={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12} md={12}>
-                <Typography
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Super Admin Panel Theme
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="primarycolor" required>
-                  Primary Color
-                </CustomLabel>
-                <CustomTextField
-                  id="primarycolor"
-                  name="primarycolor"
-                  placeholder="e.g. creworder"
-                  type="text"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <CustomLabel htmlFor="sidebartheme" required>
-                  Sidebar Theme
-                </CustomLabel>
-                <div style={{}}>
-                  <FormControlLabel
-                    control={<Checkbox name="dark" />}
-                    label="Dark"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox name="light" />}
-                    label="Light"
-                  />
-                </div>
-              </Grid>
-            </Grid>
-          </Grid> */}
         </Grid>
 
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
           <Button
             sx={{
+              padding: "8px 16px",
+              fontSize: "14px",
+              fontWeight: "bold",
               backgroundColor: "#405189",
               color: "white",
-              "&:hover": {
-                backgroundColor: "#405189",
-              },
+              "&:hover": { backgroundColor: "#334a6c" },
             }}
+            onClick={handleSubmit}
           >
-            Save
+            Submit
           </Button>
           <Button
             sx={{
               ml: 1,
               backgroundColor: "#405189",
               color: "white",
-              "&:hover": {
-                backgroundColor: "#405189",
-              },
+              "&:hover": { backgroundColor: "#405189" },
             }}
           >
             Use Default Theme

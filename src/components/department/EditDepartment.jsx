@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import CustomCard from '../CustomCard';
-import {
-  CardContent,
-  Grid,
-  Typography,
-  Divider,
-  Button,
-} from '@mui/material';
-import CustomTextField from '../CustomTextField';
-import CustomLabel from '../CustomLabel';
-import MainApi from '@/api-manage/MainApi';
-import { useRouter } from 'next/router'; 
-import { getToken } from '@/utils/getToken';
+import React, { useState, useEffect } from "react";
+import CustomCard from "../CustomCard";
+import { CardContent, Grid, Typography, Divider, Button } from "@mui/material";
+import CustomTextField from "../CustomTextField";
+import CustomLabel from "../CustomLabel";
+import MainApi from "@/api-manage/MainApi";
+import { useRouter } from "next/router";
+import { getToken } from "@/utils/getToken";
 import { usePermissions } from "@/contexts/PermissionsContext";
 const EditDepartment = ({ onDepartmentList }) => {
   const { permissionsData } = usePermissions();
@@ -19,12 +13,11 @@ const EditDepartment = ({ onDepartmentList }) => {
   const [formData, setFormData] = useState({
     name: "",
     branch: permissionsData?.user?.profile?.branch,
-    parent: ""
   });
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
   const { id } = router.query; // Get the 'id' from the query string
-  const token = getToken(); 
+  const token = getToken();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,18 +28,22 @@ const EditDepartment = ({ onDepartmentList }) => {
     console.log("Updated Form Data", formData);
   };
 
-   // Handle form submission to update the shift
-   const handleSubmit = async (e) => {
+  // Handle form submission to update the shift
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await MainApi.patch(`/api/departments/${id}/`, formData, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      });
+      const response = await MainApi.patch(
+        `/api/departments/${id}/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
 
-      if (response.status === 200) {       
-        router.push('/hr/department');
+      if (response.status === 200) {
+        router.push("/hr/department");
       } else {
         throw new Error("Error updating Depatment");
       }
@@ -55,36 +52,36 @@ const EditDepartment = ({ onDepartmentList }) => {
     }
   };
 
- // Fetch the shift data by ID
- useEffect(() => {
-  if (id) {
-    const fetchShift = async () => {
-      setLoading(true);
-      try {
-        const response = await MainApi.get(`/api/departments/${id}/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
-        if (response.status === 200) {
-          setFormData({
-            name: response.data.name,
-            branch: response.data.branch,
-            start_time: response.data.start_time,
-            end_time: response.data.end_time,
+  // Fetch the shift data by ID
+  useEffect(() => {
+    if (id) {
+      const fetchShift = async () => {
+        setLoading(true);
+        try {
+          const response = await MainApi.get(`/api/departments/${id}/`, {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
           });
-        } else {
-          throw new Error("Unexpected response from server");
+          if (response.status === 200) {
+            setFormData({
+              name: response.data.name,
+              branch: response.data.branch,
+              start_time: response.data.start_time,
+              end_time: response.data.end_time,
+            });
+          } else {
+            throw new Error("Unexpected response from server");
+          }
+        } catch (error) {
+          console.error("Error fetching shift data:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching shift data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchShift();
-  }
-}, [id, token]);
+      };
+      fetchShift();
+    }
+  }, [id, token]);
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
@@ -112,23 +109,17 @@ const EditDepartment = ({ onDepartmentList }) => {
                     onChange={handleChange}
                   />
                 </Grid>
-
-                <Grid item xs={12} sm={6} md={6}>
-                  <CustomLabel htmlFor="parentDepartment" required>
-                    Parent Department
-                  </CustomLabel>
-                  <CustomTextField
-                    id="parentDepartment"
-                    name="parent"
-                    type="text"
-                    fullWidth
-                    value={formData.parent}
-                    onChange={handleChange}
-                  />
-                </Grid>
               </Grid>
 
-              <Grid item xs={12} sx={{ marginTop: 2, display: "flex", justifyContent: "flex-end" }}>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  marginTop: 2,
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <Button
                   type="submit"
                   sx={{

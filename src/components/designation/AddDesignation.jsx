@@ -83,19 +83,7 @@ const AddDesignation = ({ onDesignationList }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={6}>
-                  <CustomLabel htmlFor="parentDesignation" required>
-                    Parent Designation
-                  </CustomLabel>
-                  <CustomTextField
-                    id="parentDesignation"
-                    name="parent"
-                    type="text"
-                    fullWidth
-                    value={formData.parent}
-                    onChange={handleChange}
-                  />
-                </Grid>
+              
               </Grid>
 
               <Grid item xs={12} sx={{ marginTop: 2, display: "flex", justifyContent: "flex-end" }}>

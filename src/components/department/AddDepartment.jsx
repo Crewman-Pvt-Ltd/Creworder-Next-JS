@@ -21,7 +21,7 @@ const AddDepartment = ({ onDepartmentList }) => {
   const [formData, setFormData] = useState({
     name: "",
     branch: permissionsData?.user?.profile?.branch,
-    parent: ""
+    
   });
   const router = useRouter(); 
   const token = getToken(); 
@@ -83,19 +83,7 @@ const AddDepartment = ({ onDepartmentList }) => {
                   />
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={6}>
-                  <CustomLabel htmlFor="parentDepartment" required>
-                    Parent Department
-                  </CustomLabel>
-                  <CustomTextField
-                    id="parentDepartment"
-                    name="parent"
-                    type="text"
-                    fullWidth
-                    value={formData.parent}
-                    onChange={handleChange}
-                  />
-                </Grid>
+                
               </Grid>
 
               <Grid item xs={12} sx={{ marginTop: 2, display: "flex", justifyContent: "flex-end" }}>
