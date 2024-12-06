@@ -120,16 +120,7 @@ const steps = [
   };
   const rows = [
     {
-      id: 1,
-      image:
-        "https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620",
-      name: "Gummsi Gummies",
-      color: "Pink",
-      size: "M",
-      itemPrice: "₹119.99",
-      quantity: 2,
-      rating: 5,
-      totalAmount: "₹239.98",
+     
     },    
   ];
   useEffect(() => {
@@ -234,10 +225,10 @@ const steps = [
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Images</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Item Price</TableCell>
-                    <TableCell>Quantity</TableCell>
+                    <TableCell><b>Images</b></TableCell>
+                    <TableCell><b>Name</b></TableCell>
+                    <TableCell><b>Item Price</b></TableCell>
+                    <TableCell><b>Quantity</b></TableCell>
                     <TableCell>Payble Amount</TableCell>
                   </TableRow>
                 </TableHead>
@@ -246,14 +237,14 @@ const steps = [
                     <TableRow key={item.id}>
                       <TableCell>
                         <img 
-                          src="https://gummsi.com/cdn/shop/products/product-521132.jpg?v=1707203880&width=620" 
+                          src="https://bombaypalace.fr/wp-content/uploads/2022/01/img-dummy-product.jpg" 
                           style={{ width: "100px" }} 
                         />
                       </TableCell>
                       <TableCell>{item.product_name}</TableCell>
                       <TableCell>₹{selectedOrder.gross_amount}</TableCell>
                       <TableCell>{item.product_qty}</TableCell>                     
-                      <TableCell>₹{selectedOrder.total_amount}</TableCell>
+                      <TableCell>₹{item.product_price}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CustomCard from "../CustomCard";
 import { useRouter } from "next/router";
 import AddIcon from "@mui/icons-material/Add";
@@ -9,34 +9,67 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import Image from "next/image";
 import { Grid, Typography, Button } from "@mui/material";
+import axios from "axios";
 import useGetAllCloudTelephonicChannels from "@/api-manage/react-query/useGetAllCloudTelephonicChannels";
+import { getToken } from "@/utils/getToken";
+import { Poppins } from "next/font/google";
 
 const TelephonicChannelsList = () => {
   const router = useRouter();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const token = getToken();
   const [formData, setFormData] = useState({
+    id: null,
     name: "",
     providerName: "",
     image: null,
     credentials: "",
+    authTokenType: "",
+    status: "",
   });
   const [errors, setErrors] = useState({});
-
-  // Fetch data using the custom hook
+  const [editMode, setEditMode] = useState(false);
   const { data: apiData, isLoading, isError } = useGetAllCloudTelephonicChannels();
 
-  const handleOpenDialog = () => {
+  const handleOpenDialog = (editItem = null) => {
+    if (editItem) {
+      setEditMode(true);
+      setFormData({
+        id: editItem.id,
+        name: editItem.name,
+        providerName: editItem.cloud_celephony_provider_name,
+        image: null,
+        credentials: editItem.creadentials_json,
+        authTokenType: editItem.auth_tokent_ype,
+        status: editItem.status,
+      });
+    } else {
+      setEditMode(false);
+      setFormData({
+        id: null,
+        name: "",
+        providerName: "",
+        image: null,
+        credentials: "",
+        authTokenType: "",
+        status: "",
+      });
+    }
     setDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setFormData({
+      id: null,
       name: "",
       providerName: "",
       image: null,
       credentials: "",
+      authTokenType: "",
+      status: "",
     });
+    setErrors({});
   };
 
   const handleInputChange = (name, value) => {
@@ -47,13 +80,49 @@ const TelephonicChannelsList = () => {
     setFormData({ ...formData, image: file });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.name || !formData.providerName || !formData.credentials) {
       setErrors({ message: "Please fill in all fields." });
       return;
     }
-    // Submit form logic (future implementation)
-    handleCloseDialog();
+
+    const apiUrl = editMode
+      ? `http://127.0.0.1:8000/api/updateCloudTelephoneyChannel/${formData.id}/`
+      : "http://127.0.0.1:8000/api/createCloudTelephoneyChannel/";
+
+    const method = editMode ? "PUT" : "POST";
+
+    const requestData = new FormData();
+    requestData.append("name", formData.name);
+    requestData.append("cloud_celephony_provider_name", formData.providerName);
+    requestData.append("creadentials_json", formData.credentials);
+    requestData.append("auth_tokent_ype", formData.authTokenType);
+    requestData.append("status", formData.status);
+    if (formData.image) {
+      requestData.append("image", formData.image);
+    }
+
+    try {
+      const response = await axios({
+        method,
+        url: apiUrl,
+        data: requestData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.data.Success) {
+        alert("Success: Cloud Telephony Channel saved!");
+        setDialogOpen(false);
+        // Optionally refresh the list of channels
+      } else {
+        setErrors(response.data.Errors);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setErrors({ message: "An error occurred while saving the data." });
+    }
   };
 
   return (
@@ -62,11 +131,7 @@ const TelephonicChannelsList = () => {
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
             <CustomCard padding="13px">
-              <Grid
-                container
-                justifyContent="space-between"
-                alignItems="center"
-              >
+              <Grid container justifyContent="space-between" alignItems="center">
                 <Grid item>
                   <Typography
                     sx={{
@@ -83,7 +148,7 @@ const TelephonicChannelsList = () => {
                 </Grid>
                 <Grid item>
                   <Button
-                    onClick={handleOpenDialog}
+                    onClick={() => handleOpenDialog()}
                     sx={{
                       padding: "8px",
                       fontSize: "14px",
@@ -107,11 +172,8 @@ const TelephonicChannelsList = () => {
           </Grid>
         </Grid>
 
-        {/* Display Cards */}
         <Grid container spacing={2} sx={{ marginBottom: "10px" }}>
-          {isLoading && (
-            <Typography variant="body1">Loading...</Typography>
-          )}
+          {isLoading && <Typography variant="body1">Loading...</Typography>}
           {isError && (
             <Typography variant="body1" color="error">
               Error loading data
@@ -153,27 +215,20 @@ const TelephonicChannelsList = () => {
                       {item.cloud_celephony_provider_name}
                     </Typography>
                   </Grid>
-                </Grid>
-                <Grid container justifyContent="flex-end" alignItems="center" sx={{ marginTop: 2 }}>
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleOpenDialog}
-                      sx={{ textTransform: "capitalize" }}
-                    >
-                      Create Channels
-                    </Button>
-                  </Grid>
+                  <Button
+                    onClick={() => handleOpenDialog(item)}
+                    color="primary"
+                  >
+                    Edit
+                  </Button>
                 </Grid>
               </CustomCard>
             </Grid>
           ))}
         </Grid>
 
-        {/* Dialog */}
         <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-          <DialogTitle>Add Cloud Connect</DialogTitle>
+          <DialogTitle>{editMode ? "Edit Cloud Connect" : "Add Cloud Connect"}</DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
@@ -189,9 +244,7 @@ const TelephonicChannelsList = () => {
                   label="Cloud Connect Provider Name"
                   fullWidth
                   value={formData.providerName}
-                  onChange={(e) =>
-                    handleInputChange("providerName", e.target.value)
-                  }
+                  onChange={(e) => handleInputChange("providerName", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -199,9 +252,23 @@ const TelephonicChannelsList = () => {
                   label="Credentials"
                   fullWidth
                   value={formData.credentials}
-                  onChange={(e) =>
-                    handleInputChange("credentials", e.target.value)
-                  }
+                  onChange={(e) => handleInputChange("credentials", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Auth Token Type"
+                  fullWidth
+                  value={formData.authTokenType}
+                  onChange={(e) => handleInputChange("authTokenType", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Status"
+                  fullWidth
+                  value={formData.status}
+                  onChange={(e) => handleInputChange("status", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -211,17 +278,19 @@ const TelephonicChannelsList = () => {
                   type="file"
                   accept="image/*"
                   onChange={(e) => handleImageUpload(e.target.files[0])}
-                  required
                   fullWidth
                 />
               </Grid>
             </Grid>
+            {errors.message && (
+              <Typography color="error" variant="body2">
+                {errors.message}
+              </Typography>
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleSubmit} color="primary">
-              Submit
-            </Button>
+            <Button onClick={handleSubmit}>{editMode ? "Update" : "Submit"}</Button>
           </DialogActions>
         </Dialog>
       </Grid>
