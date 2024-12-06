@@ -294,7 +294,7 @@ const RepeatOrder = () => {
       order_remark: orderRemark,
       repeat_order: 1,
       is_booked: 1,
-      customer_state: 1,
+      customer_state: `${cutomerState}`,
       payment_type: 1,
       payment_status: 1,
       order_status: 1,
