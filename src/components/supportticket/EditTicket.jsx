@@ -6,7 +6,7 @@ import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
 import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";
 import { getToken } from "@/utils/getToken";
 import { Poppins } from "next/font/google";
-import axios from "axios";
+
 import {
   Typography,
   Button,
@@ -27,7 +27,7 @@ const poppins = Poppins({
 
 const EditTicket = () => {
   const router = useRouter();
-  const { id } = router.query; // Get the ticket ID from the query string
+  const { id } = router.query; 
   const token = getToken();
 
   const {
