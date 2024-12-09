@@ -402,12 +402,10 @@ const ContactList = () => {
     useEffect(() => {
         const connectWebSocket = () => {
             const ws = new WebSocket('ws://localhost:3001');
-
             ws.onopen = () => {
                 console.log('WebSocket connection established');
                 setSocket(ws);
             };
-
             ws.onmessage = (event) => {
                 const reader = new FileReader();
                 reader.onload = () => {
@@ -425,7 +423,6 @@ const ContactList = () => {
                         });
 
                         console.log("Updated Messages:", incomingMessage.from_user);
-                        console.log("SHIVAM2");
                     } catch (error) {
                         console.error('Error parsing JSON message:', error);
                     }
@@ -868,7 +865,7 @@ const ContactList = () => {
                         <Grid container>
                             <Grid item xs={12} lg={8}>
                                 <Box style={{ display: 'flex', flexDirection: 'column', width: "100%", height: "84vh", backgroundColor: "#ffffff" }}>
-                                    <Box style={{ flexGrow: 1, overflowY: "scroll", padding: "1em" }}>
+                                    <Box style={{ flexGrow: 1, overflowY: "scroll", padding: "1em" ,    backgroundImage: 'linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%)', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                                         {sortedMessages
                                             .filter((msg) => chatSessionId === msg.chat_session)
                                             .map((msg, index) => (
