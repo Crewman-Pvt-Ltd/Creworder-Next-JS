@@ -77,9 +77,8 @@ const ContactList = () => {
             }
             return element;
         }));
-        setUsers(updatedUsers);
+        setUsers(updatedUsers); 
     };
-
 
     //=======================================================================
     //                   Get Users for Chat
@@ -311,22 +310,28 @@ const ContactList = () => {
 
         if (event.target.value === 'Contacts') {
             permissionsData != null &&
-                fetch(`${baseApiUrl}users`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log(data);
-                        get_chat_count(data);
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        setError(error);
-                        setLoading(false);
-                    });
+                fetch(`${baseApiUrl}users`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    get_chat_count(data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    setError(error);
+                    setLoading(false);
+                });
         }
 
         if (event.target.value === 'Chats') {
@@ -397,12 +402,10 @@ const ContactList = () => {
     useEffect(() => {
         const connectWebSocket = () => {
             const ws = new WebSocket('ws://localhost:3001');
-
             ws.onopen = () => {
                 console.log('WebSocket connection established');
                 setSocket(ws);
             };
-
             ws.onmessage = (event) => {
                 const reader = new FileReader();
                 reader.onload = () => {
@@ -420,7 +423,6 @@ const ContactList = () => {
                         });
 
                         console.log("Updated Messages:", incomingMessage.from_user);
-                        console.log("SHIVAM2");
                     } catch (error) {
                         console.error('Error parsing JSON message:', error);
                     }
@@ -863,7 +865,7 @@ const ContactList = () => {
                         <Grid container>
                             <Grid item xs={12} lg={8}>
                                 <Box style={{ display: 'flex', flexDirection: 'column', width: "100%", height: "84vh", backgroundColor: "#ffffff" }}>
-                                    <Box style={{ flexGrow: 1, overflowY: "scroll", padding: "1em" }}>
+                                    <Box style={{ flexGrow: 1, overflowY: "scroll", padding: "1em" ,    backgroundImage: 'linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%)', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                                         {sortedMessages
                                             .filter((msg) => chatSessionId === msg.chat_session)
                                             .map((msg, index) => (
