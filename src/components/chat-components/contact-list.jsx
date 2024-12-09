@@ -77,9 +77,8 @@ const ContactList = () => {
             }
             return element;
         }));
-        setUsers(updatedUsers);
+        setUsers(updatedUsers); 
     };
-
 
     //=======================================================================
     //                   Get Users for Chat
@@ -311,22 +310,28 @@ const ContactList = () => {
 
         if (event.target.value === 'Contacts') {
             permissionsData != null &&
-                fetch(`${baseApiUrl}users`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log(data);
-                        get_chat_count(data);
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        setError(error);
-                        setLoading(false);
-                    });
+                fetch(`${baseApiUrl}users`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    get_chat_count(data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    setError(error);
+                    setLoading(false);
+                });
         }
 
         if (event.target.value === 'Chats') {
