@@ -146,24 +146,6 @@ const TeamPerformance = () => {
               }}>Team Dashboard</Typography>
             </Grid>
             <Grid item xs={12} sm={3}>
-              <CustomLabel htmlFor="select_team" required>
-                Select Team
-              </CustomLabel>
-              <Select
-                labelId="select_team"
-                id="select_team"
-                value={team}
-                onChange={handleTeamChange}
-                displayEmpty
-                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth
-              >
-                <MenuItem value={1}>Crewman</MenuItem>
-                <MenuItem value={2}>NDR</MenuItem>
-                <MenuItem value={3}>Sales</MenuItem>
-              </Select>
-            </Grid>
-            <Grid item xs={12} sm={3}>
               <CustomLabel htmlFor="select_branch" required>
                 Branch
               </CustomLabel>
@@ -181,6 +163,24 @@ const TeamPerformance = () => {
                     {branch.name}
                   </MenuItem>
                 ))}
+              </Select>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <CustomLabel htmlFor="select_team" required>
+                Select Team Leader
+              </CustomLabel>
+              <Select
+                labelId="select_team"
+                id="select_team"
+                value={team}
+                onChange={handleTeamChange}
+                displayEmpty
+                sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
+                fullWidth
+              >
+                <MenuItem value={1}>TL 1</MenuItem>
+                <MenuItem value={2}>TL 2</MenuItem>
+                <MenuItem value={3}>TL 3</MenuItem>
               </Select>
             </Grid>
             <Grid item xs={12} sm={3}>
