@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import AppreciationList from '@/components/appreciation/AppreciationList';
-import AddAppreciation from '@/components/Appreciation/AddAppreciation';
+import AddAppreciation from '@/components/appreciation/AddAppreciation';
 import { usePermissions } from "@/contexts/PermissionsContext";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/router";
