@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
+import CustomLabel from "../CustomLabel";
 import CustomCard from "../CustomCard";
 import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
 import useGetAllUsers from "@/api-manage/react-query/useGetAllUsers";

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CustomTextField from "@/components/CustomTextField";
-import CustomLabel from "../customLabel";
+import CustomLabel from "../CustomLabel";
 import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
