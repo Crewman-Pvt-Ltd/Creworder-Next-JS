@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../CustomLabel";
 import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
+import dynamic from 'next/dynamic';
+// Dynamically import CKEditor without server-side rendering
+const CKEditor = dynamic(
+  () => import('@ckeditor/ckeditor5-react').then((mod) => mod.CKEditor),
+  { ssr: false }
+);
 
-  const EditNotice = () => {
+// Dynamically import ClassicEditor
+const ClassicEditor = dynamic(
+  () => import('@ckeditor/ckeditor5-build-classic'),
+  { ssr: false }
+);
+
+const EditNotice = () => {
   const router = useRouter();
   const { id } = router.query;
   const [notice, setNotice] = useState({ title: "", description: "" });

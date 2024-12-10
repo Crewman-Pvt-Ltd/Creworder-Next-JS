@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
-import DepartmentList from '@/components/Department/DepartmentList';
-import AddDepartment from '@/components/Department/AddDepartment';
+import DepartmentList from '@/components/department/DepartmentList';
+import AddDepartment from '@/components/department/AddDepartment';
 import { usePermissions } from "@/contexts/PermissionsContext";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/router";

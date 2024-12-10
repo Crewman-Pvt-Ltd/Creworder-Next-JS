@@ -42,12 +42,6 @@ const AdminSignup = () => {
     },
   });
 
-  const imagebanner = useBanner("superadmin/banner");
-const bannerimg = () => {
-  route.push("admin/bannerinage")
-}
-
-
   const router = useRouter();
 
   const handleChange = (e) => {

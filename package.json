@@ -54,6 +54,7 @@
     "react-to-print": "^3.0.2",
     "slick-carousel": "^1.8.1",
     "sweetalert": "^2.1.2",
+    "toastify-js": "^1.12.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
