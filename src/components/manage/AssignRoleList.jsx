@@ -23,8 +23,11 @@ import { Poppins } from "next/font/google";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import useGetAllAssignRole from "@/api-manage/react-query/useGetAllAssignRole";
 import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
+import Swal from "sweetalert";
 import axios from "axios";
 
 const poppins = Poppins({
@@ -43,6 +46,7 @@ const AssignRoleList = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
   const createAssignRole = () => {
     router.push("/admin/manage/assign-role");
   };
@@ -53,8 +57,8 @@ const AssignRoleList = () => {
 
     if (isRowExpanded && !agentsData[teamleadId]) {
       try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/agents/by_teamlead/?teamlead_id=${teamleadId}`,
+        const response = await MainApi.get(
+          `/api/agents/by_teamlead/?teamlead_id=${teamleadId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -68,12 +72,48 @@ const AssignRoleList = () => {
             ...prevData,
             [teamleadId]: response.data.Data.Agents,
           }));
+        } else {
+          Swal("Error", "Failed to fetch agents. Please try again.", "error");
         }
       } catch (error) {
         console.error("Error fetching agents data:", error);
+        Swal("Error", "An error occurred while fetching agents. Please try again.", "error");
       }
     }
   };
+
+  const handleRemoveAgent = async (teamleadId, index) => {
+    const agentToRemove = agentsData[teamleadId][index]; 
+    const agentId = agentToRemove.id; 
+
+    try {
+      const response = await MainApi.post(
+        `/api/update-teamlead-manager/`,
+        { user_id: agentId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setAgentsData((prevData) => ({
+          ...prevData,
+          [teamleadId]: prevData[teamleadId].filter((_, i) => i !== index),
+        }));
+        Swal("Success", "The agent has been successfully removed.", "success");
+      } else {
+        Swal("Error", "Failed to remove the agent. Please try again.", "error");
+        console.error("Failed to remove agent:", response.data);
+      }
+    } catch (error) {
+      Swal("Error", "An error occurred while removing the agent. Please try again.", "error");
+      console.error("Error removing agent:", error);
+    }
+  };
+  
 
   if (!isClient) {
     return null;
@@ -156,7 +196,6 @@ const AssignRoleList = () => {
                     <TableCell>
                       <b>TeamLead</b>
                     </TableCell>
-                    
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -176,7 +215,6 @@ const AssignRoleList = () => {
                         >
                           {row.teamlead} {row.first_name} {row.last_name}
                         </TableCell>
-                       
                       </TableRow>
                       {/* Expanded row */}
                       <TableRow>
@@ -194,15 +232,27 @@ const AssignRoleList = () => {
                                 Agents under {row.teamlead}
                               </Typography>
                               <List>
-                                {agentsData[row.teamlead]?.map((agent, i) => (
-                                  <ListItem key={i}>
-                                    <ListItemText
-                                      primary={`${agent.first_name} ${agent.last_name}`}
-                                      secondary={`Email: ${agent.email}, Phone: ${agent.contact_no}`}
-                                    />
-                                  </ListItem>
-                                ))}
-                              </List>
+                                  {agentsData[row.teamlead]?.map((agent, i) => (
+                                    <ListItem
+                                      key={i}
+                                      secondaryAction={
+                                        <IconButton
+                                          edge="end"
+                                          color="error"
+                                          onClick={() => handleRemoveAgent(row.teamlead, i)} 
+                                        >
+                                          <CloseIcon />
+                                        </IconButton>
+                                      }
+                                    >
+                                      <ListItemText
+                                        primary={`${agent.first_name} ${agent.last_name}`}
+                                        secondary={`Email: ${agent.email}, Phone: ${agent.contact_no}`}
+                                      />
+                                    </ListItem>
+                                  ))}
+                                </List>
+
                             </Box>
                           </Collapse>
                         </TableCell>
