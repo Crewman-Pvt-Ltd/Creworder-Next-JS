@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Grid,
   MenuItem,
   Select,
   Typography,
-  Box,
-  TextField,
   Paper,
   Button,
 } from "@mui/material";
@@ -19,34 +17,48 @@ import AcceptIcon from "@mui/icons-material/CheckCircle";
 import ArrowCircleUpTwoToneIcon from "@mui/icons-material/ArrowCircleUpTwoTone";
 import RejectedIcon from "@mui/icons-material/Cancel";
 import NoResponseIcon from "@mui/icons-material/QuestionAnswer";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
 import ArrowCircleDownTwoToneIcon from "@mui/icons-material/ArrowCircleDownTwoTone";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 
 const AddressVerification = () => {
+  const dateRef = useRef(null);
   const { data } = useGetAllBranches();
-  const [startDate, setStartDate] = useState(dayjs(null));
-  const [endDate, setEndDate] = useState(dayjs(null));
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [team, setTeam] = useState(1);
   const [selectedBranch, setSelectedBranch] = useState("");
-  const [showTiles, setShowTiles] = useState(false); 
+  const [showTiles, setShowTiles] = useState(false);
+
+  useEffect(() => {
+    // Initialize Flatpickr
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+      onChange: (selectedDates) => {
+        if (selectedDates.length === 2) {
+          setStartDate(dayjs(selectedDates[0]));
+          setEndDate(dayjs(selectedDates[1]));
+        }
+      },
+    });
+
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     if (data?.results?.length) {
       setSelectedBranch(data.results[0].name);
     }
   }, [data]);
-
-  const handleStartDateChange = (newValue) => {
-    setStartDate(newValue);
-  };
-
-  const handleEndDateChange = (newValue) => {
-    setEndDate(newValue);
-  };
 
   const handleTeamChange = (event) => {
     setTeam(event.target.value);
@@ -57,35 +69,12 @@ const AddressVerification = () => {
   };
 
   const handleGetDataClick = () => {
-    if (selectedBranch && team && startDate?.isValid() && endDate?.isValid()) {
+    if (selectedBranch && team && startDate && endDate) {
       setShowTiles(true);
     } else {
       alert("Please fill in all fields.");
       setShowTiles(false);
     }
-  };
-
-  const Counter = ({ target }) => {
-    const [count, setCount] = useState(0);
-    const duration = 2000;
-    const stepTime = Math.abs(Math.floor(duration / target));
-
-    useEffect(() => {
-      const timer = setInterval(() => {
-        setCount((prev) => {
-          if (prev < target) {
-            return Math.min(prev + 1, target);
-          } else {
-            clearInterval(timer);
-            return prev;
-          }
-        });
-      }, stepTime);
-
-      return () => clearInterval(timer);
-    }, [target, stepTime]);
-
-    return <span style={{ marginLeft: "20px" }}>{count}</span>;
   };
 
   const Tile = styled(Paper)(() => ({
@@ -150,12 +139,7 @@ const AddressVerification = () => {
         <CustomCard>
           <Grid container spacing={2} p={2}>
             <Grid item xs={12}>
-              <Typography
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "18px",
-                }}
-              >
+              <Typography sx={{ fontWeight: "bold", fontSize: "18px" }}>
                 Address Verification
               </Typography>
             </Grid>
@@ -197,62 +181,46 @@ const AddressVerification = () => {
                 <MenuItem value={3}>User 3</MenuItem>
               </Select>
             </Grid>
-
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="start_date" required>
-                  Start Date
-                </CustomLabel>
-                <DatePicker
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "45px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
+            <Grid item xs={12} sm={6} md={3} mt={2}>
+              <div
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  position: "relative",
+                  backgroundColor: "#fff",
+                  border: "2px solid gray",
+                  marginTop: 5,
+                }}
+              >
+                <input
+                  ref={dateRef}
+                  type="text"
+                  placeholder="Select date range"
+                  style={{
+                    padding: "5px",
+                    borderRadius: "4px",
+                    color: "#333",
+                    width: "100%",
+                    height: "20px",
+                    fontSize: "15px",
+                  }}
                 />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="end_date" required>
-                  End Date
-                </CustomLabel>
-                <DatePicker
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "45px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
+                <CalendarMonthIcon
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    fontSize: "35px",
+                    color: "white",
+                    right: "1px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    backgroundColor: "#405189",
+                    padding: "4px",
+                  }}
+                  onClick={() => dateRef.current.focus()}
                 />
-              </LocalizationProvider>
+              </div>
             </Grid>
             <Grid
               item
@@ -281,11 +249,7 @@ const AddressVerification = () => {
       {showTiles &&
         tilesData.map((tile, index) => (
           <Grid item xs={2} sm={2} md={2} key={index}>
-            <Tile
-              elevation={0}
-              style={{ boxShadow: "none" }}
-              bgcolor={tile.bgcolor}
-            >
+            <Tile elevation={0} bgcolor={tile.bgcolor}>
               <Typography
                 variant="body1"
                 style={{

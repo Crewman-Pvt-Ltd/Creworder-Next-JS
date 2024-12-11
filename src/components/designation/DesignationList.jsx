@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   Grid,
   Button,
@@ -13,27 +13,28 @@ import {
   Dialog,
   DialogActions,
   DialogTitle,
-  DialogContentText ,
+  DialogContentText,
   DialogContent,
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import Edit from '@mui/icons-material/Edit';
-import Delete from '@mui/icons-material/Delete';
-import CustomCard from '../CustomCard';
-import useGetAllDesignations from '@/api-manage/react-query/useGetAllDesignations';
+} from "@mui/material";
+import MainApi from "@/api-manage/MainApi";
+import AddIcon from "@mui/icons-material/Add";
+import Edit from "@mui/icons-material/Edit";
+import Delete from "@mui/icons-material/Delete";
+import CustomCard from "../CustomCard";
+import useGetAllDesignations from "@/api-manage/react-query/useGetAllDesignations";
 import { useRouter } from "next/router";
 import { getToken } from "@/utils/getToken";
 const DesignationList = ({ onAddDesignation }) => {
   const { data, refetch, isLoading, isError } = useGetAllDesignations();
   const [open, setOpen] = useState(false);
-  const [designationsToDelete, setDesignationsToDelete] = useState(null);
+  const [designationToDelete, setDesignationToDelete] = useState(null);
   const router = useRouter();
   const handleEdit = (row) => {
     router.push(`/hr/designation/editdesignation?id=${row.id}`);
   };
 
   const handleDeleteClick = (id) => {
-    setDesignationsToDelete(id);
+    setDesignationToDelete(id);
     setOpen(true);
   };
 
@@ -44,28 +45,34 @@ const DesignationList = ({ onAddDesignation }) => {
         throw new Error("No authentication token found.");
       }
 
-      const response = await MainApi.delete(`/api/designations/${designationsToDelete}`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },    
-      });
+      const response = await MainApi.delete(
+        `/api/designations/${designationToDelete}`,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
 
       if (response.status === 204) {
         console.log("Designations deleted successfully");
-        refetch();
+        refetch(); // Refetch data to update the list after deletion
       } else {
         console.error("Failed to delete the Designations");
       }
     } catch (error) {
-      console.error("An error occurred while deleting the Designations:", error);
+      console.error(
+        "An error occurred while deleting the designations:",
+        error
+      );
     }
     setOpen(false);
-    setDesignationsToDelete(null);
+    setDesignationToDelete(null);
   };
 
   const handleDeleteCancel = () => {
     setOpen(false);
-    setDesignationsToDelete(null);
+    setDesignationToDelete(null);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -73,45 +80,45 @@ const DesignationList = ({ onAddDesignation }) => {
 
   return (
     <Grid container spacing={2} sx={{ padding: 3 }}>
-      <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
+      <Grid item xs={12} sx={{ display: "flex", gap: 2 }}>
         <Button
           onClick={onAddDesignation}
           sx={{
-            padding: '8px 16px',
-            fontSize: '14px',
-            backgroundColor: '#405189',
-            color: 'white',
-            '&:hover': {
-              backgroundColor: '#334a6c',
+            padding: "8px 16px",
+            fontSize: "14px",
+            backgroundColor: "#405189",
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#334a6c",
             },
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 1,
-            textTransform: 'none',
+            textTransform: "none",
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
           Add Designation
         </Button>
-        <Button
+        {/* <Button
           sx={{
-            padding: '8px 16px',
-            fontSize: '14px',
-            border: '2px solid #405189',
-            color: '#405189',
-            backgroundColor: 'white',
-            '&:hover': {
-              backgroundColor: '#f0f0f0',
+            padding: "8px 16px",
+            fontSize: "14px",
+            border: "2px solid #405189",
+            color: "#405189",
+            backgroundColor: "white",
+            "&:hover": {
+              backgroundColor: "#f0f0f0",
             },
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 1,
-            textTransform: 'none',
+            textTransform: "none",
           }}
         >
           <AddIcon sx={{ fontSize: 20 }} />
           Export
-        </Button>
+        </Button> */}
       </Grid>
       <Grid item xs={12}>
         <CustomCard>
@@ -122,7 +129,7 @@ const DesignationList = ({ onAddDesignation }) => {
                   <TableRow>
                     <TableCell>ID</TableCell>
                     <TableCell>Name</TableCell>
-                    
+
                     <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -131,23 +138,23 @@ const DesignationList = ({ onAddDesignation }) => {
                     <TableRow key={row.id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell
-                        sx={{ maxWidth: '300px', overflowWrap: 'anywhere' }}
+                        sx={{ maxWidth: "300px", overflowWrap: "anywhere" }}
                       >
                         {row.name}
                       </TableCell>
-                 
+
                       <TableCell>
                         <IconButton
                           onClick={() => handleEdit(row)}
                           aria-label="edit"
-                          sx={{ color: 'green' }}
+                          sx={{ color: "green" }}
                         >
                           <Edit />
                         </IconButton>
                         <IconButton
                           onClick={() => handleDeleteClick(row.id)}
                           aria-label="delete"
-                          sx={{ color: 'red' }}
+                          sx={{ color: "red" }}
                         >
                           <Delete />
                         </IconButton>
@@ -161,10 +168,11 @@ const DesignationList = ({ onAddDesignation }) => {
         </CustomCard>
       </Grid>
       <Dialog open={open} onClose={handleDeleteCancel}>
-        <DialogTitle>Delete Designations</DialogTitle>
+        <DialogTitle>Delete Designation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete this designations? This action cannot be undone.
+            Are you sure you want to delete this designation? This action cannot
+            be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

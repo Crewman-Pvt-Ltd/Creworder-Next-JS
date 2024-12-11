@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Grid,
   MenuItem,
@@ -17,13 +17,15 @@ import {
 } from "@mui/material";
 import CustomCard from "../CustomCard";
 import CustomLabel from "../CustomLabel";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
 
+import dayjs from "dayjs";
+
+import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 const TeamPerformance = () => {
+  const dateRef = useRef(null);
   const { data } = useGetAllBranches();
   const [startDate, setStartDate] = useState(dayjs(null));
   const [endDate, setEndDate] = useState(dayjs(null));
@@ -32,7 +34,18 @@ const TeamPerformance = () => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
+  useEffect(() => {
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+    });
 
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
   useEffect(() => {
     if (data?.results?.length) {
       // Set default selected branch to the first branch in the data
@@ -140,10 +153,14 @@ const TeamPerformance = () => {
         <CustomCard>
           <Grid container spacing={2} p={2}>
             <Grid item xs={12}>
-              <Typography sx={{
-                fontWeight:"bold",
-                fontSize:"18px",
-              }}>Team Dashboard</Typography>
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                Team Dashboard
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={3}>
               <CustomLabel htmlFor="select_branch" required>
@@ -183,59 +200,55 @@ const TeamPerformance = () => {
                 <MenuItem value={3}>TL 3</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="start_date" required>
-                  Start Date
-                </CustomLabel>
-                <DatePicker
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#212121",
-                          height: "45px",
-                        },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
+            <Grid item xs={12} sm={6} md={3} mt={2}>
+              <div
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  position: "relative",
+                  backgroundColor: "#fff",
+                  border: "2px solid gray",
+                  marginTop: 5,
+                }}
+              >
+                <input
+                  ref={dateRef}
+                  type="text"
+                  placeholder="Select date range"
+                  style={{
+                    padding: "5px",
+                    borderRadius: "4px",
+                    color: "#333",
+                    width: "100%",
+                    height: "20px",
+                    fontSize: "15px",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.border = "none";
+                    e.target.style.outline = "none";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.border = "none";
+                    e.target.style.outline = "none";
+                  }}
                 />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="end_date" required>
-                  End Date
-                </CustomLabel>
-                <DatePicker
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                          borderColor: "#212121",
-                          height: "45px",
-                        },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
+
+                <CalendarMonthIcon
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    fontSize: "35px",
+                    color: "white",
+                    right: "1px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    backgroundColor: "#405189",
+                    padding: "4px",
+                  }}
+                  onClick={() => dateRef.current.focus()} // This will focus the input
                 />
-              </LocalizationProvider>
+              </div>
             </Grid>
           </Grid>
         </CustomCard>
@@ -252,31 +265,49 @@ const TeamPerformance = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Sr. No.
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Agent
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Targets
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Running Orders
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Accepted Count
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Accepted Sum
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Accepted Percentage
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Current Accepted ASV
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
+                    >
                       Total Orders
                     </TableCell>
                   </TableRow>

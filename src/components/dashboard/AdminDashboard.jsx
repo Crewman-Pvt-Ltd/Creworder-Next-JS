@@ -7,10 +7,7 @@ import InvoicesChart from "../InvoicesChart";
 import Charttwo from "../Charttwo";
 import ReferalInvite from "../ReferalInvite";
 import ChartThree from "../ChartThree";
-import UpgradeAccount from "../UpgradeAccount";
-import ScheduleOrderChart from "../ScheduleOrderChart";
-import Checklist from "../Checklist";
-import { DateRangePicker } from "@nextui-org/date-picker";
+
 import Banner from "../banner/Banner";
 import Flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";

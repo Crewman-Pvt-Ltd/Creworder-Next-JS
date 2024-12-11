@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import {
   Grid,
@@ -19,7 +19,25 @@ import CustomCard from "../CustomCard";
 import CustomTextField from "../CustomTextField";
 import CustomLabel from "../CustomLabel";
 import "react-quill/dist/quill.snow.css";
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const AddAttendance = ({ onAttendanceList }) => {
+  const dateRef = useRef(null);
+
+  useEffect(() => {
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+    });
+
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
+
   const [value, setValue] = useState("date");
   const [date, setDate] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -35,7 +53,7 @@ const AddAttendance = ({ onAttendanceList }) => {
     setYear("");
     setMonth("");
   };
-  const [isLate, setIsLate] = useState("no"); 
+  const [isLate, setIsLate] = useState("no");
   const [isHalfDay, setIsHalfDay] = useState("no");
   const handleLateChange = (event) => {
     setIsLate(event.target.value);
@@ -48,7 +66,7 @@ const AddAttendance = ({ onAttendanceList }) => {
     event.preventDefault();
     onAttendanceList();
   };
-  const [workingFrom, setWorkingFrom] = useState(""); 
+  const [workingFrom, setWorkingFrom] = useState("");
   const handleWorkingFromChange = (event) => {
     setWorkingFrom(event.target.value);
   };
@@ -63,7 +81,6 @@ const AddAttendance = ({ onAttendanceList }) => {
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2} sx={{ marginTop: 2 }}>
-            
                 <Grid item xs={12} sm={4}>
                   <CustomLabel htmlFor="department" required>
                     Department
@@ -77,7 +94,6 @@ const AddAttendance = ({ onAttendanceList }) => {
                   />
                 </Grid>
 
-             
                 <Grid item xs={12} sm={8}>
                   <CustomLabel htmlFor="employees" required>
                     Employees
@@ -85,14 +101,14 @@ const AddAttendance = ({ onAttendanceList }) => {
                   <CustomTextField id="employees" name="employees" fullWidth />
                 </Grid>
 
-                <Grid item xs={12} sm={3}>
+                <Grid item xs={12} sm={3} md={4}>
                   <CustomLabel htmlFor="location" required>
                     Location
                   </CustomLabel>
                   <CustomTextField id="location" name="location" fullWidth />
                 </Grid>
 
-                <Grid item xs={3}>
+                <Grid item xs={3} sm={3} md={3}>
                   <FormControl component="fieldset" fullWidth>
                     <CustomLabel component="legend">
                       Assign Shift By
@@ -121,44 +137,62 @@ const AddAttendance = ({ onAttendanceList }) => {
 
                 {value === "date" && (
                   <>
-                    <Grid item xs={12} sm={3}>
-                      <CustomLabel htmlFor="start-date" required>
-                        Start Date
-                      </CustomLabel>
-                      <CustomTextField
-                        id="start-date"
-                        name="start-date"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true,
+                    <Grid item xs={12} sm={6} md={3} mt={2}>
+                      <div
+                        style={{
+                          padding: "8px",
+                          borderRadius: "4px",
+                          position: "relative",
+                          backgroundColor: "#fff",
+                          border: "2px solid black",
                         }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <CustomLabel htmlFor="end-date" required>
-                        End Date
-                      </CustomLabel>
-                      <CustomTextField
-                        id="end-date"
-                        name="end-date"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                      />
+                      >
+                        <input
+                          ref={dateRef}
+                          type="text"
+                          placeholder="Select date range"
+                          style={{
+                            padding: "5px",
+                            borderRadius: "4px",
+                            color: "#333",
+                            width: "100%",
+                            fontSize: "15px",
+
+                            outline: "none",
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.border = "none";
+                            e.target.style.outline = "none";
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.border = "none";
+                            e.target.style.outline = "none";
+                          }}
+                        />
+
+                        <CalendarMonthIcon
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            fontSize: "35px",
+                            color: "white",
+                            right: "1px",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            backgroundColor: "#405189",
+                            padding: "4px",
+                          }}
+                          onClick={() => dateRef.current.focus()} // This will focus the input
+                        />
+                      </div>
                     </Grid>
                   </>
                 )}
 
                 {value === "month" && (
                   <>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={3} md={2}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor="year">Year</InputLabel>
                         <Select
@@ -176,7 +210,7 @@ const AddAttendance = ({ onAttendanceList }) => {
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={3} md={2}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor="month">Month</InputLabel>
                         <Select
@@ -201,40 +235,44 @@ const AddAttendance = ({ onAttendanceList }) => {
                   </>
                 )}
 
-                <Grid item xs={12} sm={3}>
-                  <CustomLabel htmlFor="clockin" required>
-                    Clock In
-                  </CustomLabel>
-                  <CustomTextField
-                    id="clockin"
-                    name="clockin"
-                    type="time"
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true, 
-                    }}
-                    inputProps={{
-                      step: 300, 
-                    }}
-                  />
-                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={3}>
+                      <CustomLabel htmlFor="clockin" required>
+                        Clock In
+                      </CustomLabel>
+                      <CustomTextField
+                        id="clockin"
+                        name="clockin"
+                        type="time"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300,
+                        }}
+                      />
+                    </Grid>
 
-                <Grid item xs={12} sm={3}>
-                  <CustomLabel htmlFor="clockout" required>
-                    Clock Out
-                  </CustomLabel>
-                  <CustomTextField
-                    id="clockout"
-                    name="clockout"
-                    type="time" 
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true, 
-                    }}
-                    inputProps={{
-                      step: 300, 
-                    }}
-                  />
+                    <Grid item xs={12} sm={3}>
+                      <CustomLabel htmlFor="clockout" required>
+                        Clock Out
+                      </CustomLabel>
+                      <CustomTextField
+                        id="clockout"
+                        name="clockout"
+                        type="time"
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <CustomLabel htmlFor="late" required>
