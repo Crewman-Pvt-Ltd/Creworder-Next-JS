@@ -27,13 +27,13 @@ const Banner = () => {
             alt={`Slider ${item.id}`}
             style={{
               width: '100%',
-              height: '300px', 
+              height: '230px', 
               display: 'block',
            
               objectFit: 'cover', 
             }}
             width={1250} 
-            height={300} 
+            height={230} 
           />
         </div>
       ))}
