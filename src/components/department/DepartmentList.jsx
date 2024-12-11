@@ -23,7 +23,7 @@ import CustomCard from "../CustomCard";
 import useGetAllDepartments from "@/api-manage/react-query/useGetAllDepartments";
 import { useRouter } from "next/router";
 import MainApi from "@/api-manage/MainApi";
-
+import { getToken } from "@/utils/getToken";
 const DepartmentList = ({ onAddDepartment }) => {
   const { data, refetch, isLoading, isError } = useGetAllDepartments();
   const router = useRouter();
