@@ -9,19 +9,25 @@ import {
   Checkbox,
   ListItemText,
 } from "@mui/material";
+import swal from "sweetalert"; 
 import CustomCard from "../CustomCard";
-
+import useGetAllEmployees from "@/api-manage/react-query/useGetAllEmployees";
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
+import { usePermissions } from "@/contexts/PermissionsContext";
+import axios from "axios"; 
 const AssignRole = () => {
-  const [inputValues, setInputValues] = useState({
-    manager: "", // Single selection for Manager
-    team: "", // Single selection for Team
-    agent: [], // Multiple selection for Agent
+const [inputValues, setInputValues] = useState({
+    manager: "",
+    team: "",
+    agent: [],
   });
 
   const [errors, setErrors] = useState({});
-
+  const { data } = useGetAllEmployees();
+  const { permissionsData } = usePermissions();
   const handleInputChange = (field) => (event) => {
-    const value = field === "agent" ? event.target.value : event.target.value;
+  const value = field === "agent" ? event.target.value : event.target.value;
     setInputValues({ ...inputValues, [field]: value });
   };
 
@@ -34,15 +40,39 @@ const AssignRole = () => {
     return tempErrors;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
       setErrors({});
-      console.log("Form submitted successfully with data: ", inputValues);
-      window.open("http://www.example.com/next-step", "_blank");
+      const payload = {
+        teamlead: inputValues.team,
+        manager: inputValues.manager,
+        agent_list: inputValues.agent,
+      };
+
+      try {
+        const token = getToken();
+        if (!token) {
+          alert("User authentication token is missing.");
+          return;
+        }
+        const response = await MainApi.post("/api/assign-role/", payload, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+
+        if (response.status === 201 || response.status === 200) {
+          swal("Success", "Roles assigned successfully!", "success");
+          setInputValues({ manager: "", team: "", agent: [] });
+        }
+      } catch (error) {
+        console.error("Error assigning roles: ", error);
+        swal("Error", "Failed to assign roles. Please try again.", "error");
+      }
     }
   };
 
@@ -66,7 +96,7 @@ const AssignRole = () => {
                 Assign Role
               </Typography>
               <Grid container spacing={2}>
-                {/* Manager Dropdown */}
+
                 <Grid item xs={12} sm={4}>
                   <Select
                     labelId="manager-select-label"
@@ -80,9 +110,9 @@ const AssignRole = () => {
                     <MenuItem value="" disabled>
                       Select Manager
                     </MenuItem>
-                    {["Manager 1", "Manager 2", "Manager 3"].map((manager) => (
-                      <MenuItem key={manager} value={manager}>
-                        <ListItemText primary={manager} />
+                    {data?.results?.map((agent) => (
+                      <MenuItem key={agent.id} value={agent.id}>
+                        {`${agent.first_name} ${agent.last_name}`}
                       </MenuItem>
                     ))}
                   </Select>
@@ -91,7 +121,6 @@ const AssignRole = () => {
                   )}
                 </Grid>
 
-                {/* Team Leader Dropdown */}
                 <Grid item xs={12} sm={4}>
                   <Select
                     labelId="team-select-label"
@@ -105,9 +134,9 @@ const AssignRole = () => {
                     <MenuItem value="" disabled>
                       Select Team Leader
                     </MenuItem>
-                    {["Team 1", "Team 2", "Team 3"].map((team) => (
-                      <MenuItem key={team} value={team}>
-                        <ListItemText primary={team} />
+                    {data?.results?.map((agent) => (
+                      <MenuItem key={agent.id} value={agent.id}>
+                        {`${agent.first_name} ${agent.last_name}`}
                       </MenuItem>
                     ))}
                   </Select>
@@ -116,7 +145,6 @@ const AssignRole = () => {
                   )}
                 </Grid>
 
-                {/* Agent Dropdown */}
                 <Grid item xs={12} sm={4}>
                   <Select
                     labelId="agent-select-label"
@@ -128,15 +156,22 @@ const AssignRole = () => {
                     sx={{ fontFamily: "Poppins, sans-serif", height: "55px" }}
                     fullWidth
                     renderValue={(selected) =>
-                      selected.length ? selected.join(", ") : "Select Agent"
+                      selected.length
+                        ? data?.results
+                            ?.filter((agent) => selected.includes(agent.id))
+                            .map((agent) => `${agent.first_name} ${agent.last_name}`)
+                            .join(", ")
+                        : "Select Agent"
                     }
                   >
-                    {["Agent 1", "Agent 2", "Agent 3"].map((agent) => (
-                      <MenuItem key={agent} value={agent}>
+                    {data?.results?.map((agent) => (
+                      <MenuItem key={agent.id} value={agent.id}>
                         <Checkbox
-                          checked={inputValues.agent.indexOf(agent) > -1}
+                          checked={inputValues.agent.indexOf(agent.id) > -1}
                         />
-                        <ListItemText primary={agent} />
+                        <ListItemText
+                          primary={`${agent.first_name} ${agent.last_name}`}
+                        />
                       </MenuItem>
                     ))}
                   </Select>

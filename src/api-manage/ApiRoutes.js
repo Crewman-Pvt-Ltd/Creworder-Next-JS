@@ -46,6 +46,7 @@ export const get_features_product = '/api/product-features/';
 export const get_testimonials = '/api/testimonials/';
 export const get_clients = '/api/clients/';
 export const get_highlights = '/api/highlights/';
+export const get_teamleads = '/api/teamlead-users/';
 export const get_username_suggestions = '/api/username-suggestions/';
 export const baseApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL+"/api/";
 export const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
