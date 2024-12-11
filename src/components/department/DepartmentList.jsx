@@ -98,7 +98,7 @@ const DepartmentList = ({ onAddDepartment }) => {
           <AddIcon sx={{ fontSize: 20 }} />
           Add Department
         </Button>
-        <Button
+        {/* <Button
           sx={{
             padding: "8px 16px",
             fontSize: "14px",
@@ -116,7 +116,7 @@ const DepartmentList = ({ onAddDepartment }) => {
         >
           <AddIcon sx={{ fontSize: 20 }} />
           Export
-        </Button>
+        </Button> */}
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
         <CustomCard>

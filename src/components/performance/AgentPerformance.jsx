@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Grid,
   Paper,
   Typography,
   Select,
   MenuItem,
-  TextField,
+
 } from "@mui/material";
 import CustomLabel from "../CustomLabel";
-import CustomTextField from "../CustomTextField";
+
 import { styled } from "@mui/system";
 import { Pie, Bar } from "react-chartjs-2";
 import {
@@ -20,6 +20,9 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import Flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import TotalOrderIcon from "@mui/icons-material/Assignment";
 import ModeStandbyIcon from "@mui/icons-material/ModeStandby";
@@ -29,10 +32,9 @@ import RejectedIcon from "@mui/icons-material/Cancel";
 import NoResponseIcon from "@mui/icons-material/QuestionAnswer";
 import CustomCard from "../CustomCard";
 import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
 import ArrowCircleUpTwoToneIcon from "@mui/icons-material/ArrowCircleUpTwoTone";
 import ArrowCircleDownTwoToneIcon from "@mui/icons-material/ArrowCircleDownTwoTone";
 import ChartThree from "../ChartThree";
@@ -215,6 +217,7 @@ const Counter = ({ target }) => {
   return <span style={{ marginLeft: "20px" }}>{count}</span>;
 };
 const AgentPerformance = () => {
+  const dateRef = useRef(null);
   const { data } = useGetAllBranches();
   const [team, setTeam] = useState(1);
   const [page, setPage] = useState(0);
@@ -226,7 +229,18 @@ const AgentPerformance = () => {
     1: [],
     3: [],
   };
+  useEffect(() => {
+    const today = new Date();
+    const flatpickrInstance = Flatpickr(dateRef.current, {
+      mode: "range",
+      dateFormat: "d M, Y",
+      defaultDate: [today, today],
+    });
 
+    return () => {
+      flatpickrInstance.destroy();
+    };
+  }, []);
   useEffect(() => {
     if (data?.results?.length) {
       setSelectedBranch(data.results[0].name);
@@ -309,67 +323,62 @@ const AgentPerformance = () => {
                 onChange={handleTeamChange}
                 displayEmpty
                 sx={{ fontFamily: "Poppins, sans-serif", height: "40px" }}
-                fullWidth>
+                fullWidth
+              >
                 <MenuItem value={1}>TL 1</MenuItem>
                 <MenuItem value={2}>TL 2</MenuItem>
                 <MenuItem value={3}>TL 3</MenuItem>
               </Select>
             </Grid>
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="start_date" required>
-                  Start Date
-                </CustomLabel>
-                <DatePicker
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "45px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
+            <Grid item xs={12} sm={6} md={3} mt={2}>
+              <div
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  position: "relative",
+                  backgroundColor: "#fff",
+                  border: "2px solid gray",
+                  marginTop: 5,
+                }}
+              >
+                <input
+                  ref={dateRef}
+                  type="text"
+                  placeholder="Select date range"
+                  style={{
+                    padding: "5px",
+                    borderRadius: "4px",
+                    color: "#333",
+                    width: "100%",
+                    height: "20px",
+                    fontSize: "15px",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.border = "none";
+                    e.target.style.outline = "none";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.border = "none";
+                    e.target.style.outline = "none";
+                  }}
                 />
-              </LocalizationProvider>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <CustomLabel htmlFor="end_date" required>
-                  End Date
-                </CustomLabel>
-                <DatePicker
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      variant="outlined"
-                      sx={{
-                        "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: "#212121",
-                            height: "45px",
-                          },
-                        "& .MuiFormLabel-root.Mui-error": {
-                          color: "#212121",
-                        },
-                      }}
-                    />
-                  )}
+
+                <CalendarMonthIcon
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    fontSize: "35px",
+                    color: "white",
+                    right: "1px",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    backgroundColor: "#405189",
+                    padding: "4px",
+                  }}
+                  onClick={() => dateRef.current.focus()} // This will focus the input
                 />
-              </LocalizationProvider>
+              </div>
             </Grid>
           </Grid>
         </CustomCard>
@@ -422,19 +431,27 @@ const AgentPerformance = () => {
             sx={{ height: "300px", padding: "20" }}
           >
             <CustomCard>
-              <Pie data={pieChartData1} options={chartOptions}  style={{
-                padding:"20px",
-              }} />
+              <Pie
+                data={pieChartData1}
+                options={chartOptions}
+                style={{
+                  padding: "20px",
+                }}
+              />
             </CustomCard>
           </Grid>
-          <Grid item xs={12} sm={4} md={4} >
+          <Grid item xs={12} sm={4} md={4}>
             <CustomCard>
-              <Pie data={pieChartData2} options={chartOptions} style={{
-                padding:"20px",
-              }} />
+              <Pie
+                data={pieChartData2}
+                options={chartOptions}
+                style={{
+                  padding: "20px",
+                }}
+              />
             </CustomCard>
           </Grid>
-          <Grid item xs={12} sm={4} md={4} >
+          <Grid item xs={12} sm={4} md={4}>
             <ChartThree />
           </Grid>
         </Grid>

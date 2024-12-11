@@ -42,6 +42,10 @@ const AdminSignup = () => {
     },
   });
 
+
+
+
+
   const router = useRouter();
 
   const handleChange = (e) => {

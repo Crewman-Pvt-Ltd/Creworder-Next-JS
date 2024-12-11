@@ -1,6 +1,6 @@
 import React from "react";
 import CustomCard from "../CustomCard";
-
+import useGetAllCompanies from "@/api-manage/react-query/useGetAllCompanies";
 import {
   Grid,
   Typography,

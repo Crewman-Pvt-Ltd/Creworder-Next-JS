@@ -105,7 +105,7 @@ const AddEmployees = () => {
       formData.dob
     ) {
       getSuggestions();
-      setInitialRun(false); // Prevent further auto-triggering after the initial run
+      setInitialRun(false); 
     }
   }, [formData.first_name, formData.last_name, formData.dob]);
 
