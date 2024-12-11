@@ -12,12 +12,7 @@ import {
   TableRow,
   Typography,
   IconButton,
-  Dialog,
-  DialogActions,
   MenuItem,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   TextField,
 } from "@mui/material";
 import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
@@ -25,6 +20,7 @@ import { Edit, Delete } from "@mui/icons-material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import { usePermissions } from "@/contexts/PermissionsContext";
+import Swal from "sweetalert";
 
 const QCSettings = () => {
   const { data: branchData } = useGetAllBranches();
@@ -36,8 +32,6 @@ const QCSettings = () => {
   const [qcList, setQcList] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
 
   const { permissionsData } = usePermissions();
 
@@ -56,36 +50,6 @@ const QCSettings = () => {
     if (!inputValues.branch) tempErrors.branch = "Branch is required.";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
-  };
-
-  // Submit the form (add or edit QC settings)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    const payload = {
-      question: inputValues.question,
-      branch: inputValues.branch,
-    };
-
-    try {
-      const token = getToken();
-      if (editMode) {
-        await MainApi.put(`/api/qc/${editId}/`, payload, {
-          headers: { Authorization: `Token ${token}` },
-        });
-        alert("QC updated successfully!");
-      } else {
-        await MainApi.post("/api/qc/", payload, {
-          headers: { Authorization: `Token ${token}` },
-        });
-        alert("QC added successfully!");
-      }
-      fetchQcList();
-      resetForm();
-    } catch (error) {
-      console.error("Error saving QC settings:", error);
-    }
   };
 
   // Fetch QC list from the server
@@ -114,6 +78,49 @@ const QCSettings = () => {
     setEditId(null);
   };
 
+  // Submit the form (add or edit QC settings)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const payload = {
+      question: inputValues.question,
+      branch: inputValues.branch,
+    };
+
+    try {
+      const token = getToken();
+      if (editMode) {
+        await MainApi.put(`/api/qc/${editId}/`, payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        Swal({
+          icon: "success",
+          title: "Updated!",
+          text: "QC details updated successfully!",
+        });
+      } else {
+        await MainApi.post("/api/qc/", payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        Swal({
+          icon: "success",
+          title: "Saved!",
+          text: "QC details added successfully!",
+        });
+      }
+      fetchQcList();
+      resetForm();
+    } catch (error) {
+      console.error("Error saving QC settings:", error);
+      Swal({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to save QC details.",
+      });
+    }
+  };
+
   // Handle edit action
   const handleEditClick = (id, detail) => {
     setInputValues({
@@ -126,24 +133,35 @@ const QCSettings = () => {
 
   // Handle delete action
   const handleDeleteClick = (id) => {
-    setItemToDelete(id);
-    setOpenDeleteDialog(true);
-  };
-
-  // Confirm and delete item
-  const handleDeleteConfirm = async () => {
-    try {
-      const token = getToken();
-      await MainApi.delete(`/api/qc/${itemToDelete}/`, {
-        headers: { Authorization: `Token ${token}` },
-      });
-      fetchQcList();
-      setOpenDeleteDialog(false);
-      setItemToDelete(null);
-      alert("QC setting deleted successfully!");
-    } catch (error) {
-      console.error("Failed to delete QC setting:", error);
-    }
+    Swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this QC setting!",
+      icon: "warning",
+      buttons: ["Cancel", "Delete"],
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        try {
+          const token = getToken();
+          await MainApi.delete(`/api/qc/${id}/`, {
+            headers: { Authorization: `Token ${token}` },
+          });
+          fetchQcList();
+          Swal({
+            icon: "success",
+            title: "Deleted!",
+            text: "QC setting deleted successfully!",
+          });
+        } catch (error) {
+          console.error("Failed to delete QC setting:", error);
+          Swal({
+            icon: "error",
+            title: "Error!",
+            text: "Failed to delete QC setting.",
+          });
+        }
+      }
+    });
   };
 
   useEffect(() => {
@@ -248,26 +266,9 @@ const QCSettings = () => {
           </CardContent>
         </Card>
       </Grid>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this QC setting?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteConfirm} color="secondary">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Grid>
   );
 };
 
 export default QCSettings;
+

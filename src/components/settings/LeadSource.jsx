@@ -1,114 +1,211 @@
-
-
-import React, { useState } from 'react';
-import { Box, Button, TableContainer, Table, TableHead, TableCell, TableRow, TableBody, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
-import { Add } from '@mui/icons-material';
-import { Poppins } from 'next/font/google';
-
-const poppins = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
+import React, { useState, useEffect } from "react";
+import {
+  Grid,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  IconButton,
+  TextField,
+} from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
+import MainApi from "@/api-manage/MainApi";
+import { getToken } from "@/utils/getToken";
+import Swal from "sweetalert";
 
 const LeadSource = () => {
-  const [openDialog, setOpenDialog] = useState(false);
-  const [leadSourceName, setLeadSourceName] = useState("");
+  const [inputValues, setInputValues] = useState({ name: "" });
+  const [errors, setErrors] = useState({});
+  const [leadSource, setLeadSource] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
 
-  const handleDialogOpen = () => {
-    setOpenDialog(true);
+
+  const handleInputChange = (field) => (event) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [field]: event.target.value,
+    }));
   };
 
-  const handleDialogClose = () => {
-    setOpenDialog(false);
+  const validateForm = () => {
+    const tempErrors = {};
+    if (!inputValues.name) tempErrors.name = "Lead Source is required.";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
   };
 
-  const handleNameChange = (event) => {
-    setLeadSourceName(event.target.value);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const payload = { name: inputValues.name };
+
+    try {
+      const token = getToken();
+      if (editMode) {
+        await MainApi.put(`/api/lead_sources/${editId}/`, payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        Swal({
+          icon: "success",
+          title: "Updated!",
+          text: "Lead Source details updated successfully!",
+        });
+      } else {
+        await MainApi.post("/api/lead_sources/", payload, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        Swal({
+          icon: "success",
+          title: "Saved!",
+          text: "Lead Source details added successfully!",
+        });
+      }
+      fetchLeadSourceDetails();
+      setInputValues({ name: "" });
+      setEditMode(false);
+      setEditId(null);
+    } catch (error) {
+      console.error("Error saving Lead Source details:", error);
+      Swal({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to save Lead Source details.",
+      });
+    }
   };
 
-  const handleSubmit = () => {
-    console.log("Lead Source Name:", leadSourceName);
-    setOpenDialog(false);
-    setLeadSourceName("");
+  const fetchLeadSourceDetails = async () => {
+    try {
+      const token = getToken();
+      const response = await MainApi.get("/api/lead_sources/", {
+        headers: { Authorization: `Token ${token}` },
+      });
+      setLeadSource(response.data.results);
+    } catch (error) {
+      console.error("Failed to fetch Lead Source details:", error);
+    }
   };
+
+  const handleEditClick = (id, detail) => {
+    setInputValues({ name: detail.name });
+    setEditMode(true);
+    setEditId(id);
+  };
+
+  const handleDeleteClick = (id) => {
+    Swal({
+      title: "Are you sure?",
+      text: "You will not be able to recover this Lead Source!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        handleDeleteConfirm(id);
+      }
+    });
+  };
+  
+  const handleDeleteConfirm = async (id) => {
+    try {
+      const token = getToken();
+      await MainApi.delete(`/api/lead_sources/${id}/`, {
+        headers: { Authorization: `Token ${token}` },
+      });
+      fetchLeadSourceDetails();
+      Swal({
+        icon: "success",
+        title: "Deleted!",
+        text: "Lead Source deleted successfully!",
+      });
+    } catch (error) {
+      console.error("Failed to delete Lead Source:", error);
+      Swal({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to delete Lead Source.",
+      });
+    }
+  };
+  
+
+  useEffect(() => {
+    fetchLeadSourceDetails();
+  }, []);
 
   return (
-    <Box>
-      <Box mb={2}>
-        <Button
-          variant="contained"
-          sx={{ backgroundColor: "#405189" }}
-          startIcon={<Add />}
-          onClick={handleDialogOpen}
-        >
-          Add New Lead Source
-        </Button>
-      </Box>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>1</TableCell>
-              <TableCell>Sample Lead Source</TableCell>
-              <TableCell>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  sx={{ mr: 1 }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Add New Lead Source</DialogTitle>
-        <DialogContent>
-          <Box display="flex" flexDirection="column">
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Lead Source"
-              placeholder=""
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={leadSourceName}
-              onChange={handleNameChange}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} sx={{ color: "#F14A16" }}>
-            Close
+    <Grid container spacing={2}>
+      {/* Add/Edit Lead Source Form */}
+      <Grid item xs={12}>
+        <Typography variant="h6">
+          <b>{editMode ? "Edit Lead Source" : "Add Lead Source"}</b>
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                label="Lead Source"
+                value={inputValues.name}
+                onChange={handleInputChange("name")}
+                error={!!errors.name}
+                helperText={errors.name}
+                fullWidth
+                required
+              />
+            </Grid>
+          </Grid>
+          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+            {editMode ? "Update" : "Save"}
           </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            sx={{ backgroundColor: "#F14A16" }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+        </form>
+      </Grid>
+
+      {/* Lead Source Details Table */}
+      <Grid item xs={12}>
+        <Typography variant="h6">
+          <b>Lead Source Details</b>
+        </Typography>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Lead Source</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {leadSource.map((detail) => (
+                <TableRow key={detail.id}>
+                  <TableCell>{detail.name}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEditClick(detail.id, detail)}
+                    >
+                      <Edit />
+                    </IconButton>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handleDeleteClick(detail.id)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+
+    
+    </Grid>
   );
 };
 

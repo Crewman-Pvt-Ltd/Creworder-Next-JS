@@ -12,19 +12,19 @@ import {
   TableRow,
   Typography,
   IconButton,
+  MenuItem,
+  TextField,
   Dialog,
   DialogActions,
-  MenuItem,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  TextField,
 } from "@mui/material";
 import useGetAllBranches from "@/api-manage/react-query/useGetAllBranches";
 import { Edit, Delete } from "@mui/icons-material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
 import { usePermissions } from "@/contexts/PermissionsContext";
+import Swal from "sweetalert";
 
 const IPAccess = () => {
   const { data: branchData } = useGetAllBranches();
@@ -62,10 +62,11 @@ const IPAccess = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    // Ensure the correct branch ID is passed, not the name
     const payload = {
       ip_from: inputValues.ip_from,
       ip_address: inputValues.ip_address,
-      branch: inputValues.branch,
+      branch: inputValues.branch,  // This should be the branch ID, not the name
       user: permissionsData?.user?.id,
     };
 
@@ -75,19 +76,32 @@ const IPAccess = () => {
         await MainApi.put(`/api/add-ip-forlogin/${editId}/`, payload, {
           headers: { Authorization: `Token ${token}` },
         });
-        alert("IP details updated successfully!");
+        Swal({
+          icon: "success",
+          title: "Updated!",
+          text: "IP details updated successfully!",
+        });
       } else {
         await MainApi.post("/api/add-ip-forlogin/", payload, {
           headers: { Authorization: `Token ${token}` },
         });
-        alert("IP details added successfully!");
+        Swal({
+          icon: "success",
+          title: "Saved!",
+          text: "IP details added successfully!",
+        });
       }
       fetchIPDetails();
-      setInputValues({ ip_from: "", ip_address: "", branch: "" });
+      setInputValues({ ip_from: "", ip_address: "", branch: "" }); // Reset form
       setEditMode(false);
       setEditId(null);
     } catch (error) {
       console.error("Error saving IP details:", error);
+      Swal({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to save IP details.",
+      });
     }
   };
 
@@ -115,7 +129,7 @@ const IPAccess = () => {
 
   const handleDeleteClick = (id) => {
     setIPToDelete(id);
-    setOpenDeleteDialog(true);
+    setOpenDeleteDialog(true);  // Open the delete dialog
   };
 
   const handleDeleteConfirm = async () => {
@@ -124,12 +138,20 @@ const IPAccess = () => {
       await MainApi.delete(`/api/add-ip-forlogin/${ipToDelete}/`, {
         headers: { Authorization: `Token ${token}` },
       });
+      setOpenDeleteDialog(false); // Close the delete dialog
       fetchIPDetails();
-      setOpenDeleteDialog(false);
-      setIPToDelete(null);
-      alert("IP detail deleted successfully!");
+      Swal({
+        icon: "success",
+        title: "Deleted!",
+        text: "IP deleted successfully!",
+      });
     } catch (error) {
       console.error("Failed to delete IP details:", error);
+      Swal({
+        icon: "error",
+        title: "Error!",
+        text: "Failed to delete IP details.",
+      });
     }
   };
 
@@ -200,7 +222,7 @@ const IPAccess = () => {
                     </MenuItem>
                     {branchData?.results.map((row) => (
                       <MenuItem key={row.id} value={row.id}>
-                        {row.name}
+                        {row.name} {/* Display branch name */}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -238,16 +260,10 @@ const IPAccess = () => {
                       <TableCell>{detail.ip_address}</TableCell>
                       <TableCell>{getBranchName(detail.branch)}</TableCell>
                       <TableCell>
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleEditClick(detail.id, detail)}
-                        >
+                        <IconButton color="primary" onClick={() => handleEditClick(detail.id, detail)}>
                           <Edit />
                         </IconButton>
-                        <IconButton
-                          color="secondary"
-                          onClick={() => handleDeleteClick(detail.id)}
-                        >
+                        <IconButton color="secondary" onClick={() => handleDeleteClick(detail.id)}>
                           <Delete />
                         </IconButton>
                       </TableCell>
@@ -262,11 +278,9 @@ const IPAccess = () => {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this IP detail?
-          </DialogContentText>
+          <Typography>Are you sure you want to delete this IP detail?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
