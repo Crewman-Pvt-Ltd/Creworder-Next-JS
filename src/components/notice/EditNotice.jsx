@@ -1,24 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-// import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CustomTextField from "@/components/CustomTextField";
 import CustomLabel from "../CustomLabel";
 import { Typography, Button, Grid, Card, CardContent, Divider } from "@mui/material";
 import MainApi from "@/api-manage/MainApi";
 import { getToken } from "@/utils/getToken";
-import dynamic from 'next/dynamic';
-// Dynamically import CKEditor without server-side rendering
-const CKEditor = dynamic(
-  () => import('@ckeditor/ckeditor5-react').then((mod) => mod.CKEditor),
-  { ssr: false }
-);
-
-// Dynamically import ClassicEditor
-const ClassicEditor = dynamic(
-  () => import('@ckeditor/ckeditor5-build-classic'),
-  { ssr: false }
-);
 
 const EditNotice = () => {
   const router = useRouter();
@@ -73,7 +59,7 @@ const EditNotice = () => {
       const response = await MainApi.put(`/api/notices/${id}/`, notice, {
         headers: {
           Authorization: `Token ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -110,7 +96,15 @@ const EditNotice = () => {
             </Grid>
             <Divider sx={{ my: 2 }} />
             <form onSubmit={handleFormSubmit}>
-              <Grid item sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, marginTop: 2 }}>
+              <Grid
+                item
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 2,
+                  marginTop: 2,
+                }}
+              >
                 <Grid item xs={12}>
                   <CustomLabel htmlFor="title" required>
                     Title
@@ -128,23 +122,36 @@ const EditNotice = () => {
                 </Grid>
               </Grid>
 
-              <Grid item sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2, marginTop: 2 }}>
+              <Grid
+                item
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 2,
+                  marginTop: 2,
+                }}
+              >
                 <Grid item xs={12}>
                   <CustomLabel htmlFor="description" required>
                     Description
                   </CustomLabel>
-                  <CKEditor
-                    editor={ClassicEditor}
-                    data={notice.description}
-                    onChange={(event, editor) => {
-                      const data = editor.getData();
-                      setNotice((prevNotice) => ({ ...prevNotice, description: data }));
-                    }}
-                  />
+                  <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Enter description here"
+                    required
+                    rows={6}
+                    style={{ width: "100%", padding: "10px", fontSize: "14px" }}
+                    value={notice.description}
+                    onChange={(e) => setNotice({ ...notice, description: e.target.value })}
+                  ></textarea>
                 </Grid>
               </Grid>
 
-              <Grid item sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}>
+              <Grid
+                item
+                sx={{ marginTop: 3, display: "flex", justifyContent: "flex-end" }}
+              >
                 <Button
                   sx={{
                     padding: "8px 16px",
