@@ -18,9 +18,10 @@ import useGetAllTestimonials from "@/api-manage/react-query/useGetAllTestimonial
 import useGetAllClients from "@/api-manage/react-query/useGetAllClients";
 import useGetAllHighlights from "@/api-manage/react-query/useGetAllHighlights";
 import axios from "axios";
+import swal from 'sweetalert';
 import { Visibility, Edit, Delete } from "@mui/icons-material";
-import { getToken } from "@/utils/getToken"; // Import getToken
-import MainApi from "@/api-manage/MainApi"; // Import MainApi
+import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 import {
   Typography,
   Grid,
@@ -111,13 +112,13 @@ const LandingPageSettings = () => {
     refetch: refetchClients,
   } = useGetAllClients();
 
-    // Fetch data from useGetAllHighlights
-    const {
-      data: highlightsData,
-      isLoading: isHighlightsLoading,
-      isError: isHighlightsError,
-      refetch: refetchHighlights,
-    } = useGetAllHighlights();
+  // Fetch data from useGetAllHighlights
+  const {
+    data: highlightsData,
+    isLoading: isHighlightsLoading,
+    isError: isHighlightsError,
+    refetch: refetchHighlights,
+  } = useGetAllHighlights();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -201,7 +202,6 @@ const LandingPageSettings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create a new FormData object to send both the form data and file
     const form = new FormData();
     form.append("heading", formData.heading);
     form.append("subheading", formData.subheading);
@@ -210,21 +210,15 @@ const LandingPageSettings = () => {
     if (sliderFile) form.append("image", sliderFile);
 
     try {
-      // Get token from getToken function
       const token = getToken();
-
-      // Prepare headers including Authorization token
       const headers = {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Token ${token}`,
       };
-
-      // Make the API request using axios
       const response = await MainApi.post("/api/sliders/", form, { headers });
 
       if (response.data.Success) {
         alert("Slider added successfully!");
-        // Reset form data or handle as needed
         setFormData({
           heading: "",
           subheading: "",
@@ -278,27 +272,26 @@ const LandingPageSettings = () => {
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // Handle form data change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  // Handle form submission
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     const formDataToSend = new FormData();
+
     formDataToSend.append("heading", formData.secondsectiontitle);
     formDataToSend.append("subheading", formData.subtitle);
     formDataToSend.append("url", formData.featureonetitle);
+
     if (formData.image) {
       formDataToSend.append("image", formData.image);
     }
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/product-features/",
+      const response = await MainApi.post(
+        "/api/product-features/",
         formDataToSend,
         {
           headers: {
@@ -328,7 +321,7 @@ const LandingPageSettings = () => {
   };
 
   const handleDeleteClickProduct = (id) => {
-    setProductToDelete(id); // Fix: Set the correct state
+    setProductToDelete(id);
     setOpen(true);
   };
 
@@ -339,7 +332,6 @@ const LandingPageSettings = () => {
         throw new Error("No authentication token found.");
       }
 
-      // Make the DELETE request
       const response = await MainApi.delete(
         `/api/product-features/${productToDelete}/`,
         {
@@ -351,7 +343,7 @@ const LandingPageSettings = () => {
 
       if (response.status === 204) {
         console.log("Product deleted successfully");
-        refetch(); // Refresh the data after successful deletion
+        refetch();
       } else {
         console.error("Failed to delete the product");
       }
@@ -359,7 +351,7 @@ const LandingPageSettings = () => {
       console.error("An error occurred while deleting the product:", error);
     } finally {
       setOpen(false);
-      setProductToDelete(null); // Clear state after operation
+      setProductToDelete(null);
     }
   };
 
@@ -368,10 +360,9 @@ const LandingPageSettings = () => {
     setProductToDelete(null);
   };
 
-  // Handle form submission
   const handleTestimonialSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); // Clear previous errors
+    setErrors({});
 
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.testimonialtitle);
@@ -383,8 +374,8 @@ const LandingPageSettings = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/testimonials/",
+      const response = await MainApi.post(
+        "/api/testimonials/",
         formDataToSend,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -402,7 +393,7 @@ const LandingPageSettings = () => {
   };
 
   const handleDeleteClickTestimonials = (id) => {
-    setTestimonialsToDelete(id); // Fix: Set the correct state
+    setTestimonialsToDelete(id);
     setOpen(true);
   };
 
@@ -413,7 +404,6 @@ const LandingPageSettings = () => {
         throw new Error("No authentication token found.");
       }
 
-      // Make the DELETE request
       const response = await MainApi.delete(
         `/api/testimonials/${testimonialsToDelete}/`,
         {
@@ -425,7 +415,7 @@ const LandingPageSettings = () => {
 
       if (response.status === 204) {
         console.log("Testimonials deleted successfully");
-        refetch(); // Refresh the data after successful deletion
+        refetch();
       } else {
         console.error("Failed to delete the Testimonials");
       }
@@ -436,7 +426,7 @@ const LandingPageSettings = () => {
       );
     } finally {
       setOpen(false);
-      setTestimonialsToDelete(null); // Clear state after operation
+      setTestimonialsToDelete(null);
     }
   };
 
@@ -447,45 +437,56 @@ const LandingPageSettings = () => {
 
   const handleSubmitClients = async (e) => {
     e.preventDefault();
-
+  
     const data = new FormData();
     data.append("name", formData.highlightsheading);
     data.append("url", formData.highlightssubheading);
     data.append("logo", clientsFile);
-
+  
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/clients/",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await MainApi.post("/api/clients/", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log("Success:", response.data);
+  
+      // Show success SweetAlert
+      swal({
+        title: "Success!",
+        text: "Client added successfully.",
+        icon: "success",
+        button: "OK",
+      });
     } catch (error) {
       if (error.response && error.response.data.Errors) {
         setErrors(error.response.data.Errors);
       } else {
         console.error("Error:", error);
       }
+  
+      // Show error SweetAlert
+      swal({
+        title: "Error!",
+        text: "Failed to add the client. Please try again.",
+        icon: "error",
+        button: "OK",
+      });
     }
   };
-
+  
   const handleDeleteClickClients = (id) => {
-    setClientsToDelete(id); // Fix: Set the correct state
+    setClientsToDelete(id);
     setOpen(true);
   };
-
+  
   const handleDeleteClientsConfirm = async () => {
     try {
       const token = getToken();
       if (!token) {
         throw new Error("No authentication token found.");
       }
-
-      // Make the DELETE request
+  
       const response = await MainApi.delete(
         `/api/clients/${clientsToDelete}/`,
         {
@@ -494,43 +495,59 @@ const LandingPageSettings = () => {
           },
         }
       );
-
+  
       if (response.status === 204) {
         console.log("Clients deleted successfully");
-        refetch(); // Refresh the data after successful deletion
+        refetch();
+  
+        // Show success SweetAlert
+        swal({
+          title: "Success!",
+          text: "Client deleted successfully.",
+          icon: "success",
+          button: "OK",
+        });
       } else {
         console.error("Failed to delete the Clients");
+  
+        // Show error SweetAlert
+        swal({
+          title: "Error!",
+          text: "Failed to delete the client. Please try again.",
+          icon: "error",
+          button: "OK",
+        });
       }
     } catch (error) {
-      console.error(
-        "An error occurred while deleting the Clients:",
-        error
-      );
+      console.error("An error occurred while deleting the Clients:", error);
+  
+      // Show error SweetAlert
+      swal({
+        title: "Error!",
+        text: "An error occurred while deleting the client. Please try again.",
+        icon: "error",
+        button: "OK",
+      });
     } finally {
       setOpen(false);
-      setClientsToDelete(null); // Clear state after operation
+      setClientsToDelete(null);
     }
   };
-
+  
   const handleDeleteClientsCancel = () => {
     setOpen(false);
     setClientsToDelete(null);
   };
-
   const handleHighSubmit = async (e) => {
     e.preventDefault();
-
-    // Clear any previous errors
     setErrors({});
-
-    // Prepare FormData
     const formData = new FormData();
-    formData.append("title", highheading); // Title field
-    formData.append("description", highsubheading); // Description field
-    formData.append("image", highFile); // Image field
+    formData.append("title", highheading);
+    formData.append("description", highsubheading);
+    formData.append("image", highFile);
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/highlights/", formData, {
+      const response = await MainApi.post("/api/highlights/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -538,7 +555,6 @@ const LandingPageSettings = () => {
 
       if (response.data.Success) {
         alert("Data saved successfully!");
-        // Clear the form if needed
         setHighHeading("");
         setHighSubHeading("");
         setHighlightsFile(null);
@@ -552,7 +568,7 @@ const LandingPageSettings = () => {
   };
 
   const handleDeleteClickHighlights = (id) => {
-    setHighlightsToDelete(id); // Fix: Set the correct state
+    setHighlightsToDelete(id);
     setOpen(true);
   };
 
@@ -563,7 +579,6 @@ const LandingPageSettings = () => {
         throw new Error("No authentication token found.");
       }
 
-      // Make the DELETE request
       const response = await MainApi.delete(
         `/api/highlights/${highlightsToDelete}/`,
         {
@@ -575,18 +590,15 @@ const LandingPageSettings = () => {
 
       if (response.status === 204) {
         console.log("Highlights deleted successfully");
-        refetch(); // Refresh the data after successful deletion
+        refetch();
       } else {
         console.error("Failed to delete the Highlights");
       }
     } catch (error) {
-      console.error(
-        "An error occurred while deleting the Highlights:",
-        error
-      );
+      console.error("An error occurred while deleting the Highlights:", error);
     } finally {
       setOpen(false);
-      setHighlightsToDelete(null); // Clear state after operation
+      setHighlightsToDelete(null);
     }
   };
 
@@ -635,10 +647,10 @@ const LandingPageSettings = () => {
                       activeSection !== "slider" ? "1px solid #d6d6d6" : "none",
                     textTransform: "none",
                     "& .MuiSvgIcon-root": {
-                      color: activeSection === "slider" ? "#00796b" : "black", // Color for icon
+                      color: activeSection === "slider" ? "#00796b" : "black",
                     },
                     "& .MuiTypography-root": {
-                      color: activeSection === "slider" ? "#00796b" : "black", // Color for text
+                      color: activeSection === "slider" ? "#00796b" : "black",
                     },
                     "&:hover": {
                       color: "#405189",
@@ -668,10 +680,10 @@ const LandingPageSettings = () => {
                         : "none",
                     textTransform: "none",
                     "& .MuiSvgIcon-root": {
-                      color: activeSection === "features" ? "#00796b" : "black", // Color for icon
+                      color: activeSection === "features" ? "#00796b" : "black",
                     },
                     "& .MuiTypography-root": {
-                      color: activeSection === "features" ? "#00796b" : "black", // Color for text
+                      color: activeSection === "features" ? "#00796b" : "black",
                     },
                     "&:hover": {
                       color: "#405189",
@@ -705,11 +717,11 @@ const LandingPageSettings = () => {
                     textTransform: "none",
                     "& .MuiSvgIcon-root": {
                       color:
-                        activeSection === "testimonials" ? "#00796b" : "black", // Color for icon
+                        activeSection === "testimonials" ? "#00796b" : "black",
                     },
                     "& .MuiTypography-root": {
                       color:
-                        activeSection === "testimonials" ? "#00796b" : "black", // Color for text
+                        activeSection === "testimonials" ? "#00796b" : "black",
                     },
                     "&:hover": {
                       color: "#405189",
@@ -739,10 +751,10 @@ const LandingPageSettings = () => {
                         : "none",
                     textTransform: "none",
                     "& .MuiSvgIcon-root": {
-                      color: activeSection === "clients" ? "#00796b" : "black", // Color for icon
+                      color: activeSection === "clients" ? "#00796b" : "black",
                     },
                     "& .MuiTypography-root": {
-                      color: activeSection === "clients" ? "#00796b" : "black", // Color for text
+                      color: activeSection === "clients" ? "#00796b" : "black",
                     },
                     "&:hover": {
                       color: "#405189",
@@ -750,7 +762,7 @@ const LandingPageSettings = () => {
                   }}
                 />
 
-<Tab
+                <Tab
                   label={
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <SettingsSuggestIcon sx={{ fontSize: 20 }} />
@@ -762,7 +774,9 @@ const LandingPageSettings = () => {
                     fontSize: "14px",
                     color: activeSection === "highlights" ? "#00796b" : "black",
                     backgroundColor:
-                      activeSection === "highlights" ? "#eff2f7" : "transparent",
+                      activeSection === "highlights"
+                        ? "#eff2f7"
+                        : "transparent",
                     borderTop:
                       activeSection === "highlights"
                         ? "3px solid #00796b"
@@ -773,10 +787,12 @@ const LandingPageSettings = () => {
                         : "none",
                     textTransform: "none",
                     "& .MuiSvgIcon-root": {
-                      color: activeSection === "highlights" ? "#00796b" : "black", // Color for icon
+                      color:
+                        activeSection === "highlights" ? "#00796b" : "black",
                     },
                     "& .MuiTypography-root": {
-                      color: activeSection === "highlights" ? "#00796b" : "black", // Color for text
+                      color:
+                        activeSection === "highlights" ? "#00796b" : "black",
                     },
                     "&:hover": {
                       color: "#405189",
@@ -807,10 +823,10 @@ const LandingPageSettings = () => {
                         : "none",
                     textTransform: "none",
                     "& .MuiSvgIcon-root": {
-                      color: activeSection === "settings" ? "#00796b" : "black", // Color for icon
+                      color: activeSection === "settings" ? "#00796b" : "black",
                     },
                     "& .MuiTypography-root": {
-                      color: activeSection === "settings" ? "#00796b" : "black", // Color for text
+                      color: activeSection === "settings" ? "#00796b" : "black",
                     },
                     "&:hover": {
                       color: "#405189",
@@ -1486,106 +1502,113 @@ const LandingPageSettings = () => {
 
                     {/* Highlights Content */}
                     <form onSubmit={handleHighSubmit}>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12} sm={6} md={6}>
-                            <CustomLabel htmlFor="highheading" required>
-                              Heading
-                            </CustomLabel>
-                            <CustomTextField
-                              id="highheading"
-                              name="highheading"
-                              type="text"
-                              placeholder="e.g. heading"
-                              value={highheading}
-                              onChange={(e) => setHighHeading(e.target.value)}
-                              fullWidth
-                              error={!!errors.title}
-                              helperText={errors.title?.[0]}
-                            />
-                            <CustomLabel htmlFor="highsubheading" required>
-                              Subheading
-                            </CustomLabel>
-                            <CustomTextField
-                              id="highsubheading"
-                              name="highsubheading"
-                              type="text"
-                              placeholder="e.g. Sub title"
-                              value={highsubheading}
-                              onChange={(e) => setHighSubHeading(e.target.value)}
-                              fullWidth
-                              error={!!errors.description}
-                              helperText={errors.description?.[0]}
-                            />
-                          </Grid>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6} md={6}>
+                          <CustomLabel htmlFor="highheading" required>
+                            Heading
+                          </CustomLabel>
+                          <CustomTextField
+                            id="highheading"
+                            name="highheading"
+                            type="text"
+                            placeholder="e.g. heading"
+                            value={highheading}
+                            onChange={(e) => setHighHeading(e.target.value)}
+                            fullWidth
+                            error={!!errors.title}
+                            helperText={errors.title?.[0]}
+                          />
+                          <CustomLabel htmlFor="highsubheading" required>
+                            Subheading
+                          </CustomLabel>
+                          <CustomTextField
+                            id="highsubheading"
+                            name="highsubheading"
+                            type="text"
+                            placeholder="e.g. Sub title"
+                            value={highsubheading}
+                            onChange={(e) => setHighSubHeading(e.target.value)}
+                            fullWidth
+                            error={!!errors.description}
+                            helperText={errors.description?.[0]}
+                          />
+                        </Grid>
 
-                          <Grid item xs={12} sm={6} md={6}>
-                            <Box>
-                              <Typography variant="body1" sx={{ fontFamily: "Poppins, sans-serif" }}>
-                                Highlights Image
-                                <Tooltip title="Upload your front website logo here">
-                                  <IconButton>
-                                    <HelpOutlineIcon fontSize="small" />
-                                  </IconButton>
-                                </Tooltip>
-                              </Typography>
+                        <Grid item xs={12} sm={6} md={6}>
+                          <Box>
+                            <Typography
+                              variant="body1"
+                              sx={{ fontFamily: "Poppins, sans-serif" }}
+                            >
+                              Highlights Image
+                              <Tooltip title="Upload your front website logo here">
+                                <IconButton>
+                                  <HelpOutlineIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Typography>
 
-                              <div
+                            <div
+                              style={{
+                                border: "1px solid #ddd",
+                                padding: "10px",
+                                borderRadius: "4px",
+                              }}
+                            >
+                              <input
+                                type="file"
+                                style={{ display: "none" }}
+                                id="upload-highlights-file"
+                                onChange={handleFileChange}
+                              />
+                              <label
+                                htmlFor="upload-highlights-file"
                                 style={{
-                                  border: "1px solid #ddd",
-                                  padding: "10px",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  height: "100px",
+                                  border: "2px dashed #ddd",
+                                  cursor: "pointer",
                                   borderRadius: "4px",
                                 }}
                               >
-                                <input
-                                  type="file"
-                                  style={{ display: "none" }}
-                                  id="upload-highlights-file"
-                                  onChange={handleFileChange}
+                                <UploadFileIcon
+                                  sx={{ fontSize: 48, color: "#aaa" }}
                                 />
-                                <label
-                                  htmlFor="upload-highlights-file"
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    height: "100px",
-                                    border: "2px dashed #ddd",
-                                    cursor: "pointer",
-                                    borderRadius: "4px",
-                                  }}
-                                >
-                                  <UploadFileIcon sx={{ fontSize: 48, color: "#aaa" }} />
-                                  <Typography>
-                                    {highlightsFile ? highlightsFile.name : "Choose a file"}
-                                  </Typography>
-                                </label>
-                                {errors.image && (
-                                  <Typography color="error" variant="body2">
-                                    {errors.image[0]}
-                                  </Typography>
-                                )}
-                              </div>
-                            </Box>
-                          </Grid>
+                                <Typography>
+                                  {highlightsFile
+                                    ? highlightsFile.name
+                                    : "Choose a file"}
+                                </Typography>
+                              </label>
+                              {errors.image && (
+                                <Typography color="error" variant="body2">
+                                  {errors.image[0]}
+                                </Typography>
+                              )}
+                            </div>
+                          </Box>
                         </Grid>
+                      </Grid>
 
-                        <Button
-                          type="submit"
-                          sx={{
-                            marginTop: "20px",
-                            padding: "8px 16px",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            backgroundColor: "#405189",
-                            color: "white",
-                            "&:hover": {
-                              backgroundColor: "#334a6c",
-                            },
-                          }}
-                        >
-                          Submit
-                        </Button>
-                      </form>
+                      <Button
+                        type="submit"
+                        sx={{
+                          marginTop: "20px",
+                          padding: "8px 16px",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                          backgroundColor: "#405189",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#334a6c",
+                          },
+                        }}
+                      >
+                        Submit
+                      </Button>
+                    </form>
                     <Grid>
                       <br></br>
                       <CustomCard>
@@ -1601,14 +1624,16 @@ const LandingPageSettings = () => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                              {highlightsData?.Data?.map((row, index) => (
+                                {highlightsData?.Data?.map((row, index) => (
                                   <TableRow key={row.id}>
                                     <DataCell>{index + 1}.</DataCell>
                                     <DataCell>{row.title}</DataCell>
                                     <DataCell>{row.created_at}</DataCell>
                                     <TableCell>
                                       <IconButton
-                                          onClick={() => handleDeleteClickHighlights(row.id)}
+                                        onClick={() =>
+                                          handleDeleteClickHighlights(row.id)
+                                        }
                                         aria-label="delete"
                                         sx={{ color: "red" }}
                                       >
@@ -1623,8 +1648,8 @@ const LandingPageSettings = () => {
                         </CardContent>
                       </CustomCard>
 
-                        {/* Delete Confirmation Dialog */}
-                        <Dialog
+                      {/* Delete Confirmation Dialog */}
+                      <Dialog
                         open={open}
                         onClose={handleDeleteHighlightsCancel}
                       >
@@ -1685,7 +1710,7 @@ const LandingPageSettings = () => {
                             helperText={errors.name?.[0]}
                           />
                           <CustomLabel htmlFor="highlightssubheading" required>
-                            Subheading
+                            Clients Url
                           </CustomLabel>
                           <CustomTextField
                             id="highlightssubheading"
@@ -1788,14 +1813,16 @@ const LandingPageSettings = () => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                              {clientsData?.Data?.map((row, index) => (
+                                {clientsData?.Data?.map((row, index) => (
                                   <TableRow key={row.id}>
                                     <DataCell>{index + 1}.</DataCell>
                                     <DataCell>{row.name}</DataCell>
                                     <DataCell>{row.created_at}</DataCell>
                                     <TableCell>
                                       <IconButton
-                                        onClick={() => handleDeleteClickClients(row.id)}
+                                        onClick={() =>
+                                          handleDeleteClickClients(row.id)
+                                        }
                                         aria-label="delete"
                                         sx={{ color: "red" }}
                                       >
@@ -1803,19 +1830,15 @@ const LandingPageSettings = () => {
                                       </IconButton>
                                     </TableCell>
                                   </TableRow>
-                                ))} 
+                                ))}
                               </TableBody>
                             </Table>
                           </TableContainer>
                         </CardContent>
                       </CustomCard>
 
-                      
-                       {/* Delete Confirmation Dialog */}
-                       <Dialog
-                        open={open}
-                        onClose={handleDeleteClientsCancel}
-                      >
+                      {/* Delete Confirmation Dialog */}
+                      <Dialog open={open} onClose={handleDeleteClientsCancel}>
                         <DialogTitle>Confirm Deletion</DialogTitle>
                         <DialogContent>
                           <DialogContentText>
@@ -1837,8 +1860,6 @@ const LandingPageSettings = () => {
                           </Button>
                         </DialogActions>
                       </Dialog>
-
-
                     </Grid>
                   </>
                 )}
@@ -1949,7 +1970,6 @@ const LandingPageSettings = () => {
                       </Button>
                     </Grid>
 
-                    
                     <Grid>
                       <br></br>
                       <CustomCard>
