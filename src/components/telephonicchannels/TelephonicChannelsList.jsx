@@ -12,12 +12,14 @@ import { Grid, Typography, Button } from "@mui/material";
 import axios from "axios";
 import useGetAllCloudTelephonicChannels from "@/api-manage/react-query/useGetAllCloudTelephonicChannels";
 import { getToken } from "@/utils/getToken";
+import MainApi from "@/api-manage/MainApi";
 import { Poppins } from "next/font/google";
 
 const TelephonicChannelsList = () => {
   const router = useRouter();
   const [dialogOpen, setDialogOpen] = useState(false);
   const token = getToken();
+  const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const [formData, setFormData] = useState({
     id: null,
     name: "",
@@ -29,7 +31,11 @@ const TelephonicChannelsList = () => {
   });
   const [errors, setErrors] = useState({});
   const [editMode, setEditMode] = useState(false);
-  const { data: apiData, isLoading, isError } = useGetAllCloudTelephonicChannels();
+  const {
+    data: apiData,
+    isLoading,
+    isError,
+  } = useGetAllCloudTelephonicChannels();
 
   const handleOpenDialog = (editItem = null) => {
     if (editItem) {
@@ -87,11 +93,10 @@ const TelephonicChannelsList = () => {
     }
 
     const apiUrl = editMode
-      ? `http://127.0.0.1:8000/api/updateCloudTelephoneyChannel/${formData.id}/`
-      : "http://127.0.0.1:8000/api/createCloudTelephoneyChannel/";
+  ? `${BASE_URL}/api/updateCloudTelephoneyChannel/${formData.id}/`
+  : `${BASE_URL}/api/createCloudTelephoneyChannel/`;
 
     const method = editMode ? "PUT" : "POST";
-
     const requestData = new FormData();
     requestData.append("name", formData.name);
     requestData.append("cloud_celephony_provider_name", formData.providerName);
@@ -109,13 +114,13 @@ const TelephonicChannelsList = () => {
         data: requestData,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Token ${token}`,
         },
       });
 
       if (response.data.Success) {
         alert("Success: Cloud Telephony Channel saved!");
         setDialogOpen(false);
-        // Optionally refresh the list of channels
       } else {
         setErrors(response.data.Errors);
       }
@@ -131,7 +136,11 @@ const TelephonicChannelsList = () => {
         <Grid container sx={{ marginBottom: "10px" }}>
           <Grid item xs={12}>
             <CustomCard padding="13px">
-              <Grid container justifyContent="space-between" alignItems="center">
+              <Grid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Grid item>
                   <Typography
                     sx={{
@@ -182,10 +191,14 @@ const TelephonicChannelsList = () => {
           {apiData?.Data?.map((item) => (
             <Grid item xs={12} sm={4} key={item.id}>
               <CustomCard padding="20px">
-                <Grid container justifyContent="space-between" alignItems="center">
+                <Grid
+                  container
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <Grid item>
                     <Image
-                      src={item.logo || "/images/default-placeholder.png"}
+                      src={item.logo ? `${BASE_URL}${item.logo}` : "/placeholder-image.png"}
                       alt={item.name}
                       width={100}
                       height={60}
@@ -228,7 +241,9 @@ const TelephonicChannelsList = () => {
         </Grid>
 
         <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-          <DialogTitle>{editMode ? "Edit Cloud Connect" : "Add Cloud Connect"}</DialogTitle>
+          <DialogTitle>
+            {editMode ? "Edit Cloud Connect" : "Add Cloud Connect"}
+          </DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
@@ -244,7 +259,9 @@ const TelephonicChannelsList = () => {
                   label="Cloud Connect Provider Name"
                   fullWidth
                   value={formData.providerName}
-                  onChange={(e) => handleInputChange("providerName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("providerName", e.target.value)
+                  }
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -252,7 +269,9 @@ const TelephonicChannelsList = () => {
                   label="Credentials"
                   fullWidth
                   value={formData.credentials}
-                  onChange={(e) => handleInputChange("credentials", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("credentials", e.target.value)
+                  }
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -260,7 +279,9 @@ const TelephonicChannelsList = () => {
                   label="Auth Token Type"
                   fullWidth
                   value={formData.authTokenType}
-                  onChange={(e) => handleInputChange("authTokenType", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("authTokenType", e.target.value)
+                  }
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -290,7 +311,9 @@ const TelephonicChannelsList = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleSubmit}>{editMode ? "Update" : "Submit"}</Button>
+            <Button onClick={handleSubmit}>
+              {editMode ? "Update" : "Submit"}
+            </Button>
           </DialogActions>
         </Dialog>
       </Grid>
