@@ -24,7 +24,6 @@ const LeadSource = () => {
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
-
   const handleInputChange = (field) => (event) => {
     setInputValues((prevValues) => ({
       ...prevValues,
@@ -111,7 +110,7 @@ const LeadSource = () => {
       }
     });
   };
-  
+
   const handleDeleteConfirm = async (id) => {
     try {
       const token = getToken();
@@ -133,7 +132,6 @@ const LeadSource = () => {
       });
     }
   };
-  
 
   useEffect(() => {
     fetchLeadSourceDetails();
@@ -141,7 +139,6 @@ const LeadSource = () => {
 
   return (
     <Grid container spacing={2}>
-      {/* Add/Edit Lead Source Form */}
       <Grid item xs={12}>
         <Typography variant="h6">
           <b>{editMode ? "Edit Lead Source" : "Add Lead Source"}</b>
@@ -160,13 +157,17 @@ const LeadSource = () => {
               />
             </Grid>
           </Grid>
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
             {editMode ? "Update" : "Save"}
           </Button>
         </form>
       </Grid>
 
-      {/* Lead Source Details Table */}
       <Grid item xs={12}>
         <Typography variant="h6">
           <b>Lead Source Details</b>
@@ -175,13 +176,15 @@ const LeadSource = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>Sr No</TableCell>
                 <TableCell>Lead Source</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {leadSource.map((detail) => (
+              {leadSource.map((detail, index) => (
                 <TableRow key={detail.id}>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>{detail.name}</TableCell>
                   <TableCell>
                     <IconButton
@@ -203,8 +206,6 @@ const LeadSource = () => {
           </Table>
         </TableContainer>
       </Grid>
-
-    
     </Grid>
   );
 };
